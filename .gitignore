@@ -1,0 +1,21 @@
+# 环境
+.venv/
+__pycache__/
+*.pyc
+piptest/
+
+# 机密
+.env
+.env.local
+
+# 临时与截图
+*.bak
+urls.txt
+/shot*.png
+/live.png
+/presets.png
+/dist/
+
+# 系统
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3667 @@
+{
+  "jwc-list": {
+    "url": "http://jwc.cuc.edu.cn/_t427/7083/list.htm",
+    "title": "提示信息",
+    "chars": 183,
+    "sha256": "d8969940186f4ac8",
+    "fetched_at": "2026-10-21T23:18:14+08:00",
+    "seed_depth": 1
+  },
+  "20231013-c8477a212636": {
+    "url": "https://its.cuc.edu.cn/2023/1013/c8477a212636/page.htm",
+    "title": "自助人脸照片上传",
+    "chars": 1244,
+    "sha256": "b6d355c666104c66",
+    "fetched_at": "2026-10-21T23:18:22+08:00",
+    "seed_depth": 1
+  },
+  "20230225-c8477a202334": {
+    "url": "https://its.cuc.edu.cn/2023/0225/c8477a202334/page.htm",
+    "title": "无感知认证",
+    "chars": 1376,
+    "sha256": "6f11fc531d0592a7",
+    "fetched_at": "2026-10-21T23:18:22+08:00",
+    "seed_depth": 1
+  },
+  "20231120-c8502a213953": {
+    "url": "https://its.cuc.edu.cn/2023/1120/c8502a213953/page.htm",
+    "title": "@cuc.edu.cn账户添加（Outlook pop3设置）",
+    "chars": 1879,
+    "sha256": "f6e1630752779ff1",
+    "fetched_at": "2026-10-21T23:18:24+08:00",
+    "seed_depth": 1
+  },
+  "20240813-c8502a241958": {
+    "url": "https://its.cuc.edu.cn/2024/0813/c8502a241958/page.htm",
+    "title": "校园邮箱使用说明",
+    "chars": 1425,
+    "sha256": "0307eb3900599f0c",
+    "fetched_at": "2026-10-21T23:18:24+08:00",
+    "seed_depth": 1
+  },
+  "20230221-c8498a202280": {
+    "url": "https://its.cuc.edu.cn/2023/0221/c8498a202280/page.htm",
+    "title": "校园网认证服务",
+    "chars": 1521,
+    "sha256": "0b3e5220019d1f0c",
+    "fetched_at": "2026-10-21T23:18:24+08:00",
+    "seed_depth": 1
+  },
+  "20220922-c8498a199120": {
+    "url": "https://its.cuc.edu.cn/2022/0922/c8498a199120/page.htm",
+    "title": "访问校园网",
+    "chars": 1461,
+    "sha256": "81606bffb41d622c",
+    "fetched_at": "2026-10-21T23:18:25+08:00",
+    "seed_depth": 1
+  },
+  "20231016-c8508a212715": {
+    "url": "https://its.cuc.edu.cn/2023/1016/c8508a212715/page.htm",
+    "title": "修改统一身份认证账号密码",
+    "chars": 892,
+    "sha256": "88dcf4f2a357b634",
+    "fetched_at": "2026-10-21T23:18:25+08:00",
+    "seed_depth": 1
+  },
+  "20230516-c8508a208993": {
+    "url": "https://its.cuc.edu.cn/2023/0516/c8508a208993/page.htm",
+    "title": "统一身份认证之账号申诉",
+    "chars": 1918,
+    "sha256": "ae232755c7f66ea6",
+    "fetched_at": "2026-10-21T23:18:26+08:00",
+    "seed_depth": 1
+  },
+  "20220922-c8508a199117": {
+    "url": "https://its.cuc.edu.cn/2022/0922/c8508a199117/page.htm",
+    "title": "统一身份认证账号激活",
+    "chars": 1630,
+    "sha256": "6f5e5196f0c9542f",
+    "fetched_at": "2026-10-21T23:18:26+08:00",
+    "seed_depth": 1
+  },
+  "20231208-c10302a214544": {
+    "url": "https://its.cuc.edu.cn/2023/1208/c10302a214544/page.htm",
+    "title": "临时账号充值指南（2023）",
+    "chars": 1659,
+    "sha256": "3e4a673bf737500d",
+    "fetched_at": "2026-10-21T23:18:27+08:00",
+    "seed_depth": 1
+  },
+  "20260331-c14817a268360": {
+    "url": "https://jwc.cuc.edu.cn/2026/0331/c14817a268360/page.htm",
+    "title": "种子课堂概览",
+    "chars": 4035,
+    "sha256": "ab0dc9193ea7b386",
+    "fetched_at": "2026-10-20T21:02:56+08:00",
+    "seed_depth": 2
+  },
+  "20260930-c6364a274488": {
+    "url": "https://jwc.cuc.edu.cn/2026/0930/c6364a274488/page.htm",
+    "title": "【重考报名】关于2026-2027学年秋季学期重考（含缓考）报名的通知",
+    "chars": 585,
+    "sha256": "ba8b8d0d31c20c8d",
+    "fetched_at": "2026-10-21T23:18:02+08:00",
+    "seed_depth": 1
+  },
+  "20260914-c6364a273878": {
+    "url": "https://jwc.cuc.edu.cn/2026/0914/c6364a273878/page.htm",
+    "title": "【四六级报名】关于启动2026年下半年全国大学英语四、六级考试网上报名的通知",
+    "chars": 591,
+    "sha256": "45061897f41c913d",
+    "fetched_at": "2026-10-21T23:18:03+08:00",
+    "seed_depth": 1
+  },
+  "20260311-c6364a267537": {
+    "url": "https://jwc.cuc.edu.cn/2026/0311/c6364a267537/page.htm",
+    "title": "【四六级报名】关于启动2026年上半年全国大学英语四、六级考试网上报名的通知",
+    "chars": 592,
+    "sha256": "65dce4d0743e0fb6",
+    "fetched_at": "2026-10-21T23:18:03+08:00",
+    "seed_depth": 1
+  },
+  "20260930-c6364a274487": {
+    "url": "https://jwc.cuc.edu.cn/2026/0930/c6364a274487/page.htm",
+    "title": "关于开展2026—2027学年秋季学期2026级学生补（退）选课工作的通知",
+    "chars": 656,
+    "sha256": "f5736be38d8d2471",
+    "fetched_at": "2026-10-21T23:18:03+08:00",
+    "seed_depth": 1
+  },
+  "20260227-c6364a267096": {
+    "url": "https://jwc.cuc.edu.cn/2026/0227/c6364a267096/page.htm",
+    "title": "关于开展2025—2026学年春季学期开学初主修、辅修补（退）选课工作的通知",
+    "chars": 668,
+    "sha256": "0eb20eb3d8f170d8",
+    "fetched_at": "2026-10-21T23:18:04+08:00",
+    "seed_depth": 1
+  },
+  "20260311-c6364a267512": {
+    "url": "https://jwc.cuc.edu.cn/2026/0311/c6364a267512/page.htm",
+    "title": "2026年春季学期转专业拟录取名单公示",
+    "chars": 740,
+    "sha256": "7ba5cd5c99474989",
+    "fetched_at": "2026-10-21T23:18:04+08:00",
+    "seed_depth": 1
+  },
+  "20231013-c8476a212636": {
+    "url": "http://its.cuc.edu.cn/2023/1013/c8476a212636/page.htm",
+    "title": "自助人脸照片上传",
+    "chars": 1244,
+    "sha256": "b6d355c666104c66",
+    "fetched_at": "2026-10-20T21:03:45+08:00",
+    "seed_depth": 2
+  },
+  "20230225-c8476a202334": {
+    "url": "http://its.cuc.edu.cn/2023/0225/c8476a202334/page.htm",
+    "title": "无感知认证",
+    "chars": 1376,
+    "sha256": "6f11fc531d0592a7",
+    "fetched_at": "2026-10-20T21:03:47+08:00",
+    "seed_depth": 2
+  },
+  "20221027-c12936a200464": {
+    "url": "http://its.cuc.edu.cn/2022/1027/c12936a200464/page.htm",
+    "title": "校园卡使用指南",
+    "chars": 2598,
+    "sha256": "fab65a653dead076",
+    "fetched_at": "2026-10-20T21:03:51+08:00",
+    "seed_depth": 2
+  },
+  "20231020-c8495a212881": {
+    "url": "http://its.cuc.edu.cn/2023/1020/c8495a212881/page.htm",
+    "title": "学生电子交通卡申领",
+    "chars": 2179,
+    "sha256": "5d1de2e824462b59",
+    "fetched_at": "2026-10-20T21:03:53+08:00",
+    "seed_depth": 2
+  },
+  "20221027-c8496a200461": {
+    "url": "http://its.cuc.edu.cn/2022/1027/c8496a200461/page.htm",
+    "title": "校园卡补卡",
+    "chars": 766,
+    "sha256": "444739d5cd5215f1",
+    "fetched_at": "2026-10-20T21:03:54+08:00",
+    "seed_depth": 2
+  },
+  "20231110-c10268a213617": {
+    "url": "http://its.cuc.edu.cn/2023/1110/c10268a213617/page.htm",
+    "title": "校友返校指南",
+    "chars": 2594,
+    "sha256": "59f93c140cb406b6",
+    "fetched_at": "2026-10-20T21:03:55+08:00",
+    "seed_depth": 2
+  },
+  "20231117-c10285a213870": {
+    "url": "http://its.cuc.edu.cn/2023/1117/c10285a213870/page.htm",
+    "title": "学生卡延期指南",
+    "chars": 1281,
+    "sha256": "f4076bd06bfadbcb",
+    "fetched_at": "2026-10-20T21:03:56+08:00",
+    "seed_depth": 2
+  },
+  "20231201-c10302a214337": {
+    "url": "http://its.cuc.edu.cn/2023/1201/c10302a214337/page.htm",
+    "title": "临时人员中传信息化服务指南",
+    "chars": 4142,
+    "sha256": "45e79efb37825803",
+    "fetched_at": "2026-10-20T21:03:57+08:00",
+    "seed_depth": 2
+  },
+  "20240407-c10717a218312": {
+    "url": "http://its.cuc.edu.cn/2024/0407/c10717a218312/page.htm",
+    "title": "遗失卡丢失-登记服务",
+    "chars": 1171,
+    "sha256": "dab4a5f7cdc9a3f7",
+    "fetched_at": "2026-10-20T21:03:58+08:00",
+    "seed_depth": 2
+  },
+  "its-list2": {
+    "url": "https://its.cuc.edu.cn/8169/list2.htm",
+    "title": "通知公告",
+    "chars": 1166,
+    "sha256": "4a3f4277147f4361",
+    "fetched_at": "2026-10-20T21:04:07+08:00",
+    "seed_depth": 2
+  },
+  "its-list4": {
+    "url": "https://its.cuc.edu.cn/8169/list4.htm",
+    "title": "通知公告",
+    "chars": 825,
+    "sha256": "f33ec23ad188045a",
+    "fetched_at": "2026-10-20T21:04:07+08:00",
+    "seed_depth": 2
+  },
+  "tiyu-list2": {
+    "url": "https://tiyu.cuc.edu.cn/86/list2.htm",
+    "title": "群体竞赛",
+    "chars": 755,
+    "sha256": "96e3c04d41b35d8a",
+    "fetched_at": "2026-10-20T21:04:16+08:00",
+    "seed_depth": 2
+  },
+  "tiyu-list12": {
+    "url": "https://tiyu.cuc.edu.cn/86/list12.htm",
+    "title": "群体竞赛",
+    "chars": 692,
+    "sha256": "380bae7c7b3ed1ee",
+    "fetched_at": "2026-10-20T21:04:19+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list2": {
+    "url": "https://xsc.cuc.edu.cn/2874/list2.htm",
+    "title": "通知公告",
+    "chars": 1078,
+    "sha256": "0e26c8dc35a03d4c",
+    "fetched_at": "2026-10-20T21:05:04+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list11": {
+    "url": "https://xsc.cuc.edu.cn/2753/list11.htm",
+    "title": "管理规定",
+    "chars": 849,
+    "sha256": "0741b58af94c6986",
+    "fetched_at": "2026-10-20T21:04:48+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list4": {
+    "url": "https://xsc.cuc.edu.cn/2770/list4.htm",
+    "title": "学生军训",
+    "chars": 709,
+    "sha256": "038975522178ce61",
+    "fetched_at": "2026-10-20T21:04:57+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list16": {
+    "url": "https://xsc.cuc.edu.cn/2772/list16.htm",
+    "title": "参军入伍",
+    "chars": 622,
+    "sha256": "dd96ce371804a3cb",
+    "fetched_at": "2026-10-20T21:04:53+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list3": {
+    "url": "https://xsc.cuc.edu.cn/2771/list3.htm",
+    "title": "军事理论课",
+    "chars": 796,
+    "sha256": "dd5e14f04cd05446",
+    "fetched_at": "2026-10-20T21:04:55+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list7": {
+    "url": "https://xsc.cuc.edu.cn/xygf/list7.htm",
+    "title": "校园国防",
+    "chars": 645,
+    "sha256": "5c29380a3587007a",
+    "fetched_at": "2026-10-20T21:05:00+08:00",
+    "seed_depth": 2
+  },
+  "xsc-list5": {
+    "url": "https://xsc.cuc.edu.cn/2874/list5.htm",
+    "title": "通知公告",
+    "chars": 772,
+    "sha256": "bcac79b8e4508076",
+    "fetched_at": "2026-10-20T21:05:05+08:00",
+    "seed_depth": 2
+  },
+  "20241125-c12853a245907": {
+    "url": "https://jwc.cuc.edu.cn/2024/1125/c12853a245907/page.htm",
+    "title": "北京市级精品课程一览表（2018年前）",
+    "chars": 594,
+    "sha256": "677e2ef0a3c9b182",
+    "fetched_at": "2026-10-20T21:05:06+08:00",
+    "seed_depth": 3
+  },
+  "20241125-c12853a245906": {
+    "url": "https://jwc.cuc.edu.cn/2024/1125/c12853a245906/page.htm",
+    "title": "国家级精品课程一览表（2018年前）",
+    "chars": 592,
+    "sha256": "10971cbe970f281d",
+    "fetched_at": "2026-10-20T21:05:06+08:00",
+    "seed_depth": 3
+  },
+  "20260717-c6364a272849": {
+    "url": "https://jwc.cuc.edu.cn/2026/0717/c6364a272849/page.htm",
+    "title": "关于暑假期间办理本科生成绩单等材料的通知",
+    "chars": 1261,
+    "sha256": "36a96d4e4220cb50",
+    "fetched_at": "2026-10-20T22:43:52+08:00",
+    "seed_depth": 1
+  },
+  "20260915-c6364a273904": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6364a273904/page.htm",
+    "title": "关于启动2026-2027学年秋季学期重修选课工作的通知",
+    "chars": 641,
+    "sha256": "33e8a94bead1ad6d",
+    "fetched_at": "2026-10-20T22:43:54+08:00",
+    "seed_depth": 1
+  },
+  "20260915-c6364a273903": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6364a273903/page.htm",
+    "title": "关于开展2026—2027学年秋季学期2026级新生选课工作的通知",
+    "chars": 638,
+    "sha256": "3d6506dcb9c1d175",
+    "fetched_at": "2026-10-20T22:43:55+08:00",
+    "seed_depth": 1
+  },
+  "20260915-c6364a273901": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6364a273901/page.htm",
+    "title": "关于开展2026-2027学年秋季学期开学初主修、辅修补（退）选课工作的通知",
+    "chars": 591,
+    "sha256": "06d89fe79a7d3a1d",
+    "fetched_at": "2026-10-20T22:43:55+08:00",
+    "seed_depth": 1
+  },
+  "20260724-c6364a272951": {
+    "url": "https://jwc.cuc.edu.cn/2026/0724/c6364a272951/page.htm",
+    "title": "2026年秋季微专业招生信息",
+    "chars": 2080,
+    "sha256": "319fd1a9a0ab63ce",
+    "fetched_at": "2026-10-20T22:43:57+08:00",
+    "seed_depth": 1
+  },
+  "20181213-c2807a81613": {
+    "url": "http://cwc.cuc.edu.cn/2018/1213/c2807a81613/page.htm",
+    "title": "财务处职责",
+    "chars": 1197,
+    "sha256": "e8b34007aec0f937",
+    "fetched_at": "2026-10-21T23:18:30+08:00",
+    "seed_depth": 1
+  },
+  "20240813-c2814a241966": {
+    "url": "https://cwc.cuc.edu.cn/2024/0813/c2814a241966/page.htm",
+    "title": "中国传媒大学2024-2025学年学生缴费通知",
+    "chars": 915,
+    "sha256": "3cd88e8fd434c876",
+    "fetched_at": "2026-10-21T23:17:51+08:00",
+    "seed_depth": 1
+  },
+  "20230628-c2814a209960": {
+    "url": "https://cwc.cuc.edu.cn/2023/0628/c2814a209960/page.htm",
+    "title": "2018-2021年教育教学改革专项支出绩效自评报告",
+    "chars": 921,
+    "sha256": "e1b8a6f7ce8ed377",
+    "fetched_at": "2026-10-21T23:17:52+08:00",
+    "seed_depth": 1
+  },
+  "20230530-c2814a209312": {
+    "url": "https://cwc.cuc.edu.cn/2023/0530/c2814a209312/page.htm",
+    "title": "中国传媒大学2022年度教育教学改革专项绩效自评报告及资金使用情况",
+    "chars": 935,
+    "sha256": "e2625bc0e49b52b9",
+    "fetched_at": "2026-10-21T23:17:52+08:00",
+    "seed_depth": 1
+  },
+  "20220928-c2814a199295": {
+    "url": "https://cwc.cuc.edu.cn/2022/0928/c2814a199295/page.htm",
+    "title": "关于2021-2022学年春季学期住宿费退费的通知（财字〔2022〕23号）",
+    "chars": 945,
+    "sha256": "29c521866ab7c53b",
+    "fetched_at": "2026-10-21T23:17:54+08:00",
+    "seed_depth": 1
+  },
+  "20220821-c2814a198316": {
+    "url": "https://cwc.cuc.edu.cn/2022/0821/c2814a198316/page.htm",
+    "title": "中国传媒大学2022-2023学年学生缴费通知",
+    "chars": 915,
+    "sha256": "ab9eaeca784a41b2",
+    "fetched_at": "2026-10-21T23:17:54+08:00",
+    "seed_depth": 1
+  },
+  "20220714-c2814a194900": {
+    "url": "https://cwc.cuc.edu.cn/2022/0714/c2814a194900/page.htm",
+    "title": "2022年财务处暑期报账及业务办理通知",
+    "chars": 907,
+    "sha256": "c264d7d057d2267f",
+    "fetched_at": "2026-10-21T23:17:54+08:00",
+    "seed_depth": 1
+  },
+  "20250716-c6487a258496": {
+    "url": "https://jwc.cuc.edu.cn/2025/0716/c6487a258496/page.htm",
+    "title": "本科生院〔2025〕69号 关于印发《中国传媒大学全日制本科生课程考核及成绩管理办法》的通知",
+    "chars": 613,
+    "sha256": "e88e67c0aac852b8",
+    "fetched_at": "2026-10-21T23:17:55+08:00",
+    "seed_depth": 1
+  },
+  "20250715-c6487a258431": {
+    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258431/page.htm",
+    "title": "关于《中国传媒大学本科生体育课程管理规定》的补充规定（本科生院〔2025〕68 号）",
+    "chars": 606,
+    "sha256": "c5d77f10b9c60dc0",
+    "fetched_at": "2026-10-21T23:18:49+08:00",
+    "kind": "manual"
+  },
+  "20250715-c6487a258430": {
+    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258430/page.htm",
+    "title": "中国传媒大学本科生选课管理办法（本科生院〔2025〕65 号）",
+    "chars": 676,
+    "sha256": "fa00911986e0be9a",
+    "fetched_at": "2026-10-21T23:18:49+08:00",
+    "kind": "manual"
+  },
+  "20241029-c6487a244794": {
+    "url": "https://jwc.cuc.edu.cn/2024/1029/c6487a244794/page.htm",
+    "title": "中国传媒大学《国家学生体质健康标准》实施办法（2024年修订）（本科生院〔2024〕115号）",
+    "chars": 724,
+    "sha256": "291ce68ce5f07752",
+    "fetched_at": "2026-10-21T23:17:56+08:00",
+    "seed_depth": 1
+  },
+  "20260116-c6487a266577": {
+    "url": "https://jwc.cuc.edu.cn/2026/0116/c6487a266577/page.htm",
+    "title": "本科生院〔2026〕3号关于印发《中国传媒大学本科学生课程置换及学分认定管理办法》的通知",
+    "chars": 609,
+    "sha256": "73f0a623cd362349",
+    "fetched_at": "2026-10-21T23:17:56+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216885": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216885/page.htm",
+    "title": "中国传媒大学精品教材建设项目实施办法（试行）",
+    "chars": 675,
+    "sha256": "8a5f591eb7d8e262",
+    "fetched_at": "2026-10-21T23:17:56+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216884": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216884/page.htm",
+    "title": "中国传媒大学教材选用管理办法",
+    "chars": 645,
+    "sha256": "8b6b508053e7bedc",
+    "fetched_at": "2026-10-21T23:17:58+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216883": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216883/page.htm",
+    "title": "中国传媒大学教学成果奖评审及奖励办法（修订）",
+    "chars": 661,
+    "sha256": "86bcf70fef0314bc",
+    "fetched_at": "2026-10-21T23:17:58+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216882": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216882/page.htm",
+    "title": "中国传媒大学教育教学改革项目管理办法",
+    "chars": 658,
+    "sha256": "2aa5f3915129ca75",
+    "fetched_at": "2026-10-21T23:17:59+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216881": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216881/page.htm",
+    "title": "中国传媒大学2022版本科专业培养方案修订指导意见",
+    "chars": 679,
+    "sha256": "821a01fb85f45fec",
+    "fetched_at": "2026-10-21T23:17:59+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216880": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216880/page.htm",
+    "title": "中国传媒大学辅修管理办法（2022版）",
+    "chars": 653,
+    "sha256": "3a44ce32015a70ce",
+    "fetched_at": "2026-10-21T23:17:59+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216879": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216879/page.htm",
+    "title": "中国传媒大学本科专业（方向）设置管理办法",
+    "chars": 663,
+    "sha256": "af46ad987b0db533",
+    "fetched_at": "2026-10-21T23:18:00+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216878": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216878/page.htm",
+    "title": "中国传媒大学关于加强基层教学组织建设的意见",
+    "chars": 665,
+    "sha256": "408c8b18831a8963",
+    "fetched_at": "2026-10-21T23:18:00+08:00",
+    "seed_depth": 1
+  },
+  "20240304-c6487a216877": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216877/page.htm",
+    "title": "中国传媒大学系（部）设置及负责人聘任管理办法",
+    "chars": 668,
+    "sha256": "aaf61d04e442fbe1",
+    "fetched_at": "2026-10-21T23:18:00+08:00",
+    "seed_depth": 1
+  },
+  "jwc-list2": {
+    "url": "https://jwc.cuc.edu.cn/6366/list2.htm",
+    "title": "信息下载",
+    "chars": 957,
+    "sha256": "e666acc6e09261ae",
+    "fetched_at": "2026-10-21T23:18:20+08:00",
+    "seed_depth": 1
+  },
+  "20240412-c6366a218572": {
+    "url": "https://jwc.cuc.edu.cn/2024/0412/c6366a218572/page.htm",
+    "title": "【学籍】补办毕业证明书、学位证明书申请表",
+    "chars": 715,
+    "sha256": "07616930ba5854e7",
+    "fetched_at": "2026-10-21T23:18:16+08:00",
+    "seed_depth": 1
+  },
+  "20240223-c6366a216671": {
+    "url": "https://jwc.cuc.edu.cn/2024/0223/c6366a216671/page.htm",
+    "title": "【体育免修】中国传媒大学本专科生开具京外地区医院诊断证明知情同意书",
+    "chars": 665,
+    "sha256": "a97153a223686496",
+    "fetched_at": "2026-10-21T23:18:16+08:00",
+    "seed_depth": 1
+  },
+  "20211125-c6366a189267": {
+    "url": "https://jwc.cuc.edu.cn/2021/1125/c6366a189267/page.htm",
+    "title": "本科生可信电子成绩单系统使用说明",
+    "chars": 2316,
+    "sha256": "5cd5eef7e182bf88",
+    "fetched_at": "2026-10-21T23:18:16+08:00",
+    "seed_depth": 1
+  },
+  "20260914-c6366a273891": {
+    "url": "https://jwc.cuc.edu.cn/2026/0914/c6366a273891/page.htm",
+    "title": "中国传媒大学本科生课程自修申请表",
+    "chars": 619,
+    "sha256": "df0e176b709c9e8b",
+    "fetched_at": "2026-10-21T23:18:17+08:00",
+    "seed_depth": 1
+  },
+  "20260319-c6366a267884": {
+    "url": "https://jwc.cuc.edu.cn/2026/0319/c6366a267884/page.htm",
+    "title": "【运行】中国传媒大学非首周开课课程退课申请表",
+    "chars": 632,
+    "sha256": "8396abc2b95afafb",
+    "fetched_at": "2026-10-21T23:18:17+08:00",
+    "seed_depth": 1
+  },
+  "20260319-c6366a267883": {
+    "url": "https://jwc.cuc.edu.cn/2026/0319/c6366a267883/page.htm",
+    "title": "【运行】中国传媒大学重修补报名表",
+    "chars": 607,
+    "sha256": "eb141f79af0b8947",
+    "fetched_at": "2026-10-21T23:18:18+08:00",
+    "seed_depth": 1
+  },
+  "20260319-c6366a267882": {
+    "url": "https://jwc.cuc.edu.cn/2026/0319/c6366a267882/page.htm",
+    "title": "【运行】中国传媒大学无对应重修课程报名表",
+    "chars": 620,
+    "sha256": "463394d0569aa413",
+    "fetched_at": "2026-10-21T23:18:18+08:00",
+    "seed_depth": 1
+  },
+  "20251201-c6366a264566": {
+    "url": "https://jwc.cuc.edu.cn/2025/1201/c6366a264566/page.htm",
+    "title": "中国传媒大学本专科生请假审批表",
+    "chars": 608,
+    "sha256": "9ebbd147ee15478b",
+    "fetched_at": "2026-10-21T23:18:19+08:00",
+    "seed_depth": 1
+  },
+  "20250326-c6366a252585": {
+    "url": "https://jwc.cuc.edu.cn/2025/0326/c6366a252585/page.htm",
+    "title": "【学籍】中国传媒大学学籍变动审批表",
+    "chars": 1148,
+    "sha256": "812a56c62db5d7cd",
+    "fetched_at": "2026-10-21T23:18:20+08:00",
+    "seed_depth": 1
+  },
+  "20240710-c6366a234626": {
+    "url": "https://jwc.cuc.edu.cn/2024/0710/c6366a234626/page.htm",
+    "title": "成绩复议申请单",
+    "chars": 592,
+    "sha256": "bd629f5f541e36e1",
+    "fetched_at": "2026-10-21T23:18:20+08:00",
+    "seed_depth": 1
+  },
+  "jwc-list3": {
+    "url": "https://jwc.cuc.edu.cn/6366/list3.htm",
+    "title": "信息下载",
+    "chars": 706,
+    "sha256": "0c1c662cf7e26c5c",
+    "fetched_at": "2026-10-21T23:18:21+08:00",
+    "seed_depth": 1
+  },
+  "20251118-c13082a263811": {
+    "url": "https://jwc.cuc.edu.cn/2025/1118/c13082a263811/page.htm",
+    "title": "《中国传媒大学本科生学籍管理规定》（中传教字〔2025〕195号 ）",
+    "chars": 593,
+    "sha256": "5a9e7bfc74bda86f",
+    "fetched_at": "2026-10-21T23:18:49+08:00",
+    "kind": "manual"
+  },
+  "20260930-c6467a274487": {
+    "url": "https://jwc.cuc.edu.cn/2026/0930/c6467a274487/page.htm",
+    "title": "关于开展2026—2027学年秋季学期2026级学生补（退）选课工作的通知",
+    "chars": 663,
+    "sha256": "70d718bb8bb399fc",
+    "published": "2026-09-30",
+    "fetched_at": "2026-10-21T23:22:16+08:00",
+    "kind": "sitemap"
+  },
+  "20260930-c6474a274488": {
+    "url": "https://jwc.cuc.edu.cn/2026/0930/c6474a274488/page.htm",
+    "title": "【重考报名】关于2026-2027学年秋季学期重考（含缓考）报名的通知",
+    "chars": 588,
+    "sha256": "9b2fc097a450583b",
+    "published": "2026-09-17",
+    "fetched_at": "2026-10-21T23:22:17+08:00",
+    "kind": "sitemap"
+  },
+  "20260915-c6364a273900": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6364a273900/page.htm",
+    "title": "关于开展2026—2027学年秋季学期学生主修、辅修网上选课工作的通知",
+    "chars": 642,
+    "sha256": "e487c4475b8986c7",
+    "published": "2026-07-06",
+    "fetched_at": "2026-10-21T23:22:17+08:00",
+    "kind": "sitemap"
+  },
+  "20260915-c6467a273903": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6467a273903/page.htm",
+    "title": "关于开展2026—2027学年秋季学期2026级新生选课工作的通知",
+    "chars": 645,
+    "sha256": "15dce49d3f56022b",
+    "published": "2026-09-10",
+    "fetched_at": "2026-10-21T23:22:17+08:00",
+    "kind": "sitemap"
+  },
+  "20260915-c6467a273901": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6467a273901/page.htm",
+    "title": "关于开展2026-2027学年秋季学期开学初主修、辅修补（退）选课工作的通知",
+    "chars": 598,
+    "sha256": "8baa63ba5868cd42",
+    "published": "2026-09-04",
+    "fetched_at": "2026-10-21T23:22:17+08:00",
+    "kind": "sitemap"
+  },
+  "20260915-c6467a273900": {
+    "url": "https://jwc.cuc.edu.cn/2026/0915/c6467a273900/page.htm",
+    "title": "关于开展2026—2027学年秋季学期学生主修、辅修网上选课工作的通知",
+    "chars": 649,
+    "sha256": "130cd6385d0ebc59",
+    "published": "2026-07-06",
+    "fetched_at": "2026-10-21T23:22:18+08:00",
+    "kind": "sitemap"
+  },
+  "20260914-c6474a273878": {
+    "url": "https://jwc.cuc.edu.cn/2026/0914/c6474a273878/page.htm",
+    "title": "【四六级报名】关于启动2026年下半年全国大学英语四、六级考试网上报名的通知",
+    "chars": 594,
+    "sha256": "8af29780a2b83177",
+    "published": "2026-09-09",
+    "fetched_at": "2026-10-21T23:22:18+08:00",
+    "kind": "sitemap"
+  },
+  "20260724-c6479a272951": {
+    "url": "https://jwc.cuc.edu.cn/2026/0724/c6479a272951/page.htm",
+    "title": "2026年秋季微专业招生信息",
+    "chars": 2083,
+    "sha256": "519894c800e3d1c1",
+    "published": "2026-07-24",
+    "fetched_at": "2026-10-21T23:22:18+08:00",
+    "kind": "sitemap"
+  },
+  "20260507-c6364a269956": {
+    "url": "https://jwc.cuc.edu.cn/2026/0507/c6364a269956/page.htm",
+    "title": "2026年辅修录取名单",
+    "chars": 880,
+    "sha256": "6914f6cffa7eadbe",
+    "published": "2026-05-07",
+    "fetched_at": "2026-10-21T23:22:18+08:00",
+    "kind": "sitemap"
+  },
+  "20260507-c6471a269956": {
+    "url": "https://jwc.cuc.edu.cn/2026/0507/c6471a269956/page.htm",
+    "title": "2026年辅修录取名单",
+    "chars": 883,
+    "sha256": "8bafc336d3418972",
+    "published": "2026-05-07",
+    "fetched_at": "2026-10-21T23:22:19+08:00",
+    "kind": "sitemap"
+  },
+  "20260312-c6364a267578": {
+    "url": "https://jwc.cuc.edu.cn/2026/0312/c6364a267578/page.htm",
+    "title": "【重考报名】关于2025-2026学年春季学期重考（含缓考）报名的通知",
+    "chars": 585,
+    "sha256": "fbd5088573fba9f1",
+    "published": "2026-03-12",
+    "fetched_at": "2026-10-21T23:22:19+08:00",
+    "kind": "sitemap"
+  },
+  "20260312-c6474a267578": {
+    "url": "https://jwc.cuc.edu.cn/2026/0312/c6474a267578/page.htm",
+    "title": "【重考报名】关于2025-2026学年春季学期重考（含缓考）报名的通知",
+    "chars": 588,
+    "sha256": "8935c81860dc47f8",
+    "published": "2026-03-12",
+    "fetched_at": "2026-10-21T23:22:19+08:00",
+    "kind": "sitemap"
+  },
+  "20260311-c6474a267537": {
+    "url": "https://jwc.cuc.edu.cn/2026/0311/c6474a267537/page.htm",
+    "title": "【四六级报名】关于启动2026年上半年全国大学英语四、六级考试网上报名的通知",
+    "chars": 595,
+    "sha256": "418dec86c77de52c",
+    "published": "2026-03-11",
+    "fetched_at": "2026-10-21T23:22:19+08:00",
+    "kind": "sitemap"
+  },
+  "20260227-c6467a267096": {
+    "url": "https://jwc.cuc.edu.cn/2026/0227/c6467a267096/page.htm",
+    "title": "关于开展2025—2026学年春季学期开学初主修、辅修补（退）选课工作的通知",
+    "chars": 675,
+    "sha256": "0b6f4a8891d003b4",
+    "published": "2026-02-27",
+    "fetched_at": "2026-10-21T23:22:20+08:00",
+    "kind": "sitemap"
+  },
+  "20260106-c6364a265996": {
+    "url": "https://jwc.cuc.edu.cn/2026/0106/c6364a265996/page.htm",
+    "title": "2025版本科专业培养方案课程修读说明",
+    "chars": 555,
+    "sha256": "3b7fc05409b30c99",
+    "published": "2025-09-01",
+    "fetched_at": "2026-10-21T23:22:20+08:00",
+    "kind": "sitemap"
+  },
+  "20260106-c6479a265996": {
+    "url": "https://jwc.cuc.edu.cn/2026/0106/c6479a265996/page.htm",
+    "title": "2025版本科专业培养方案课程修读说明",
+    "chars": 558,
+    "sha256": "f47f02f12a4490a0",
+    "published": "2025-09-01",
+    "fetched_at": "2026-10-21T23:22:20+08:00",
+    "kind": "sitemap"
+  },
+  "20250401-c6364a268919": {
+    "url": "https://jwc.cuc.edu.cn/2025/0401/c6364a268919/page.htm",
+    "title": "2026年辅修招生信息",
+    "chars": 1083,
+    "sha256": "1512e3637768e167",
+    "published": "2026-04-10",
+    "fetched_at": "2026-10-21T23:22:20+08:00",
+    "kind": "sitemap"
+  },
+  "20250401-c6364a253846": {
+    "url": "https://jwc.cuc.edu.cn/2025/0401/c6364a253846/page.htm",
+    "title": "2025年辅修招生信息",
+    "chars": 1277,
+    "sha256": "0cee660584ad9c39",
+    "published": "2025-04-01",
+    "fetched_at": "2026-10-21T23:22:21+08:00",
+    "kind": "sitemap"
+  },
+  "20250401-c6471a268919": {
+    "url": "https://jwc.cuc.edu.cn/2025/0401/c6471a268919/page.htm",
+    "title": "2026年辅修招生信息",
+    "chars": 1086,
+    "sha256": "569a44ff2f3934f6",
+    "published": "2026-04-10",
+    "fetched_at": "2026-10-21T23:22:21+08:00",
+    "kind": "sitemap"
+  },
+  "20250401-c6471a253846": {
+    "url": "https://jwc.cuc.edu.cn/2025/0401/c6471a253846/page.htm",
+    "title": "2025年辅修招生信息",
+    "chars": 1280,
+    "sha256": "44142584031b2398",
+    "published": "2025-04-01",
+    "fetched_at": "2026-10-21T23:22:21+08:00",
+    "kind": "sitemap"
+  },
+  "20240304-c6487a216869": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216869/page.htm",
+    "title": "中国传媒大学学生考试与学术违纪处理办法",
+    "chars": 658,
+    "sha256": "ed29d7d2b278bcb2",
+    "published": "2024-03-04",
+    "fetched_at": "2026-10-21T23:22:22+08:00",
+    "kind": "sitemap"
+  },
+  "20231117-c6366a213871": {
+    "url": "https://jwc.cuc.edu.cn/2023/1117/c6366a213871/page.htm",
+    "title": "【学籍管理】肄业证书申请",
+    "chars": 611,
+    "sha256": "8d461b33dfecfb0d",
+    "published": "2023-11-17",
+    "fetched_at": "2026-10-21T23:22:22+08:00",
+    "kind": "sitemap"
+  },
+  "20230525-c6366a209180": {
+    "url": "https://jwc.cuc.edu.cn/2023/0525/c6366a209180/page.htm",
+    "title": "【学籍】本科生预毕业证明（仅限应届毕业生开具）",
+    "chars": 709,
+    "sha256": "56ce5b01d7404aa1",
+    "published": "2023-05-25",
+    "fetched_at": "2026-10-21T23:22:22+08:00",
+    "kind": "sitemap"
+  },
+  "20230418-c6366a204232": {
+    "url": "https://jwc.cuc.edu.cn/2023/0418/c6366a204232/page.htm",
+    "title": "【学籍】往届生授予学士学位证明",
+    "chars": 714,
+    "sha256": "90bb7d052451f899",
+    "published": "2023-04-18",
+    "fetched_at": "2026-10-21T23:22:22+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176053": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176053/page.htm",
+    "title": "【考试】全国大学英语四、六级成绩证明模板",
+    "chars": 628,
+    "sha256": "deb30dd45574ad42",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:23+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176049": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176049/page.htm",
+    "title": "【运行】中国传媒大学学生补（退）选课程申请表",
+    "chars": 637,
+    "sha256": "7f7f97149813c1a6",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:23+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176046": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176046/page.htm",
+    "title": "中国传媒大学本科生选课管理办法（试行）",
+    "chars": 579,
+    "sha256": "80e842f0383abdec",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:23+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176044": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176044/page.htm",
+    "title": "中国传媒大学通识教育核心课程、通识教育拓展课程选课办法（试行）",
+    "chars": 615,
+    "sha256": "4199e5755ff3ce62",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:23+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176021": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176021/page.htm",
+    "title": "中国传媒大学大学英语课程选课办法（2022年修订）（本科生院〔2022〕45号）",
+    "chars": 694,
+    "sha256": "00e8449ce25bc628",
+    "published": "2022-11-30",
+    "fetched_at": "2026-10-21T23:22:24+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176030": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176030/page.htm",
+    "title": "【考试】中传教务字〔2017〕10号中国传媒大学本科教学考试工作管理办法",
+    "chars": 5135,
+    "sha256": "af78b63bd2aee233",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:24+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176028": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176028/page.htm",
+    "title": "【考试】中传教字〔2007〕340号中国传媒大学关于参加全国大学英语等级考试的规定",
+    "chars": 993,
+    "sha256": "935243cce3402374",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:24+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176027": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176027/page.htm",
+    "title": "【考试】中传教字〔2020〕63号《中国传媒大学学生考试与学术违纪处理办法》",
+    "chars": 3620,
+    "sha256": "c6fe88bbc13e18ce",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:24+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176024": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176024/page.htm",
+    "title": "中国传媒大学本科生毕业论文(设计、创作)管理办法(暂行)",
+    "chars": 611,
+    "sha256": "911989d71b762132",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:22:25+08:00",
+    "kind": "sitemap"
+  },
+  "20260422-c2810a269469": {
+    "url": "https://cwc.cuc.edu.cn/2026/0422/c2810a269469/page.htm",
+    "title": "中国传媒大学教育收费公示（2025）",
+    "chars": 766,
+    "sha256": "2a3ac2ee85c1b8a9",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:25+08:00",
+    "kind": "sitemap"
+  },
+  "20260422-c2812a269470": {
+    "url": "https://cwc.cuc.edu.cn/2026/0422/c2812a269470/page.htm",
+    "title": "《中国传媒大学往来款项管理办法》中传财字〔2025〕44号",
+    "chars": 1032,
+    "sha256": "69fcdf004605a1cf",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:25+08:00",
+    "kind": "sitemap"
+  },
+  "20250508-c2813a255322": {
+    "url": "https://cwc.cuc.edu.cn/2025/0508/c2813a255322/page.htm",
+    "title": "各国家和地区住宿费、伙食费、公杂费开支标准表",
+    "chars": 866,
+    "sha256": "0b35ec2809b1b4e7",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:26+08:00",
+    "kind": "sitemap"
+  },
+  "20241123-c6487a245778": {
+    "url": "https://jwc.cuc.edu.cn/2024/1123/c6487a245778/page.htm",
+    "title": "中国传媒大学本科生体育课程管理规定（本科生院〔2023〕62 号）",
+    "chars": 667,
+    "sha256": "7ee867d7b2732c01",
+    "published": "2023-08-31",
+    "fetched_at": "2026-10-21T23:22:26+08:00",
+    "kind": "sitemap"
+  },
+  "20241111-c2810a245169": {
+    "url": "https://cwc.cuc.edu.cn/2024/1111/c2810a245169/page.htm",
+    "title": "中国传媒大学教育收费公示（2024）",
+    "chars": 766,
+    "sha256": "f2d9d142ba484159",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:27+08:00",
+    "kind": "sitemap"
+  },
+  "20241021-c2813a244320": {
+    "url": "https://cwc.cuc.edu.cn/2024/1021/c2813a244320/page.htm",
+    "title": "国内公务接待审批表、接待清单(202410)",
+    "chars": 863,
+    "sha256": "078f682d397547fa",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:27+08:00",
+    "kind": "sitemap"
+  },
+  "20240908-c1383a242769": {
+    "url": "https://www.cuc.edu.cn/2024/0908/c1383a242769/page.htm",
+    "title": "校长张树庭开学致辞｜站在新起点，拥抱智能传播时代",
+    "chars": 6917,
+    "sha256": "555a1b02fd1ed5a9",
+    "published": "2024-09-08",
+    "fetched_at": "2026-10-21T23:22:27+08:00",
+    "kind": "sitemap"
+  },
+  "20240827-c1383a242520": {
+    "url": "https://www.cuc.edu.cn/2024/0827/c1383a242520/page.htm",
+    "title": "党委书记廖祥忠｜ 以教育家精神引领建强高素质教师队伍",
+    "chars": 3312,
+    "sha256": "eb68e414aac3ea1a",
+    "published": "2024-08-27",
+    "fetched_at": "2026-10-21T23:22:28+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219220": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219220/page.htm",
+    "title": "中国传媒大学境外人员来校讲学申请表",
+    "chars": 851,
+    "sha256": "fe8c51116470416e",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:28+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219219": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219219/page.htm",
+    "title": "中国传媒大学邀请外宾来访申请表",
+    "chars": 845,
+    "sha256": "269585486fa48d93",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:28+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219217": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219217/page.htm",
+    "title": "中国传媒大学会议审批报销单",
+    "chars": 839,
+    "sha256": "eccec13b2676132b",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:28+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219216": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219216/page.htm",
+    "title": "中国传媒大学因公出差审批单",
+    "chars": 840,
+    "sha256": "9c5f56767b3ec8f1",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:29+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219215": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219215/page.htm",
+    "title": "附件6：中国传媒大学学生出国（境）审批表",
+    "chars": 857,
+    "sha256": "cda67f136fa477b1",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:29+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219214": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219214/page.htm",
+    "title": "乘坐非国内航空公司航班和改变中转地审批表",
+    "chars": 861,
+    "sha256": "8f9867dd6199aceb",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:29+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219213": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219213/page.htm",
+    "title": "中国传媒大学因公临时出国任务和预算审批意见表",
+    "chars": 866,
+    "sha256": "1cfb5fd7ac0c748a",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:29+08:00",
+    "kind": "sitemap"
+  },
+  "20240429-c2813a219212": {
+    "url": "https://cwc.cuc.edu.cn/2024/0429/c2813a219212/page.htm",
+    "title": "中国传媒大学因公出访人员审批表",
+    "chars": 845,
+    "sha256": "98d92ab95264c2f1",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:29+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2810a217693": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2810a217693/page.htm",
+    "title": "中国传媒大学教育收费公示（2023）",
+    "chars": 839,
+    "sha256": "1c97ae380fca5af8",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:30+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2812a217698": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2812a217698/page.htm",
+    "title": "《中国传媒大学会议费管理办法（2023年修订）》中传财字〔2023〕220号",
+    "chars": 1143,
+    "sha256": "99af9a8d1516e450",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:30+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2812a217697": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2812a217697/page.htm",
+    "title": "《中国传媒大学基本建设项目竣工财务决算管理办法（修订）》中传财字〔2023〕187号",
+    "chars": 1155,
+    "sha256": "6a57ee53b9d1e031",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:30+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2812a217696": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2812a217696/page.htm",
+    "title": "《中国传媒大学建设世界一流大学（学科）和特色发展引导专项资金管理办法（修订）》中传财字〔2023〕186号",
+    "chars": 1188,
+    "sha256": "73443b72b54c71ad",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:30+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2812a217695": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2812a217695/page.htm",
+    "title": "《中国传媒大学培训费管理办法（修订）》中传财字〔2023〕184号",
+    "chars": 1128,
+    "sha256": "e8da8971be5f9ccd",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:31+08:00",
+    "kind": "sitemap"
+  },
+  "20240328-c2812a217694": {
+    "url": "https://cwc.cuc.edu.cn/2024/0328/c2812a217694/page.htm",
+    "title": "《中国传媒大学因公临时出国（境）经费管理办法（2023年修订）》中传财字〔2023〕132号",
+    "chars": 1167,
+    "sha256": "a9a506bdc49a5df4",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:31+08:00",
+    "kind": "sitemap"
+  },
+  "20240327-c2813a217631": {
+    "url": "https://cwc.cuc.edu.cn/2024/0327/c2813a217631/page.htm",
+    "title": "科研项目中期检查及结项财务报告申请表",
+    "chars": 851,
+    "sha256": "7ffaf105dfaf1591",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:31+08:00",
+    "kind": "sitemap"
+  },
+  "20240304-c6487a216875": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216875/page.htm",
+    "title": "中国传媒大学本科生课程调课管理办法",
+    "chars": 653,
+    "sha256": "2ac786fc4a5043ca",
+    "published": "2024-03-04",
+    "fetched_at": "2026-10-21T23:22:31+08:00",
+    "kind": "sitemap"
+  },
+  "20240304-c6487a216870": {
+    "url": "https://jwc.cuc.edu.cn/2024/0304/c6487a216870/page.htm",
+    "title": "中国传媒大学在线开放课程管理办法",
+    "chars": 651,
+    "sha256": "35e0a77132142339",
+    "published": "2024-03-04",
+    "fetched_at": "2026-10-21T23:22:32+08:00",
+    "kind": "sitemap"
+  },
+  "20240301-c1382a216818": {
+    "url": "https://www.cuc.edu.cn/2024/0301/c1382a216818/page.htm",
+    "title": "中国传媒大学2024年春季工作会议召开",
+    "chars": 6455,
+    "sha256": "8bfc77ed36fbc323",
+    "published": "2024-03-22",
+    "fetched_at": "2026-10-21T23:22:32+08:00",
+    "kind": "sitemap"
+  },
+  "20230905-c6364a211342": {
+    "url": "https://jwc.cuc.edu.cn/2023/0905/c6364a211342/page.htm",
+    "title": "关于线下恢复办理自费出国留学材料事宜的通知",
+    "chars": 559,
+    "sha256": "13a6bfc485f9766b",
+    "published": "2023-09-05",
+    "fetched_at": "2026-10-21T23:22:32+08:00",
+    "kind": "sitemap"
+  },
+  "20230905-c6466a211342": {
+    "url": "https://jwc.cuc.edu.cn/2023/0905/c6466a211342/page.htm",
+    "title": "关于线下恢复办理自费出国留学材料事宜的通知",
+    "chars": 563,
+    "sha256": "b7d6d017bc2f4ca3",
+    "published": "2023-09-05",
+    "fetched_at": "2026-10-21T23:22:57+08:00",
+    "kind": "sitemap"
+  },
+  "20230711-c6364a210325": {
+    "url": "https://jwc.cuc.edu.cn/2023/0711/c6364a210325/page.htm",
+    "title": "关于本学期末停止办理自费出国留学材料的通知",
+    "chars": 1127,
+    "sha256": "effb049aa1d55c87",
+    "published": "2023-07-11",
+    "fetched_at": "2026-10-21T23:22:58+08:00",
+    "kind": "sitemap"
+  },
+  "20230711-c6466a210325": {
+    "url": "https://jwc.cuc.edu.cn/2023/0711/c6466a210325/page.htm",
+    "title": "关于本学期末停止办理自费出国留学材料的通知",
+    "chars": 1131,
+    "sha256": "0814e1b5d9244423",
+    "published": "2023-07-11",
+    "fetched_at": "2026-10-21T23:22:58+08:00",
+    "kind": "sitemap"
+  },
+  "20230512-c2812a208196": {
+    "url": "https://cwc.cuc.edu.cn/2023/0512/c2812a208196/page.htm",
+    "title": "《中国传媒大学现金管理办法》（中传财字〔2023〕39号）",
+    "chars": 1032,
+    "sha256": "70dbd723c7d77671",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:58+08:00",
+    "kind": "sitemap"
+  },
+  "20230512-c2813a208197": {
+    "url": "https://cwc.cuc.edu.cn/2023/0512/c2813a208197/page.htm",
+    "title": "中国传媒大学备用金申请表",
+    "chars": 873,
+    "sha256": "25b3e639da2dd1e9",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:58+08:00",
+    "kind": "sitemap"
+  },
+  "20220901-c2810a198533": {
+    "url": "https://cwc.cuc.edu.cn/2022/0901/c2810a198533/page.htm",
+    "title": "中国传媒大学教育收费公示（2022）",
+    "chars": 766,
+    "sha256": "589dc74cb3766aa5",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:59+08:00",
+    "kind": "sitemap"
+  },
+  "20220701-c2812a194586": {
+    "url": "https://cwc.cuc.edu.cn/2022/0701/c2812a194586/page.htm",
+    "title": "《中国传媒大学银行账户管理办法（修订）》（中传财字〔2022〕136号）",
+    "chars": 1046,
+    "sha256": "c686eb2b7105a8bc",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:59+08:00",
+    "kind": "sitemap"
+  },
+  "20220701-c2812a194585": {
+    "url": "https://cwc.cuc.edu.cn/2022/0701/c2812a194585/page.htm",
+    "title": "《中国传媒大学往来款项管理办法（试行）》（中传财字〔2022〕135号）",
+    "chars": 1123,
+    "sha256": "04ecbb291180c4bb",
+    "published": "",
+    "fetched_at": "2026-10-21T23:22:59+08:00",
+    "kind": "sitemap"
+  },
+  "20220701-c2812a194584": {
+    "url": "https://cwc.cuc.edu.cn/2022/0701/c2812a194584/page.htm",
+    "title": "《中国传媒大学收费票据管理办法（试行）》（中传财字〔2022〕134号）",
+    "chars": 1269,
+    "sha256": "77cf9d98b773570d",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:00+08:00",
+    "kind": "sitemap"
+  },
+  "20211220-c6364a190232": {
+    "url": "https://jwc.cuc.edu.cn/2021/1220/c6364a190232/page.htm",
+    "title": "关于公布中国传媒大学教师教学创新大赛结果的通知",
+    "chars": 563,
+    "sha256": "34b3f4776bf5fd52",
+    "published": "2021-12-20",
+    "fetched_at": "2026-10-21T23:23:00+08:00",
+    "kind": "sitemap"
+  },
+  "20211122-c6367a189157": {
+    "url": "https://jwc.cuc.edu.cn/2021/1122/c6367a189157/page.htm",
+    "title": "明德讲堂第二季 | 人文与科学，共筑精神之园！",
+    "chars": 906,
+    "sha256": "20e0778662f43204",
+    "published": "2021-11-22",
+    "fetched_at": "2026-10-21T23:23:00+08:00",
+    "kind": "sitemap"
+  },
+  "20210715-c2812a184294": {
+    "url": "https://cwc.cuc.edu.cn/2021/0715/c2812a184294/page.htm",
+    "title": "《中国传媒大学资金支付管理办法（修订）》（中传财字〔2021〕156号）",
+    "chars": 1372,
+    "sha256": "7e917ec50720395f",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:00+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176045": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176045/page.htm",
+    "title": "中国传媒大学大学英语教学管理规定（试行）",
+    "chars": 582,
+    "sha256": "8c75138882e51543",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:23:02+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6366a176036": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6366a176036/page.htm",
+    "title": "中国传媒大学“大学生创新创业训练计划”结项证明模板",
+    "chars": 878,
+    "sha256": "ed38a39e115352d0",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:23:02+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176031": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176031/page.htm",
+    "title": "教字（2019）251号中国传媒大学关于印发《中国传媒大学精品教材建设项目实施办法（试行）》的通知",
+    "chars": 674,
+    "sha256": "c90fd3f0008ea385",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:23:02+08:00",
+    "kind": "sitemap"
+  },
+  "20201124-c6487a176029": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c6487a176029/page.htm",
+    "title": "中传教字（2018）30号关于印发《中国传媒大学本科生创新创业学分认定管理办法（试行）》的通知(4)",
+    "chars": 677,
+    "sha256": "cabedebe42bedbc8",
+    "published": "2020-11-24",
+    "fetched_at": "2026-10-21T23:23:02+08:00",
+    "kind": "sitemap"
+  },
+  "20201120-c2812a175824": {
+    "url": "https://cwc.cuc.edu.cn/2020/1120/c2812a175824/page.htm",
+    "title": "《中国传媒大学扶贫挂职干部工作经费管理办法》（中传财字〔2020〕248号）",
+    "chars": 1050,
+    "sha256": "08eff165bd3974eb",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:03+08:00",
+    "kind": "sitemap"
+  },
+  "20201120-c2812a175823": {
+    "url": "https://cwc.cuc.edu.cn/2020/1120/c2812a175823/page.htm",
+    "title": "《中国传媒大学全面实施预算绩效管理方案》（中传财字〔2020〕236号）",
+    "chars": 1124,
+    "sha256": "ae513924089b6f75",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:03+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2810a174247": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2810a174247/page.htm",
+    "title": "中国传媒大学教育收费公示（2020）",
+    "chars": 844,
+    "sha256": "3626ac7df0e0db0d",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:03+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174246": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174246/page.htm",
+    "title": "《中国传媒大学差旅费管理办法》、《中国传媒大学科研经费报销实施细则》补充规定（中传财字（2020）108号）",
+    "chars": 1082,
+    "sha256": "c278c172178dd12b",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:03+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174236": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174236/page.htm",
+    "title": "《中国传媒大学科研校外劳务酬金管理办法(试行)》（中传财字〔2019〕196号）",
+    "chars": 1054,
+    "sha256": "92898320fcf00aab",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:04+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174234": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174234/page.htm",
+    "title": "《中国传媒大学会议费管理办法（修订）》（中传财字〔2019〕194号）",
+    "chars": 1044,
+    "sha256": "da13fe807bc568cd",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:04+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174231": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174231/page.htm",
+    "title": "《中国传媒大学公务卡管理办法（修订）》（中传财字〔2019〕176号）",
+    "chars": 1044,
+    "sha256": "38d0b6428986be23",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:05+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174221": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174221/page.htm",
+    "title": "《中国传媒大学科研经费报销实施细则》（中传财字〔2019〕175号）",
+    "chars": 1042,
+    "sha256": "e9aeedba329f2fd3",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:05+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174220": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174220/page.htm",
+    "title": "《中国传媒大学差旅费管理办法》（中传财字〔2019〕35号）",
+    "chars": 1034,
+    "sha256": "35dc1f841fd047af",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:06+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174218": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174218/page.htm",
+    "title": "《中国传媒大学预算管理办法（修订）》（中传财字〔2018〕254号）",
+    "chars": 1042,
+    "sha256": "1bd873de17458ae0",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:06+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174217": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174217/page.htm",
+    "title": "《改善基本办学条件专项资金申报、执行管理流程》（财字（2018）223号）",
+    "chars": 1205,
+    "sha256": "b26aef3e32b8f320",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:06+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174215": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174215/page.htm",
+    "title": "《中国传媒大学国内公务接待经费管理办法（修订）》（中传财字〔2016〕338 号）",
+    "chars": 1198,
+    "sha256": "944b67cf38ad9a8f",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:06+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174214": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174214/page.htm",
+    "title": "《中国传媒大学内部控制规范建设与实施方案》（中传财字〔2016〕115号）",
+    "chars": 1048,
+    "sha256": "1e9c089627324e55",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:07+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174213": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174213/page.htm",
+    "title": "《中国传媒大学财务管理办法》（中传财字〔2015〕75号）",
+    "chars": 1032,
+    "sha256": "ef40a9b17af747ec",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:07+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174202": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174202/page.htm",
+    "title": "《中国传媒大学外宾接待经费管理规定》（中传财字〔2014〕50号）",
+    "chars": 1040,
+    "sha256": "1a69dc304359412a",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:07+08:00",
+    "kind": "sitemap"
+  },
+  "20201021-c2812a174199": {
+    "url": "https://cwc.cuc.edu.cn/2020/1021/c2812a174199/page.htm",
+    "title": "《中国传媒大学各级负责人经济责任制》（中传财字〔2008〕88号）",
+    "chars": 1040,
+    "sha256": "63f11bd1b187a3a3",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:07+08:00",
+    "kind": "sitemap"
+  },
+  "20190830-c2810a134141": {
+    "url": "https://cwc.cuc.edu.cn/2019/0830/c2810a134141/page.htm",
+    "title": "中国传媒大学教育收费公示（2019）",
+    "chars": 844,
+    "sha256": "44cf88be7022201a",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:08+08:00",
+    "kind": "sitemap"
+  },
+  "20180903-c2810a81810": {
+    "url": "https://cwc.cuc.edu.cn/2018/0903/c2810a81810/page.htm",
+    "title": "中国传媒大学教育收费公示（2018）",
+    "chars": 818,
+    "sha256": "38cafdddb9f76dfa",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:09+08:00",
+    "kind": "sitemap"
+  },
+  "20171115-c2810a81805": {
+    "url": "https://cwc.cuc.edu.cn/2017/1115/c2810a81805/page.htm",
+    "title": "校园统一支付平台及微信缴纳学费操作指南",
+    "chars": 796,
+    "sha256": "6cc93efbcf7684f6",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:09+08:00",
+    "kind": "sitemap"
+  },
+  "20170912-c2810a81802": {
+    "url": "https://cwc.cuc.edu.cn/2017/0912/c2810a81802/page.htm",
+    "title": "中国传媒大学教育收费公示（2017）",
+    "chars": 825,
+    "sha256": "3e5d60e934c89be7",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:10+08:00",
+    "kind": "sitemap"
+  },
+  "20170609-c2810a81807": {
+    "url": "https://cwc.cuc.edu.cn/2017/0609/c2810a81807/page.htm",
+    "title": "财务综合服务平台常见问题解答 (第一期)",
+    "chars": 829,
+    "sha256": "7da7037276cc30fc",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:10+08:00",
+    "kind": "sitemap"
+  },
+  "20150101-c2811a81819": {
+    "url": "https://cwc.cuc.edu.cn/2015/0101/c2811a81819/page.htm",
+    "title": "中华人民共和国预算法",
+    "chars": 15222,
+    "sha256": "50103ab2bb947446",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:10+08:00",
+    "kind": "sitemap"
+  },
+  "20140429-c2810a81806": {
+    "url": "https://cwc.cuc.edu.cn/2014/0429/c2810a81806/page.htm",
+    "title": "“技术开发、技术服务、技术咨询”办理免税相关信息",
+    "chars": 857,
+    "sha256": "5d4b10f599b4d749",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:11+08:00",
+    "kind": "sitemap"
+  },
+  "20130925-c2811a81815": {
+    "url": "https://cwc.cuc.edu.cn/2013/0925/c2811a81815/page.htm",
+    "title": "高等学校会计制度",
+    "chars": 836,
+    "sha256": "12bf13c637b30281",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:11+08:00",
+    "kind": "sitemap"
+  },
+  "20130925-c2811a81814": {
+    "url": "https://cwc.cuc.edu.cn/2013/0925/c2811a81814/page.htm",
+    "title": "高等学校财务制度",
+    "chars": 720,
+    "sha256": "60d8367cbc8830b7",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:11+08:00",
+    "kind": "sitemap"
+  },
+  "20130925-c2811a81813": {
+    "url": "https://cwc.cuc.edu.cn/2013/0925/c2811a81813/page.htm",
+    "title": "中华人民共和国总会计师条例",
+    "chars": 3049,
+    "sha256": "f340ff6047d59e99",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:11+08:00",
+    "kind": "sitemap"
+  },
+  "20130925-c2811a81812": {
+    "url": "https://cwc.cuc.edu.cn/2013/0925/c2811a81812/page.htm",
+    "title": "会计档案管理办法",
+    "chars": 4554,
+    "sha256": "96b468701348e57f",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:12+08:00",
+    "kind": "sitemap"
+  },
+  "20120824-c2811a81818": {
+    "url": "https://cwc.cuc.edu.cn/2012/0824/c2811a81818/page.htm",
+    "title": "中华人民共和国个人所得税法",
+    "chars": 5309,
+    "sha256": "b355ae0f5a0f0db0",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:12+08:00",
+    "kind": "sitemap"
+  },
+  "20120824-c2811a81817": {
+    "url": "https://cwc.cuc.edu.cn/2012/0824/c2811a81817/page.htm",
+    "title": "中华人民共和国审计法实施条例",
+    "chars": 8802,
+    "sha256": "83da08f07ed81cc3",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:13+08:00",
+    "kind": "sitemap"
+  },
+  "20120824-c2811a81816": {
+    "url": "https://cwc.cuc.edu.cn/2012/0824/c2811a81816/page.htm",
+    "title": "中华人民共和国现金管理暂行条例",
+    "chars": 3374,
+    "sha256": "c0ad38d6706a3782",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:13+08:00",
+    "kind": "sitemap"
+  },
+  "20120822-c2811a81820": {
+    "url": "https://cwc.cuc.edu.cn/2012/0822/c2811a81820/page.htm",
+    "title": "中华人民共和国会计法",
+    "chars": 7069,
+    "sha256": "f60611f4ba0957b4",
+    "published": "",
+    "fetched_at": "2026-10-21T23:23:14+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274326": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274326/page.htm",
+    "title": "新程启幕｜信息传播学院开展研究生和本科新生入学教育",
+    "chars": 2479,
+    "sha256": "4f70984308af473a",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:39+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274325": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274325/page.htm",
+    "title": "信息传播学院召开2026级本科新生军训动员大会",
+    "chars": 1739,
+    "sha256": "3434f3f382014dbf",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:39+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272343": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272343/page.htm",
+    "title": "初心讲堂 | 信息传播学院举办2026届毕业生党员专题培训会 ​",
+    "chars": 1492,
+    "sha256": "2cdd6fcc2873c6f4",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:39+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c14744a272343": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c14744a272343/page.htm",
+    "title": "初心讲堂 | 信息传播学院举办2026届毕业生党员专题培训会 ​",
+    "chars": 1526,
+    "sha256": "16931bb649530641",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:40+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2064a271933": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271933/page.htm",
+    "title": "以信息织翼赴时代之约｜信息传播学院举行2026届研究生毕业典礼",
+    "chars": 3951,
+    "sha256": "ccf31731a5407870",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:40+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c14745a271933": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c14745a271933/page.htm",
+    "title": "以信息织翼赴时代之约｜信息传播学院举行2026届研究生毕业典礼",
+    "chars": 3985,
+    "sha256": "982486a32e5e2771",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:40+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267070": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267070/page.htm",
+    "title": "我院学子获评2025年中国传媒大学“得到读书奖学金”",
+    "chars": 2111,
+    "sha256": "277abfd2e0c157d9",
+    "published": "2026-01-26",
+    "fetched_at": "2026-10-21T23:42:40+08:00",
+    "kind": "sitemap"
+  },
+  "20251020-c14745a261245": {
+    "url": "https://sic.cuc.edu.cn/2025/1020/c14745a261245/page.htm",
+    "title": "迷彩青春，信传启航 | 信息传播学院2025级本科新生军训风采纪实",
+    "chars": 5366,
+    "sha256": "b407fdbbba7398b4",
+    "published": "2025-10-20",
+    "fetched_at": "2026-10-21T23:42:41+08:00",
+    "kind": "sitemap"
+  },
+  "20250605-c14744a256551": {
+    "url": "https://sic.cuc.edu.cn/2025/0605/c14744a256551/page.htm",
+    "title": "传播研究院举办毕业生党员培训会",
+    "chars": 2185,
+    "sha256": "f52d0ae225aa3ff3",
+    "published": "2025-05-30",
+    "fetched_at": "2026-10-21T23:42:41+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c4365a274641": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c4365a274641/page.htm",
+    "title": "中国传媒大学第七届“金蔷薇”学术季博士生创新论坛·国际研究生学术分论坛顺利举行",
+    "chars": 3820,
+    "sha256": "d9925d0b646e0363",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:41+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274644": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274644/page.htm",
+    "title": "讲座回顾|“职”引未来：公考选调备考策略分析",
+    "chars": 1630,
+    "sha256": "fccb21795810b396",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:41+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274643": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274643/page.htm",
+    "title": "讲座回顾 | “红楼梦IP创新实践案例作品研读工作坊”第1期：“品红课”的运作机制与背后故事",
+    "chars": 2330,
+    "sha256": "3bd9b1c6aa103159",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:42+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274641": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274641/page.htm",
+    "title": "中国传媒大学第七届“金蔷薇”学术季博士生创新论坛·国际研究生学术分论坛顺利举行",
+    "chars": 3820,
+    "sha256": "d3c25109261de761",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:42+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274640": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274640/page.htm",
+    "title": "以体育人，逐梦赛场｜信息传播学院开展体育院队招新宣讲",
+    "chars": 2088,
+    "sha256": "05e7d4efc13b3762",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:42+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274639": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274639/page.htm",
+    "title": "产教融合｜我院师生赴中信出版集团开展智能出版实训",
+    "chars": 1704,
+    "sha256": "8c646fcf45779c15",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:42+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274637": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274637/page.htm",
+    "title": "喜报｜我院学生创业项目获“青创北京”2026年“挑战杯”首都大学生创业计划竞赛一等奖",
+    "chars": 2185,
+    "sha256": "d46fdc662ec9abdd",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:43+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274636": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274636/page.htm",
+    "title": "文通中外，墨戏同裳|信息传播学院开展中外学生传统文化交流活动",
+    "chars": 2816,
+    "sha256": "98ee78ebccf2ebd8",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:43+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274635": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274635/page.htm",
+    "title": "启序新程|信息传播学院2026级新生班会纪实",
+    "chars": 3395,
+    "sha256": "ec53f17a1c745c1b",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:43+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274634": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274634/page.htm",
+    "title": "院会招新｜信息传播学院学生会骨干名单及招新结果公布",
+    "chars": 3130,
+    "sha256": "9c7ccce03d04bd65",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:43+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2064a274632": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274632/page.htm",
+    "title": "信息传播学院留学生受邀参加 “2026丝路大V北京行”活动",
+    "chars": 2132,
+    "sha256": "97e023bbed665cef",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:44+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2065a274642": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2065a274642/page.htm",
+    "title": "讲座通知 | Agent打造出版级审校工作台",
+    "chars": 883,
+    "sha256": "b5b640cd4136cd2a",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:44+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2065a274638": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2065a274638/page.htm",
+    "title": "喜迎国庆｜礼赞锦绣山河 共庆盛世华诞",
+    "chars": 875,
+    "sha256": "484f9fd9c2db7baf",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:44+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c2065a274633": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c2065a274633/page.htm",
+    "title": "红楼梦IP创新实践案例作品研读工作坊 第1期｜“品红课”的运作机制与背后故事",
+    "chars": 915,
+    "sha256": "bca0e2721bd0cd25",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:45+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c14745a274635": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c14745a274635/page.htm",
+    "title": "启序新程|信息传播学院2026级新生班会纪实",
+    "chars": 3429,
+    "sha256": "e089b4f047fc9cf9",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:45+08:00",
+    "kind": "sitemap"
+  },
+  "20261009-c14745a274634": {
+    "url": "https://sic.cuc.edu.cn/2026/1009/c14745a274634/page.htm",
+    "title": "院会招新｜信息传播学院学生会骨干名单及招新结果公布",
+    "chars": 3164,
+    "sha256": "9ce53ca0537467c2",
+    "published": "2026-10-09",
+    "fetched_at": "2026-10-21T23:42:45+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c4365a274328": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c4365a274328/page.htm",
+    "title": "第八届全国高等院校信息传播师资班在京举办",
+    "chars": 3840,
+    "sha256": "26a5a6042c5ac22c",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:45+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c4365a274327": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c4365a274327/page.htm",
+    "title": "第十五届新闻学与传播学博士生学术研讨会在京举办",
+    "chars": 3980,
+    "sha256": "66b98b7d669ecabe",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:46+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274328": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274328/page.htm",
+    "title": "第八届全国高等院校信息传播师资班在京举办",
+    "chars": 3840,
+    "sha256": "8fcfa634cece6824",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:46+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274327": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274327/page.htm",
+    "title": "第十五届新闻学与传播学博士生学术研讨会在京举办",
+    "chars": 3980,
+    "sha256": "c9e31bcfd7004cc2",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:46+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274323": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274323/page.htm",
+    "title": "心怀热望，共赴新章|新生班主任、辅导员寄语2026级小白杨",
+    "chars": 3507,
+    "sha256": "5129e386d0d3fd1a",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:47+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274322": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274322/page.htm",
+    "title": "相遇信传，向新而行|直击信息传播学院2026级新生报到现场",
+    "chars": 5286,
+    "sha256": "8d1a1f4c3e7a670e",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:47+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2064a274321": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274321/page.htm",
+    "title": "逐光启新，传声致远｜信息传播学院2026级新生开学典礼圆满举行",
+    "chars": 3184,
+    "sha256": "c5aae1dbd9fd0e48",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:47+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2065a274329": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2065a274329/page.htm",
+    "title": "讲座通知｜“职”引未来：公考选调备考策略分析",
+    "chars": 883,
+    "sha256": "6858f6eace75b7db",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:47+08:00",
+    "kind": "sitemap"
+  },
+  "20260924-c2065a274324": {
+    "url": "https://sic.cuc.edu.cn/2026/0924/c2065a274324/page.htm",
+    "title": "讲座通知 | 新形势下科技出版数智化转型探索与实践——以机械工业出版社为例",
+    "chars": 913,
+    "sha256": "6186462ab61946ec",
+    "published": "2026-09-24",
+    "fetched_at": "2026-10-21T23:42:47+08:00",
+    "kind": "sitemap"
+  },
+  "20260919-c2065a274014": {
+    "url": "https://sic.cuc.edu.cn/2026/0919/c2065a274014/page.htm",
+    "title": "讲座通知｜结构化生产与非结构化传播——科技期刊XML融合出版实践分享",
+    "chars": 907,
+    "sha256": "b008d4b9c0ec4ec0",
+    "published": "2026-09-19",
+    "fetched_at": "2026-10-21T23:42:48+08:00",
+    "kind": "sitemap"
+  },
+  "20260919-c2065a274013": {
+    "url": "https://sic.cuc.edu.cn/2026/0919/c2065a274013/page.htm",
+    "title": "信息传播学院祝全体老师教师节快乐！",
+    "chars": 873,
+    "sha256": "1265b4d86c3b0457",
+    "published": "2026-09-19",
+    "fetched_at": "2026-10-21T23:42:48+08:00",
+    "kind": "sitemap"
+  },
+  "20260919-c2065a274012": {
+    "url": "https://sic.cuc.edu.cn/2026/0919/c2065a274012/page.htm",
+    "title": "院会招新|信息传播学院学生会，邀你共赴一场数智时代的创意远征",
+    "chars": 2673,
+    "sha256": "47e02b3e2c19e4fc",
+    "published": "2026-09-19",
+    "fetched_at": "2026-10-21T23:42:48+08:00",
+    "kind": "sitemap"
+  },
+  "20260909-c2065a273669": {
+    "url": "https://sic.cuc.edu.cn/2026/0909/c2065a273669/page.htm",
+    "title": "新闻中心2026秋季招新｜邀请你一同从“台前”走进“幕后”",
+    "chars": 2652,
+    "sha256": "262dcdf3f99d3600",
+    "published": "2026-09-09",
+    "fetched_at": "2026-10-21T23:42:49+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273094": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273094/page.htm",
+    "title": "第六届“大地传媒坊”社会调研项目申报答辩会顺利举行",
+    "chars": 3255,
+    "sha256": "a90941ae1eb3a2bd",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:49+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273093": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273093/page.htm",
+    "title": "我院李汇群教授参加2026年“为党育人 为国育才”讲述育人故事活动",
+    "chars": 2036,
+    "sha256": "f7f37c63d74af8f0",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:49+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273092": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273092/page.htm",
+    "title": "信息传播学院教师发展中心成立仪式暨“传智砺师”行动首场教学创新分享会顺利举行",
+    "chars": 2328,
+    "sha256": "67272699e08ef08d",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:49+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273091": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273091/page.htm",
+    "title": "“大地的回响”大地传媒坊社会调研五周年成果展顺利举办",
+    "chars": 3537,
+    "sha256": "6eed8d04d2df456d",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:50+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273090": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273090/page.htm",
+    "title": "信息传播学院领导班子成员讲授树立和践行正确政绩观专题党课",
+    "chars": 2711,
+    "sha256": "ceebb127933c2b6d",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:50+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2064a273088": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273088/page.htm",
+    "title": "讲座回顾｜王维佳：从全球史视野重思国际传播",
+    "chars": 1577,
+    "sha256": "5f66e163079d36f0",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:50+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2065a273096": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2065a273096/page.htm",
+    "title": "第八届全国高等院校信息传播师资班学员招募启事",
+    "chars": 2397,
+    "sha256": "b44523abe770c773",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:50+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2065a273095": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2065a273095/page.htm",
+    "title": "第十五届全国新闻学与传播学博士生学术研讨会（2026） 征稿函",
+    "chars": 2489,
+    "sha256": "3cb44489e1f73519",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:51+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c2065a273089": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c2065a273089/page.htm",
+    "title": "传智砺师行动系列讲座 | 回归课堂：如何让一门课真正成为学生成长的支点",
+    "chars": 909,
+    "sha256": "e414c352e0b730f1",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:51+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c4366a273091": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c4366a273091/page.htm",
+    "title": "“大地的回响”大地传媒坊社会调研五周年成果展顺利举办",
+    "chars": 3537,
+    "sha256": "8d14fb71a7d13c06",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:51+08:00",
+    "kind": "sitemap"
+  },
+  "20260801-c14744a273090": {
+    "url": "https://sic.cuc.edu.cn/2026/0801/c14744a273090/page.htm",
+    "title": "信息传播学院领导班子成员讲授树立和践行正确政绩观专题党课",
+    "chars": 2745,
+    "sha256": "1d0d31091fd81f72",
+    "published": "2026-08-01",
+    "fetched_at": "2026-10-21T23:42:51+08:00",
+    "kind": "sitemap"
+  },
+  "20260731-c2065a273084": {
+    "url": "https://sic.cuc.edu.cn/2026/0731/c2065a273084/page.htm",
+    "title": "不忘初心 牢记使命｜热烈庆祝中国共产党成立105周年",
+    "chars": 891,
+    "sha256": "f644b7b14d8e5613",
+    "published": "2026-07-31",
+    "fetched_at": "2026-10-21T23:42:51+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272347": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272347/page.htm",
+    "title": "“中国系列·新闻学”教材《舆论学》新书发布会暨首届新闻舆论学学术论坛在中国传媒大学举办",
+    "chars": 3465,
+    "sha256": "fff4a8c69416d86d",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272346": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272346/page.htm",
+    "title": "“编舟·乘风”2026届出版专业硕士研究生实践创新成果展顺利举办",
+    "chars": 1999,
+    "sha256": "bae6a45f05418148",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272345": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272345/page.htm",
+    "title": "讲座回顾｜传播大讲堂第122期：全球出版五十强的发展及AI应用",
+    "chars": 1545,
+    "sha256": "3860adfa5d581f84",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272344": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272344/page.htm",
+    "title": "遇见未来的你| 信息传播学院校园开放日活动精彩回顾",
+    "chars": 2759,
+    "sha256": "fb4ed042b5804165",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2064a272340": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272340/page.htm",
+    "title": "讲座回顾| 算法规训下的创作边界：人工智能伦理与当代设计实践",
+    "chars": 1832,
+    "sha256": "275e054c28b45b58",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2065a272342": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2065a272342/page.htm",
+    "title": "传播大讲堂第125期｜世界的规则，中国的市场——国际学术出版商在中国",
+    "chars": 907,
+    "sha256": "e8e56c5b5368f2a8",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c2065a272341": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c2065a272341/page.htm",
+    "title": "传播大讲堂第124期｜国际传播的学理基础与实践路径",
+    "chars": 889,
+    "sha256": "71726243d14ee258",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c4366a272347": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c4366a272347/page.htm",
+    "title": "“中国系列·新闻学”教材《舆论学》新书发布会暨首届新闻舆论学学术论坛在中国传媒大学举办",
+    "chars": 3465,
+    "sha256": "3353ca3c9a6e8c4a",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260701-c4366a272346": {
+    "url": "https://sic.cuc.edu.cn/2026/0701/c4366a272346/page.htm",
+    "title": "“编舟·乘风”2026届出版专业硕士研究生实践创新成果展顺利举办",
+    "chars": 1999,
+    "sha256": "ee11cdd202ac7586",
+    "published": "2026-07-01",
+    "fetched_at": "2026-10-21T23:42:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2064a271930": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271930/page.htm",
+    "title": "智媒共生 融创未来 | 信息传播学院举办“智能传播实践”本科课程作品路演会",
+    "chars": 5708,
+    "sha256": "7b118653e2e2b651",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2064a271927": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271927/page.htm",
+    "title": "信息传播学院举办“情绪解压——非遗锡纸画”体验活动",
+    "chars": 1636,
+    "sha256": "ba935fb7354823e2",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2064a271926": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271926/page.htm",
+    "title": "诚信教育｜信息传播学院2025级本科班开展诚信主题教育班会",
+    "chars": 1455,
+    "sha256": "803d09e4996799b0",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2064a271925": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271925/page.htm",
+    "title": "深学细悟党代会精神 聚力赋能高质量发展：信息传播学院举办学习中国传媒大学第四次党代会精神研讨会",
+    "chars": 4653,
+    "sha256": "6d3fee8e4fe55756",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2065a271931": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2065a271931/page.htm",
+    "title": "展览预告｜信息传播学院“大地的回响”大地传媒坊社会调研五周年成果展即将开幕",
+    "chars": 2595,
+    "sha256": "dae0fdf13445246d",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c2065a271928": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c2065a271928/page.htm",
+    "title": "传播大讲堂第122期｜全球出版五十强的发展及AI应用",
+    "chars": 891,
+    "sha256": "714a25f90adc15a0",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c4366a271930": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c4366a271930/page.htm",
+    "title": "智媒共生 融创未来 | 信息传播学院举办“智能传播实践”本科课程作品路演会",
+    "chars": 5708,
+    "sha256": "f9a78fec6d90bd58",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c14744a271925": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c14744a271925/page.htm",
+    "title": "深学细悟党代会精神 聚力赋能高质量发展：信息传播学院举办学习中国传媒大学第四次党代会精神研讨会",
+    "chars": 4687,
+    "sha256": "0e422ae39c38bce8",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260621-c14745a271927": {
+    "url": "https://sic.cuc.edu.cn/2026/0621/c14745a271927/page.htm",
+    "title": "信息传播学院举办“情绪解压——非遗锡纸画”体验活动",
+    "chars": 1670,
+    "sha256": "3a515f90f0cc346f",
+    "published": "2026-06-21",
+    "fetched_at": "2026-10-21T23:42:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260620-c2064a271917": {
+    "url": "https://sic.cuc.edu.cn/2026/0620/c2064a271917/page.htm",
+    "title": "信息传播学院师生赴中国国家版本馆中央总馆调研",
+    "chars": 2354,
+    "sha256": "7cbd07a7c9db8fe0",
+    "published": "2026-06-20",
+    "fetched_at": "2026-10-21T23:42:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260620-c2065a271922": {
+    "url": "https://sic.cuc.edu.cn/2026/0620/c2065a271922/page.htm",
+    "title": "第六届 “大地传媒坊”（2026）暑期社会调研项目征集令",
+    "chars": 2315,
+    "sha256": "244c954e48f2b095",
+    "published": "2026-06-20",
+    "fetched_at": "2026-10-21T23:42:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260620-c2065a271921": {
+    "url": "https://sic.cuc.edu.cn/2026/0620/c2065a271921/page.htm",
+    "title": "路演预告|“智媒共生 融创未来”信息传播学院本科课程“智能传播实践”作品路演会即将举行",
+    "chars": 2089,
+    "sha256": "0cc00c813da9c4ff",
+    "published": "2026-06-20",
+    "fetched_at": "2026-10-21T23:42:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260620-c2065a271920": {
+    "url": "https://sic.cuc.edu.cn/2026/0620/c2065a271920/page.htm",
+    "title": "传播大讲堂第121期｜浅谈互联网、新能源与人工智能——一种信息论视角",
+    "chars": 907,
+    "sha256": "2e7cd1175686964d",
+    "published": "2026-06-20",
+    "fetched_at": "2026-10-21T23:42:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260603-c2065a271333": {
+    "url": "https://sic.cuc.edu.cn/2026/0603/c2065a271333/page.htm",
+    "title": "展览预告｜信息传播学院“编舟·乘风”2026届出版专业硕士研究生实践创新成果展即将开幕",
+    "chars": 1412,
+    "sha256": "0fe7a177f4ff3caa",
+    "published": "2026-06-01",
+    "fetched_at": "2026-10-21T23:42:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271203": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271203/page.htm",
+    "title": "声启旅程，向新而行｜信息传播学院师生荣获2026校级合唱比赛三等奖",
+    "chars": 2822,
+    "sha256": "17c4180f7a452a83",
+    "published": "2026-05-31",
+    "fetched_at": "2026-10-21T23:42:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271199": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271199/page.htm",
+    "title": "“同享非遗 匠心同传” 非遗进校园系列活动在中国传媒大学成功举办",
+    "chars": 2285,
+    "sha256": "9ddc98c1ce0a6077",
+    "published": "2026-05-24",
+    "fetched_at": "2026-10-21T23:42:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271198": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271198/page.htm",
+    "title": "书香润心以评促学 | 信息传播学院24、25级专硕班 读书周联合书评活动圆满落幕",
+    "chars": 2219,
+    "sha256": "99365058692eddb0",
+    "published": "2026-05-23",
+    "fetched_at": "2026-10-21T23:42:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271196": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271196/page.htm",
+    "title": "青春聚力竞风采，信传扬帆向未来｜信息传播学院师生参加中国传媒大学第四十四届运动会",
+    "chars": 3281,
+    "sha256": "cbb37858b65afb5d",
+    "published": "2026-05-21",
+    "fetched_at": "2026-10-21T23:42:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271195": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271195/page.htm",
+    "title": "“镜头致敬劳动者”影像征集作品",
+    "chars": 2620,
+    "sha256": "f31c3c05e389447a",
+    "published": "2026-05-20",
+    "fetched_at": "2026-10-21T23:42:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271194": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271194/page.htm",
+    "title": "青春风采 | 我院学子获评“中传青年五四奖章·奋斗青年”",
+    "chars": 2430,
+    "sha256": "6acfeba036142d3e",
+    "published": "2026-05-19",
+    "fetched_at": "2026-10-21T23:42:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271193": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271193/page.htm",
+    "title": "探路智能体，赋能传媒业： 2026传媒沙龙暨第二届信息传播学术论坛在中国传媒大学举行",
+    "chars": 5072,
+    "sha256": "b0fbe4195fc41a01",
+    "published": "2026-05-18",
+    "fetched_at": "2026-10-21T23:42:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271192": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271192/page.htm",
+    "title": "中传这五年·信息传播学院篇｜守正创新担使命 信息传播启新篇",
+    "chars": 1399,
+    "sha256": "08bea6f94bada9cc",
+    "published": "2026-05-17",
+    "fetched_at": "2026-10-21T23:42:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271191": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271191/page.htm",
+    "title": "《中国教育报》报道我院龚伟亮副教授面对智能时代的课程建设探索与思考",
+    "chars": 4990,
+    "sha256": "c4fb7ee0828601d6",
+    "published": "2026-05-16",
+    "fetched_at": "2026-10-21T23:42:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271190": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271190/page.htm",
+    "title": "书香润青春，阅见新世界：信息传播学院顺利开展读书周系列活动",
+    "chars": 2194,
+    "sha256": "427c5aa6cb27ac26",
+    "published": "2026-05-15",
+    "fetched_at": "2026-10-21T23:43:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271189": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271189/page.htm",
+    "title": "徐芳依副教授执导作品《大同密码》在第十六届北京国际电影节获奖",
+    "chars": 1827,
+    "sha256": "2aae8b2ed1ff1a01",
+    "published": "2026-05-14",
+    "fetched_at": "2026-10-21T23:43:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2064a271184": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271184/page.htm",
+    "title": "思想纵横（二）｜总书记“公开课”：显绩与潜绩的辩证法",
+    "chars": 1128,
+    "sha256": "3e90c7870eb6af08",
+    "published": "2026-05-02",
+    "fetched_at": "2026-10-21T23:43:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271202": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271202/page.htm",
+    "title": "传播大讲堂第120期｜人机协同进化：大模型时代的媒体智能化实践",
+    "chars": 901,
+    "sha256": "5eae2da92f7f56d9",
+    "published": "2026-05-27",
+    "fetched_at": "2026-10-21T23:43:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271201": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271201/page.htm",
+    "title": "国际学者讲座｜葡萄牙媒体格局中的历史记忆与数字变革",
+    "chars": 889,
+    "sha256": "cd13b7246bbbf32f",
+    "published": "2026-05-27",
+    "fetched_at": "2026-10-21T23:43:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271200": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271200/page.htm",
+    "title": "传播大讲堂第119期｜以主题出版讲好中国故事",
+    "chars": 883,
+    "sha256": "78b645284655614d",
+    "published": "2026-05-26",
+    "fetched_at": "2026-10-21T23:43:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271197": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271197/page.htm",
+    "title": "传播大讲堂第118期 | “人民锐评”改文风初探",
+    "chars": 887,
+    "sha256": "feed051d639326da",
+    "published": "2026-05-22",
+    "fetched_at": "2026-10-21T23:43:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271188": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271188/page.htm",
+    "title": "传播大讲堂第118期 | 大同服饰历史发展史",
+    "chars": 883,
+    "sha256": "4295064a17bf5b4a",
+    "published": "2026-05-13",
+    "fetched_at": "2026-10-21T23:43:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271187": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271187/page.htm",
+    "title": "“2026传媒沙龙暨第二届信息传播学术论坛——智能体传播：人机协作新范式”议程发布",
+    "chars": 1026,
+    "sha256": "3f676eacc7dba35a",
+    "published": "2026-05-07",
+    "fetched_at": "2026-10-21T23:43:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271186": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271186/page.htm",
+    "title": "传播大讲堂第117期｜人工智能安全的实践与思考",
+    "chars": 885,
+    "sha256": "e413378317555fbf",
+    "published": "2026-05-06",
+    "fetched_at": "2026-10-21T23:43:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c2065a271185": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271185/page.htm",
+    "title": "青春无畏 逐梦前行｜信息传播学院祝大家青年节快乐！",
+    "chars": 889,
+    "sha256": "6bfb6b21ce5d3775",
+    "published": "2026-05-04",
+    "fetched_at": "2026-10-21T23:43:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14744a271192": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14744a271192/page.htm",
+    "title": "中传这五年·信息传播学院篇｜守正创新担使命 信息传播启新篇",
+    "chars": 1433,
+    "sha256": "978d23f925cb4ac0",
+    "published": "2026-05-17",
+    "fetched_at": "2026-10-21T23:43:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271203": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271203/page.htm",
+    "title": "声启旅程，向新而行｜信息传播学院师生荣获2026校级合唱比赛三等奖",
+    "chars": 2856,
+    "sha256": "007db64cce393170",
+    "published": "2026-05-31",
+    "fetched_at": "2026-10-21T23:43:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271198": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271198/page.htm",
+    "title": "书香润心以评促学 | 信息传播学院24、25级专硕班 读书周联合书评活动圆满落幕",
+    "chars": 2253,
+    "sha256": "83335f4b06d444d5",
+    "published": "2026-05-23",
+    "fetched_at": "2026-10-21T23:43:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271196": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271196/page.htm",
+    "title": "青春聚力竞风采，信传扬帆向未来｜信息传播学院师生参加中国传媒大学第四十四届运动会",
+    "chars": 3315,
+    "sha256": "587f702dda27e489",
+    "published": "2026-05-21",
+    "fetched_at": "2026-10-21T23:43:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271195": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271195/page.htm",
+    "title": "“镜头致敬劳动者”影像征集作品",
+    "chars": 2654,
+    "sha256": "f6f6f118cb45dce9",
+    "published": "2026-05-20",
+    "fetched_at": "2026-10-21T23:43:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271194": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271194/page.htm",
+    "title": "青春风采 | 我院学子获评“中传青年五四奖章·奋斗青年”",
+    "chars": 2464,
+    "sha256": "12510f94eab36d61",
+    "published": "2026-05-19",
+    "fetched_at": "2026-10-21T23:43:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260601-c14745a271190": {
+    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271190/page.htm",
+    "title": "书香润青春，阅见新世界：信息传播学院顺利开展读书周系列活动",
+    "chars": 2228,
+    "sha256": "6b55bc90f6253590",
+    "published": "2026-05-15",
+    "fetched_at": "2026-10-21T23:43:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260525-c2065a270790": {
+    "url": "https://sic.cuc.edu.cn/2026/0525/c2065a270790/page.htm",
+    "title": "五一劳动节｜信息传播学院致敬每一位劳动者",
+    "chars": 879,
+    "sha256": "0edef04c64d3006a",
+    "published": "2026-05-01",
+    "fetched_at": "2026-10-21T23:43:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260506-c5332a269901": {
+    "url": "http://ices.cuc.edu.cn/2026/0506/c5332a269901/page.htm",
+    "title": "导师简介-李正祥",
+    "chars": 1385,
+    "sha256": "c30b7e2959a94de9",
+    "published": "2026-05-06",
+    "fetched_at": "2026-10-21T23:43:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269839": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269839/page.htm",
+    "title": "思想纵横（一）｜习近平：推动全民阅读，建设书香社会",
+    "chars": 4500,
+    "sha256": "f6250259d872bb71",
+    "published": "2026-04-30",
+    "fetched_at": "2026-10-21T23:43:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269838": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269838/page.htm",
+    "title": "讲座回顾 | 职路灯塔—校友讲座：做“技多不压身”的新传人",
+    "chars": 1783,
+    "sha256": "1d0fab89b0fce0d8",
+    "published": "2026-04-29",
+    "fetched_at": "2026-10-21T23:43:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269837": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269837/page.htm",
+    "title": "我院国际留学生研习团受邀参加2026菏泽牡丹国际传播论坛",
+    "chars": 2246,
+    "sha256": "ea436678ea499dbd",
+    "published": "2026-04-27",
+    "fetched_at": "2026-10-21T23:43:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269836": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269836/page.htm",
+    "title": "​ 我院国际留学生在多国媒体报道2026菏泽牡丹国际传播论坛",
+    "chars": 1975,
+    "sha256": "b730ce7f9a24303f",
+    "published": "2026-04-27",
+    "fetched_at": "2026-10-21T23:43:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269835": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269835/page.htm",
+    "title": "趣动青春·悦享健康 | 信息传播学院本科班趣味运动会圆满举办",
+    "chars": 2127,
+    "sha256": "d3a7d42e9083a702",
+    "published": "2026-04-25",
+    "fetched_at": "2026-10-21T23:43:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269834": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269834/page.htm",
+    "title": "信息传播学院举办树立和践行正确政绩观学习教育读书班",
+    "chars": 1880,
+    "sha256": "0c87eb4fe2f5dd01",
+    "published": "2026-04-23",
+    "fetched_at": "2026-10-21T23:43:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269833": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269833/page.htm",
+    "title": "信息传播学院赴北大红楼开展“追寻红色足迹 传承红色记忆”思政实践活动",
+    "chars": 1843,
+    "sha256": "d1ad89b9c1919600",
+    "published": "2026-04-22",
+    "fetched_at": "2026-10-21T23:43:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269832": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269832/page.htm",
+    "title": "健康第一以体育人｜张一涵：身上有汗，眼里有光，奔跑在赛道上",
+    "chars": 3273,
+    "sha256": "5024b3cad0dc16c4",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:06+08:00",
+    "kind": "sitemap"
+  },
+  "20251009-c2065a260713": {
+    "url": "https://sic.cuc.edu.cn/2025/1009/c2065a260713/page.htm",
+    "title": "畅销书出版案例作品研读工作坊｜《医路向前巍子给中国人的救护指南》出版案例分析",
+    "chars": 915,
+    "sha256": "7a432ef27cf2ada0",
+    "published": "2025-10-09",
+    "fetched_at": "2026-10-21T23:43:50+08:00",
+    "kind": "sitemap"
+  },
+  "20250924-c378a260402": {
+    "url": "https://zchq.cuc.edu.cn/2025/0924/c378a260402/page.htm",
+    "title": "后勤服务指南",
+    "chars": 6043,
+    "sha256": "ac9774e0f19e5efa",
+    "published": "2025-09-24",
+    "fetched_at": "2026-10-21T23:43:50+08:00",
+    "kind": "sitemap"
+  },
+  "20250624-c14744a257612": {
+    "url": "https://sic.cuc.edu.cn/2025/0624/c14744a257612/page.htm",
+    "title": "传播研究院举办深入贯彻中央八项规定精神知识竞赛",
+    "chars": 2845,
+    "sha256": "967b8033aec90217",
+    "published": "2025-06-22",
+    "fetched_at": "2026-10-21T23:43:51+08:00",
+    "kind": "sitemap"
+  },
+  "20250605-c14744a256559": {
+    "url": "https://sic.cuc.edu.cn/2025/0605/c14744a256559/page.htm",
+    "title": "传播研究院召开深入贯彻中央八项规定精神学习教育主题培训",
+    "chars": 1739,
+    "sha256": "6d99dcc7cc476653",
+    "published": "2025-05-10",
+    "fetched_at": "2026-10-21T23:43:51+08:00",
+    "kind": "sitemap"
+  },
+  "20250605-c14744a256560": {
+    "url": "https://sic.cuc.edu.cn/2025/0605/c14744a256560/page.htm",
+    "title": "传播研究院举办深入贯彻中央八项规定精神学习教育读书班",
+    "chars": 2806,
+    "sha256": "f923f8f86645efb3",
+    "published": "2025-05-09",
+    "fetched_at": "2026-10-21T23:43:51+08:00",
+    "kind": "sitemap"
+  },
+  "20240821-c2092a242386": {
+    "url": "https://sic.cuc.edu.cn/2024/0821/c2092a242386/page.htm",
+    "title": "中传外字〔2023〕57号 关于印发《中国传媒大学教职工因公出国（赴港澳）审批与管理规定》（2023年修订）的通知",
+    "chars": 877,
+    "sha256": "615be26012a35c39",
+    "published": "2024-08-21",
+    "fetched_at": "2026-10-21T23:43:51+08:00",
+    "kind": "sitemap"
+  },
+  "20240821-c2092a242385": {
+    "url": "https://sic.cuc.edu.cn/2024/0821/c2092a242385/page.htm",
+    "title": "中国传媒大学国际交流与合作处（港澳台事务办公室）工作流程",
+    "chars": 819,
+    "sha256": "42dab26f124a6def",
+    "published": "2024-08-21",
+    "fetched_at": "2026-10-21T23:43:52+08:00",
+    "kind": "sitemap"
+  },
+  "20240322-c4365a217450": {
+    "url": "https://sic.cuc.edu.cn/2024/0322/c4365a217450/page.htm",
+    "title": "讲座回顾｜新时代教材建设的规范要求与创新实践",
+    "chars": 2330,
+    "sha256": "5b89521ade498175",
+    "published": "2023-12-28",
+    "fetched_at": "2026-10-21T23:43:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269829": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269829/page.htm",
+    "title": "访企拓岗｜柴剑平副校长带领我院师生赴北京印刷学院调研",
+    "chars": 2816,
+    "sha256": "198fafdceb0d2c55",
+    "published": "2026-04-10",
+    "fetched_at": "2026-10-21T23:43:52+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2064a269828": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269828/page.htm",
+    "title": "校友资源赋能教师科研 信息传播学院赴校友企业听花岛调研",
+    "chars": 1684,
+    "sha256": "ff3dc9c69a92e9d9",
+    "published": "2026-04-09",
+    "fetched_at": "2026-10-21T23:43:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c2065a269831": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c2065a269831/page.htm",
+    "title": "职路灯塔一一校友讲座｜做“技多不压身”的新传人：AI时代搭好”信息“积木 画好职场坐标",
+    "chars": 925,
+    "sha256": "d5590306cd3fbdb4",
+    "published": "2026-04-13",
+    "fetched_at": "2026-10-21T23:43:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c14744a269834": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c14744a269834/page.htm",
+    "title": "信息传播学院举办树立和践行正确政绩观学习教育读书班",
+    "chars": 1914,
+    "sha256": "8c28350fdfdda361",
+    "published": "2026-04-23",
+    "fetched_at": "2026-10-21T23:43:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260505-c14745a269835": {
+    "url": "https://sic.cuc.edu.cn/2026/0505/c14745a269835/page.htm",
+    "title": "趣动青春·悦享健康 | 信息传播学院本科班趣味运动会圆满举办",
+    "chars": 2161,
+    "sha256": "ff3f9b3c21880895",
+    "published": "2026-04-25",
+    "fetched_at": "2026-10-21T23:43:53+08:00",
+    "kind": "sitemap"
+  },
+  "20260503-c2064a269816": {
+    "url": "https://sic.cuc.edu.cn/2026/0503/c2064a269816/page.htm",
+    "title": "讲座回顾｜传播大讲堂国际学者讲座：人工智能时代的技术与叙事革新",
+    "chars": 1828,
+    "sha256": "e447d0742c5da4f4",
+    "published": "2026-04-03",
+    "fetched_at": "2026-10-21T23:43:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260503-c2064a269815": {
+    "url": "https://sic.cuc.edu.cn/2026/0503/c2064a269815/page.htm",
+    "title": "讲座回顾｜传播大讲堂第116期：新技术、新语态、新视觉——短视频的创作与实践",
+    "chars": 1720,
+    "sha256": "7194f51c0d489767",
+    "published": "2026-04-02",
+    "fetched_at": "2026-10-21T23:43:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260503-c2065a269817": {
+    "url": "https://sic.cuc.edu.cn/2026/0503/c2065a269817/page.htm",
+    "title": "信息传播学院一层学生服务大厅启用啦！（内附行政管理团队介绍）",
+    "chars": 2890,
+    "sha256": "c1ae020a6afaa832",
+    "published": "2026-04-08",
+    "fetched_at": "2026-10-21T23:43:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260423-c5332a269527": {
+    "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269527/page.htm",
+    "title": "导师简介-王玲",
+    "chars": 1232,
+    "sha256": "9dbb4c73240ed89b",
+    "published": "2026-04-23",
+    "fetched_at": "2026-10-21T23:43:54+08:00",
+    "kind": "sitemap"
+  },
+  "20260423-c5332a269524": {
+    "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269524/page.htm",
+    "title": "导师简介-巴欣然",
+    "chars": 3813,
+    "sha256": "f2238bee7200b10d",
+    "published": "2026-04-23",
+    "fetched_at": "2026-10-21T23:43:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260423-c5332a269542": {
+    "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269542/page.htm",
+    "title": "导师简介-余绍德",
+    "chars": 2233,
+    "sha256": "aac8a8d87d1201de",
+    "published": "2026-04-23",
+    "fetched_at": "2026-10-21T23:43:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260422-c5332a269476": {
+    "url": "http://ices.cuc.edu.cn/2026/0422/c5332a269476/page.htm",
+    "title": "导师简介-司璐",
+    "chars": 1865,
+    "sha256": "f15fb449080bbfa4",
+    "published": "2026-04-22",
+    "fetched_at": "2026-10-21T23:43:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260421-c5332a269372": {
+    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269372/page.htm",
+    "title": "导师简介-王亚金",
+    "chars": 2367,
+    "sha256": "33ad710a0dcd748d",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:55+08:00",
+    "kind": "sitemap"
+  },
+  "20260421-c5332a269373": {
+    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269373/page.htm",
+    "title": "导师简介-赵艳明",
+    "chars": 1369,
+    "sha256": "ba9456a3108f4c75",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260421-c5332a269358": {
+    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269358/page.htm",
+    "title": "导师简介-王晔",
+    "chars": 7574,
+    "sha256": "d3d9355c0f7b2469",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260421-c5332a269359": {
+    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269359/page.htm",
+    "title": "导师简介-卢起斌",
+    "chars": 1201,
+    "sha256": "6ffb63bb62600dbb",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260421-c5332a269370": {
+    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269370/page.htm",
+    "title": "导师简介-耿冰蕊",
+    "chars": 1584,
+    "sha256": "9d38516832ff5507",
+    "published": "2026-04-21",
+    "fetched_at": "2026-10-21T23:43:56+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268397": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268397/page.htm",
+    "title": "千年结艺连丝路，中外学子共传承——信息传播学院国际留学生与少数民族特培班走进“千年结艺·北魏风华展”",
+    "chars": 1833,
+    "sha256": "ee1dcd6345cf4e18",
+    "published": "2026-03-28",
+    "fetched_at": "2026-10-21T23:43:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268396": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268396/page.htm",
+    "title": "深学细悟两会精神勇担传媒时代使命——信息传播学院学生开展两会精神学习研讨活动",
+    "chars": 2202,
+    "sha256": "93a1c1a027166739",
+    "published": "2026-03-27",
+    "fetched_at": "2026-10-21T23:43:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268395": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268395/page.htm",
+    "title": "讲座回顾 | 张开教授为信息传播学院国际留学生做学习全国两会专题讲座",
+    "chars": 1901,
+    "sha256": "df8b9ea59565be0b",
+    "published": "2026-03-26",
+    "fetched_at": "2026-10-21T23:43:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268393": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268393/page.htm",
+    "title": "信息传播学院召开2025年度党支部书记述职评议考核会",
+    "chars": 3653,
+    "sha256": "100e37f7f56783a5",
+    "published": "2026-03-25",
+    "fetched_at": "2026-10-21T23:43:57+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268392": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268392/page.htm",
+    "title": "信息传播学院举办“挑战杯”赛事专题培训",
+    "chars": 1719,
+    "sha256": "8344b78dc3a5ac76",
+    "published": "2026-03-24",
+    "fetched_at": "2026-10-21T23:43:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268391": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268391/page.htm",
+    "title": "讲座回顾 | 传播大讲堂114期：从讲述到共塑：主流媒体国际传播实践创新",
+    "chars": 1708,
+    "sha256": "5d8492c8ac1e6ece",
+    "published": "2026-03-20",
+    "fetched_at": "2026-10-21T23:43:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2064a268388": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268388/page.htm",
+    "title": "信息传播学院党委启动部署树立和践行正确政绩观学习教育",
+    "chars": 1817,
+    "sha256": "8fe655059f3cf8f0",
+    "published": "2026-03-16",
+    "fetched_at": "2026-10-21T23:43:58+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268390": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268390/page.htm",
+    "title": "传播大讲堂国际学者讲座：AI时代的技术与叙事革新",
+    "chars": 887,
+    "sha256": "2157e845f0a1a444",
+    "published": "2026-03-23",
+    "fetched_at": "2026-10-21T23:43:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268389": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268389/page.htm",
+    "title": "传播大讲堂第116期｜新技术、新语态、新视觉：短视频的创作与实践",
+    "chars": 903,
+    "sha256": "f12a6e84ed7fd7b1",
+    "published": "2026-03-17",
+    "fetched_at": "2026-10-21T23:43:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268387": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268387/page.htm",
+    "title": "传播大讲堂第115期｜当代视听新视野",
+    "chars": 875,
+    "sha256": "e1fc364be3a68c18",
+    "published": "2026-03-13",
+    "fetched_at": "2026-10-21T23:43:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268386": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268386/page.htm",
+    "title": "国际学术会议写作指导工作坊｜Get Ready for Your Research：From finding a topic to publishing the paper",
+    "chars": 1011,
+    "sha256": "9c4162194b433183",
+    "published": "2026-03-11",
+    "fetched_at": "2026-10-21T23:43:59+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268385": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268385/page.htm",
+    "title": "国际学术会议写作指导工作坊｜Submitting a paper to a journal and interactions with publishing staff",
+    "chars": 1007,
+    "sha256": "4d0a6939143b56e7",
+    "published": "2026-03-09",
+    "fetched_at": "2026-10-21T23:44:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268384": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268384/page.htm",
+    "title": "国际学术会议写作指导工作坊｜From Conference to Journal: How to Develop a Publishable Paper",
+    "chars": 991,
+    "sha256": "ff7d6917cc86be5e",
+    "published": "2026-03-09",
+    "fetched_at": "2026-10-21T23:44:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c2065a268383": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268383/page.htm",
+    "title": "传播大讲堂第114期｜从讲述到共塑：主流媒体国际传播实践创新",
+    "chars": 899,
+    "sha256": "5588a00995d4c318",
+    "published": "2026-03-07",
+    "fetched_at": "2026-10-21T23:44:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260331-c14744a268393": {
+    "url": "https://sic.cuc.edu.cn/2026/0331/c14744a268393/page.htm",
+    "title": "信息传播学院召开2025年度党支部书记述职评议考核会",
+    "chars": 3687,
+    "sha256": "a949e428da6a805c",
+    "published": "2026-03-25",
+    "fetched_at": "2026-10-21T23:44:00+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c4365a267069": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267069/page.htm",
+    "title": "“畅销书出版案例作品研读工作坊”第六期：《爱上北京博物馆》出版案例分析",
+    "chars": 1877,
+    "sha256": "389a83eff0759e67",
+    "published": "2026-01-25",
+    "fetched_at": "2026-10-21T23:44:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c4365a267064": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267064/page.htm",
+    "title": "教改项目 | “丝路传播”案例作品研读工作坊圆满完成",
+    "chars": 2107,
+    "sha256": "fd7bcb578a0ce87e",
+    "published": "2026-01-21",
+    "fetched_at": "2026-10-21T23:44:01+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c4365a267063": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267063/page.htm",
+    "title": "讲座回顾｜传播大讲堂第113期：风范：用一生写就的科学家精神",
+    "chars": 1448,
+    "sha256": "59fb0f88f055d02d",
+    "published": "2026-01-20",
+    "fetched_at": "2026-10-21T23:44:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c4365a267062": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267062/page.htm",
+    "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作工作坊”第六期：为学与为文：学术研究的目标与路径",
+    "chars": 1923,
+    "sha256": "e2657d462b0627fd",
+    "published": "2026-01-16",
+    "fetched_at": "2026-10-21T23:44:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267069": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267069/page.htm",
+    "title": "“畅销书出版案例作品研读工作坊”第六期：《爱上北京博物馆》出版案例分析",
+    "chars": 1877,
+    "sha256": "aa6bc6b9558af71f",
+    "published": "2026-01-25",
+    "fetched_at": "2026-10-21T23:44:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267068": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267068/page.htm",
+    "title": "暖心相聚筑同心温情护航伴成长 | 2025级跨文化传播硕士班开展心理健康主题班会活动",
+    "chars": 1769,
+    "sha256": "eb06496017faad28",
+    "published": "2026-01-23",
+    "fetched_at": "2026-10-21T23:44:02+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267067": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267067/page.htm",
+    "title": "温暖相伴，携手同行| 2025级传播学硕士班团体心理辅导活动圆满举行",
+    "chars": 1716,
+    "sha256": "7b86dc50ea94204e",
+    "published": "2026-01-23",
+    "fetched_at": "2026-10-21T23:44:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267066": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267066/page.htm",
+    "title": "手作书页，共筑心篇 | 信息传播学院2025级博士班开展团体心理辅导活动",
+    "chars": 1857,
+    "sha256": "695e7ec426a4d3ab",
+    "published": "2026-01-22",
+    "fetched_at": "2026-10-21T23:44:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267065": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267065/page.htm",
+    "title": "音为有你，研途趣游| 2025级专硕班团体心理辅导活动圆满举行",
+    "chars": 1901,
+    "sha256": "3f8f450b5bb2842a",
+    "published": "2026-01-22",
+    "fetched_at": "2026-10-21T23:44:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267064": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267064/page.htm",
+    "title": "教改项目 | “丝路传播”案例作品研读工作坊圆满完成",
+    "chars": 2107,
+    "sha256": "b9bb4e2babf22d4d",
+    "published": "2026-01-21",
+    "fetched_at": "2026-10-21T23:44:03+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267063": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267063/page.htm",
+    "title": "讲座回顾｜传播大讲堂第113期：风范：用一生写就的科学家精神",
+    "chars": 1448,
+    "sha256": "4a288403526359bc",
+    "published": "2026-01-20",
+    "fetched_at": "2026-10-21T23:44:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267062": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267062/page.htm",
+    "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作工作坊”第六期：为学与为文：学术研究的目标与路径",
+    "chars": 1923,
+    "sha256": "02bcfa63fb79f170",
+    "published": "2026-01-16",
+    "fetched_at": "2026-10-21T23:44:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2064a267061": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267061/page.htm",
+    "title": "我院2024级传播学2班团支部获评2024-2025学年校“红旗团支部”",
+    "chars": 3040,
+    "sha256": "cc7d0c3a4b75332d",
+    "published": "2026-01-15",
+    "fetched_at": "2026-10-21T23:44:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c2065a267071": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c2065a267071/page.htm",
+    "title": "新春伊始 马年大吉｜信息传播学院祝大家新年快乐",
+    "chars": 885,
+    "sha256": "8fe6e5379ea4a0ec",
+    "published": "2026-02-17",
+    "fetched_at": "2026-10-21T23:44:04+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c14745a267068": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267068/page.htm",
+    "title": "暖心相聚筑同心温情护航伴成长 | 2025级跨文化传播硕士班开展心理健康主题班会活动",
+    "chars": 1803,
+    "sha256": "8c5ed9f0d709d43b",
+    "published": "2026-01-23",
+    "fetched_at": "2026-10-21T23:44:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c14745a267067": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267067/page.htm",
+    "title": "温暖相伴，携手同行| 2025级传播学硕士班团体心理辅导活动圆满举行",
+    "chars": 1750,
+    "sha256": "0346141acae6fa11",
+    "published": "2026-01-23",
+    "fetched_at": "2026-10-21T23:44:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c14745a267066": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267066/page.htm",
+    "title": "手作书页，共筑心篇 | 信息传播学院2025级博士班开展团体心理辅导活动",
+    "chars": 1891,
+    "sha256": "5b28dbbbc3eb7dc3",
+    "published": "2026-01-22",
+    "fetched_at": "2026-10-21T23:44:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c14745a267065": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267065/page.htm",
+    "title": "音为有你，研途趣游| 2025级专硕班团体心理辅导活动圆满举行",
+    "chars": 1935,
+    "sha256": "4f68c078d9856631",
+    "published": "2026-01-22",
+    "fetched_at": "2026-10-21T23:44:05+08:00",
+    "kind": "sitemap"
+  },
+  "20260226-c14745a267061": {
+    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267061/page.htm",
+    "title": "我院2024级传播学2班团支部获评2024-2025学年校“红旗团支部”",
+    "chars": 3074,
+    "sha256": "e9e502eaf3658cc0",
+    "published": "2026-01-15",
+    "fetched_at": "2026-10-21T23:44:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c4365a267045": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267045/page.htm",
+    "title": "“丝路传播”留学案例作品研读工作坊第三、四期顺利开展",
+    "chars": 2309,
+    "sha256": "366e73eb4a2f1def",
+    "published": "2026-01-14",
+    "fetched_at": "2026-10-21T23:44:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c4365a267041": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267041/page.htm",
+    "title": "讲座回顾｜践行习近平文化思想，创新新时代主题出版传播",
+    "chars": 2064,
+    "sha256": "c994b315b5ecf06a",
+    "published": "2026-01-10",
+    "fetched_at": "2026-10-21T23:44:06+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c4365a267039": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267039/page.htm",
+    "title": "校友沙龙回顾：AI时代的内容营销",
+    "chars": 1986,
+    "sha256": "185059b58d780232",
+    "published": "2026-01-09",
+    "fetched_at": "2026-10-21T23:44:07+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c4365a267032": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267032/page.htm",
+    "title": "“丝路传播”留学生案例作品研读工作坊第一、二期顺利开展",
+    "chars": 2210,
+    "sha256": "63d1dcf89e81eba7",
+    "published": "2026-01-06",
+    "fetched_at": "2026-10-21T23:44:07+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c2064a267045": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267045/page.htm",
+    "title": "“丝路传播”留学案例作品研读工作坊第三、四期顺利开展",
+    "chars": 2309,
+    "sha256": "1b2ba1f118c9b1ed",
+    "published": "2026-01-14",
+    "fetched_at": "2026-10-21T23:44:07+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c2064a267044": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267044/page.htm",
+    "title": "信息传播学院留学生赴北京“机器人大世界”调研",
+    "chars": 1904,
+    "sha256": "8f676934cb669630",
+    "published": "2026-01-12",
+    "fetched_at": "2026-10-21T23:44:07+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c2064a267043": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267043/page.htm",
+    "title": "我院三名学生荣获全国大学生职业生涯规划大赛校级决赛二等奖和优秀奖",
+    "chars": 2215,
+    "sha256": "ee2dc74b5ba5d52d",
+    "published": "2026-01-11",
+    "fetched_at": "2026-10-21T23:44:08+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c2064a267041": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267041/page.htm",
+    "title": "讲座回顾｜践行习近平文化思想，创新新时代主题出版传播",
+    "chars": 2064,
+    "sha256": "113d25224a9b19a9",
+    "published": "2026-01-10",
+    "fetched_at": "2026-10-21T23:44:08+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c2065a267029": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c2065a267029/page.htm",
+    "title": "中国传媒大学研究生教育教学改革项目｜畅销书出版案例作品研读工作坊《爱上北京博物馆》出版案例分析",
+    "chars": 933,
+    "sha256": "8d55ace336caeca4",
+    "published": "2026-01-06",
+    "fetched_at": "2026-10-21T23:44:08+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c14744a267033": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c14744a267033/page.htm",
+    "title": "信息传播学院召开党员大会选举出席学校第四次党代会代表",
+    "chars": 2021,
+    "sha256": "73d43fb946f5138b",
+    "published": "2026-01-07",
+    "fetched_at": "2026-10-21T23:44:08+08:00",
+    "kind": "sitemap"
+  },
+  "20260225-c14745a267027": {
+    "url": "https://sic.cuc.edu.cn/2026/0225/c14745a267027/page.htm",
+    "title": "砥砺前行，青春奋进 | 信息传播学院团委获评2025年校级“优秀团委”",
+    "chars": 2129,
+    "sha256": "330940a5936436ab",
+    "published": "2026-01-05",
+    "fetched_at": "2026-10-21T23:44:09+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266738": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266738/page.htm",
+    "title": "讲座回顾 ｜ 新媒体背景下短视频创作的发展趋势与实践创新",
+    "chars": 1642,
+    "sha256": "6db2c11166fc2272",
+    "published": "2025-12-27",
+    "fetched_at": "2026-10-21T23:44:09+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266737": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266737/page.htm",
+    "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第五期：媒介与文化研究：方法论及写作",
+    "chars": 1692,
+    "sha256": "fb6a0598ac712f39",
+    "published": "2025-12-19",
+    "fetched_at": "2026-10-21T23:44:09+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266736": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266736/page.htm",
+    "title": "讲座回顾 | “在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第四期：人工智能可以写好影视艺术论文吗？一种语言学的视角",
+    "chars": 1754,
+    "sha256": "f6a77011f4a1ca42",
+    "published": "2025-12-15",
+    "fetched_at": "2026-10-21T23:44:09+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266735": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266735/page.htm",
+    "title": "讲座回顾| AI时代，出版如何选题？",
+    "chars": 1397,
+    "sha256": "33c9beea1ed8adcb",
+    "published": "2025-12-04",
+    "fetched_at": "2026-10-21T23:44:10+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266734": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266734/page.htm",
+    "title": "讲座回顾丨传播大讲堂第109期：新时代马克思主义新闻文风建设",
+    "chars": 1732,
+    "sha256": "a69569d054374c5c",
+    "published": "2025-11-21",
+    "fetched_at": "2026-10-21T23:44:10+08:00",
+    "kind": "sitemap"
+  },
+  "20260123-c4365a266733": {
+    "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266733/page.htm",
+    "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第三期：中国当代大众文化的历史演变",
+    "chars": 1825,
+    "sha256": "973d911208b15d0d",
+    "published": "2025-11-13",
+    "fetched_at": "2026-10-21T23:44:10+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266732": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266732/page.htm",
+    "title": "讲座回顾｜传播大讲堂第106期：提升国际传播效能的挑战与机遇",
+    "chars": 1433,
+    "sha256": "78528c8389580e73",
+    "published": "2025-11-11",
+    "fetched_at": "2026-10-21T23:44:10+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266731": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266731/page.htm",
+    "title": "讲座回顾 | “在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第二期：媒体融合语境下的文艺评论写作",
+    "chars": 1645,
+    "sha256": "5bfe34f0c870db28",
+    "published": "2025-11-08",
+    "fetched_at": "2026-10-21T23:44:11+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266730": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266730/page.htm",
+    "title": "2025年10月29日下午，第107期传播大讲堂在信息传播学院顺利举办。本期讲座邀请中国音像与数字出版协会副秘书长、《中国数字出版》杂志副主编李弘担任主讲嘉宾，讲座主题为“中国数字阅读行业发展现状与趋势”。信息传播学院赵丽华副编审主持讲座。 李弘副秘书长 在信息时代，数字阅读已经成为大众文化生活的重要组成部分。李弘副秘书长详细分析了目前中国数字阅读的市场规模、营收结构以及作品情况，并结合相关政策与行业背景，总结出数字阅读行业的发展趋势——内容高质量转型、商业模式广",
+    "chars": 2010,
+    "sha256": "8326ccbb0f129f8b",
+    "published": "2025-11-05",
+    "fetched_at": "2026-10-21T23:44:11+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266729": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266729/page.htm",
+    "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第一期：国家与声音——声音现代性的本土探索",
+    "chars": 1790,
+    "sha256": "50bcfe73e15d922c",
+    "published": "2025-11-04",
+    "fetched_at": "2026-10-21T23:44:11+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266728": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266728/page.htm",
+    "title": "讲座回顾 | 传播大讲堂第 101 期：人工智能大模型在网络舆情信息传播治理的应用",
+    "chars": 1752,
+    "sha256": "90631770085a3c33",
+    "published": "2025-06-12",
+    "fetched_at": "2026-10-21T23:44:11+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266727": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266727/page.htm",
+    "title": "讲座回顾 | 传播大讲堂第九十七期：AIGC在文化传媒行业的应用探索与创新实践",
+    "chars": 2102,
+    "sha256": "6db52033f9351c8f",
+    "published": "2025-05-26",
+    "fetched_at": "2026-10-21T23:44:12+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266726": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266726/page.htm",
+    "title": "讲座回顾 | 欧洲近距离：驻外记者国际报道实践与观察",
+    "chars": 1822,
+    "sha256": "fcaef8d33f338596",
+    "published": "2025-03-24",
+    "fetched_at": "2026-10-21T23:44:12+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266725": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266725/page.htm",
+    "title": "讲座回顾 ｜ 传播大讲堂第九十二期：新时代科技期刊的数字化、品牌化、国际化出版传播",
+    "chars": 2575,
+    "sha256": "6258b37ac86e1c62",
+    "published": "2025-01-08",
+    "fetched_at": "2026-10-21T23:44:12+08:00",
+    "kind": "sitemap"
+  },
+  "20260122-c4365a266724": {
+    "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266724/page.htm",
+    "title": "讲座回顾 | 校友讲座：人工智能时代的职业选择",
+    "chars": 1735,
+    "sha256": "3b56929d8f99b0be",
+    "published": "2024-12-21",
+    "fetched_at": "2026-10-21T23:44:12+08:00",
+    "kind": "sitemap"
+  },
+  "20260101-c2065a265778": {
+    "url": "https://sic.cuc.edu.cn/2026/0101/c2065a265778/page.htm",
+    "title": "中国传媒大学研究生教育教学改革项目｜AI时代，如何做出版的手艺人",
+    "chars": 903,
+    "sha256": "1c2c37f24c5418ec",
+    "published": "2025-12-29",
+    "fetched_at": "2026-10-21T23:44:13+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265753": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265753/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作第六期｜为学与为文：学术研究的目标与路径",
+    "chars": 927,
+    "sha256": "004b4fa28267ed25",
+    "published": "2025-12-23",
+    "fetched_at": "2026-10-21T23:44:13+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265752": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265752/page.htm",
+    "title": "中国传媒大学研究生教育教学改革项目｜畅销书出版案例作品研读工作坊：“人民日报写作课”系列丛书出版案例分析",
+    "chars": 943,
+    "sha256": "5c6d67adf0d90225",
+    "published": "2025-12-23",
+    "fetched_at": "2026-10-21T23:44:13+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265751": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265751/page.htm",
+    "title": "中国传媒大学研究生教育改革项目｜校友沙龙：AI时代的内容营销",
+    "chars": 899,
+    "sha256": "70f3f7684a1564d4",
+    "published": "2025-12-22",
+    "fetched_at": "2026-10-21T23:44:13+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265750": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265750/page.htm",
+    "title": "传播大讲堂第113期｜风范：用一生写就的科学家精神",
+    "chars": 889,
+    "sha256": "744a0b29410c4bcd",
+    "published": "2025-12-21",
+    "fetched_at": "2026-10-21T23:44:14+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265745": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265745/page.htm",
+    "title": "畅销书出版案例作品研读工作坊｜《我看见的世界》出版案例分析",
+    "chars": 897,
+    "sha256": "759e37d3ad1804a3",
+    "published": "2025-12-16",
+    "fetched_at": "2026-10-21T23:44:14+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c2065a265744": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c2065a265744/page.htm",
+    "title": "传播大讲堂第112期｜智“链”未来——解锁智能时代的通信网络",
+    "chars": 899,
+    "sha256": "d811fb32aa22de27",
+    "published": "2025-12-16",
+    "fetched_at": "2026-10-21T23:44:14+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c14745a265755": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c14745a265755/page.htm",
+    "title": "服章载文 华韵新声 | 汉服文化进校园活动在信息传播学院举办",
+    "chars": 3504,
+    "sha256": "7b7feda832917524",
+    "published": "2025-12-24",
+    "fetched_at": "2026-10-21T23:44:14+08:00",
+    "kind": "sitemap"
+  },
+  "20251231-c14745a265747": {
+    "url": "https://sic.cuc.edu.cn/2025/1231/c14745a265747/page.htm",
+    "title": "新生引航|信息传播学院2025级新生健步走活动圆满举行",
+    "chars": 1648,
+    "sha256": "343a9249d6487017",
+    "published": "2025-12-18",
+    "fetched_at": "2026-10-21T23:44:15+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c2065a265734": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c2065a265734/page.htm",
+    "title": "传播大讲堂第111期｜新媒体背景下短视频创作的发展趋势与实践创新",
+    "chars": 903,
+    "sha256": "5000fed9385af1bb",
+    "published": "2025-12-10",
+    "fetched_at": "2026-10-21T23:44:15+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c2065a265732": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c2065a265732/page.htm",
+    "title": "校地携手传文脉华裳雅韵进校园｜信息传播学院汉服文化专场活动即将启幕",
+    "chars": 1544,
+    "sha256": "1b4451b7ac34d23f",
+    "published": "2025-12-09",
+    "fetched_at": "2026-10-21T23:44:15+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c2065a265731": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c2065a265731/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作第五期｜媒介与文化研究：方法论及写作",
+    "chars": 923,
+    "sha256": "d05475ced2ccbda9",
+    "published": "2025-12-08",
+    "fetched_at": "2026-10-21T23:44:15+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c2065a265730": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c2065a265730/page.htm",
+    "title": "中国传媒大学研究生教育教学改革项目｜AI时代主流媒体的内容生产与传播",
+    "chars": 907,
+    "sha256": "aa71af426cab3fcc",
+    "published": "2025-12-08",
+    "fetched_at": "2026-10-21T23:44:16+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c14745a265741": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c14745a265741/page.htm",
+    "title": "新生引航|信息传播学院本科班赴朝阳公园开展心理健康主题班会活动",
+    "chars": 1760,
+    "sha256": "f4a7727c996dd64b",
+    "published": "2025-12-14",
+    "fetched_at": "2026-10-21T23:44:16+08:00",
+    "kind": "sitemap"
+  },
+  "20251230-c14745a265735": {
+    "url": "https://sic.cuc.edu.cn/2025/1230/c14745a265735/page.htm",
+    "title": "探秘新光影科技，走进机器人世界：信息传播学院师生赴北京经济技术开发区调研",
+    "chars": 2921,
+    "sha256": "4fde54f7b69886a1",
+    "published": "2025-12-11",
+    "fetched_at": "2026-10-21T23:44:16+08:00",
+    "kind": "sitemap"
+  },
+  "20251202-c4365a264687": {
+    "url": "https://sic.cuc.edu.cn/2025/1202/c4365a264687/page.htm",
+    "title": "第三届新时代出版家培育与研究研讨会成功举办",
+    "chars": 3802,
+    "sha256": "cf62b9d18d36eeae",
+    "published": "2025-11-19",
+    "fetched_at": "2026-10-21T23:44:16+08:00",
+    "kind": "sitemap"
+  },
+  "20251202-c2065a264692": {
+    "url": "https://sic.cuc.edu.cn/2025/1202/c2065a264692/page.htm",
+    "title": "中国传媒大学研究生教育改革项目｜AI时代，出版如何选题？",
+    "chars": 895,
+    "sha256": "423348214dfdf676",
+    "published": "2025-11-25",
+    "fetched_at": "2026-10-21T23:44:17+08:00",
+    "kind": "sitemap"
+  },
+  "20251202-c2065a264691": {
+    "url": "https://sic.cuc.edu.cn/2025/1202/c2065a264691/page.htm",
+    "title": "传播大讲堂第110期｜智能时代的IP运营实战方法",
+    "chars": 887,
+    "sha256": "221d71a72902edaf",
+    "published": "2025-11-24",
+    "fetched_at": "2026-10-21T23:44:17+08:00",
+    "kind": "sitemap"
+  },
+  "20251202-c2065a264690": {
+    "url": "https://sic.cuc.edu.cn/2025/1202/c2065a264690/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作第四期｜人工智能可以写好影视艺术论文吗？一种语言学的视角",
+    "chars": 943,
+    "sha256": "13942331bfa844d2",
+    "published": "2025-11-22",
+    "fetched_at": "2026-10-21T23:44:17+08:00",
+    "kind": "sitemap"
+  },
+  "20251201-c2065a264615": {
+    "url": "https://sic.cuc.edu.cn/2025/1201/c2065a264615/page.htm",
+    "title": "职路灯塔—校友讲座｜国企、公务员与高校的多元职业发展之路",
+    "chars": 895,
+    "sha256": "061aa31bd25db218",
+    "published": "2025-11-16",
+    "fetched_at": "2026-10-21T23:44:17+08:00",
+    "kind": "sitemap"
+  },
+  "20251201-c2065a264608": {
+    "url": "https://sic.cuc.edu.cn/2025/1201/c2065a264608/page.htm",
+    "title": "传播大讲堂第109期｜短实新：新时代马克思主义新闻文风建设",
+    "chars": 898,
+    "sha256": "340ec140dc62b0de",
+    "published": "2025-11-12",
+    "fetched_at": "2026-10-21T23:44:18+08:00",
+    "kind": "sitemap"
+  },
+  "20251201-c2065a264604": {
+    "url": "https://sic.cuc.edu.cn/2025/1201/c2065a264604/page.htm",
+    "title": "传播大讲堂第108期｜少年，我们一起读马克思吧！一堂提供认知升维的思政课",
+    "chars": 912,
+    "sha256": "054a126a349686bc",
+    "published": "2025-11-06",
+    "fetched_at": "2026-10-21T23:44:18+08:00",
+    "kind": "sitemap"
+  },
+  "20251201-c4366a264601": {
+    "url": "https://sic.cuc.edu.cn/2025/1201/c4366a264601/page.htm",
+    "title": "我院学生作品荣获2025年度出版学科专业产学研协同项目创意作品特等奖",
+    "chars": 1866,
+    "sha256": "ed4e9484133314e7",
+    "published": "2025-11-03",
+    "fetched_at": "2026-10-21T23:44:18+08:00",
+    "kind": "sitemap"
+  },
+  "20251201-c14744a264613": {
+    "url": "https://sic.cuc.edu.cn/2025/1201/c14744a264613/page.htm",
+    "title": "红船精神砺初心 立德树人启新程 | 我院师生赴浙江红船干部学院开展主题党日暨教师能力培训",
+    "chars": 4034,
+    "sha256": "c03058c085e139a6",
+    "published": "2025-11-14",
+    "fetched_at": "2026-10-21T23:44:18+08:00",
+    "kind": "sitemap"
+  },
+  "20251101-c4365a261714": {
+    "url": "https://sic.cuc.edu.cn/2025/1101/c4365a261714/page.htm",
+    "title": "第七届全国高等院校信息传播师资班在武汉举办",
+    "chars": 4177,
+    "sha256": "4b2557a26c36cf64",
+    "published": "2025-10-29",
+    "fetched_at": "2026-10-21T23:44:19+08:00",
+    "kind": "sitemap"
+  },
+  "20251101-c14745a261713": {
+    "url": "https://sic.cuc.edu.cn/2025/1101/c14745a261713/page.htm",
+    "title": "信传向新，共叙情长｜信息传播学院2025年校友返校日活动圆满举行",
+    "chars": 2134,
+    "sha256": "7c865c8314b66ce6",
+    "published": "2025-10-28",
+    "fetched_at": "2026-10-21T23:44:19+08:00",
+    "kind": "sitemap"
+  },
+  "20251028-c2065a261565": {
+    "url": "https://sic.cuc.edu.cn/2025/1028/c2065a261565/page.htm",
+    "title": "传播大讲堂第107期｜中国数字阅读行业发展现状与趋势",
+    "chars": 891,
+    "sha256": "cc1c4c6199320447",
+    "published": "2025-10-28",
+    "fetched_at": "2026-10-21T23:44:19+08:00",
+    "kind": "sitemap"
+  },
+  "20251028-c2065a261564": {
+    "url": "https://sic.cuc.edu.cn/2025/1028/c2065a261564/page.htm",
+    "title": "传播大讲堂第106期｜提升国际传播效能的挑战与机遇",
+    "chars": 889,
+    "sha256": "db453e80e5d816ee",
+    "published": "2025-10-28",
+    "fetched_at": "2026-10-21T23:44:19+08:00",
+    "kind": "sitemap"
+  },
+  "20251028-c2065a261563": {
+    "url": "https://sic.cuc.edu.cn/2025/1028/c2065a261563/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作工作坊｜中国当代大众文化的历史演变",
+    "chars": 921,
+    "sha256": "ecdbb6adec2b8a8d",
+    "published": "2025-10-24",
+    "fetched_at": "2026-10-21T23:44:20+08:00",
+    "kind": "sitemap"
+  },
+  "20251025-c2065a261495": {
+    "url": "https://sic.cuc.edu.cn/2025/1025/c2065a261495/page.htm",
+    "title": "校友返校日 | 请回信息传播学院“新家”看看",
+    "chars": 1550,
+    "sha256": "145b169ef2300739",
+    "published": "2025-10-25",
+    "fetched_at": "2026-10-21T23:44:20+08:00",
+    "kind": "sitemap"
+  },
+  "20251024-c2065a261493": {
+    "url": "https://sic.cuc.edu.cn/2025/1024/c2065a261493/page.htm",
+    "title": "传播大讲堂第一百零五期｜从传媒学子到航天一线：聊聊国企党建宣传岗职业规划",
+    "chars": 911,
+    "sha256": "b8c54559124d5277",
+    "published": "2025-10-24",
+    "fetched_at": "2026-10-21T23:44:20+08:00",
+    "kind": "sitemap"
+  },
+  "20251021-c2065a261305": {
+    "url": "https://sic.cuc.edu.cn/2025/1021/c2065a261305/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作工作坊｜媒体融合语境下的文艺评论写作",
+    "chars": 923,
+    "sha256": "2d08101fdb385f77",
+    "published": "2025-10-21",
+    "fetched_at": "2026-10-21T23:44:20+08:00",
+    "kind": "sitemap"
+  },
+  "20251021-c2065a261292": {
+    "url": "https://sic.cuc.edu.cn/2025/1021/c2065a261292/page.htm",
+    "title": "国际学术会议写作指导工作坊 ｜ From ldea to Publication",
+    "chars": 919,
+    "sha256": "2c746153ab634aae",
+    "published": "2025-10-21",
+    "fetched_at": "2026-10-21T23:44:21+08:00",
+    "kind": "sitemap"
+  },
+  "20251021-c2065a261287": {
+    "url": "https://sic.cuc.edu.cn/2025/1021/c2065a261287/page.htm",
+    "title": "在传播与艺术之间：以人文社科为总体视野的论文写作工作坊｜《国家与声音——声音现代性的本土探索》",
+    "chars": 933,
+    "sha256": "4baacb1a2f05a058",
+    "published": "2025-10-21",
+    "fetched_at": "2026-10-21T23:44:21+08:00",
+    "kind": "sitemap"
+  },
+  "20251021-c2065a261286": {
+    "url": "https://sic.cuc.edu.cn/2025/1021/c2065a261286/page.htm",
+    "title": "国际学术会议写作指导工作坊｜On the Shoulders of Giants",
+    "chars": 919,
+    "sha256": "23dca39a46522b43",
+    "published": "2025-10-21",
+    "fetched_at": "2026-10-21T23:44:21+08:00",
+    "kind": "sitemap"
+  }
+}

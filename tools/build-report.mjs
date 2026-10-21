@@ -1,0 +1,340 @@
+// 把 analyze.mjs 的指标渲染成一份可交付的体检报告（单文件 HTML）
+import { readFileSync, writeFileSync } from 'node:fs';
+
+const [v1, v2] = JSON.parse(readFileSync('report-data.json', 'utf8'));
+const D = v1.duration;
+const pct = (t) => ((t / D) * 100).toFixed(2) + '%';
+const w = (d) => ((d / D) * 100).toFixed(2) + '%';
+
+const segs = JSON.parse(readFileSync('sample-v1.json', 'utf8')).segments;
+
+const trackSegs = segs
+  .map((s) => `      <i style="left:${pct(s.s)};width:${w(s.e - s.s)}"></i>`)
+  .join('\n');
+
+const pauseEls = v1.pauses
+  .map(
+    (p) => `      <b style="left:${pct(p.at)};width:${w(p.dur)}"><span>${p.dur}s</span></b>`
+  )
+  .join('\n');
+
+const fillerEls = v1.fillerHits
+  .map((h) => `      <u style="left:${pct(h.at)}"></u>`)
+  .join('\n');
+
+const dims = [
+  { k: '语速', s: v1.scores.rate, note: `${v1.rate} 字/分 · 偏快`, max: 100 },
+  { k: '停顿', s: v1.scores.pause, note: `${v1.pauseCount} 次长停顿 · 最长 ${v1.maxPause}s`, max: 100 },
+  { k: '口头禅', s: v1.scores.filler, note: `${v1.fillerCount} 次 · 每百字 ${v1.fillerPer100}`, max: 100 },
+  { k: '结构', s: v1.scores.structure, note: v1.hasThesis ? '有开场观点' : '开场无观点', max: 100 },
+];
+
+const dimBars = dims
+  .map(
+    (d) => `      <div class="dim">
+        <div class="dim-h"><span>${d.k}</span><em>${d.s}</em></div>
+        <div class="bar"><i style="width:${d.s}%" data-low="${d.s < 60}"></i></div>
+        <div class="dim-n">${d.note}</div>
+      </div>`
+  )
+  .join('\n');
+
+const top3 = Object.entries(v1.byWord)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 3)
+  .map(
+    ([word, n]) => `        <li><b>「${word}」</b><span>×${n}</span></li>`
+  )
+  .join('\n');
+
+const compare = [
+  ['语速（字/分）', v1.rate, v2.rate, '越低越好', 300],
+  ['长停顿（次）', v1.pauseCount, v2.pauseCount, '越低越好', 6],
+  ['口头禅（次）', v1.fillerCount, v2.fillerCount, '越低越好', 34],
+  ['最长句（字）', v1.longest, v2.longest, '越低越好', 40],
+  ['总分', v1.total, v2.total, '越高越好', 100],
+]
+  .map(
+    ([label, a, b, hint, max]) => `      <div class="cmp">
+        <div class="cmp-l">${label}</div>
+        <div class="cmp-bars">
+          <div class="cb"><div class="tk"><i class="old" style="width:${(a / max) * 100}%"></i></div><em>${a}</em></div>
+          <div class="cb"><div class="tk"><i class="new" style="width:${(b / max) * 100}%"></i></div><em>${b}</em></div>
+        </div>
+      </div>`
+  )
+  .join('\n');
+
+const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>表达体检报告 · 答辩开场</title>
+<style>
+  :root{
+    --paper:#f5f6f4; --card:#fffefb; --ink:#16191b; --muted:#6b7069; --faint:#9aa09a;
+    --line:#dcdfdb; --teal:#0f6b64; --amber:#a9631a; --red:#a8322a; --ok:#2f6b4f;
+    --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;
+    --mono:"Cascadia Mono","JetBrains Mono",ui-monospace,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       padding:clamp(20px,3.4vw,52px) clamp(16px,3.4vw,52px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto}
+
+  /* header */
+  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;
+       padding-bottom:16px;border-bottom:2px solid var(--ink)}
+  .kicker{font-size:10.5px;letter-spacing:.24em;color:var(--muted);font-weight:700}
+  h1{font-size:clamp(22px,2.6vw,32px);font-weight:800;letter-spacing:-.02em;margin-top:8px;line-height:1.2}
+  .meta{margin-top:9px;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.03em}
+  .meta b{color:var(--ink);font-weight:600}
+  .tagbox{text-align:right;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.9}
+  .tagbox .n{font-family:var(--sans);font-size:12px;color:var(--ink);letter-spacing:.06em;font-weight:700}
+
+  /* score band */
+  .band{display:grid;grid-template-columns:250px 1fr;gap:clamp(18px,3vw,44px);
+        padding:clamp(18px,2.6vw,30px) 0;border-bottom:1px solid var(--line);align-items:start}
+  .score{display:flex;align-items:baseline;gap:10px}
+  .score .v{font-family:var(--mono);font-size:clamp(56px,7vw,84px);font-weight:700;line-height:.85;
+            color:var(--red);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .score .u{font-size:12px;color:var(--muted)}
+  .grade{margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
+         color:var(--red);border:1px solid currentColor;border-radius:2px;padding:4px 9px;letter-spacing:.08em}
+  .diag{font-size:14.5px;line-height:1.85;color:#3d4340}
+  .diag b{color:var(--ink);font-weight:700}
+  .dims{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.6vw,22px);margin-top:18px}
+  .dim-h{display:flex;justify-content:space-between;align-items:baseline}
+  .dim-h span{font-size:12px;font-weight:700;letter-spacing:.04em}
+  .dim-h em{font-family:var(--mono);font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
+  .bar{height:4px;background:#e7e9e5;margin:7px 0 6px;border-radius:2px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--teal);border-radius:2px}
+  .bar i[data-low="true"]{background:var(--red)}
+  .dim-n{font-size:11px;color:var(--muted);line-height:1.5}
+
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+           border:1px solid var(--line);margin-top:clamp(18px,2.4vw,28px)}
+  .metric{background:var(--card);padding:14px 16px}
+  .metric .k{font-size:10.5px;letter-spacing:.14em;color:var(--muted);font-weight:700}
+  .metric .v{font-family:var(--mono);font-size:22px;font-weight:700;margin-top:6px;letter-spacing:-.02em}
+  .metric .v small{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--muted);margin-left:3px}
+  .metric .s{font-size:11.5px;color:var(--faint);margin-top:4px}
+
+  /* section */
+  section{margin-top:clamp(24px,3vw,38px)}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .sec-h .num{font-family:var(--mono);font-size:10.5px;color:var(--teal);font-weight:700}
+  .sec-h h2{font-size:13px;letter-spacing:.1em;font-weight:700}
+  .sec-h .hint{margin-left:auto;font-size:11px;color:var(--faint)}
+
+  /* timeline */
+  .tl{background:var(--card);border:1px solid var(--line);padding:18px 18px 12px}
+  .axis{position:relative;height:118px}
+  .track{position:absolute;left:0;right:0;top:46px;height:22px;background:#eeefec;border-radius:1px}
+  .track i{position:absolute;top:0;bottom:0;background:#c9cec8}
+  .axis u{position:absolute;top:72px;width:2px;height:10px;background:var(--amber);border-radius:1px;opacity:.9}
+  .axis b{position:absolute;top:42px;height:30px;background:rgba(168,50,42,.14);
+          border-left:1px solid rgba(168,50,42,.55);border-right:1px solid rgba(168,50,42,.55)}
+  .axis b span{position:absolute;top:-16px;left:0;font-family:var(--mono);font-style:normal;
+               font-size:10px;color:var(--red);white-space:nowrap}
+  .ruler{position:relative;height:14px;margin-top:6px;border-top:1px solid var(--line)}
+  .ruler i{position:absolute;top:0;font-family:var(--mono);font-style:normal;font-size:9.5px;
+           color:var(--faint);padding-top:4px;border-left:1px solid var(--line);padding-left:3px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend .sw{width:10px;height:10px;border-radius:1px;display:inline-block}
+
+  /* edits */
+  .edit{display:grid;grid-template-columns:26px 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+  .edit:first-of-type{border-top:0}
+  .edit .n{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;padding-top:3px}
+  .edit .t{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink)}
+  .edit .why{font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:5px}
+  .edit .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:9px}
+  .edit .box{padding:10px 12px;font-size:13px;line-height:1.7;border-radius:2px}
+  .edit .box.before{background:#fbf1ee;color:#7a4a44;text-decoration:none;border-left:2px solid var(--red)}
+  .edit .box.after{background:#eef4f1;color:#2c4a41;border-left:2px solid var(--ok)}
+  .edit .box .lb{display:block;font-size:9.5px;letter-spacing:.16em;color:var(--faint);
+                 margin-bottom:5px;font-weight:700}
+
+  /* compare */
+  .cmps{background:var(--card);border:1px solid var(--line);padding:16px 18px}
+  .cmp{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center;padding:7px 0}
+  .cmp-l{font-size:12px;color:var(--muted)}
+  .cmp-bars{display:flex;flex-direction:column;gap:5px}
+  .cb{display:flex;align-items:center;gap:8px}
+  .cb .tk{flex:1;height:12px;background:#f0f2ef;border-radius:1px;overflow:hidden}
+  .cb i{display:block;height:100%}
+  .cb i.old{background:#c5bfb8}
+  .cb i.new{background:var(--teal)}
+  .cb em{flex:none;min-width:30px;font-family:var(--mono);font-style:normal;font-size:10.5px;
+         color:#5a5f58;text-align:left}
+  .cmp-legend{display:flex;gap:16px;align-items:center;font-size:11px;color:var(--muted);
+              margin-bottom:4px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+  .cmp-legend span{display:inline-flex;align-items:center;gap:6px}
+  .cmp-legend .dt{width:9px;height:9px;border-radius:1px;display:inline-block}
+  .cmp-legend .dt.old{background:#c5bfb8}
+  .cmp-legend .dt.new{background:var(--teal)}
+  .cmp-legend .tail{margin-left:auto;color:var(--faint)}
+
+  .foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:clamp(22px,3vw,34px);
+        padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+
+  @media (max-width:800px){
+    .band{grid-template-columns:1fr}
+    .dims{grid-template-columns:1fr 1fr}
+    .metrics{grid-template-columns:1fr 1fr}
+    .edit .cmp2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="kicker">表达体检报告 / EXPRESSION CHECKUP</div>
+      <h1>答辩开场 · 第一版</h1>
+      <div class="meta">时长 <b>${D.toFixed(1)}s</b> · 字数 <b>${v1.chars}</b> · 分段 <b>${segs.length}</b> · 采样自模拟 ASR 时间戳</div>
+    </div>
+    <div class="tagbox">
+      <div class="n">REPORT 001</div>
+      2026-10-20<br>
+      规则版本 v0.1
+    </div>
+  </div>
+
+  <div class="band">
+    <div>
+      <div class="score"><span class="v">${v1.total}</span><span class="u">/ 100</span></div>
+      <div class="grade">需重练</div>
+    </div>
+    <div>
+      <p class="diag">
+        语速 <b>${v1.rate} 字/分</b>，比舒适区（200–240）快了约 ${(v1.rate - 240).toFixed(0)} 字；
+        平均每 100 字冒出 <b>${v1.fillerPer100} 个口头禅</b>，其中「然后」一个人占了 ${v1.byWord['然后']} 次。
+        更要紧的是<b>开场 10 秒只有 ${v1.openingChars} 字，且没有观点</b>——听众在这 10 秒里还不知道你要讲什么。
+      </p>
+      <div class="dims">
+${dimBars}
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="k">语速</div>
+      <div class="v">${v1.rate}<small>字/分</small></div>
+      <div class="s">舒适区 200–240</div>
+    </div>
+    <div class="metric">
+      <div class="k">长停顿</div>
+      <div class="v">${v1.pauseCount}<small>次 · 最长 ${v1.maxPause}s</small></div>
+      <div class="s">≥ 1.2 秒计入</div>
+    </div>
+    <div class="metric">
+      <div class="k">口头禅</div>
+      <div class="v">${v1.fillerCount}<small>次</small></div>
+      <div class="s">每百字 ${v1.fillerPer100} 个</div>
+    </div>
+    <div class="metric">
+      <div class="k">最长句</div>
+      <div class="v">${v1.longest}<small>字</small></div>
+      <div class="s">平均 ${v1.avgLen} 字</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-h"><span class="num">01</span><h2>录音时间轴</h2><span class="hint">红色为长停顿，竖线为口头禅</span></div>
+    <div class="tl">
+      <div class="axis">
+        <div class="track">
+${trackSegs}
+        </div>
+${pauseEls}
+${fillerEls}
+      </div>
+      <div class="ruler">
+        <i style="left:0">0s</i><i style="left:25%">${(D * 0.25).toFixed(0)}s</i><i style="left:50%">${(D * 0.5).toFixed(0)}s</i><i style="left:75%">${(D * 0.75).toFixed(0)}s</i><i style="left:99%">${D.toFixed(0)}s</i>
+      </div>
+      <div class="legend">
+        <span><i class="sw" style="background:#c9cec8"></i>有声段落</span>
+        <span><i class="sw" style="background:rgba(168,50,42,.4)"></i>长停顿（≥1.2s）</span>
+        <span><i class="sw" style="background:var(--amber)"></i>口头禅</span>
+        <span>共 ${v1.fillerCount} 处口头禅，${v1.pauseCount} 处长停顿</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="num">02</span><h2>口头禅 TOP 3</h2><span class="hint">括号内为出现次数</span></div>
+    <ul style="list-style:none;display:flex;gap:clamp(10px,2vw,26px);flex-wrap:wrap">
+${top3}
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="num">03</span><h2>三处最该改</h2><span class="hint">改法已给出，可直接照读</span></div>
+
+    <div class="edit">
+      <div class="n">01</div>
+      <div>
+        <div class="t">开场 10 秒没有观点</div>
+        <div class="why">44 个字里塞了 3 个口头禅，听众听到的全是“我要开始讲了”，没有一个字在说“这事跟你有什么关系”。</div>
+        <div class="cmp2">
+          <div class="box before"><span class="lb">原句</span>嗯，大家好，然后我今天给大家分享一下我们组的这个项目。</div>
+          <div class="box after"><span class="lb">改后</span>我先说结论：校园办事最大的成本不是跑腿，是你不知道该带什么。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit">
+      <div class="n">02</div>
+      <div>
+        <div class="t">「然后」当成万能连接词</div>
+        <div class="why">全篇 ${v1.byWord['然后']} 次「然后」，跨越了背景、方案、进度三个不同层级。听众分不清你走到哪一段了——这不是口语习惯问题，是结构没有外化。</div>
+        <div class="cmp2">
+          <div class="box before"><span class="lb">原句</span>然后我们就想是不是可以做一个智能体……然后我们就开始做了……然后中间也遇到了很多困难……</div>
+          <div class="box after"><span class="lb">改后</span>先说问题。……<br>再说方案。……<br>最后是成果。……</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit">
+      <div class="n">03</div>
+      <div>
+        <div class="t">${v1.maxPause}s 的长停顿出现在转场处</div>
+        <div class="why">卡在「接下来我会从四个方面介绍」之前。转场是最容易卡的地方，因为你在现场组织下一段的结构。写死一句过渡语，把被动卡顿变成主动留白。</div>
+        <div class="cmp2">
+          <div class="box before"><span class="lb">原句</span>（停顿 ${v1.maxPause} 秒）嗯，接下来我会从四个方面来介绍我们的项目。</div>
+          <div class="box after"><span class="lb">改后</span>（停 1.5 秒）下面分三块说：问题、方案、结果。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="num">04</span><h2>重录对比</h2><span class="hint">内容几乎没改，改的是表达</span></div>
+    <div class="cmps">
+      <div class="cmp-legend">
+        <span><i class="dt old"></i>第一版 · ${v1.total} 分</span>
+        <span><i class="dt new"></i>第二版 · ${v2.total} 分</span>
+        <span class="tail">内容未改，仅调整表达</span>
+      </div>
+${compare}
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>分数由固定规则计算：语速 ×0.3 + 停顿 ×0.25 + 口头禅 ×0.2 + 结构 ×0.25</span>
+    <span>工具链 tools/analyze.mjs → 可复跑</span>
+  </div>
+
+</div>
+</body>
+</html>`;
+
+writeFileSync('../表达体检报告-样例.html', html, 'utf8');
+console.log('built: 表达体检报告-样例.html');

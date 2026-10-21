@@ -1,0 +1,124 @@
+标题: 征集｜2026年“智启未来·体创万象”首届智能体节正式启动
+公众号: 数智团学
+作者: 科创实践部
+发布时间: 2026-10-19T14:04:00.000Z
+摘要: 
+
+=== 正文 ===
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQnESjt2GxpX9OPI11CedO5B6dofugwQDrwT7xadMORK6JwWQLgThSIibsP9LcT9EmnPjNfpibnNclXeZKmN8QAEI2QOy5XFw1lZk/640?wx_fmt=gif&from=appmsg
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_gif/5A6UiatmFuQmGJU42ReJFxib4d7FAENrk1ricqeW1exbPTNaCvDCibU5uQnlQSUKyC8UBLLVAU9iaAayVcUexVYBEqjoEP36ia3I1uic1xAIb3FrQU/640?wx_fmt=gif&from=appmsg
+活动介绍
+About the Event
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_jpg/5A6UiatmFuQkYGe4lC74NYcWsqLPW0YmLM17ibHjOxsLMEyZQpcgrgAkkC8zt8avpnZJUksVVjl3HEWk89226iaq5hn82sO0X5bMKQWrZbaar8/640?wx_fmt=jpeg&from=appmsg
+想玩转大模型、打造属于你的校园智能体？
+数据科学与智能媒体学院2026年首届智能体节作品征集来啦！给你舞台，把AI创意落地真实校园场景！
+为落实教育部《“人工智能+教育” 行动计划》部署，引导同学们探索智能体前沿技术、开展创新实践，学院将于2026年11月下旬举办首届智能体节。活动包含开幕式暨学术论坛、智能体展演展示和闭幕式暨颁奖晚会，为广大师生搭建创作展示、交流互鉴的创新平台。
+PART 01
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQkPTFXwAAHy4FlgouAibQ97yd1U2YibPawMnUzfuWibDHkdaSeRoAYcNSpd1Xgf5cZkwzIjMTo8XtA1AlGCCxr2eb6k61ZAyoibxx0/640?wx_fmt=gif&from=appmsg
+活动对象
+Who Can Participate
+学校全体在校生，不限专业、不限年级
+PART 02
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_gif/5A6UiatmFuQnQibqZfQ7LmoFN0oficjpr3LvItgIUhYfKhrCSyZIH2v6Cb0IDnZgOEYFRUGsa5DbzIumbBLPibCcPXDgzSE6KAo71s42OK2l8qY/640?wx_fmt=gif&from=appmsg
+赛道设置
+Competition Tracks
+围绕校园真实场景，使用大模型API、Dify、FastGPT、Coze等开发工具打造智能体作品，四大赛道等你来挑战！
+01
+学习类
+Learning
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_png/5A6UiatmFuQlvFA9m8ak7p5cWPHvXlyibDVpjhRYyjRrlvF7tGqialcqib5r086HZR5mWChAE8zQxF85Uvibh60cJibq1XPpxpx9yjHs0XZ1AibE5U/640?wx_fmt=png&from=appmsg
+课程答疑、知识库考点查询、个性化伴学、语言学习助手
+02
+科研类
+Research
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_png/5A6UiatmFuQmG9BKY9uxm95ibyeM1iaDdeNM32iaTVoVtSHazPMmAQs5bdzZTRuqicCSKGU6vPVPo6xoslwZmhQDacO61adxqNcibNKuuW6KcB8xk/640?wx_fmt=png&from=appmsg
+文献梳理、科研数据分析、实验辅助、学术写作润色
+03
+管理类
+Management
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQmYgB3RLpmQhuo7Uh6znpYbWLNRJT0btlzVxD5xTHQlg5f2nFBxibxlnL6XJ3kiaUGsLZL34OkichvZmr5cdDQdE8fT7c7bJ5mu1s/640?wx_fmt=png&from=appmsg
+校园事务咨询、办事流程指引、学业或社团日程管理、通知信息聚合
+04
+创作类
+Creation
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQlLdCt6rUHPRCjia3bnJ1qvxIdicjru4NNS71BPxlPH3Rdl9Bqkdmiak1erUZGK4naERDfZpodOteP7atCFeuTF6iaIiaDIoDNxowSc/640?wx_fmt=png&from=appmsg
+文案剧本撰写、音视频创作辅助、多模态生成、互动叙事开发
+💡技术小提示：作品需要具备完整可用核心功能，提供部署链接/本地运行环境，如实标注使用的模型与开发框架，严守数据安全规范；可合理使用开源代码，需要在文档中注明。
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQlxC3rRs2fbIRx6EPpuNU536yMyEibjb0uLiaE6QMOMoSJUeIQITz9TdJG1QxQdKLNhESSxY9mpwXC9CDgSrFOqdn3WO5MXkXeRM/640?wx_fmt=png&from=appmsg
+PART 03
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQmlEGa9sSIa3iaCF24Mibq340hZVF8XaIJwboyVmrmzKVe0iahCRgARCa2Kgu8fQSFXV8IKSRtoGicsreBhYG18yKRicFB3lznPP0Aw/640?wx_fmt=gif&from=appmsg
+奖项设置
+Awards
+奖项纳入校级学科竞赛奖励范围，颁发官方荣誉证书。
+一等奖：奖金5000元，上限2支队伍
+二等奖：奖金2500元，上限4支队伍
+三等奖：奖金1000元，上限10支队伍
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQmNxpBuELicjWp8CKHfjxNebcicXywtwP1Flg4MjticLdEZiaSgncPfh0spmgefgxExTsQHjfqpoveUD4oaO18cI371rb3xRdagICY/640?wx_fmt=png&from=appmsg
+PART 04
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_gif/5A6UiatmFuQkMx8ALHttwQ7duC5c3GUBLujzbgekxuA967RYblc1qw2tic8ENJFQzQ1lYdlpKia9ibVMibLzWEdNIia11GZGQGEpZXlshib9fEr0RE/640?wx_fmt=gif&from=appmsg
+参赛方式
+How to Join
+1.个人参赛或者组队均可，队伍规模1‑5人，设置1名队长；每人仅限加入1支队伍，不可重复组队；
+2.每支队伍仅可提交1件参赛作品；
+3.可选择配备指导老师，最多2名。
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQkTmnKibVUJmAMTcicM4A6eJIhcHNXOcnekOMue8ASknwFJiaBrtaEQ2bjJWLLNhtJVmfbt7U0pJaXQptl21Oxqr96s2RMYvuOGBE/640?wx_fmt=png&from=appmsg
+PART 05
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQm2nyVv7Iyr9qpNlgHs4icIkn8wTPe4NVmWhn6MoHOvgGNuMtzq3CkDUyKez93SsYq4lEq8vrq1mYW2xVo9ukBbVIbcibIicPKzoo/640?wx_fmt=gif&from=appmsg
+作品要求
+Requirements
+原创性：作品为团队独立开发，严禁抄袭剽窃、一稿多投，违规直接取消参赛资格；
+合规性：遵守国家AI、网络与数据安全法规，不侵犯他人知识产权；
+参赛范围：已经商业化发布产品、存在知识产权纠纷的作品不可参赛；已参加同类赛事的作品原则上不能重复提交，重大迭代改进作品需要组委会审核通过。
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQkl7YFgY3DskXSfxSPczCODgHokdCDLBOLc6onqcic1s4GrrpGMGiaTETAGpsLhicKYYmzVPyTFHCN0CChf0YJreiaa8WwbQPP2dUU/640?wx_fmt=png&from=appmsg
+PART 06
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQkt8BhCExv4D3giaU4ic9aVzsQK9cUJ5mmGQy0pz2g1n1XX0gFvVjIUNiasHqNrxfezibXJu6TfI3kU3DheVMrY4V9k2ATG34nEiaNw/640?wx_fmt=gif&from=appmsg
+提交材料
+Submission Materials
+作品报名表：填写作品赛道、团队信息、研发背景、创新亮点；
+成果文件：3-5分钟MP4演示视频、功能截图、部署链接或者本地安装包；
+设计文档：不少于1000字，写清设计思路、技术方案、模型框架、功能与场景；
+授权承诺书：全体队员签字，原创声明+学校展览宣传授权。
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_png/5A6UiatmFuQkWsXUspicPYc0fYiaJXbaZvKL9EyKMCX2aSYRvn7hyiasejxN1hMO8IZBpiaHkXIVEApkW2tYdzaqXrqQwJIrDXacmnW4K4cLpnsY/640?wx_fmt=png&from=appmsg
+PART 07
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQn5t6ssdNV6fiatw7GcHU9o9F12xW54H7jLJWuYG8zl1icN2jUibKbsoQLAvkIVbKLuiaLibrUy5FQvSPlibUYEibwggAaxJ3vZfJqN8I/640?wx_fmt=gif&from=appmsg
+重要时间点
+Key Dates
+1.队伍报名：10月25日前
+队长扫描下方问卷表单二维码完成预报名
+2.作品提交：11月15日23:59前
+所有材料打包压缩发送邮箱，逾期不予受理
+邮箱：cuc_zntj@163.com
+压缩包命名：赛道-作品名称-队长姓名
+3.资格核验&初筛：11月22日前
+材料核验、原创性审查
+4.初筛名单公示：11月24日前
+公示入围作品，接受实名异议
+5.智能体节活动：11月下旬（另行通知）
+学术论坛、作品路演展演、颁奖晚会
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQm6IAF2Pwy5VmR24B36yMSPXt5CU3dlZFT2PsAlboM9Tz0ar3vYibicA0gRDEdZJE2IAniaKMH0Xb68HxLkgOPrWTtEvSRTV5AVog/640?wx_fmt=png&from=appmsg
+PART 08
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_gif/5A6UiatmFuQkGibxXhycJoiaF7xugWWcnXKaW087zptXa79HNOdVlMOqrA9eGHvkdibVkGoaSjXdzkdDME6tmcIvfkYmdajfnZy7tfogG7lm2xo/640?wx_fmt=gif&from=appmsg
+报名咨询
+Registration and Contact
+队长务必在10月25日前扫描【问卷表单】二维码填写队伍报名问卷。
+[图片] https://mmbiz.qpic.cn/sz_mmbiz_jpg/5A6UiatmFuQm94xh4RrmGbXlb8JIk0P9EjpUWPovkKXu7uND6ViaMnian431477qPOY6A49picAhyMCU0Wa0Vd1168jPTFIHgwyhtTIYWVspXPc/640?wx_fmt=jpeg&from=appmsg
+问卷表单
+全体参赛同学扫描【官方通知QQ群】二维码进群，备注格式：队伍名称+姓名
+[图片] https://mmbiz.qpic.cn/mmbiz_jpg/5A6UiatmFuQlp99es1FyMU6AXhNp3WiaoHxFK9MfcAxRNNso2HibLOxv1ZEwFV2zqlHZPurdtiaVegEmbQRO5f13ycq4icEWna271RVnwFJ7dCUY/640?wx_fmt=jpeg&from=appmsg
+赛事通知、模板文件、评审答辩安排全部在 QQ 群发布，请务必留意群消息！
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQmEG8yUIscz1knSiavLmFnibv7GYMDvCeRWsubeG8kcKu68p0UrZsJLwuUYEDPW2FyOgHhrskE4Ob17yMiaYib7AxNu4fjJoDLzNAc/640?wx_fmt=png&from=appmsg
+欢迎全校同学大胆构想
+用智能体技术解决校园真实问题
+把你的AI奇思妙想
+变成看得见的作品
+首届智能体节期待你的参与
+[图片] https://mmbiz.qpic.cn/mmbiz_png/5A6UiatmFuQkJeIcdStSichXX1FTORwYicWaib4z8TaIF8FfO4OrbLrmHgfG4jkX73q67z0hz4K6syjL1KEOSqvehl8UvjmpsIQFHytLVrEX4UQ/640?wx_fmt=png&from=appmsg
+-END-
+[图片] https://mmbiz.qpic.cn/mmbiz_gif/5A6UiatmFuQkp8GHC1gbt6cpv4tI4j3gUiaEPEsa1xPGsO388WYNfVVun5A4rhS82LticMHDFfn6stRUNokNWJjvZ7CPyHMowV4Y0xMb0YbWD0/640?wx_fmt=gif&from=appmsg
+排版 | 陈奕帆
+文案 | 魏来 陈奕帆
+责编 | 陈奕帆
+主编 | 汤明畅 李佳恩 姜婷馨 沙琰焯
+编审 | 张昕 孙剑仪 沈奕彤
+预览时标签不可点
+不喜欢

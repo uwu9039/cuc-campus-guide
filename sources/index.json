@@ -1,0 +1,146 @@
+{
+  "20230221-c8498a202280": {
+    "url": "https://its.cuc.edu.cn/2023/0221/c8498a202280/page.htm",
+    "title": "校园网认证服务",
+    "chars": 1521,
+    "sha256": "0b3e5220019d1f0c",
+    "fetched_at": "2026-10-20T20:37:50+08:00"
+  },
+  "20231016-c8508a212715": {
+    "url": "https://its.cuc.edu.cn/2023/1016/c8508a212715/page.htm",
+    "title": "修改统一身份认证账号密码",
+    "chars": 892,
+    "sha256": "88dcf4f2a357b634",
+    "fetched_at": "2026-10-20T20:37:50+08:00"
+  },
+  "its-xwVPN": {
+    "url": "https://its.cuc.edu.cn/xwVPN/list.htm",
+    "title": "校外VPN",
+    "chars": 1410,
+    "sha256": "56d6079e1661a6ab",
+    "fetched_at": "2026-10-20T20:37:51+08:00"
+  },
+  "its-xykbk": {
+    "url": "https://its.cuc.edu.cn/xykbk/list.htm",
+    "title": "校园卡补卡",
+    "chars": 157,
+    "sha256": "2b2ed1c1e23e7cb7",
+    "fetched_at": "2026-10-20T20:37:52+08:00"
+  },
+  "20201124-c13068a175987": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a175987/page.htm",
+    "title": "全国大学生英语四、六级考试（CET）",
+    "chars": 916,
+    "sha256": "d6976354ad8b614f",
+    "fetched_at": "2026-10-20T20:37:53+08:00"
+  },
+  "20201124-c13068a176003": {
+    "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a176003/page.htm",
+    "title": "课程置换及学分认定",
+    "chars": 547,
+    "sha256": "60a6a66608147859",
+    "fetched_at": "2026-10-20T20:37:55+08:00"
+  },
+  "20201127-c13068a176243": {
+    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176243/page.htm",
+    "title": "补（退）选课办理流程",
+    "chars": 934,
+    "sha256": "d999eed2c2c872fe",
+    "fetched_at": "2026-10-20T20:37:56+08:00"
+  },
+  "20201127-c13068a176245": {
+    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176245/page.htm",
+    "title": "体育课免修",
+    "chars": 953,
+    "sha256": "94529ff0a81b3a65",
+    "fetched_at": "2026-10-20T20:37:58+08:00"
+  },
+  "20201127-c13068a176247": {
+    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176247/page.htm",
+    "title": "自修办理流程",
+    "chars": 661,
+    "sha256": "8fdcb1212470cc8e",
+    "fetched_at": "2026-10-20T20:38:01+08:00"
+  },
+  "20201222-c13068a177272": {
+    "url": "https://jwc.cuc.edu.cn/2020/1222/c13068a177272/page.htm",
+    "title": "在读证明办理流程",
+    "chars": 794,
+    "sha256": "1bfb3b5365d16ef4",
+    "fetched_at": "2026-10-20T20:38:01+08:00"
+  },
+  "20210128-c13068a178013": {
+    "url": "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm",
+    "title": "成绩单办理",
+    "chars": 870,
+    "sha256": "ded4606eab95b689",
+    "fetched_at": "2026-10-20T20:38:01+08:00"
+  },
+  "20260316-c13070a267671": {
+    "url": "https://jwc.cuc.edu.cn/2026/0316/c13070a267671/page.htm",
+    "title": "成绩复议申请单",
+    "chars": 603,
+    "sha256": "b35bbcd5364942fe",
+    "fetched_at": "2026-10-20T20:38:02+08:00"
+  },
+  "tizhi-2024-pdf": {
+    "url": "https://jwc.cuc.edu.cn/_upload/article/files/fb/c6/1d57935144caba115fc4833b765c/f053049e-6d05-4ad8-9498-ac07595f4609.pdf",
+    "title": "中国传媒大学《国家学生体质健康标准》实施办法（2024年修订）· 本科生院〔2024〕115号 PDF",
+    "chars": 2019,
+    "sha256": "be5be300306c00d6",
+    "fetched_at": "2026-10-20T20:48:02+08:00"
+  },
+  "xueji-2025": {
+    "url": "https://jwc.cuc.edu.cn/2025/1118/c13082a263811/page.htm",
+    "title": "中国传媒大学本科生学籍管理规定（中传教字〔2025〕195号）",
+    "chars": 7940,
+    "sha256": "e979a1178d616bd4",
+    "fetched_at": "2026-10-21T23:19:15+08:00",
+    "kind": "pdf"
+  },
+  "zhuanzhuanye-2025": {
+    "url": "（本地文件，未入库）",
+    "title": "中国传媒大学本科生转专业管理办法（2025 年修订）· 本科生院〔2025〕110 号 · 本地 PDF",
+    "chars": 2858,
+    "sha256": "eea78884b941e10a",
+    "fetched_at": "2026-10-21T23:13:13+08:00",
+    "kind": "pdf",
+    "local_path": "（本地路径已隐藏）"
+  },
+  "本科生学籍管理规定-中传教字2025-195号": {
+    "url": "（本地文件，未入库）",
+    "title": "本科生学籍管理规定-中传教字2025-195号",
+    "chars": 7940,
+    "pages": 18,
+    "sha256": "e979a1178d616bd4",
+    "fetched_at": "2026-10-21T23:15:21+08:00",
+    "kind": "pdf",
+    "local_path": "（本地路径已隐藏）"
+  },
+  "本科生转专业管理办法-2025修订": {
+    "url": "（本地文件，未入库）",
+    "title": "本科生转专业管理办法-2025修订",
+    "chars": 2858,
+    "pages": 7,
+    "sha256": "eea78884b941e10a",
+    "fetched_at": "2026-10-21T23:15:22+08:00",
+    "kind": "pdf",
+    "local_path": "（本地路径已隐藏）"
+  },
+  "xuanke-2025": {
+    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258430/page.htm",
+    "title": "中国传媒大学本科生选课管理办法（本科生院〔2025〕65 号）",
+    "chars": 1945,
+    "sha256": "4b4b86432be59f83",
+    "fetched_at": "2026-10-21T23:19:15+08:00",
+    "kind": "pdf"
+  },
+  "tiyu-2025": {
+    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258431/page.htm",
+    "title": "关于《中国传媒大学本科生体育课程管理规定》的补充规定（本科生院〔2025〕68 号）",
+    "chars": 643,
+    "sha256": "7d4f66a37954e7d6",
+    "fetched_at": "2026-10-21T23:19:15+08:00",
+    "kind": "pdf"
+  }
+}

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>校园办事向导</title>
+<style>
+  :root{
+    --paper:#f5f2ec; --sheet:#fffdf8; --ink:#1a1a18; --muted:#6f6a5f; --faint:#9c9587;
+    --line:#d9d3c6; --seal:#a8322a; --ok:#2f6b4f; --amber:#a9631a;
+    --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;
+    --mono:"Cascadia Mono","JetBrains Mono",ui-monospace,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;
+       padding:clamp(18px,3vw,40px) clamp(14px,3vw,40px) 80px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto}
+  a{color:var(--seal);text-decoration:none;border-bottom:1px solid rgba(168,50,42,.3)}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;
+         padding-bottom:14px;border-bottom:2px solid var(--ink)}
+  .kicker{font-size:10.5px;letter-spacing:.22em;color:var(--muted);font-weight:700}
+  h1{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  h1 em{font-style:normal;color:var(--seal)}
+  .status{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:11px;font-weight:700;
+        border:1px solid var(--line);border-radius:2px;padding:4px 9px;background:var(--sheet);color:var(--muted)}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+  .dot.on{background:var(--ok)}
+  .dot.off{background:var(--amber)}
+
+  .ask{margin-top:clamp(20px,3vw,30px)}
+  textarea{width:100%;min-height:74px;resize:vertical;font-family:inherit;font-size:16px;line-height:1.7;
+           padding:14px 16px;border:1px solid var(--line);border-radius:2px;background:var(--sheet);color:var(--ink);outline:none}
+  textarea:focus{border-color:var(--ink)}
+  .row{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:14px;font-weight:700;padding:9px 18px;border-radius:2px;cursor:pointer;
+         border:1px solid var(--ink);background:var(--ink);color:var(--paper);letter-spacing:.02em}
+  button:hover{opacity:.88}
+  button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  button:disabled{opacity:.45;cursor:default}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:var(--sheet);
+        border-radius:2px;padding:5px 10px;cursor:pointer}
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+
+  .hint{font-size:12.5px;color:var(--faint);margin-top:10px}
+  .presets{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
+  .presets summary{cursor:pointer;font-size:12px;color:var(--muted);letter-spacing:.04em;list-style:none}
+  .presets summary::-webkit-details-marker{display:none}
+  .presets summary::before{content:"＋ ";color:var(--seal);font-weight:700}
+  .presets[open] summary::before{content:"－ "}
+  .pgroup{margin-top:12px}
+  .pgname{font-size:10px;letter-spacing:.16em;color:var(--faint);font-weight:700;margin-bottom:6px}
+  .err{font-size:13px;color:var(--seal);margin-top:10px}
+
+  /* ---- result sheet ---- */
+  .sheet{margin-top:26px;background:var(--sheet);border:1px solid var(--line);border-top:3px solid var(--ink);
+         padding:clamp(16px,2.4vw,26px);box-shadow:0 10px 30px -22px rgba(26,26,24,.5)}
+  .sheet-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+             padding-bottom:13px;border-bottom:1px dashed var(--line)}
+  .sheet-top .t{font-size:21px;font-weight:800;letter-spacing:-.01em}
+  .sheet-top .s{font-size:11.5px;color:var(--muted);margin-top:5px;letter-spacing:.03em}
+  .badge{font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 7px;border-radius:2px;white-space:nowrap}
+  .badge.v{background:#e8f1ec;color:var(--ok)}
+  .badge.p{background:#fbf1e3;color:var(--amber)}
+  .seal{flex:none;border:1.5px solid var(--seal);color:var(--seal);border-radius:3px;padding:4px 8px;
+        font-size:9.5px;font-weight:700;letter-spacing:.14em;line-height:1.5;text-align:center;transform:rotate(-3deg)}
+
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .tag{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);
+       border-radius:2px;padding:4px 8px;background:var(--paper)}
+
+  section.blk{padding:15px 0;border-bottom:1px solid #efeade}
+  section.blk:last-child{border-bottom:0;padding-bottom:2px}
+  section.blk:empty{display:none}
+  .bh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .bh .i{font-family:var(--mono);font-size:10px;color:var(--seal);font-weight:700}
+  .bh .h{font-size:10.5px;letter-spacing:.16em;color:var(--muted);font-weight:700}
+
+  .route{list-style:none}
+  .route li{display:grid;grid-template-columns:76px 1fr;gap:11px;font-size:13.5px;padding:6px 0}
+  .route li+li{border-top:1px dotted #e5e0d3}
+  .route .when{font-family:var(--mono);font-size:10.5px;color:var(--seal);padding-top:3px}
+  .route .where{color:var(--muted);font-size:12.5px}
+
+  .checks{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .checks li{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+  .box{flex:none;width:15px;height:15px;border:1.5px solid #b9b2a3;border-radius:2px;margin-top:3px;
+       display:flex;align-items:center;justify-content:center}
+  .box.on{background:var(--ok);border-color:var(--ok)}
+  .box.on::after{content:"";width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;
+                 transform:rotate(-45deg) translateY(-1px)}
+  .checks .note{color:var(--muted);font-size:12.5px}
+
+  .trap{border-left:3px solid var(--seal);background:#fbf1ee;padding:10px 13px}
+  .trap li{font-size:13px;line-height:1.65;display:flex;gap:8px;list-style:none}
+  .trap li::before{content:"—";color:var(--seal);flex:none}
+  .trap ul{display:flex;flex-direction:column;gap:7px}
+
+  .src{font-size:12.5px;color:var(--muted);line-height:1.8;word-break:break-all}
+  .src b{color:var(--ink)}
+
+  .slots{display:grid;gap:10px}
+  .slot{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .slot label{font-size:13.5px}
+  .slot select,.slot input{font-family:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);
+        border-radius:2px;background:var(--paper);color:var(--ink);min-width:170px}
+
+  pre.draft{font-family:var(--mono);font-size:12.5px;line-height:1.85;white-space:pre-wrap;background:var(--paper);
+            border:1px solid var(--line);padding:13px 15px;border-radius:2px;color:#3d3a34}
+
+  .photo{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .photo input[type=file]{font-size:12.5px}
+  .vres{margin-top:12px;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  .vres table{width:100%;border-collapse:collapse;font-size:13px}
+  .vres th,.vres td{text-align:left;padding:7px 10px;border-bottom:1px solid #efeade}
+  .vres th{font-size:10.5px;letter-spacing:.12em;color:var(--muted);background:var(--paper);font-weight:700}
+  .vres tr:last-child td{border-bottom:0}
+  .st{font-family:var(--mono);font-size:11.5px;font-weight:700}
+  .st.ok{color:var(--ok)} .st.no{color:var(--seal)} .st.un{color:var(--amber)}
+  .vsum{padding:9px 10px;font-size:12.5px;background:var(--paper);color:var(--muted);border-top:1px solid var(--line)}
+
+  .lowbar{margin-top:12px;padding:9px 12px;border-left:3px solid var(--amber);background:#fbf1e3;
+          display:flex;flex-direction:column;gap:7px}
+  .lowbar>span{font-size:12.5px;color:#7a5a24;font-weight:700}
+  .lowbar .chips{margin-top:0}
+
+  .adv{margin-top:11px;border-left:3px solid var(--amber);background:#fdf8ee;padding:9px 12px;
+       font-size:12.5px;color:#7a5a24;line-height:1.7}
+  .adv b{display:block;font-size:9.5px;letter-spacing:.14em;margin-bottom:5px;font-weight:700}
+  .adv ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+
+  /* 问题归一化 + 聚焦回答 */
+  .qnorm{margin-top:22px;font-size:13px;color:var(--muted);line-height:1.7}
+  .qnorm span{color:var(--seal);font-weight:700}
+  .ablock{margin-top:10px;background:var(--sheet);border:1px solid var(--line);border-left:3px solid var(--ink);
+          padding:16px 18px}
+  .aone + .aone{margin-top:14px;padding-top:13px;border-top:1px dashed var(--line)}
+  .alab{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:700;margin-bottom:5px}
+  .aval{font-size:17px;line-height:1.65;font-weight:600;letter-spacing:-.01em}
+  .aval.none{font-size:14px;color:var(--seal);font-weight:600}
+  .aq{margin-top:8px;font-size:11.5px;color:#7a7468;line-height:1.7}
+  .qline{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:baseline;
+         padding:5px 0;border-top:1px dotted var(--line)}
+  .qline:first-child{border-top:0}
+  .qsrc{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--muted);
+        border:1px solid var(--line);border-radius:2px;padding:1px 5px;white-space:nowrap}
+  .qsrc.wx{color:#2f6b4f;border-color:#cfe0d6;background:#f2f8f4}
+  .qt{font-family:var(--mono);color:#4a4640}
+  .qmeta{grid-column:2;font-size:10.5px;color:var(--faint)}
+  .qmore{font-size:10.5px;color:var(--faint);padding-top:4px}
+  .anote{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);font-size:12.5px;color:#7a5a24}
+  details.full{margin-top:14px}
+  details.full > summary{cursor:pointer;font-size:12px;color:var(--muted);letter-spacing:.04em;padding:8px 0;list-style:none}
+  details.full > summary::-webkit-details-marker{display:none}
+  details.full > summary::before{content:"＋ ";color:var(--seal);font-weight:700}
+  details.full[open] > summary::before{content:"－ "}
+  details.full .sheet{margin-top:6px}
+
+  /* 现场生成的追问 */
+  .fbox{margin-top:12px;background:var(--sheet);border:1px solid var(--line);border-left:3px solid var(--seal);
+        padding:16px 18px}
+  .fboxh{font-size:13.5px;font-weight:700;color:#7a2f28;margin-bottom:12px}
+  .fk{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  .ktag{display:inline-block;border:1px solid var(--line);border-radius:2px;padding:2px 7px;margin-left:4px;
+        background:var(--paper);font-size:12px;color:var(--ink)}
+  .fq + .fq{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+  .fqh{display:flex;gap:8px;font-size:15px;font-weight:600;line-height:1.6}
+  .fqi{font-family:var(--mono);font-size:11px;color:var(--seal);padding-top:4px}
+  .fqw{font-size:12px;color:var(--muted);margin:5px 0 9px 22px}
+  .fqo{display:flex;gap:8px;flex-wrap:wrap;margin-left:22px}
+  .opt{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;font-size:13px;
+       padding:6px 12px;border-radius:2px;cursor:pointer}
+  .opt:hover{border-color:var(--ink);background:var(--paper)}
+
+  .ev{margin-top:12px;font-size:12.5px}
+  .ev summary{cursor:pointer;color:var(--muted);font-size:11.5px;letter-spacing:.04em;
+              padding:7px 0;border-top:1px dashed var(--line);list-style:none}
+  .ev summary::-webkit-details-marker{display:none}
+  .ev summary::before{content:"＋ ";color:var(--seal);font-weight:700}
+  .ev[open] summary::before{content:"－ "}
+  .ev ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+  .ev li{display:grid;grid-template-columns:36px 1fr;gap:9px;line-height:1.75}
+  .ev .k{font-family:var(--mono);font-size:10px;color:var(--seal);padding-top:3px}
+  .ev .q{color:#4a4640}
+
+  footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line);
+         font-family:var(--mono);font-size:10.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  @media print{
+    body{padding:0;background:#fff}
+    header .status,.ask,.chips,.photo,footer,button{display:none!important}
+    .sheet{box-shadow:none;border-top:2px solid #000;margin-top:0;page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="kicker">校园办事向导 / CAMPUS CONCIERGE</div>
+      <h1>说得清，<em>带得对</em></h1>
+    </div>
+    <div class="status">
+      <span class="pill"><i class="dot" id="dot"></i><span id="stat">检测中</span></span>
+      <span id="meta">数据核验 —</span>
+    </div>
+  </header>
+
+  <div class="ask">
+    <textarea id="q" placeholder="你要办什么事？比如：校园卡丢了怎么办 / 我要开个证明 / 成绩单怎么打"></textarea>
+    <div class="row">
+      <button id="go">开始</button>
+      <button class="ghost" id="clear">清空</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <details class="presets" id="presets"><summary>常用问法（点一下直接问）</summary><div id="pbody"></div></details>
+    <div class="hint">识别靠别名表，不靠模型自由发挥；答不出会直接告诉你查不到。</div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="out"></div>
+
+  <footer>
+    <span>校园办事向导 v0.1 · 管理类</span>
+    <span id="foot">材料以官方窗口为准</span>
+  </footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const EXAMPLES = ["校园卡丢了怎么办", "我要开个证明", "成绩单怎么打", "选课没选上", "校园网连不上"];
+let state = { item: null, slots: {} };
+
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+async function api(path, body) {
+  const res = await fetch(path, {
+    method: body ? "POST" : "GET",
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({ error: "返回不是 JSON" }));
+  if (!res.ok) throw new Error(data.error || `请求失败 ${res.status}`);
+  return data;
+}
+
+/* ---------------- 启动 ---------------- */
+(async function boot() {
+  $("#chips").innerHTML = EXAMPLES.map((e) => `<span class="chip" data-q="${esc(e)}">${esc(e)}</span>`).join("");
+  $("#chips").onclick = (ev) => {
+    const q = ev.target.dataset.q;
+    if (q) { $("#q").value = q; run(); }
+  };
+  try {
+    const h = await api("/api/health");
+    $("#dot").className = "dot " + (h.key_configured ? "on" : "off");
+    $("#stat").textContent = h.key_configured ? "在线 · 模型已接入" : "本地模式 · 未配 Key";
+    $("#meta").textContent = `事项 ${h.items} 条 · 核验 ${h.data_updated}`;
+    $("#foot").textContent = `材料以官方窗口为准 · 数据核验 ${h.data_updated}`;
+  } catch {
+    $("#stat").textContent = "后端未启动";
+    $("#dot").className = "dot off";
+  }
+  try {
+    const pz = await api("/api/presets?limit=6");
+    $("#pbody").innerHTML = pz.groups.map((g) =>
+      `<div class="pgroup"><div class="pgname">${esc(g.name)}</div><div class="chips">${
+        g.items.map((q) => `<span class="chip" data-q="${esc(q)}">${esc(q)}</span>`).join("")}</div></div>`).join("");
+    document.querySelectorAll("#pbody .chip").forEach((el) => {
+      el.onclick = () => { $("#q").value = el.dataset.q; run(); };
+    });
+    document.querySelector(".presets summary").textContent = `常用问法（${pz.total} 条，按主题）`;
+  } catch (e) { /* 预置问法拿不到不影响主流程 */ }
+
+  if (!new URLSearchParams(location.search).get("q")) $("#presets").open = true;  // 空状态直接展开常用问法
+  const pre = new URLSearchParams(location.search).get("q");
+  if (pre) { $("#q").value = pre; run(); }
+})();
+
+$("#clear").onclick = () => { $("#q").value = ""; $("#out").innerHTML = ""; $("#err").textContent = ""; state = { item: null, slots: {} }; };
+$("#go").onclick = run;
+$("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(); });
+
+/* ---------------- 1. 识别 ---------------- */
+async function run(keepSlots) {
+  const text = $("#q").value.trim();
+  $("#err").textContent = "";
+  if (text.length < 2) { $("#err").textContent = "请再说得具体一点"; return; }
+  if (!keepSlots) state.slots = {};
+  $("#go").disabled = true;
+  try {
+    const d = await api("/api/ask", { text, slots: state.slots });
+    if (!d.matched) {
+      $("#out").innerHTML = notFound(d);
+      return;
+    }
+    state.item = d.item;
+    if (d.hold) {
+      $("#out").innerHTML = followupBlock(d);
+      bindFollowups();
+      return;
+    }
+    $("#out").innerHTML = answerBlock(d)
+      + `<details class="full"><summary>完整事项 · 时间线 / 材料清单 / 文书草稿 / 拍照核对</summary>`
+      + buildSheet(d.item, d) + `</details>`;
+    bindSheet();
+    refreshDeliver();
+  } catch (e) {
+    $("#err").textContent = e.message;
+  } finally {
+    $("#go").disabled = false;
+  }
+}
+
+/* 根据问题现场生成的追问：只问会改变答案的那几件 */
+function followupBlock(d) {
+  const known = Object.entries(d.known || {});
+  const knownLine = known.length
+    ? `<div class="fk">已记下：${known.map(([, v]) => `<span class="ktag">${esc(v)}</span>`).join("")}</div>`
+    : "";
+  const qs = d.followups.map((f, i) => `
+    <div class="fq">
+      <div class="fqh"><span class="fqi">${i + 1}</span><span>${esc(f.question)}</span></div>
+      <div class="fqw">为什么问：${esc(f.why)}</div>
+      <div class="fqo">${(f.options || []).map((o) =>
+        `<button class="opt" data-key="${esc(f.key)}" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
+    </div>`).join("");
+  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+    <div class="fbox">
+      <div class="fboxh">这件事分几种情况，答之前我得先确认 ${d.followups.length} 件事</div>
+      ${knownLine}${qs}
+    </div>`;
+}
+
+function bindFollowups() {
+  document.querySelectorAll(".opt").forEach((b) => {
+    b.onclick = () => {
+      state.slots[b.dataset.key] = b.dataset.opt;
+      run(true);
+    };
+  });
+}
+
+/* 先把问题翻译成「事项 + 问的是哪一面」，只答那一面 */
+function answerBlock(d) {
+  const rows = d.answers.map((a) => {
+    const val = a.found
+      ? `<div class="aval">${esc(a.text)}</div>`
+      : `<div class="aval none">官方页面没有写这一项</div>`;
+    const qs = a.quotes || [];
+    const q = qs.length
+      ? `<div class="aq">${qs.slice(0, 2).map((c) =>
+          `<div class="qline"><span class="qsrc ${c.kind === "公众号" ? "wx" : ""}">${esc(c.kind)}${c.date ? " · " + esc(c.date) : ""}</span>
+           <span class="qt">“${esc(c.quote)}”</span>
+           <span class="qmeta">${esc((c.label || "").slice(0, 30))}</span></div>`).join("")}
+          ${qs.length > 2 ? `<div class="qmore">另有 ${qs.length - 2} 条来源</div>` : ""}</div>`
+      : (a.focus === "contact" && a.found ? `<div class="aq">（条目归属部门，官方页面未单列此句）</div>` : "");
+    return `<div class="aone"><div class="alab">${esc(a.label)}</div>${val}${q}</div>`;
+  }).join("");
+
+  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+  <div class="ablock">${rows}${d.note ? `<div class="anote">${esc(d.note)}</div>` : ""}</div>`;
+}
+
+function notFound(r) {
+  const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+  return `<div class="sheet">
+    <div class="sheet-top"><div><div class="t">没查到这条</div>
+      <div class="s">${esc(r.reason)}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
+    <section class="blk"><div class="chips" id="alts">${alts || '<span class="hint">暂无可选项</span>'}</div></section>
+  </div>`;
+}
+
+function evidenceBlock(item) {
+  const ev = Object.entries(item.evidence || {}).filter(([, v]) => v && v.quote);
+  if (!ev.length) return "";
+  const label = (k) => k.startsWith("materials") ? "材料" : k.startsWith("steps") ? "步骤"
+    : k.startsWith("pitfalls") ? "易错" : "信息";
+  const seen = new Set();
+  const rows = ev
+    .filter(([, v]) => (seen.has(v.quote) ? false : (seen.add(v.quote), true)))
+    .map(([k, v]) => `<li><span class="k">${label(k)}</span><span class="q">“${esc(v.quote)}”</span></li>`)
+    .join("");
+  return `<details class="ev"><summary>原文摘录（${seen.size} 条，逐字来自官方页面）</summary><ul>${rows}</ul></details>`;
+}
+
+function lowBar(r) {
+  const alts = (r.alternatives || []).filter((a) => a.score > 0).slice(0, 3)
+    .map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+  return `<div class="lowbar"><span>置信度不高，你是指这个吗？</span><div class="chips">${alts}</div></div>`;
+}
+
+/* ---------------- 2. 完整事项（折叠） ---------------- */
+function buildSheet(item, intake) {
+  const badge = item.status === "verified"
+    ? `<span class="badge v">原文已核验</span>`
+    : `<span class="badge p">官方无正文</span>`;
+  const meta = [
+    item.fee ? `费用 ${item.fee}` : null,
+    item.duration ? `用时 ${item.duration}` : null,
+    item.location ? item.location : null,
+    item.window ? `时限 ${item.window}` : null,
+  ].filter(Boolean).map((t) => `<span class="tag">${esc(t)}</span>`).join("");
+
+  const slots = (item.slots || []).map((s) => {
+    const opts = (s.options || []).map((o) => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
+    return `<div class="slot"><label>${esc(s.ask)}</label>
+      <select data-slot="${esc(s.key)}"><option value="">未选择</option>${opts}</select></div>`;
+  }).join("");
+
+  return `<div class="sheet">
+    <div class="sheet-top">
+      <div><div class="t">${esc(item.title)} ${badge}</div>
+        <div class="s">${esc(item.dept)} · ${esc((item.channel || []).join(" / "))}</div></div>
+      <div class="seal">置信度<br>${Math.round((intake?.confidence ?? 1) * 100)}%</div>
+    </div>
+    ${intake?.band === "low" ? lowBar(intake) : ""}
+    <div class="meta">${meta}</div>
+
+    ${slots ? `<section class="blk"><div class="bh"><span class="i">01</span><span class="h">先分清你的情况</span></div>
+      <div class="slots">${slots}</div></section>` : ""}
+
+    <section class="blk"><div class="bh"><span class="i">02</span><span class="h">怎么办</span></div>
+      <ol class="route">${(item.steps || []).map((s) => `<li><span class="when">${esc(s.when || "")}</span>
+        <span>${esc(s.what)}<span class="where"> · ${esc(s.where || "")}</span></span></li>`).join("")}</ol>
+      <div id="mats"></div>
+    </section>
+
+    <section class="blk"><div class="bh"><span class="i">03</span><span class="h">这几种情况会白跑</span></div>
+      <div class="trap"><ul>${(item.pitfalls || []).map((p) => `<li><span>${esc(p)}</span></li>`).join("")}</ul></div>
+      ${(item.advisory || []).length ? `<div class="adv"><b>提示（非官方原文）</b><ul>${item.advisory.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>` : ""}
+      ${item.note ? `<div class="adv"><b>这条的状态</b><div>${esc(item.note)}</div></div>` : ""}
+    </section>
+
+    <section class="blk" id="draftBlk"></section>
+
+    <section class="blk"><div class="bh"><span class="i">04</span><span class="h">依据</span></div>
+      <div class="src">${(item.source || []).map((s) => `<b>${esc(s.title)}</b><br>${esc(s.url)}<br>核验 ${esc(s.checked)}`).join("<br>")}</div>
+      ${evidenceBlock(item)}
+    </section>
+
+    <section class="blk"><div class="bh"><span class="i">05</span><span class="h">拍照核对材料</span></div>
+      <div class="photo">
+        <input type="file" id="img" accept="image/*">
+        <button class="ghost" id="vbtn" disabled>核对</button>
+        <button class="ghost" id="pbtn">打印</button>
+      </div>
+      <div class="hint">把材料摊在桌上拍一张，逐项核对缺什么。看不清会写「看不清」，不猜。</div>
+      <div id="vout"></div>
+    </section>
+  </div>`;
+}
+
+function bindSheet() {
+  $("#out").querySelectorAll("select[data-slot]").forEach((el) => {
+    el.onchange = () => { state.slots[el.dataset.slot] = el.value; refreshDeliver(); };
+  });
+  const img = $("#img"), vbtn = $("#vbtn");
+  if (img) img.onchange = () => { vbtn.disabled = !img.files[0]; };
+  if (vbtn) vbtn.onclick = () => doVerify();
+  const pb = $("#pbtn");
+  if (pb) pb.onclick = () => window.print();
+  document.querySelectorAll("[data-alt]").forEach((el) => el.onclick = () => { $("#q").value = el.dataset.alt; run(); });
+}
+
+async function refreshDeliver() {
+  if (!state.item) return;
+  try {
+    const d = await api("/api/deliver", { item_id: state.item.id, slots: state.slots });
+    const mats = (d.materials || []).map((m, i) => `<li data-m="${i}"><span class="box"></span>
+      <span>${esc(m.name)} <span class="note">${esc(m.note || "")}</span></span></li>`).join("");
+    $("#mats").innerHTML = mats ? `<div class="bh" style="margin-top:14px"><span class="i">02b</span><span class="h">带这些去</span></div>
+      <ul class="checks">${mats}</ul>` : "";
+    document.querySelectorAll(".checks li").forEach((li) => {
+      li.onclick = () => li.querySelector(".box").classList.toggle("on");
+    });
+
+    const blk = $("#draftBlk");
+    if (d.draft) {
+      const tag = d.draft.complete ? " · 已按你的选择填好" : " · 原因待你补充";
+      blk.innerHTML = `<div class="bh"><span class="i">03b</span><span class="h">文书草稿${tag}</span></div>
+        <pre class="draft">${esc(d.draft.text)}</pre>
+        <div class="row"><button class="ghost" id="copy">复制</button></div>`;
+      $("#copy").onclick = async () => {
+        await navigator.clipboard.writeText(d.draft.text);
+        $("#copy").textContent = "已复制";
+      };
+    } else {
+      blk.innerHTML = "";
+    }
+  } catch (e) {
+    $("#err").textContent = e.message;
+  }
+}
+
+async function doVerify() {
+  const f = $("#img").files[0];
+  if (!f) return;
+  const vout = $("#vout");
+  vout.innerHTML = `<div class="hint">识别中…</div>`;
+  const dataUrl = await new Promise((res) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.readAsDataURL(f);
+  });
+  try {
+    const r = await api("/api/verify", { item_id: state.item.id, image: dataUrl });
+    const rows = (r.checks || []).map((c) => {
+      const cls = c.status === "有" ? "ok" : c.status === "缺" ? "no" : "un";
+      return `<tr><td>${esc(c.name)}</td><td class="st ${cls}">${esc(c.status)}</td><td>${esc(c.note || "")}</td></tr>`;
+    }).join("");
+    vout.innerHTML = `<div class="vres"><table><thead><tr><th>材料</th><th>状态</th><th>依据</th></tr></thead>
+      <tbody>${rows}</tbody></table><div class="vsum">${esc(r.summary || "")}</div></div>`;
+  } catch (e) {
+    vout.innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+}
+</script>
+</body>
+</html>

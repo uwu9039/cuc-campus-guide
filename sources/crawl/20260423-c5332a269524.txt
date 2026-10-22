@@ -1,0 +1,97 @@
+导师简介-巴欣然
+[附件] /_upload/tpl/00/33/51/template51/images/logox.png
+主页
+学院新闻
+通知公告
+学院概况
+学院简介
+学院领导
+机构设置
+办公室
+教研机构
+校友风采
+师资队伍
+师资概况
+杰出人才
+教师简介
+博士生导师
+硕士生导师
+教学工作
+本科生教学
+通知公告
+常用下载
+研究生教学
+常用下载
+培养方案
+通知公告
+规章制度
+信通学院推...
+科学研究
+规章制度
+科研团队
+科研成果
+学科建设
+合作交流
+国际合作
+学术交流
+活动预告
+社会服务
+党群工作
+学院党建
+理论学习
+政策法规
+组织机构
+党建动态
+规章制度
+通知公告
+工会教代会
+主题教育
+学生工作
+通知公告
+学生党建
+团学风采
+求职就业
+常用下载
+安全管理
+实验室安全...
+新闻通知
+学风建设
+学风建设机...
+学术规范政...
+科研诚信警...
+导师简介-巴欣然
+作者：发布时间：2026-04-23
+[附件] /_upload/article/images/0a/64/6c034a9e4488b1cb3ede9f8cdd92/e8de1273-8a6c-4d9f-b41f-793fbb8436d4.jpg
+姓名：巴欣然
+职称 / 硕（博）导：副教授 / 硕导
+学硕招生专业/方向：信息与通信工程 / 新一代移动通信
+专硕招生专业/方向：新一代电子信息技术 / 移动媒体与智能通信
+主要研究领域：智能网络资源管理；多模态语义通信
+电子邮箱Email：baxinran@cuc.edu.cn
+个人简介
+巴欣然，副教授，硕士生导师，北京邮电大学信息与通信工程专业工学博士，中国传媒大学信息与通信工程专业博士后。其主要研究方向为基于人工智能与机器学习的下一代网络智能资源管理，以及面向文本、视觉、语音等多模态信息的语义通信理论与技术。近年来，主持/参与了包括国家重点研发计划、国家广电总局特别委托项目在内的多项国家级及省部级科研项目，在国内外学术期刊与会议上发表SCI/EI论文20余篇，出版学术专著1部。
+承担的主要科研项目
+[1] 国家重点研发计划项目子课题，未来电视视听融合服务关键技术系统研发与应用，2023.11-2026.10，在研。
+[2] 国家广电总局特别委托项目，5G+AI 双轮驱动下广电行业技术融合创新动态监测与战略研判，2025.08-2026.08，在研。
+[3] 国家广电总局特别委托项目，高新技术跟踪与研判，2024.09-2025.08，已结题。
+[4] 国家重点研发计划项目子课题，面向超高清视频的5G网络多级协同切片技术，2021.12-2024.11，已结题。
+[5] 校级科研项目，基于多路径传输的5G扩展ATSSS技术研究，2023.03-2024.03，已结题。
+[6] 校级科研项目，媒体传输领域科技动态报送，2022.10-2023.10，已结题。
+[7] 校级科研项目，5G及下一代多网融合网络用户QoS保障关键技术研究，2020.10-2021.10，已结题。
+代表性学术成果
+[1] Xinran Ba, Xinguang Zhang, Shufeng Li, Jin Yuan, and Jun Hu. “Multimodal semantic communication system based on graph neural networks”, Intelligence＆Robotics, 2025.
+[2] Yuanhao Liu, Xinran Ba, Mingyuan Zhang, “Optimization of a Smart Campus System Based on Data Visualization Concepts”, International Conference on Culture-Oriented Science and Technology, 2025.
+[3] 胡峰，巴欣然，李树锋。5G/6G媒体通信技术，北京，中国传媒大学出版社，2025年10月，著作。
+[4] Zhenyu Li, Xinran Ba, Zhengpeng Wang, Xiaoming Chen, and Steven Gao, “A Wideband Dual-Circularly Polarized Inverted Quad-Ridged Elliptical Waveguide Horn Antenna”, IEEE ANTENNAS AND WIRELESS PROPAGATION LETTERS, 2024.
+[5] Xinyi Zhang, Xinran Ba, Feng Hu, and Jin Yuan, “EmotionCast: An Emotion-Driven Intelligent Broadcasting System for Dynamic Camera Switching”, SENSORS, 2024.
+[6] Xiaoyue Wang, and Xinran Ba(*), “Implementation of Social Media Analysis System Based on Database Technology”, International Conference on Culture-Oriented Science＆Technology, 2024.
+[7] Jin Yuan, Qisong Liu, Ying Mei, Xiuxiu Xu, Yujie Wang, and Xinran Ba(*), “Research on wavelength conversion of triangular pulses with variable symmetry based on SPM effect”, OPTOELECTRONICS LETTERS, 2023.
+[8] Xinran Ba, Libiao Jin, Zengrui Li, Jianhe Du, and Sidong Li, “Multiservice-Based Traffic Scheduling for 5G Access Traffic Steering, Switching and Splitting”, Sensors, 2022.
+[9] Xinran Ba, Libiao Jin, Zhou Li, Chang Liu, and Sidong Li, “Performance Evaluation of Multi-Access Based on ATSSS Rules”, International Conference on Culture-Oriented Science and Technology, 2022.
+[10] Xinran Ba, and Yafeng Wang, “Load-Aware Cell Select Scheme for Multi-Connectivity in Intra-Frequency 5G Ultra Dense Network”, IEEE Communications Letters, 2019.
+[11] Xinran Ba, Yafeng Wang, Jiangsheng Fan, and Wei Xiang, “User-priority-based resource allocation for device-to-device communications in 5G underlaying cellular networks”, IET Communications, 2019.
+[12] Xinran Ba, Yafeng Wang, Han Hai, Yami Chen, and Zhiming Liu, “Performance Comparison of Multi-Connectivity with CoMP in 5G Ultra-Dense Network”, 2018 IEEE 87th Vehicular Technology Conference (VTC Spring), 2018.
+[13] Xinran Ba, Yafeng Wang, Didi Zhang, Yami Chen, and Zhiming Liu, “Effective Scheduling Scheme for Multi-Connectivity in Intra-Frequency 5G Ultra-Dense Networks”, 2018 IEEE International Conference on Communications Workshops (ICC Workshops), 2018.
+Copyright © 中国传媒大学 / 京 ICP 备 10039564 号 / 京公网安备 110402430031 号
+地址：北京市朝阳区定福庄东街一号
+[附件] /_visitcount?siteId=36&type=3&articleId=269524

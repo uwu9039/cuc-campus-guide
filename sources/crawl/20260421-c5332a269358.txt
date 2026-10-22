@@ -1,0 +1,111 @@
+导师简介-王晔
+[附件] /_upload/tpl/00/33/51/template51/images/logox.png
+主页
+学院新闻
+通知公告
+学院概况
+学院简介
+学院领导
+机构设置
+办公室
+教研机构
+校友风采
+师资队伍
+师资概况
+杰出人才
+教师简介
+博士生导师
+硕士生导师
+教学工作
+本科生教学
+通知公告
+常用下载
+研究生教学
+常用下载
+培养方案
+通知公告
+规章制度
+信通学院推...
+科学研究
+规章制度
+科研团队
+科研成果
+学科建设
+合作交流
+国际合作
+学术交流
+活动预告
+社会服务
+党群工作
+学院党建
+理论学习
+政策法规
+组织机构
+党建动态
+规章制度
+通知公告
+工会教代会
+主题教育
+学生工作
+通知公告
+学生党建
+团学风采
+求职就业
+常用下载
+安全管理
+实验室安全...
+新闻通知
+学风建设
+学风建设机...
+学术规范政...
+科研诚信警...
+导师简介-王晔
+作者：发布时间：2026-04-21
+[附件] /_upload/article/images/36/c1/c5e4986f4c18a193dbf8d1be0694/156d16bc-5f20-49f3-b7af-cdcdd95a437c.jpg
+姓名：王晔
+职称 / 硕（博）导：讲师 / 硕导
+学硕招生专业/方向：信息与通信工程 / 信息网络与大数据
+专硕招生专业/方向：人工智能 / 智能视听技术
+主要研究领域：智能体与社会仿真
+电子邮箱Email：yewang@cuc.edu.cn
+个人简介
+我是王晔，北京大学博士，长期深耕人工智能与认知心理学交叉领域，凭借多年跨学科研究经验，可助力同学们打通不同领域知识壁垒，高效开展科研工作。
+科研工作中，我始终秉持严谨务实的态度，注重对学生的引导与培养，不盲目内卷。目前已主持、参与多项国家级、省部级科研项目，在Pattern Recognition、Cell Reports、IEEE TCSVT、CHBAH等学术期刊发表论文20余篇，授权国家发明专利3项。旨在为学生搭建优质科研平台，让同学们有机会依托现有基础，扎实开展研究、产出高质量成果。
+我的主要研究方向为智能体与社会仿真，核心是从认知心理学视角出发构建智能体，依托自然科学的研究方法，探索并解答社会科学领域的相关问题，兼具科研深度、创新价值与应用前景。无论同学们是否具备跨学科基础，我都会提供全程带教指导，耐心解答科研疑问，与大家共同拆解难题、碰撞学术思路。
+我始终坚持平等沟通的师生理念，待人谦和、有耐心，合理分配科研任务，营造轻松融洽、互帮互助的实验室氛围。在此诚邀热爱科研、踏实肯学、富有探索精神的同学加入课题组，愿与各位同学携手，深耕学术，共同在科研道路上稳步前行。
+承担的主要科研项目
+[1] 国家广播电视总局中长期科技计划项目，基于大模型智能体的网络视听内容传播效能评价方法研究，2025AA0200，主持
+[2] 全媒体技术与传播认知四川省重点实验室开放课题，基于虚拟仿真技术的受众智能体构建方法研究，ZG26005，主持
+[3] 国家广播电视总局中长期科技计划项目，面向视听内容的生成式人工智能模型可信评测技术研究，2024AC0400，子课题负责人
+[4] 中国传媒大学“三国”专项项目，角色扮演智能体评测方法研究，CUC25SG006，核心成员
+[5] 中国传媒大学“三国”专项项目，大语言模型角色扮演价值观测评基准研究，CUC24SG008，主持
+代表性学术成果
+[1] Keyan He, Lixuan Liu, Junxiang Luo, Yiliang Lu, Jiapeng Yin, Yingfan Liu, Wenheng Xie, Yizhejun Li, Xiaohong Li, Ian Max Andolina, Stewart Shipp, Hongbo Yu, Ye Wang*, Dajun Xing, Niall McLoughlin, Wei Wang. De novo fast motion computation in the primate visual cortex[J]. Cell Reports, 2026, 45(4).
+[2] Hongjiang Xiao, Xiuying Li, Ran Wang, Hao Wang, Ye Wang*, Liangfei Zhang, Yuan Zhang. M2DE: A Multi-stressor Multi-dimensional Dynamic Evaluation Framework for the Trustworthiness of LLMs[J]. Pattern Recognition, 2026: 113428.
+[3] Ye Wang, Tong Li, Meixuan Li, Ziyue Cheng, Ge Wang, Hanyue Kang, Yaling Deng, Hongjiang Xiao, Yuan Zhang. RVBench: Role values benchmark for role-playing LLMs[J]. Computers in Human Behavior: Artificial Humans, 2025: 100184.
+[4] Xilong Cheng, Yunxiao Qin, Yuting Tan, Zhengnan Li, Ye Wang, Hongjiang Xiao, Yuan Zhang. Psymem: Fine-grained psychological alignment and explicit memory control for advanced role-playing LLMs [J]. Transactions of the Association for Computational Linguistics (TACL), 2025.
+[5] Ye Wang, Yaling Deng, Ge Wang, Tong Li, Hongjiang Xiao, Yuan Zhang. The fluency-based semantic network of LLMs differs from humans[J]. Computers in Human Behavior: Artificial Humans, 2025, 3: 100103.
+[6] Zexun Jiang, Yafang Shi, Maoxu Li, Hongjiang Xiao, Yunxiao Qin, Qinglan Wei, Ye Wang, Yuan Zhang. Casevo: A cognitive agents and social evolution simulator[J]. arXiv preprint arXiv:2412.19498, 2024.
+[7] Yaling Deng, Jiwen Li, Minglu Niu, Ye Wang*, Wenlong Fu, Yanzhu Gong, Shuo Ding, Wenyi Li, Wei He, Lihong Cao. A Chinese verb semantic feature dataset (CVFD)[J]. Behavior Research Methods, 2024, 56(1): 342-361.
+[8] Qiuxia Lai, Ailing Zeng, Ye Wang, Lihong Cao, Yu Li, Qiang Xu. Self-supervised video representation learning via capturing semantic changes indicated by saccades[J]. IEEE Transactions on Circuits and Systems for Video Technology, 2023, 34(8): 6634-6645.
+[9] Yaling Deng, Ye Wang, Liming Xu, Xiangli Meng, Lingxiao Wang. Do you like it or not? Identifying preference using an electroencephalogram during the viewing of short videos[J]. PsyCh Journal, 2023, 12(3): 421-429.
+[10] Geheng Yuan, Yijia Zheng, Ye Wang, Xin Qi, Rui Wang, Zhanyang Ma, Xiaohui Guo, Xiaoying Wang, Jue Zhang. Multiscale entropy and small-world network analysis in rs-fMRI—new tools to evaluate early basal ganglia dysfunction in diabetic peripheral neuropathy[J]. Frontiers in Endocrinology, 2022, 13: 974254.
+[11] Jiahong Zhang, Meijun Qu, Ye Wang, Lihong Cao. A multi-head convolutional neural network with multi-path attention improves image denoising[C]//Pacific Rim International Conference on Artificial Intelligence. Cham: Springer Nature Switzerland, 2022: 338-351.
+[12] Ye Wang*, Yaling Deng, Lihong Cao, Jiahong Zhang, Lei Yang. Retrospective memory integration accompanies reconfiguration of neural cell assemblies[J]. Hippocampus, 2022, 32(3): 179-192.
+[13] Yiwen Ding, Ye Wang*, Lihong Cao. A simplified plasticity model based on synaptic tagging and capture theory: simplified STC[J]. Frontiers in Computational Neuroscience, 2022, 15: 798418.
+[14] Tian Wang, Ye Wang, Jiamin Shen, Lei Wang, Lihong Cao. Predicting spike features of hodgkin-huxley-type neurons with simple artificial neural network[J]. Frontiers in computational neuroscience, 2022, 15: 800875.
+[15] Xu Liu, Hui Li, Ye Wang, Tianhao Lei, Jijun Wang, Lothar Spillmann, Ian Max Andolina, Wei Wang. From receptive to perceptive fields: size-dependent asymmetries in both negative afterimages and subcortical on and off post-stimulus responses[J]. Journal of Neuroscience, 2021, 41(37): 7813-7830.
+[16] Yaling Deng, Ye Wang, Chenyang Qiu, Zhenchao Hu, Wenyang Sun, Yanzhu Gong, Xue Zhao, Wei He, Lihong Cao. A Chinese conceptual semantic feature dataset (CCFD)[J]. Behavior Research Methods, 2021, 53(4): 1697-1709.
+[17] Yijia Zheng, Ye Wang, Zhuang Yue, Xiaoying Wang, Jue Zhang, Jing Fang. Transcranial direct current stimulation modulates the brain&#39;s response to foot stimuli under dual-task condition: A fMRI study in elderly adults[J]. Neuroscience Letters, 2019, 692: 225-230.
+[18] Ye Wang*, Yan Gao, Yaling Deng, Lei Yang. Modeling of brain-like concept coding with adulthood neurogenesis in the dentate gyrus[J]. Computational Intelligence and Neuroscience, 2019, 2019(1): 2367075.
+[19] Lihong Cao, Jiamin Shen, Lei Wang, Ye Wang. Predicting spikes with artificial neural network[J]. Sci. China Inf. Sci., 2018, 61(6): 060428:1-060428:3.
+[20] Lei Wang, Ye Wang, Wenlong Fu, Lihong Cao. Modulation of neuronal dynamic range using two different adaptation mechanisms[J]. Neural Regeneration Research, 2017, 12(3): 447-451.
+[21] Ye Wang, Ying Hao, Junhong Zhou, Peter J Fried, Xiaoying Wang, Jue Zhang, Jing Fang, Alvaro Pascual-Leone, Brad Manor. Direct current stimulation over the human sensorimotor cortex modulates the brain&#39;s hemodynamic response to tactile stimulation[J]. European Journal of Neuroscience, 2015, 42(3): 1933-1940.
+[22] Junhong Zhou, Ying Hao, Ye Wang, Azizah Jor&#39;dan, Alvaro Pascual‐Leone, Jue Zhang, Jing Fang, Brad Manor. Transcranial direct current stimulation reduces the cost of performing a cognitive task on gait and postural control[J]. European Journal of Neuroscience, 2014, 39(8): 1343-1348.
+[23] Bo Li, Li Dong, Bin Chen, Shuangxi Ji, Wenchao Cai, Ye Wang, Jue Zhang, Zhaoqi Zhang, Xiaoying Wang, Jing Fang. Turbo fast three-dimensional carotid artery black‐blood MRI by combining three‐dimensional MERGE sequence with compressed sensing[J]. Magnetic resonance in medicine, 2013, 70(5): 1347-1352.
+[23] Ye Wang, Yan Li, Junhong Zhou, Jue Zhang, Jing Fang. A non-encoding structured light approach with infrared illumination for 3D large field shape measurement[J]. Optics & Laser Technology, 2013, 49: 28-32.
+[24] 王晔,宫妍竹,邓雅菱.传播学问题驱动的认知模型研究范式[J].信息传播研究,2025,32(01):1-8.DOI:10.16196/j.cnki.issn.1673-4793.2025.01.001.
+[25] 陈佳杏,王晔*.大语言模型驱动的角色扮演智能体：现状、挑战与未来趋势[J].信息传播研究,2025,32(05):11-20+60.DOI:10.16196/j.cnki.issn.1673-4793.20250925.001.
+Copyright © 中国传媒大学 / 京 ICP 备 10039564 号 / 京公网安备 110402430031 号
+地址：北京市朝阳区定福庄东街一号
+[附件] /_visitcount?siteId=36&type=3&articleId=269358

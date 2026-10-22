@@ -1,0 +1,76 @@
+@cuc.edu.cn账户添加（Outlook pop3设置）
+信息化处
+首页
+关于我们
+部门概况
+信息化服务
+IT服务
+校园卡服务
+信息化项目
+服务指南大全
+规章制度
+政策法规
+学校规章制度
+部门规章制度
+通知公告
+网络安全
+网络安全宣传
+网络安全科普...
+帮助
+常见问题
+常用功能
+常用文档
+线上报修
+[附件] /_upload/tpl/01/e7/487/template487/images/list_banner.jpg
+@cuc.edu.cn账户添加（Outlook pop3设置）
+发布时间：2023-11-20浏览次数：1483
+Outlook 2016 pop3 设置：
+第一步：启动outlook2016，选择文件-信息-添加账户。
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/a6d71f80-8044-4406-b280-96950d00c4fe.png
+第二步：输入完整的邮箱账号，点击连接。（1@cuc.edu.cn）
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/4c11ec9e-52b1-4804-8baa-1c81f615049b.png
+第三步：账户类型，选择POP。
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/69fb13c9-f9d7-4951-bf77-7776d450503f.png
+第四步：输入账号密码和服务器地址信息，点击连接。
+建议使用SSL加密设置，邮件收发更安全。
+接收邮件服务器：pophz.qiye.163.com
+勾选“SSL”时，端口号：995；
+发送邮件服务器：smtphz.qiye.163.com
+勾选“SSL”时，端口号：994/465/587；
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/b06ec1be-af9d-4729-ad8f-cdd5dc5331b2.png
+第五步：如果您需要选择不加密；
+请取消勾选“SSL”
+POP 端口号：110
+SMTP 端口号：25；
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/37108cbc-c4b3-45fc-9c3d-c7a6551048ce.png
+第六步：输入您的邮箱账号密码信息，点击确定。
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/c934989d-c828-4f41-9cb9-2c66694d8241.png
+第七步：设置完成。
+[附件] /_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/c792ec5e-c7d7-4f7e-a130-83cf6e38892d.png
+注：也可参考如下相关链接，指导outlook邮箱2016pop设置
+https://qiye.163.com/help/client-detail.html?username=1&domain=cuc.edu.cn&protocol=pop3&client=outlook16&device=pc
+信息化处
+地址：北京市朝阳区定福庄东街一号
+服务中心：艺术与传播大楼1层104
+办公室：25号楼3层
+报修电话
+家属区网络报修电话
+18611087999
+家属区有线电视报修电话
+18611087999
+宿舍网络报修电话
+移动：13911312873 联通：15699840801
+校园卡及网络报修电话
+65783878
+常用链接
+正版软件平台
+远程用户接入服务
+数字校园
+计费系统登录
+邮件系统登录
+{缩略图}
+{标题}
+[附件] /_upload/tpl/01/e7/487/template487/images/gotop.png
+-->
+© 2022 版权所有 中国传媒大学 信息化处 京公网安备 110402430031 号 京ICP备 10039564 号
+[附件] /_visitcount?siteId=152&type=3&articleId=213953

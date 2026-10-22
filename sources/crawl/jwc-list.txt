@@ -1,0 +1,12 @@
+提示信息
+[附件] /_images/error/no_permit.gif
+用户名
+密码
+0) {
+$('#validateCode').focus();
+} else {
+userLogin();
+}
+}" size='20' />
+验证码
+[附件] /_control/validateimage?tt=Wed Oct 21 23:18:14 CST 2026

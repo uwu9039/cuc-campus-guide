@@ -1,0 +1,20 @@
+Normal0false7.8 磅02falsefalsefalseEN-USZH-CNX-NONE
+为方便师生在校外访问中传校内资源，信息化处为我校全体在校教职工、在校学生提供了VPN访问服务。VPN服务支持手机端（IOS系统及安卓系统）、Windows系统、MAC系统、Linux系统，您可使用电脑、手机、平板等多种终端在校外远程安全访问校内资源。VPN使用方法步骤如下：
+1、下载VPN客户端软件：
+首次使用时，必须先安装VPN客户端软件。电脑端或手机端打开https://vpn.cuc.edu.cn，按照页面提示点击“下载客户端”链接。
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/d4d2f3c1-ae49-40e3-95ef-a6f3e15c3888.png
+然后根据自己所使用的设备类型，下载对应操作系统类型的客户端软件：
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/c72d8909-7058-4be0-9c50-247bcf9a2394.png
+如果是手机端用户，需要下载 Easy Connect 客户端，或者直接点击“WEB登录”，如下图所示：
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/00a37b0b-666a-41bb-8a3e-cc274eec642f.png
+2、登录VPN服务地址：
+安装完客户端软件后，需双击桌面上的客户端图标打开软件（首次需填写VPN服务器地址：https://vpn.cuc.edu.cn），如下图所示：
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/42bbb056-fca7-44fb-bb3d-522b21fcd483.png
+然后，点击右边蓝色箭头进入到用户名、密码输入界面，如下所示：
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/f3a44bf6-490f-4e3e-8725-95dac8bbf398.png
+最后，输入校园网统一认证用户名和密码进行登录。统一身份认证通过后，需要输入短信验证码进行二次认证后登录，如下图所示：
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/23e8a63f-f3a8-4f29-8bb4-990d882eb0f1.png
+3、登录成功：
+VPN软件客户端登录成功后如下图所示，这表明您的电脑已接入校内网络，可以像在校内一样使用浏览器等工具访问所有校内资源了！
+[附件] /_upload/article/images/bc/05/9ebe1be84c0da4d6368a4f20abfe/c06b8c76-0d54-4a7a-b524-3003b3175324.png
+温馨提示：如您的电脑或手机上已经使用了其他类似网络工具，则可能会影响学校VPN的正常使用，请您先退出其他网络链接工具后再尝试登录学校VPN系统。

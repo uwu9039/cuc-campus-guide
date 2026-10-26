@@ -34,7 +34,8 @@ NAV = re.compile(r"^(菜单|链接|搜索|首页|当前位置|版权所有|京IC
 
 def load_docs() -> dict[str, dict]:
     docs: dict[str, dict] = {}
-    for fname, kind in (("crawl-index.json", "官网"), ("wechat-index.json", "公众号"), ("index.json", "精读")):
+    for fname, kind in (("crawl-index.json", "官网"), ("cdp-index.json", "官网"),
+                        ("wechat-index.json", "公众号"), ("index.json", "精读")):
         f = SRC / fname
         if not f.exists():
             continue
@@ -49,7 +50,7 @@ def load_docs() -> dict[str, dict]:
 
 
 def text_of(slug: str, kind: str) -> str:
-    for sub in ("", "crawl", "wechat", "pdf"):
+    for sub in ("", "crawl", "cdp", "wechat", "pdf"):
         f = SRC / sub / f"{slug}.txt" if sub else SRC / f"{slug}.txt"
         if f.exists():
             return f.read_text(encoding="utf-8")

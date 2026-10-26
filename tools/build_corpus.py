@@ -30,6 +30,12 @@ for s, m in load("index.json").items():
     add(s, m, "官网·精读")
 for s, m in load("crawl-index.json").items():
     add(s, m, "官网·采集")
+for s, m in load("cdp-index.json").items():
+    add(s, m, "官网·渲染")
+for s, m in load("chsi-index.json").items():
+    add(s, m, "学信网")
+for s, m in load("moe-index.json").items():
+    add(s, m, "教育部")
 for s, m in load("wechat-index.json").items():
     add(s, m, "公众号")
 

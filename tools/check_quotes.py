@@ -45,7 +45,7 @@ def main() -> None:
     data = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))
     index = json.loads((SRC / "index.json").read_text(encoding="utf-8"))
     texts = {slug: squash((SRC / f"{slug}.txt").read_text(encoding="utf-8")) for slug in index}
-    for sub in ("wechat", "crawl"):
+    for sub in ("wechat", "crawl", "cdp", "pdf", "chsi", "moe", "national"):
         for f in (SRC / sub).glob("*.txt"):
             texts[f.stem] = squash(f.read_text(encoding="utf-8"))
 

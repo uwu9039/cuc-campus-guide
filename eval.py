@@ -45,8 +45,11 @@ CASES: list[tuple[str, str | None, str]] = [
     ("卡的事怎么弄", None, "trap"),
     ("毕业证明书丢了能补吗", "doc-20240412-c6366a218572", "normal"),
     ("宿舍能不能换", None, "absent"),
-    ("奖学金怎么申请", None, "absent"),
+    ("奖学金怎么申请", "jiangxuejin", "normal"),
     ("图书馆能续借吗", None, "absent"),
+    ("研究生能换导师吗", None, "absent"),
+    ("学历证书电子注册备案表怎么申请", "chsi-baogao", "normal"),
+    ("想转学去别的学校", "moe-zhuanxue", "normal"),
 ]
 
 # (问题, 期望聚焦点逗号串) —— 验证"把问题翻译成能问的字段"这一步
@@ -65,8 +68,61 @@ FOCUS_CASES: list[tuple[str, str]] = [
     ("体育免修多少钱", "fee"),
 ]
 
-BASELINE_PROMPT = (
-    "你是校园办事助手。用户会问一个问题，你要判断它对应哪一类事务。"
+# 同族对照：同一类事项里的近邻问题，必须分别落到不同条目上
+# 每组至少两条，验证"互抢"没有把答案抢错
+FAMILY_CASES: list[tuple[str, list[tuple[str, str]]]] = [
+    ("校园卡四件事", [
+        ("校园卡丢了怎么补", "xyk-buka"),
+        ("校园卡挂失怎么办", "xyk-guashi"),
+        ("捡到一张校园卡交到哪", "xyk-yishi"),
+        ("毕业了校园卡还能延期吗", "xyk-yanqi"),
+    ]),
+    ("统一身份认证三件事", [
+        ("统一身份认证密码忘了", "it-mima"),
+        ("统一身份认证账号被锁了申诉", "it-shensu"),
+        ("统一身份认证账号怎么激活", "it-jihuo"),
+    ]),
+    ("学籍四件事", [
+        ("想休学一年怎么办", "xueji-xiuxue"),
+        ("休学后怎么复学", "xueji-fuxue"),
+        ("想退学要办什么", "xueji-tuixue"),
+        ("保留学籍怎么申请", "xueji-baoliu"),
+    ]),
+    ("考试三件事", [
+        ("考试作弊被抓什么后果", "kaoshi-weiji"),
+        ("成绩不对想复核", "jwc-kaoshi"),
+        ("四六级怎么报名", "jwc-cet"),
+    ]),
+    ("体育两件事", [
+        ("体育课能免修吗", "jwc-tiyu"),
+        ("体测能申请免测吗", "tizhi-miance"),
+    ]),
+    ("资助四件事", [
+        ("助学贷款怎么申请", "dk-zhuxue"),
+        ("助学金怎么评", "zxj-guojia"),
+        ("奖学金怎么申请", "jiangxuejin"),
+        ("入伍学费补偿怎么算", "zb-zizhu"),
+    ]),
+    ("学信网两件事", [
+        ("学历电子注册备案表怎么弄", "chsi-baogao"),
+        ("学信网核验一直不过", "chsi-heshi"),
+    ]),
+    ("学籍流转三件事", [
+        ("想转专业", "zhuanzhuanye"),
+        ("想转学去别的学校", "moe-zhuanxue"),
+        ("休学怎么办", "xueji-xiuxue"),
+    ]),
+    ("申诉两件事", [
+        ("被处分了不服怎么申诉", "moe-shensu"),
+        ("账号被锁了怎么申诉", "it-shensu"),
+    ]),
+    ("证明两件事", [
+        ("开在读证明", "jwc-zaidu"),
+        ("成绩单密封盖章", "jwc-chengjidan"),
+    ]),
+]
+
+BASELINE_PROMPT = (    "你是校园办事助手。用户会问一个问题，你要判断它对应哪一类事务。"
     "可选类别：" + "、".join(f"{i['id']}({i['title']})" for i in core.ITEMS) +
     "。若都不匹配，返回 null。"
     '只输出 JSON：{"id": "类别id或null", "confidence": 0到1}'
@@ -133,6 +189,31 @@ def main() -> None:
         print(f"{q:<24}{expect_focus:<16}{got_f:<16}{'OK' if ok else 'FAIL'}")
     print("-" * 74)
     print(f"聚焦准确率：{focus_hits}/{len(FOCUS_CASES)} = {focus_hits / len(FOCUS_CASES):.1%}")
+
+    # ---- 同族对照：近邻问题会不会互相抢 ----
+    print("\n同族对照（同类事项里的近邻问题必须各归各位）")
+    print("-" * 74)
+    fam_total = fam_hits = 0
+    fam_rows = []
+    for family, cases in FAMILY_CASES:
+        bad = []
+        for q, expect in cases:
+            ranked = core.rank(q)
+            top, score = ranked[0]
+            got = top["id"] if score >= core.MATCH_THRESHOLD else None
+            fam_total += 1
+            if got == expect:
+                fam_hits += 1
+            else:
+                g = next((i["title"] for i in core.ITEMS if i["id"] == got), got or "拒绝")
+                w = next((i["title"] for i in core.ITEMS if i["id"] == expect), expect)
+                bad.append(f"{q} → 抢到了「{g}」，应为「{w}」")
+        fam_rows.append((family, len(cases), bad))
+        print(f"{family:<16}{len(cases) - len(bad)}/{len(cases)} {'OK' if not bad else 'FAIL'}")
+        for b in bad:
+            print(f"    ✗ {b}")
+    print("-" * 74)
+    print(f"同族对照准确率：{fam_hits}/{fam_total} = {fam_hits / fam_total:.1%}")
 
     out = ROOT / "eval-report.md"
     lines = [

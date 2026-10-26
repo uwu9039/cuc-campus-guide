@@ -7,6 +7,7 @@ piptest/
 # 机密
 .env
 .env.local
+.cdp_tab
 
 # 临时与截图
 *.bak
@@ -14,7 +15,18 @@ urls.txt
 /shot*.png
 /live.png
 /presets.png
+/llm-*.png
+/aia*.png
 /dist/
+*.log
+
+# 实验脚本（依赖本机登录态，不入库）
+tools/ask_aia*.py
+tools/cdp_type.mjs
+tools/upload_github.py
+tools/upload_sources_raw.py
+tools/upload_loop.sh
+tools/_release.py
 
 # 系统
 .DS_Store

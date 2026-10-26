@@ -322,7 +322,11 @@ _SRC_META: dict[str, dict[str, str]] = {}
 def src_label(slug: str) -> dict[str, str]:
     """把来源 slug 翻成「谁说的」：官网标题，或公众号名 + 推文标题 + 日期。"""
     if not _SRC_META:
-        for fname, kind in (("index.json", "官网"), ("wechat-index.json", "公众号"), ("crawl-index.json", "官网")):
+        for fname, kind in (
+            ("index.json", "官网"), ("crawl-index.json", "官网"), ("cdp-index.json", "官网"),
+            ("wechat-index.json", "公众号"), ("chsi-index.json", "学信网"),
+            ("moe-index.json", "教育部"), ("national-index.json", "国家政策"),
+        ):
             f = ROOT / "sources" / fname
             if not f.exists():
                 continue
@@ -495,10 +499,111 @@ def _followups(
     return out
 
 
-def answer_question(text: str, given: dict[str, str] | None = None) -> dict[str, Any]:
+def llm_route(text: str, candidates: list[tuple[dict[str, Any], int]]) -> dict[str, Any] | None:
+    """规则拿不准时，让模型只在候选里挑一个（不生成任何事实）。
+
+    默认关闭，需要 ROUTER_LLM=1。模型返回 null 或异常一律当没选。
+    """
+    if not candidates:
+        return None
+    menu = "\n".join(
+        f"- {i['id']}：{i['title']}（别名：{'、'.join((i.get('aliases') or [])[:3])}）"
+        for i, _ in candidates
+    )
+    prompt = (
+        "用户在问校园办事的事。请从下列候选中挑出唯一最匹配的一项。\n"
+        f"{menu}\n\n"
+        "要求：只挑一个；都不匹配就返回 null；不要解释。"
+        '只输出 JSON：{"id": "候选id或null"}'
+    )
+    try:
+        raw = ds_chat(
+            [{"role": "system", "content": prompt}, {"role": "user", "content": text}],
+            max_tokens=80,
+            json_mode=True,
+        )
+        picked = (json.loads(raw) or {}).get("id")
+    except Exception:  # noqa: BLE001
+        return None
+    for i, _ in candidates:
+        if i["id"] == picked:
+            return i
+    return None
+
+
+# 敏感词 = 被路由审计证明「会引起错误跳转或反问」的词（tools/derive_sensitive.py 生成）
+_SENSITIVE: list[str] = []
+
+
+def _load_sensitive() -> list[str]:
+    """读 sensitive.json；没有就退回一组保守的默认词。"""
+    f = ROOT / "sensitive.json"
+    if f.exists():
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            words = [w["w"] for w in data.get("words", []) if w.get("w")]
+            if words:
+                return words
+        except Exception:  # noqa: BLE001
+            pass
+    return ["申诉", "休学", "复学", "处分", "验证码"]
+
+
+def sensitivity(text: str) -> dict[str, Any]:
+    """判断问题是否属于"测试证明容易跳错"的一类，给出是否建议开启模型裁决。"""
+    global _SENSITIVE
+    if not _SENSITIVE:
+        _SENSITIVE = _load_sensitive()
+    hits = [w for w in _SENSITIVE if w in text]
+    return {"hits": hits, "sensitive": bool(hits), "suggest_llm": bool(hits)}
+
+
+def answer_question(text: str, given: dict[str, str] | None = None,
+                    router_llm: bool | None = None) -> dict[str, Any]:
     ranked = rank(text)
     top, score = ranked[0]
     second = ranked[1][1] if len(ranked) > 1 else 0
+
+    # 规则拿不准时，若开启 LLM 兜底，让模型在候选里选（只选，不生成事实）
+    # 只在"信息够但规则打平"时让模型裁决；问题太短（如"补卡"）说明用户没说清，应该反问而不是猜
+    risky = score < MATCH_THRESHOLD or (len(ranked) > 1 and score - ranked[1][1] < 8)
+    informative = len(text.strip()) >= 6
+    resolved_by_llm = False
+    llm_on = (os.getenv("ROUTER_LLM") == "1") if router_llm is None else router_llm
+    if risky and informative and llm_on:
+        picked = llm_route(text, ranked[:5])
+        if picked is not None:
+            top = picked
+            score = max(score, MATCH_THRESHOLD + 1)
+            second = 0
+            resolved_by_llm = True
+
+    # 没到阈值但候选分数不低：不硬拒，给出"是不是这个"的选择题
+    near = [(i, sc) for i, sc in ranked[:3] if sc >= 38]
+    if (not resolved_by_llm) and score < MATCH_THRESHOLD and len(near) >= 2 and (near[0][1] - near[1][1]) < 14:
+        return {
+            "matched": True,
+            "query": text,
+            "normalized": "待确认是哪一类",
+            "confidence": round(near[0][1] / 100, 2),
+            "band": "low",
+            "ambiguous": True,
+            "item": public(near[0][0]),
+            "answers": [],
+            "hold": True,
+            "followups": [],
+            "disambiguate": [
+                {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
+                 "hint": (i.get("aliases") or [""])[0]}
+                for i, _ in near
+            ],
+            "clarify": f"没太确定，你是想问「{near[0][0]['title']}」还是「{near[1][0]['title']}」？",
+            "focus": [],
+            "quotes": [],
+            **sensitivity(text),
+            "router_llm": llm_on,
+            "rule_unsure": risky,
+        }
 
     if score < MATCH_THRESHOLD:
         return {
@@ -509,11 +614,14 @@ def answer_question(text: str, given: dict[str, str] | None = None) -> dict[str,
             "hints": dept_hints(text),
             "alternatives": [{"id": i["id"], "title": i["title"]} for i, s in ranked[:3] if s > 0],
             "suggestion": "如果学校有这一项的官方页面或通知，给我，我把它做成正式条目（带原文引用）。",
+            **sensitivity(text),
+            "router_llm": llm_on,
+            "rule_unsure": risky,
         }
 
     # 同一族事项分数咬得很紧时先问清是哪一类，别硬猜
     rivals = [(i, sc) for i, sc in ranked[:4] if sc >= MATCH_THRESHOLD]
-    if len(rivals) >= 2 and (score - rivals[1][1]) < 8:
+    if (not resolved_by_llm) and len(rivals) >= 2 and (score - rivals[1][1]) < 8:
         return {
             "matched": True,
             "query": text,
@@ -525,7 +633,15 @@ def answer_question(text: str, given: dict[str, str] | None = None) -> dict[str,
             "answers": [],
             "hold": True,
             "followups": [],
-            "disambiguate": [{"id": i["id"], "title": i["title"]} for i, _ in rivals[:3]],
+            "disambiguate": [
+                {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
+                 "hint": (i.get("aliases") or [""])[0]}
+                for i, _ in rivals[:3]
+            ],
+            "clarify": f"你是想问「{rivals[0][0]['title']}」还是「{rivals[1][0]['title']}」？两者办理口子不一样。",
+            **sensitivity(text),
+            "router_llm": llm_on,
+            "rule_unsure": risky,
             "focus": [],
             "quotes": [],
         }
@@ -553,6 +669,9 @@ def answer_question(text: str, given: dict[str, str] | None = None) -> dict[str,
     return {
         "matched": True,
         "query": text,
+        **sensitivity(text),
+        "router_llm": llm_on,
+        "rule_unsure": risky,
         "normalized": normalized,
         "confidence": round(min(score, 100) / 100, 2),
         "band": "high" if score >= 75 else "low",
@@ -572,6 +691,7 @@ def answer_question(text: str, given: dict[str, str] | None = None) -> dict[str,
 class AskReq(BaseModel):
     text: str
     slots: dict[str, str] = {}
+    router_llm: bool | None = None   # None=按环境变量；界面开关传 true/false
 
 
 @app.post("/api/ask")
@@ -580,7 +700,7 @@ def ask(req: AskReq) -> dict[str, Any]:
     text = (req.text or "").strip()
     if len(text) < 2:
         raise HTTPException(400, "请再说得具体一点")
-    return answer_question(text, req.slots)
+    return answer_question(text, req.slots, router_llm=req.router_llm)
 
 
 @app.post("/api/intake")

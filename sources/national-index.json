@@ -1,0 +1,47 @@
+{
+  "zz-jiaoyu": {
+    "url": "https://www.xszz.edu.cn/n40/c7154/content.html",
+    "title": "普通高等教育学生资助政策（全国学生资助管理中心）",
+    "chars": 4188,
+    "sha256": "2a50c65980eb7df4",
+    "fetched_at": "2026-10-26T22:06:08+08:00",
+    "kind": "national",
+    "official": true
+  },
+  "zz-wenda": {
+    "url": "https://www.xszz.edu.cn/n41/n61/index.html",
+    "title": "高等教育资助政策问答（全国学生资助管理中心）",
+    "chars": 1513,
+    "sha256": "e374bad17b3bf298",
+    "fetched_at": "2026-10-26T22:06:08+08:00",
+    "kind": "national",
+    "official": true
+  },
+  "zz-daikuan-zhinan": {
+    "url": "https://www.xszz.edu.cn/n74/n77/c12733/content.html",
+    "title": "2026 国家助学贷款申请指南（全国学生资助管理中心）",
+    "chars": 491,
+    "sha256": "00e6e628e8ec292b",
+    "fetched_at": "2026-10-26T22:06:08+08:00",
+    "kind": "national",
+    "official": true
+  },
+  "zz-zhengce": {
+    "url": "https://www.xszz.edu.cn/n39/n54/index.html",
+    "title": "高校学生资助·政策文件（全国学生资助管理中心）",
+    "chars": 2340,
+    "sha256": "b6565aedfcc32fae",
+    "fetched_at": "2026-10-26T22:06:08+08:00",
+    "kind": "national",
+    "official": true
+  },
+  "zb-wang": {
+    "url": "https://www.gfbzb.gov.cn/",
+    "title": "全国征兵网",
+    "chars": 490,
+    "sha256": "04ed96a079ba4c0e",
+    "fetched_at": "2026-10-26T22:06:08+08:00",
+    "kind": "national",
+    "official": true
+  }
+}

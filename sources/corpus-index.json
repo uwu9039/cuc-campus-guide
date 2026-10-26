@@ -5370,6 +5370,924 @@
     "official": true,
     "used_by_items": []
   },
+  "20251110-c2760a262331": {
+    "slug": "20251110-c2760a262331",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学学生资助资金管理办法（修订）》（附件1、2、9、1...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262331/page.htm",
+    "chars": 617,
+    "fetched_at": "2026-10-26T21:30:01+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262330": {
+    "slug": "20251110-c2760a262330",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生国家奖学金实施办法（试行）》（适用于2023...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262330/page.htm",
+    "chars": 557,
+    "fetched_at": "2026-10-26T21:30:02+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262329": {
+    "slug": "20251110-c2760a262329",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生国家励志奖学金实施办法（试行）》（适用于...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262329/page.htm",
+    "chars": 563,
+    "fetched_at": "2026-10-26T21:30:02+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262328": {
+    "slug": "20251110-c2760a262328",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生校励志奖学金评选办法（试行）》（适用于20...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262328/page.htm",
+    "chars": 560,
+    "fetched_at": "2026-10-26T21:30:02+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262327": {
+    "slug": "20251110-c2760a262327",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学优秀本科生奖学金评选办法（试行）》（适用于2023...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262327/page.htm",
+    "chars": 557,
+    "fetched_at": "2026-10-26T21:30:02+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251111-c2761a262337": {
+    "slug": "20251111-c2761a262337",
+    "kind": "官网·渲染",
+    "title": "关于做好2025-2026学年本科生助学金评定工作的通知",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/1111/c2761a262337/page.htm",
+    "chars": 496,
+    "fetched_at": "2026-10-26T21:30:02+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20250414-c2762a254395": {
+    "slug": "20250414-c2762a254395",
+    "kind": "官网·渲染",
+    "title": "财政部教育部中国人民银行金融监管总局关于调整完善国家助学贷款...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2025/0414/c2762a254395/page.htm",
+    "chars": 565,
+    "fetched_at": "2026-10-26T21:30:03+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20181219-c2752a91624": {
+    "slug": "20181219-c2752a91624",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部令第43号 普通高等学校辅导员队伍建设规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1219/c2752a91624/page.htm",
+    "chars": 4671,
+    "fetched_at": "2026-10-26T21:30:03+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181219-c2752a91624"
+    ]
+  },
+  "20190119-c2752a121385": {
+    "slug": "20190119-c2752a121385",
+    "kind": "官网·渲染",
+    "title": "《普通高等学校军事课教学大纲》2019版",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2019/0119/c2752a121385/page.htm",
+    "chars": 1728,
+    "fetched_at": "2026-10-26T21:30:04+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20190119-c2752a121385"
+    ]
+  },
+  "20181224-c2752a101548": {
+    "slug": "20181224-c2752a101548",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部等六部门 关于做好家庭经济困难 学生认定工...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101548/page.htm",
+    "chars": 3587,
+    "fetched_at": "2026-10-26T21:30:04+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101548"
+    ]
+  },
+  "20181224-c2752a101498": {
+    "slug": "20181224-c2752a101498",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部办公厅 国务院国资委办公厅关于举办全国大...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101498/page.htm",
+    "chars": 1867,
+    "fetched_at": "2026-10-26T21:30:05+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20181224-c2752a101496": {
+    "slug": "20181224-c2752a101496",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部文件第11号 教育部关于做好2018届全国普通...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101496/page.htm",
+    "chars": 3921,
+    "fetched_at": "2026-10-26T21:30:06+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101496"
+    ]
+  },
+  "20181224-c2752a101494": {
+    "slug": "20181224-c2752a101494",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部办公厅文件第9号 教育部办公厅关于下达2019...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101494/page.htm",
+    "chars": 1319,
+    "fetched_at": "2026-10-26T21:30:06+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20181224-c2752a101490": {
+    "slug": "20181224-c2752a101490",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部文件第8号 教育部关于做好2019届全国普通高...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101490/page.htm",
+    "chars": 4464,
+    "fetched_at": "2026-10-26T21:30:06+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101490"
+    ]
+  },
+  "20181224-c2752a101484": {
+    "slug": "20181224-c2752a101484",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部文件第3号 教育部关于加强学生军事训练管理...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101484/page.htm",
+    "chars": 3497,
+    "fetched_at": "2026-10-26T21:30:06+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101484"
+    ]
+  },
+  "20181224-c2752a101482": {
+    "slug": "20181224-c2752a101482",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部 财政部关于印发《高等学校勤工助学管理办...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101482/page.htm",
+    "chars": 3622,
+    "fetched_at": "2026-10-26T21:30:08+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101482"
+    ]
+  },
+  "20181224-c2752a101480": {
+    "slug": "20181224-c2752a101480",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部办公厅文件第5号 教育部办公厅关于进一步做...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101480/page.htm",
+    "chars": 3271,
+    "fetched_at": "2026-10-26T21:30:09+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181224-c2752a101480"
+    ]
+  },
+  "20181220-c2752a92007": {
+    "slug": "20181220-c2752a92007",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部令第27号 高等学校档案管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1220/c2752a92007/page.htm",
+    "chars": 6109,
+    "fetched_at": "2026-10-26T21:30:10+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181220-c2752a92007"
+    ]
+  },
+  "20181219-c2752a91648": {
+    "slug": "20181219-c2752a91648",
+    "kind": "官网·渲染",
+    "title": "中华人民共和国教育部令第41号 普通高等学校学生管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2018/1219/c2752a91648/page.htm",
+    "chars": 10108,
+    "fetched_at": "2026-10-26T21:30:10+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20181219-c2752a91648"
+    ]
+  },
+  "20230904-c2753a211308": {
+    "slug": "20230904-c2753a211308",
+    "kind": "官网·渲染",
+    "title": "2023年 中国传媒大学学生工作规章制度汇编",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a211308/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:10+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20220713-c2753a194883": {
+    "slug": "20220713-c2753a194883",
+    "kind": "官网·渲染",
+    "title": "2021年 中国传媒大学学生工作规章制度导读手册",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2022/0713/c2753a194883/page.htm",
+    "chars": 406,
+    "fetched_at": "2026-10-26T21:30:12+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20210930-c2753a187012": {
+    "slug": "20210930-c2753a187012",
+    "kind": "官网·渲染",
+    "title": "2021年 中国传媒大学学生规章制度汇编",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2021/0930/c2753a187012/page.htm",
+    "chars": 399,
+    "fetched_at": "2026-10-26T21:30:12+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20230904-c2753a242497": {
+    "slug": "20230904-c2753a242497",
+    "kind": "官网·渲染",
+    "title": "2024年 中国传媒大学学生工作规章制度汇编",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a242497/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:12+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20230904-c2753a259796": {
+    "slug": "20230904-c2753a259796",
+    "kind": "官网·渲染",
+    "title": "2025年 中国传媒大学学生工作规章制度汇编",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:12+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260911-c2753a273800": {
+    "slug": "20260911-c2753a273800",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学图书馆读者行为守则",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0911/c2753a273800/page.htm",
+    "chars": 1569,
+    "fetched_at": "2026-10-26T21:30:13+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260911-c2753a273800"
+    ]
+  },
+  "20260909-c2753a273664": {
+    "slug": "20260909-c2753a273664",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学研究生学术复核、学位复核办法（试行）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273664/page.htm",
+    "chars": 405,
+    "fetched_at": "2026-10-26T21:30:14+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260909-c2753a273662": {
+    "slug": "20260909-c2753a273662",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学研究生学位与学历分离管理工作实施办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273662/page.htm",
+    "chars": 405,
+    "fetched_at": "2026-10-26T21:30:14+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260909-c2753a273661": {
+    "slug": "20260909-c2753a273661",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学硕士学位、博士学位授予工作实施办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273661/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:14+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260909-c2753a273660": {
+    "slug": "20260909-c2753a273660",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学攻读专业学位硕士研究生培养工作规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273660/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:15+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260909-c2753a273659": {
+    "slug": "20260909-c2753a273659",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学攻读学术学位硕士研究生培养工作规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273659/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:15+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260909-c2753a273663": {
+    "slug": "20260909-c2753a273663",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学后勤保障处学生公寓退宿管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273663/page.htm",
+    "chars": 1649,
+    "fetched_at": "2026-10-26T21:30:17+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260909-c2753a273663"
+    ]
+  },
+  "20260909-c2753a273658": {
+    "slug": "20260909-c2753a273658",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学攻读专业学位博士研究生培养工作规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273658/page.htm",
+    "chars": 403,
+    "fetched_at": "2026-10-26T21:30:17+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260831-c2753a273466": {
+    "slug": "20260831-c2753a273466",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学攻读学术学位博士研究生培养工作规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0831/c2753a273466/page.htm",
+    "chars": 504,
+    "fetched_at": "2026-10-26T21:30:17+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260529-c2753a271144": {
+    "slug": "20260529-c2753a271144",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学传媒博物馆临时展厅管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271144/page.htm",
+    "chars": 1054,
+    "fetched_at": "2026-10-26T21:30:17+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271144"
+    ]
+  },
+  "20260529-c2753a271143": {
+    "slug": "20260529-c2753a271143",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学传媒博物馆场馆管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271143/page.htm",
+    "chars": 1119,
+    "fetched_at": "2026-10-26T21:30:17+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271143"
+    ]
+  },
+  "20260529-c2753a271142": {
+    "slug": "20260529-c2753a271142",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学传媒博物馆简介",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271142/page.htm",
+    "chars": 1259,
+    "fetched_at": "2026-10-26T21:30:18+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260529-c2753a271141": {
+    "slug": "20260529-c2753a271141",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学传媒博物馆团体参观预约办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271141/page.htm",
+    "chars": 574,
+    "fetched_at": "2026-10-26T21:30:19+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271141"
+    ]
+  },
+  "20260529-c2753a271140": {
+    "slug": "20260529-c2753a271140",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学图书馆文献借阅规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271140/page.htm",
+    "chars": 1682,
+    "fetched_at": "2026-10-26T21:30:20+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271140"
+    ]
+  },
+  "20260716-c2753a272808": {
+    "slug": "20260716-c2753a272808",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学本科毕业论文（设计） 人工智能使用规范实施细则 （...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0716/c2753a272808/page.htm",
+    "chars": 2182,
+    "fetched_at": "2026-10-26T21:30:21+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260716-c2753a272808"
+    ]
+  },
+  "20190802-c2753a133698": {
+    "slug": "20190802-c2753a133698",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学集体户口管理暂行规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133698/page.htm",
+    "chars": 2052,
+    "fetched_at": "2026-10-26T21:30:22+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20190802-c2753a133698"
+    ]
+  },
+  "20190802-c2753a133697": {
+    "slug": "20190802-c2753a133697",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学大型活动安全管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133697/page.htm",
+    "chars": 3401,
+    "fetched_at": "2026-10-26T21:30:24+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20190802-c2753a133697"
+    ]
+  },
+  "20190802-c2753a133696": {
+    "slug": "20190802-c2753a133696",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学校园治安管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133696/page.htm",
+    "chars": 6497,
+    "fetched_at": "2026-10-26T21:30:25+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20190802-c2753a133696"
+    ]
+  },
+  "20260529-c2753a271139": {
+    "slug": "20260529-c2753a271139",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学硕博连读生、直博生转为硕士生培养管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271139/page.htm",
+    "chars": 1745,
+    "fetched_at": "2026-10-26T21:30:26+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271139"
+    ]
+  },
+  "20260529-c2753a271137": {
+    "slug": "20260529-c2753a271137",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学博士研究生学位论文及 毕业作品匿名评阅办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271137/page.htm",
+    "chars": 1895,
+    "fetched_at": "2026-10-26T21:30:26+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271137"
+    ]
+  },
+  "20260529-c2753a271136": {
+    "slug": "20260529-c2753a271136",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学硕士研究生学位论文及 毕业作品匿名评阅办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271136/page.htm",
+    "chars": 1973,
+    "fetched_at": "2026-10-26T21:30:27+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260529-c2753a271136"
+    ]
+  },
+  "20260528-c2753a271116": {
+    "slug": "20260528-c2753a271116",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学本专科学历、学位证书管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271116/page.htm",
+    "chars": 2139,
+    "fetched_at": "2026-10-26T21:30:28+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260528-c2753a271116"
+    ]
+  },
+  "20260529-c2753a271135": {
+    "slug": "20260529-c2753a271135",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学严禁各部门单位及师生参与校外招生培训的工作规定（...",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271135/page.htm",
+    "chars": 2455,
+    "fetched_at": "2026-10-26T21:30:29+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20260528-c2753a271115": {
+    "slug": "20260528-c2753a271115",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学本专科学生退宿管理规定（修订）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271115/page.htm",
+    "chars": 1168,
+    "fetched_at": "2026-10-26T21:30:29+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260528-c2753a271115"
+    ]
+  },
+  "20260528-c2753a271114": {
+    "slug": "20260528-c2753a271114",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学学生证、校徽管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271114/page.htm",
+    "chars": 984,
+    "fetched_at": "2026-10-26T21:30:29+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260528-c2753a271114"
+    ]
+  },
+  "20260528-c2753a271113": {
+    "slug": "20260528-c2753a271113",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学学生管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271113/page.htm",
+    "chars": 2967,
+    "fetched_at": "2026-10-26T21:30:31+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20260528-c2753a271113"
+    ]
+  },
+  "20260528-c2753a271112": {
+    "slug": "20260528-c2753a271112",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学学生行为准则（修订）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271112/page.htm",
+    "chars": 1244,
+    "fetched_at": "2026-10-26T21:30:32+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20240819-c2753a259252": {
+    "slug": "20240819-c2753a259252",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学团学工作目标管理细则（社团）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259252/page.htm",
+    "chars": 2616,
+    "fetched_at": "2026-10-26T21:30:33+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20240819-c2753a259252"
+    ]
+  },
+  "20240819-c2753a259249": {
+    "slug": "20240819-c2753a259249",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学图书馆港台及外文版赠书书库阅览规则",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259249/page.htm",
+    "chars": 850,
+    "fetched_at": "2026-10-26T21:30:34+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20240819-c2753a259249"
+    ]
+  },
+  "20240819-c2753a259245": {
+    "slug": "20240819-c2753a259245",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学全日制本科生课程考核及成绩管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259245/page.htm",
+    "chars": 3959,
+    "fetched_at": "2026-10-26T21:30:35+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20240819-c2753a259245"
+    ]
+  },
+  "20240819-c2753a259246": {
+    "slug": "20240819-c2753a259246",
+    "kind": "官网·渲染",
+    "title": "关于《中国传媒大学本科生体育课程管理规定》 的补充规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259246/page.htm",
+    "chars": 1098,
+    "fetched_at": "2026-10-26T21:30:36+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20240819-c2753a259246"
+    ]
+  },
+  "20240819-c2753a259247": {
+    "slug": "20240819-c2753a259247",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学本科生选课管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259247/page.htm",
+    "chars": 2136,
+    "fetched_at": "2026-10-26T21:30:36+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20240819-c2753a259247"
+    ]
+  },
+  "20200624-c2753a171369": {
+    "slug": "20200624-c2753a171369",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学学生公寓管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2020/0624/c2753a171369/page.htm",
+    "chars": 387,
+    "fetched_at": "2026-10-26T21:30:36+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20211009-c2753a254805": {
+    "slug": "20211009-c2753a254805",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学“优秀毕业生”评选细则",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254805/page.htm",
+    "chars": 2672,
+    "fetched_at": "2026-10-26T21:30:36+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20211009-c2753a254805"
+    ]
+  },
+  "20211009-c2753a254699": {
+    "slug": "20211009-c2753a254699",
+    "kind": "官网·渲染",
+    "title": "2024年北京市征兵优待政策",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254699/page.htm",
+    "chars": 3133,
+    "fetched_at": "2026-10-26T21:30:37+08:00",
+    "official": true,
+    "used_by_items": [
+      "doc-20211009-c2753a254699"
+    ]
+  },
+  "20211009-c2753a254695": {
+    "slug": "20211009-c2753a254695",
+    "kind": "官网·渲染",
+    "title": "中国传媒大学传媒博物馆简介",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254695/page.htm",
+    "chars": 1317,
+    "fetched_at": "2026-10-26T21:30:38+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262330-att7": {
+    "slug": "20251110-c2760a262330-att7",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生国家奖学金实施办法（试行）》（适用于·附件 中传学字〔2024〕196号 关于印发《中国传媒",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/_upload/article/files/77/f1/4dc90d864320b6d9dced67b563e8/cbb92ec0-ef6f-4f1b-8693-5c542f833028.pdf",
+    "chars": 1932,
+    "fetched_at": "2026-10-26T21:33:46+08:00",
+    "official": true,
+    "used_by_items": [
+      "jiangxuejin"
+    ]
+  },
+  "20251110-c2760a262329-att9": {
+    "slug": "20251110-c2760a262329-att9",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生国家励志奖学金实施办法（试行）》（适·附件 中传学字〔2024〕195号 关于印发《中国传媒",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/_upload/article/files/0d/47/e2229093487283988a5681387a62/db1fb62d-c7e6-4f4b-8a38-16f5477eb398.pdf",
+    "chars": 1968,
+    "fetched_at": "2026-10-26T21:33:47+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262328-att8": {
+    "slug": "20251110-c2760a262328-att8",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学本科生校励志奖学金评选办法（试行）》（适用·附件 中传学字〔2024〕194号 关于印发《中国传媒",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/_upload/article/files/de/f4/0fc484f0494db71371a1a82f3b00/b830a4cd-d07f-4654-985a-a57a81959625.pdf",
+    "chars": 1881,
+    "fetched_at": "2026-10-26T21:33:48+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "20251110-c2760a262327-att7": {
+    "slug": "20251110-c2760a262327-att7",
+    "kind": "官网·渲染",
+    "title": "《中国传媒大学优秀本科生奖学金评选办法（试行）》（适用于·附件 中传学字〔2024〕193号 关于印发《中国传媒",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/_upload/article/files/6e/9d/446296bc45acb8b7a6646b8aa748/862b3164-9958-42b7-afeb-56a4cb20a93a.pdf",
+    "chars": 2484,
+    "fetched_at": "2026-10-26T21:33:48+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "chsi-benren": {
+    "slug": "chsi-benren",
+    "kind": "学信网",
+    "title": "查询本人学籍学历学位信息方法（学信网）",
+    "account": "",
+    "date": "",
+    "url": "https://www.chsi.com.cn/xlcx/brcxff.jsp",
+    "chars": 614,
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "chsi-baogao",
+      "chsi-heshi"
+    ]
+  },
+  "chsi-yanzheng": {
+    "slug": "chsi-yanzheng",
+    "kind": "学信网",
+    "title": "在线验证报告（学信网）",
+    "account": "",
+    "date": "",
+    "url": "https://www.chsi.com.cn/xlcx/bgcx.jsp",
+    "chars": 841,
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "chsi-baogao"
+    ]
+  },
+  "chsi-xuewei": {
+    "slug": "chsi-xuewei",
+    "kind": "学信网",
+    "title": "学位查询（学信网）",
+    "account": "",
+    "date": "",
+    "url": "https://www.chsi.com.cn/xwcx/index.jsp",
+    "chars": 574,
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "chsi-fanwei": {
+    "slug": "chsi-fanwei",
+    "kind": "学信网",
+    "title": "学历查询范围（学信网）",
+    "account": "",
+    "date": "",
+    "url": "https://www.chsi.com.cn/help/cxfw.jsp",
+    "chars": 677,
+    "fetched_at": "2026-10-26T21:57:50+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "chsi-xueli": {
+    "slug": "chsi-xueli",
+    "kind": "学信网",
+    "title": "学历查询（学信网）",
+    "account": "",
+    "date": "",
+    "url": "https://www.chsi.com.cn/xlcx/index.jsp",
+    "chars": 649,
+    "fetched_at": "2026-10-26T21:57:50+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "moe-41": {
+    "slug": "moe-41",
+    "kind": "教育部",
+    "title": "普通高等学校学生管理规定（教育部令第41号）",
+    "account": "",
+    "date": "",
+    "url": "http://www.moe.gov.cn/srcsite/A02/s5911/moe_621/201702/t20170216_296385.html",
+    "chars": 9608,
+    "fetched_at": "2026-10-26T21:58:39+08:00",
+    "official": true,
+    "used_by_items": [
+      "moe-shensu",
+      "moe-zhuanxue"
+    ]
+  },
   "2026-10-19-a3061083": {
     "slug": "2026-10-19-a3061083",
     "kind": "公众号",
@@ -5713,7 +6631,7 @@
     "title": "星核喜报 | 火力全开，“杀”进终试！16席终试直通中传，用实力为梦想加冕！",
     "account": "星核十代",
     "date": "2025-02-18",
-    "url": "https://mp.weixin.qq.com/s?__biz=Mzg5MzgxODI4OA==&mid=2247515287&idx=1&sn=b8e86963eeb19723269055eb898e6169&chksm=c1123b3cf63f5ea2dd6953adedcddd714af8c410d9af9c41b7e8b6affcdf6ace201c1af38d60&scene=27",
+    "url": "https://mp.weixin.qq.com/s?__biz=Mzg5MzgxODI4OA==&mid=2247515287&idx=1&sn=b8e86963eeb197****9055eb898e6169&chksm=c1123b3cf63f5ea2dd6953adedcddd714af8c410d9af9c41b7e8b6affcdf6ace201c1af38d60&scene=27",
     "chars": 6336,
     "fetched_at": "2026-10-20T22:36:58+08:00",
     "official": false,

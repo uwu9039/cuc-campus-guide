@@ -4,7 +4,7 @@
   - API Key / token（sk-…、ghp_…）
   - 中国大陆手机号、邮箱地址
   - 本机用户名与本地路径（（本地路径已隐藏）
-  - 个人目录名（随便聊点、小D的小窝）
+  - 个人目录名
 
 用法：python tools/privacy_scan.py [--fix]
   --fix 会把命中的本地路径替换成占位符（只改文本文件，不动二进制）
@@ -35,7 +35,7 @@ RULES = [
 ALLOW = [
     re.compile(r"6578\d{4}"),                 # 学校 6578xxxx 总机段
     re.compile(r"6577\d{4}"),
-    re.compile(r"13911312873|15699840801|18611087999|65783000"),
+    re.compile(r"139****2873|156****0801|186****7999|65783000"),
     re.compile(r"jiaowuchu@cuc\.edu\.cn|cuc_zntj@163\.com"),
     re.compile(r"@cuc\.edu\.cn$"),
 ]

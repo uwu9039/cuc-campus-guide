@@ -1,0 +1,68 @@
+{
+  "generated": "2026-10-26",
+  "method": "routing audit: words whose presence raises misroute rate above baseline",
+  "baseline_fail_rate": 0.0448,
+  "total_queries": 3346,
+  "words": [
+    {
+      "w": "账号申诉",
+      "seen": 35,
+      "wrong": 33,
+      "rate": 0.943
+    },
+    {
+      "w": "学生证明",
+      "seen": 15,
+      "wrong": 14,
+      "rate": 0.933
+    },
+    {
+      "w": "休学期满",
+      "seen": 15,
+      "wrong": 14,
+      "rate": 0.933
+    },
+    {
+      "w": "验证码",
+      "seen": 15,
+      "wrong": 14,
+      "rate": 0.933
+    },
+    {
+      "w": "服兵役",
+      "seen": 35,
+      "wrong": 15,
+      "rate": 0.429
+    },
+    {
+      "w": "申诉",
+      "seen": 68,
+      "wrong": 34,
+      "rate": 0.5
+    },
+    {
+      "w": "处分",
+      "seen": 30,
+      "wrong": 14,
+      "rate": 0.467
+    },
+    {
+      "w": "休学",
+      "seen": 79,
+      "wrong": 31,
+      "rate": 0.392
+    },
+    {
+      "w": "复学",
+      "seen": 51,
+      "wrong": 18,
+      "rate": 0.353
+    },
+    {
+      "w": "密码",
+      "seen": 60,
+      "wrong": 14,
+      "rate": 0.233
+    }
+  ]
+}

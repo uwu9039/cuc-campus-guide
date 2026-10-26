@@ -45,6 +45,21 @@
   .chip:hover{border-color:var(--ink);color:var(--ink)}
 
   .hint{font-size:12.5px;color:var(--faint);margin-top:10px}
+  .llmsw{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);
+    letter-spacing:.04em;cursor:pointer;user-select:none;margin-right:18px}
+  .llmsw input{display:none}
+  .llmsw span{width:34px;height:19px;border-radius:19px;background:#d8d2c4;position:relative;transition:.18s}
+  .llmsw span::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.18s}
+  .llmsw input:checked + span{background:var(--seal)}
+  .llmsw input:checked + span::after{left:17px}
+  .llmhint:empty{display:none}
+  .llmhint{margin-top:12px;font-size:12.5px;line-height:1.6;padding:9px 12px;border-left:3px solid var(--line);
+    background:#faf7f0;color:var(--muted)}
+  .llmhint.warn{border-left-color:var(--seal);background:#fdf3f1;color:#8c3327}
+  .llmhint.soft{border-left-color:#c9b98a}
+  .mini{font:inherit;font-size:11.5px;padding:2px 8px;border:1px solid currentColor;background:none;
+    color:inherit;cursor:pointer;border-radius:3px}
   .presets{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
   .presets summary{cursor:pointer;font-size:12px;color:var(--muted);letter-spacing:.04em;list-style:none}
   .presets summary::-webkit-details-marker{display:none}
@@ -204,6 +219,9 @@
       <h1>说得清，<em>带得对</em></h1>
     </div>
     <div class="status">
+      <label class="llmsw" title="规则打平时，是否让模型在候选里裁决（只选，不生成事实）">
+        <input type="checkbox" id="llmsw"><span></span>模型裁决
+      </label>
       <span class="pill"><i class="dot" id="dot"></i><span id="stat">检测中</span></span>
       <span id="meta">数据核验 —</span>
     </div>
@@ -219,6 +237,7 @@
     <details class="presets" id="presets"><summary>常用问法（点一下直接问）</summary><div id="pbody"></div></details>
     <div class="hint">识别靠别名表，不靠模型自由发挥；答不出会直接告诉你查不到。</div>
     <div class="err" id="err"></div>
+  <div class="llmhint" id="llmhint"></div>
   </div>
 
   <div id="out"></div>
@@ -284,6 +303,24 @@ $("#clear").onclick = () => { $("#q").value = ""; $("#out").innerHTML = ""; $("#
 $("#go").onclick = run;
 $("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(); });
 
+/* 敏感词 → 建议开启模型裁决；普通词 → 建议关闭 */
+function showLlmHint(d) {
+  const el = $("#llmhint");
+  if (!el) return;
+  const on = $("#llmsw").checked;
+  if (d.sensitive) {
+    el.className = "llmhint warn";
+    el.innerHTML = `这类问题（${esc((d.hits || []).join("、"))}）答错代价大，建议<b>开启模型裁决</b>`
+      + (on ? "（已开启）" : `　<button class="mini" onclick="document.querySelector('#llmsw').click();run(true)">开启并重答</button>`);
+  } else if (d.rule_unsure && !on) {
+    el.className = "llmhint soft";
+    el.textContent = "规则对这句没把握，可试着开启模型裁决对比效果（默认保持关闭，更稳）";
+  } else {
+    el.className = "llmhint";
+    el.textContent = "";
+  }
+}
+
 /* ---------------- 1. 识别 ---------------- */
 async function run(keepSlots) {
   const text = $("#q").value.trim();
@@ -292,7 +329,8 @@ async function run(keepSlots) {
   if (!keepSlots) state.slots = {};
   $("#go").disabled = true;
   try {
-    const d = await api("/api/ask", { text, slots: state.slots });
+    const d = await api("/api/ask", { text, slots: state.slots, router_llm: $("#llmsw").checked });
+    showLlmHint(d);
     if (!d.matched) {
       $("#out").innerHTML = notFound(d);
       return;

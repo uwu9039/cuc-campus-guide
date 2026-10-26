@@ -1,6 +1,6 @@
 {
   "version": "0.2",
-  "updated": "2026-10-21",
+  "updated": "2026-10-26",
   "policy": "每条事实必须能在 sources/ 对应页面正文里找到原句（evidence.quote 必须是原文子串）。status=verified 有实质正文；source-thin 只有附件或正文为空。",
   "items": [
     {
@@ -873,7 +873,7 @@
         {
           "when": "排障",
           "what": "仍未解决按报修电话联系",
-          "where": "宿舍网络 移动 13911312873 / 联通 15699840801"
+          "where": "宿舍网络 移动 139****2873 / 联通 156****0801"
         }
       ],
       "fee": null,
@@ -957,7 +957,7 @@
         },
         "steps.4": {
           "src": "20230221-c8498a202280",
-          "quote": "宿舍网络报修电话 移动：13911312873 联通：15699840801"
+          "quote": "宿舍网络报修电话 移动：139****2873 联通：156****0801"
         }
       }
     },
@@ -968,7 +968,6 @@
         "校园网密码忘了",
         "登录不上数字校园",
         "统一身份认证密码",
-        "账号被锁",
         "登不上教务系统"
       ],
       "keywords": [
@@ -2139,13 +2138,16 @@
         "收不到验证码",
         "换了手机号",
         "账号申诉",
-        "身份信息有误"
+        "身份信息有误",
+        "账号登不上"
       ],
       "keywords": [
-        "申诉",
         "账号申诉",
+        "被锁",
+        "锁定",
         "验证码",
-        "换手机号"
+        "换手机号",
+        "身份信息有误"
       ],
       "dept": "信息化处",
       "channel": [
@@ -2624,9 +2626,9 @@
       ],
       "keywords": [
         "保留学籍",
-        "入伍",
-        "服兵役",
-        "参军"
+        "入伍保留",
+        "参军保留",
+        "服兵役保留"
       ],
       "dept": "本科生院 / 武装部 / 学院",
       "channel": [
@@ -3186,7 +3188,9 @@
         "复学",
         "复学申请",
         "休学期满",
-        "回来上课"
+        "休学后",
+        "回校",
+        "复学手续"
       ],
       "dept": "学院 / 校医院 / 本科生院",
       "channel": [
@@ -3490,20 +3494,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季短视频与数字文化传播微专业招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季传媒产业投融资微专业招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季数字媒体经济微专业招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季AI实训营：数字创意与创作微专业招生简章.pdf"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3532,22 +3523,6 @@
         "steps.0": {
           "src": "20260724-c6479a272951",
           "quote": "如本校同学扫描微专业报名二维码时出现错误提示，请先扫描下方二维码完成身份验证，验证通过后，即可返回招生简章页面扫描原报名二维码进行报名。"
-        },
-        "materials.0": {
-          "src": "20260724-c6479a272951",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季短视频与数字文化传播微专业招生简章.pdf"
-        },
-        "materials.1": {
-          "src": "20260724-c6479a272951",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季传媒产业投融资微专业招生简章.pdf"
-        },
-        "materials.2": {
-          "src": "20260724-c6479a272951",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季数字媒体经济微专业招生简章.pdf"
-        },
-        "materials.3": {
-          "src": "20260724-c6479a272951",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 中国传媒大学2026年秋季AI实训营：数字创意与创作微专业招生简章.pdf"
         }
       },
       "auto": true
@@ -3567,20 +3542,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学新闻学专业辅修招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学数字经济专业辅修招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学市场营销专业辅修招生简章.pdf"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学行政管理（媒介与数字公共治理）专业辅修招生简章.pdf"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3609,22 +3571,6 @@
         "steps.0": {
           "src": "20250401-c6364a253846",
           "quote": "详细报名方式、课程安排等信息请参见附件中各专业招生简章。"
-        },
-        "materials.0": {
-          "src": "20250401-c6364a253846",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学新闻学专业辅修招生简章.pdf"
-        },
-        "materials.1": {
-          "src": "20250401-c6364a253846",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学数字经济专业辅修招生简章.pdf"
-        },
-        "materials.2": {
-          "src": "20250401-c6364a253846",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学市场营销专业辅修招生简章.pdf"
-        },
-        "materials.3": {
-          "src": "20250401-c6364a253846",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 2025年中国传媒大学行政管理（媒介与数字公共治理）专业辅修招生简章.pdf"
         }
       },
       "auto": true
@@ -3646,17 +3592,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_xls.gif 肄业证书申请表20231101.xls"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=213871"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3701,18 +3637,6 @@
         "steps.2": {
           "src": "20231117-c6366a213871",
           "quote": "[附件] /_ueditor/themes/default/images/icon_xls.gif 肄业证书申请表20231101.xls"
-        },
-        "materials.0": {
-          "src": "20231117-c6366a213871",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20231117-c6366a213871",
-          "quote": "/_ueditor/themes/default/images/icon_xls.gif 肄业证书申请表20231101.xls"
-        },
-        "materials.2": {
-          "src": "20231117-c6366a213871",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=213871"
         }
       },
       "auto": true
@@ -3732,11 +3656,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=211342"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3773,10 +3693,6 @@
         "steps.1": {
           "src": "20230905-c6364a211342",
           "quote": "关于线下恢复办理自费出国留学材料事宜的通知"
-        },
-        "materials.0": {
-          "src": "20230905-c6364a211342",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=211342"
         }
       },
       "auto": true
@@ -3798,11 +3714,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=210325"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3855,10 +3767,6 @@
         "steps.3": {
           "src": "20230711-c6364a210325",
           "quote": "请通过可信电子成绩单系统自助申请下载各类证明材料，可信系统网址为：http://dzpz.cuc.edu.cn。"
-        },
-        "materials.0": {
-          "src": "20230711-c6364a210325",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=210325"
         }
       },
       "auto": true
@@ -3878,17 +3786,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_xls.gif 中国传媒大学课程补（退）选课申请表2023.xls"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=176049"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -3933,18 +3831,6 @@
         "steps.2": {
           "src": "20201124-c6366a176049",
           "quote": "[附件] /_ueditor/themes/default/images/icon_xls.gif 中国传媒大学课程补（退）选课申请表2023.xls"
-        },
-        "materials.0": {
-          "src": "20201124-c6366a176049",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20201124-c6366a176049",
-          "quote": "/_ueditor/themes/default/images/icon_xls.gif 中国传媒大学课程补（退）选课申请表2023.xls"
-        },
-        "materials.2": {
-          "src": "20201124-c6366a176049",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=176049"
         }
       },
       "auto": true
@@ -3966,14 +3852,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/column/18/dd/6365/picture.jpg"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=176030"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4042,14 +3921,6 @@
         "pitfalls.2": {
           "src": "20201124-c6487a176030",
           "quote": "监考期间不得看书看报、聊天、接听手机、擅离职守。"
-        },
-        "materials.0": {
-          "src": "20201124-c6487a176030",
-          "quote": "/_upload/column/18/dd/6365/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20201124-c6487a176030",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=176030"
         }
       },
       "auto": true
@@ -4071,14 +3942,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/column/18/dd/6365/picture.jpg"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=176028"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4107,14 +3971,6 @@
         "steps.0": {
           "src": "20201124-c6487a176028",
           "quote": "学生应在规定时间内，登录全国大学英语四、六级考试报名网站，完成缴费。"
-        },
-        "materials.0": {
-          "src": "20201124-c6487a176028",
-          "quote": "/_upload/column/18/dd/6365/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20201124-c6487a176028",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=176028"
         }
       },
       "auto": true
@@ -4134,20 +3990,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/a6d71f80-8044-4406-b280-96950d00c4fe.png"
-        },
-        {
-          "name": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/4c11ec9e-52b1-4804-8baa-1c81f615049b.png"
-        },
-        {
-          "name": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/69fb13c9-f9d7-4951-bf77-7776d450503f.png"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4190,22 +4033,6 @@
         "pitfalls.0": {
           "src": "20231120-c8502a213953",
           "quote": "请取消勾选“SSL”"
-        },
-        "materials.0": {
-          "src": "20231120-c8502a213953",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20231120-c8502a213953",
-          "quote": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/a6d71f80-8044-4406-b280-96950d00c4fe.png"
-        },
-        "materials.2": {
-          "src": "20231120-c8502a213953",
-          "quote": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/4c11ec9e-52b1-4804-8baa-1c81f615049b.png"
-        },
-        "materials.3": {
-          "src": "20231120-c8502a213953",
-          "quote": "/_upload/article/images/a5/a1/575c73684ccc8e837aa7b2eed644/69fb13c9-f9d7-4951-bf77-7776d450503f.png"
         }
       },
       "auto": true
@@ -4227,20 +4054,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/e5/95/6d0f001b45f4944d920c9cdfd042/f3c741f8-f75a-4ddf-a99a-e4e2031feb0f.jpg"
-        },
-        {
-          "name": "/_upload/article/images/e5/95/6d0f001b45f4944d920c9cdfd042/2b77680b-bc8e-405d-899f-a36acfcf972b.jpg"
-        },
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/gotop.png"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4293,22 +4107,6 @@
         "steps.3": {
           "src": "20231208-c10302a214544",
           "quote": "需要注销临时账号时，临时账户内剩余金额将由信息化处老师汇总，之后统一退还至相关部门。"
-        },
-        "materials.0": {
-          "src": "20231208-c10302a214544",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20231208-c10302a214544",
-          "quote": "/_upload/article/images/e5/95/6d0f001b45f4944d920c9cdfd042/f3c741f8-f75a-4ddf-a99a-e4e2031feb0f.jpg"
-        },
-        "materials.2": {
-          "src": "20231208-c10302a214544",
-          "quote": "/_upload/article/images/e5/95/6d0f001b45f4944d920c9cdfd042/2b77680b-bc8e-405d-899f-a36acfcf972b.jpg"
-        },
-        "materials.3": {
-          "src": "20231208-c10302a214544",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/gotop.png"
         }
       },
       "auto": true
@@ -4331,20 +4129,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/c1/a1/5f70889a4e1ca159565ace09ac6c/02aee2c1-d566-4c0e-84e1-b31ab7c5e9d5.png 校园卡使用指南"
-        },
-        {
-          "name": "/_upload/article/images/92/f5/2c81cd204de5ba050fbf6a75d6bb/038c3ed5-113a-496b-b224-41ba798e3518.png"
-        },
-        {
-          "name": "/_upload/article/images/92/f5/2c81cd204de5ba050fbf6a75d6bb/b287991f-05f4-4306-bf61-e2169965efe2.jpg"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4397,22 +4182,6 @@
         "steps.3": {
           "src": "20221027-c12936a200464",
           "quote": "校园卡丢失或损坏，需师生到艺术与传播大楼1层校园生活服务大厅自助补卡机进行校园卡补办，并交纳补卡工本费20元。"
-        },
-        "materials.0": {
-          "src": "20221027-c12936a200464",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20221027-c12936a200464",
-          "quote": "/_upload/article/images/c1/a1/5f70889a4e1ca159565ace09ac6c/02aee2c1-d566-4c0e-84e1-b31ab7c5e9d5.png 校园卡使用指南"
-        },
-        "materials.2": {
-          "src": "20221027-c12936a200464",
-          "quote": "/_upload/article/images/92/f5/2c81cd204de5ba050fbf6a75d6bb/038c3ed5-113a-496b-b224-41ba798e3518.png"
-        },
-        "materials.3": {
-          "src": "20221027-c12936a200464",
-          "quote": "/_upload/article/images/92/f5/2c81cd204de5ba050fbf6a75d6bb/b287991f-05f4-4306-bf61-e2169965efe2.jpg"
         }
       },
       "auto": true
@@ -4433,20 +4202,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/fe430e2e-08f3-4466-90eb-c911dcb6a189.jpg"
-        },
-        {
-          "name": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/b16a01f9-de99-44a1-ba87-ec4398d07df6.jpg"
-        },
-        {
-          "name": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/4b19ea5b-e0a7-4147-8e37-13c594bc9b05.png"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4499,22 +4255,6 @@
         "steps.3": {
           "src": "20231020-c8495a212881",
           "quote": "使用微信扫描上方二维码，进入申请银行联名学生交通卡页面，按提示填写信息即可完成申领。"
-        },
-        "materials.0": {
-          "src": "20231020-c8495a212881",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20231020-c8495a212881",
-          "quote": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/fe430e2e-08f3-4466-90eb-c911dcb6a189.jpg"
-        },
-        "materials.2": {
-          "src": "20231020-c8495a212881",
-          "quote": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/b16a01f9-de99-44a1-ba87-ec4398d07df6.jpg"
-        },
-        "materials.3": {
-          "src": "20231020-c8495a212881",
-          "quote": "/_upload/article/images/cc/ef/4956fc404916a49f5eee32ac6057/4b19ea5b-e0a7-4147-8e37-13c594bc9b05.png"
         }
       },
       "auto": true
@@ -4612,20 +4352,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/dc9e46d9-2837-4d95-b6ad-6bfd2d752086.jpg"
-        },
-        {
-          "name": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/b86aa8a0-859a-4478-bb00-8cf3c9612d18.jpg"
-        },
-        {
-          "name": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/68e6d510-c4da-4e37-a3b4-5036aa896c5b.jpg"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4678,22 +4405,6 @@
         "steps.3": {
           "src": "20231117-c10285a213870",
           "quote": "2.如果预计毕业信息不正常请学生联系教务处（联系电话65773223，65773222），办理延期手续等。"
-        },
-        "materials.0": {
-          "src": "20231117-c10285a213870",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20231117-c10285a213870",
-          "quote": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/dc9e46d9-2837-4d95-b6ad-6bfd2d752086.jpg"
-        },
-        "materials.2": {
-          "src": "20231117-c10285a213870",
-          "quote": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/b86aa8a0-859a-4478-bb00-8cf3c9612d18.jpg"
-        },
-        "materials.3": {
-          "src": "20231117-c10285a213870",
-          "quote": "/_upload/article/images/e3/71/834e6368438890189921cd52916f/68e6d510-c4da-4e37-a3b4-5036aa896c5b.jpg"
         }
       },
       "auto": true
@@ -4715,20 +4426,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/f750bdf4-37d4-4b2b-a944-aece18597ddc.png"
-        },
-        {
-          "name": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/6c578c9d-063a-4103-b2b2-71f6724852f5.jpg"
-        },
-        {
-          "name": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/1d9f7da8-5e0e-4424-8adf-83e4c27bf5f4.jpg"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4781,22 +4479,6 @@
         "steps.3": {
           "src": "20231201-c10302a214337",
           "quote": "关于统一身份认证平台登录，包括PC端，手机端两种方式。"
-        },
-        "materials.0": {
-          "src": "20231201-c10302a214337",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20231201-c10302a214337",
-          "quote": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/f750bdf4-37d4-4b2b-a944-aece18597ddc.png"
-        },
-        "materials.2": {
-          "src": "20231201-c10302a214337",
-          "quote": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/6c578c9d-063a-4103-b2b2-71f6724852f5.jpg"
-        },
-        "materials.3": {
-          "src": "20231201-c10302a214337",
-          "quote": "/_upload/article/images/46/ff/88a868a046dc87734a97916c39d7/1d9f7da8-5e0e-4424-8adf-83e4c27bf5f4.jpg"
         }
       },
       "auto": true
@@ -4816,20 +4498,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        {
-          "name": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/2fdb9d8b-2c42-419c-b830-504299f06cd1.jpg"
-        },
-        {
-          "name": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/e0dccb68-ce4a-4058-b015-b437fefe6715.jpg"
-        },
-        {
-          "name": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/67d68c3f-bc8c-438a-b833-06b58fff9fb7.jpg"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4858,22 +4527,6 @@
         "steps.0": {
           "src": "20240407-c10717a218312",
           "quote": "捡到他人校园卡时，可以通过中国传媒大学企业微信或中传app，点击“校园卡”，进入“遗失卡查询”界面，点击“捡到卡登记”，填写失主学工号、姓名，自己联系地址和手机号等信息，点击“提交”。"
-        },
-        "materials.0": {
-          "src": "20240407-c10717a218312",
-          "quote": "/_upload/tpl/01/e7/487/template487/images/list_banner.jpg"
-        },
-        "materials.1": {
-          "src": "20240407-c10717a218312",
-          "quote": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/2fdb9d8b-2c42-419c-b830-504299f06cd1.jpg"
-        },
-        "materials.2": {
-          "src": "20240407-c10717a218312",
-          "quote": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/e0dccb68-ce4a-4058-b015-b437fefe6715.jpg"
-        },
-        "materials.3": {
-          "src": "20240407-c10717a218312",
-          "quote": "/_upload/article/images/c5/7d/1de1b626467191bed084dffade74/67d68c3f-bc8c-438a-b833-06b58fff9fb7.jpg"
         }
       },
       "auto": true
@@ -4893,11 +4546,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=272849"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -4950,10 +4599,6 @@
         "steps.3": {
           "src": "20260717-c6364a272849",
           "quote": "一、在校生材料办理"
-        },
-        "materials.0": {
-          "src": "20260717-c6364a272849",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=272849"
         }
       },
       "auto": true
@@ -4974,11 +4619,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81613"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5007,10 +4648,6 @@
         "steps.0": {
           "src": "20181213-c2807a81613",
           "quote": "8.负责学校教职工及离退休人员工资薪酬、公费医疗、社会保障缴费的核算工作；"
-        },
-        "materials.0": {
-          "src": "20181213-c2807a81613",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81613"
         }
       },
       "auto": true
@@ -5030,11 +4667,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=241966"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5087,10 +4720,6 @@
         "steps.3": {
           "src": "20240813-c2814a241966",
           "quote": "9关于财务处寒假财务业务办理的通知"
-        },
-        "materials.0": {
-          "src": "20240813-c2814a241966",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=241966"
         }
       },
       "auto": true
@@ -5110,11 +4739,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=209960"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5167,10 +4792,6 @@
         "steps.3": {
           "src": "20230628-c2814a209960",
           "quote": "13关于调整本周财务业务办理时间的通..."
-        },
-        "materials.0": {
-          "src": "20230628-c2814a209960",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=209960"
         }
       },
       "auto": true
@@ -5190,11 +4811,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=209312"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5247,10 +4864,6 @@
         "steps.3": {
           "src": "20230530-c2814a209312",
           "quote": "13关于调整本周财务业务办理时间的通..."
-        },
-        "materials.0": {
-          "src": "20230530-c2814a209312",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=209312"
         }
       },
       "auto": true
@@ -5270,11 +4883,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=199295"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5327,10 +4936,6 @@
         "steps.3": {
           "src": "20220928-c2814a199295",
           "quote": "13关于调整本周财务业务办理时间的通..."
-        },
-        "materials.0": {
-          "src": "20220928-c2814a199295",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=199295"
         }
       },
       "auto": true
@@ -5350,11 +4955,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=198316"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5407,10 +5008,6 @@
         "steps.3": {
           "src": "20220821-c2814a198316",
           "quote": "9关于财务处寒假财务业务办理的通知"
-        },
-        "materials.0": {
-          "src": "20220821-c2814a198316",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=198316"
         }
       },
       "auto": true
@@ -5430,11 +5027,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=194900"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5487,10 +5080,6 @@
         "steps.3": {
           "src": "20220714-c2814a194900",
           "quote": "9关于财务处寒假财务业务办理的通知"
-        },
-        "materials.0": {
-          "src": "20220714-c2814a194900",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=194900"
         }
       },
       "auto": true
@@ -5511,14 +5100,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=2&columnId=6366"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5571,14 +5153,6 @@
         "steps.3": {
           "src": "jwc-list2",
           "quote": "【运行】中国传媒大学学生补（退）选课程申请表"
-        },
-        "materials.0": {
-          "src": "jwc-list2",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "jwc-list2",
-          "quote": "/_visitcount?siteId=41&type=2&columnId=6366"
         }
       },
       "auto": true
@@ -5601,17 +5175,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_xls.gif 补办毕业证明书学位证明书申请表2060922.xls"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=218572"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5664,18 +5228,6 @@
         "steps.3": {
           "src": "20240412-c6366a218572",
           "quote": "申请表格请见附件。"
-        },
-        "materials.0": {
-          "src": "20240412-c6366a218572",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20240412-c6366a218572",
-          "quote": "/_ueditor/themes/default/images/icon_xls.gif 补办毕业证明书学位证明书申请表2060922.xls"
-        },
-        "materials.2": {
-          "src": "20240412-c6366a218572",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=218572"
         }
       },
       "auto": true
@@ -5697,20 +5249,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/1d85ae18-b3c9-457a-8b1d-406de9dbfe0a.png"
-        },
-        {
-          "name": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/7bc49db7-6ac0-4a1a-b031-810c4d657f44.png"
-        },
-        {
-          "name": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/e6835f7c-d9a8-4eb1-b7e9-aa0756b686d7.png"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5763,22 +5302,6 @@
         "steps.3": {
           "src": "20211125-c6366a189267",
           "quote": "3、勾选第一步里配备好的邮箱地址，点击“提交订单”，在系统弹出的“确认订单”提示框里选择“提交”。"
-        },
-        "materials.0": {
-          "src": "20211125-c6366a189267",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20211125-c6366a189267",
-          "quote": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/1d85ae18-b3c9-457a-8b1d-406de9dbfe0a.png"
-        },
-        "materials.2": {
-          "src": "20211125-c6366a189267",
-          "quote": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/7bc49db7-6ac0-4a1a-b031-810c4d657f44.png"
-        },
-        "materials.3": {
-          "src": "20211125-c6366a189267",
-          "quote": "/_upload/article/images/7d/e7/3c2800d5484fa74d5d4e4abdca9b/e6835f7c-d9a8-4eb1-b7e9-aa0756b686d7.png"
         }
       },
       "auto": true
@@ -5798,17 +5321,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 中国传媒大学本科生课程自修申请表.doc"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=273891"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5853,18 +5366,6 @@
         "steps.2": {
           "src": "20260914-c6366a273891",
           "quote": "[附件] /_ueditor/themes/default/images/icon_doc.gif 中国传媒大学本科生课程自修申请表.doc"
-        },
-        "materials.0": {
-          "src": "20260914-c6366a273891",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20260914-c6366a273891",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 中国传媒大学本科生课程自修申请表.doc"
-        },
-        "materials.2": {
-          "src": "20260914-c6366a273891",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=273891"
         }
       },
       "auto": true
@@ -5884,17 +5385,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_xls.gif 中国传媒大学非首周开课课程退课申请表.xls"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=267884"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -5939,18 +5430,6 @@
         "steps.2": {
           "src": "20260319-c6366a267884",
           "quote": "[附件] /_ueditor/themes/default/images/icon_xls.gif 中国传媒大学非首周开课课程退课申请表.xls"
-        },
-        "materials.0": {
-          "src": "20260319-c6366a267884",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20260319-c6366a267884",
-          "quote": "/_ueditor/themes/default/images/icon_xls.gif 中国传媒大学非首周开课课程退课申请表.xls"
-        },
-        "materials.2": {
-          "src": "20260319-c6366a267884",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=267884"
         }
       },
       "auto": true
@@ -5970,17 +5449,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 请假审批表.docx"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=264566"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6025,18 +5494,6 @@
         "steps.2": {
           "src": "20251201-c6366a264566",
           "quote": "[附件] /_ueditor/themes/default/images/icon_doc.gif 请假审批表.docx"
-        },
-        "materials.0": {
-          "src": "20251201-c6366a264566",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20251201-c6366a264566",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 请假审批表.docx"
-        },
-        "materials.2": {
-          "src": "20251201-c6366a264566",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=264566"
         }
       },
       "auto": true
@@ -6057,17 +5514,7 @@
       ],
       "status": "verified",
       "confidence": "medium",
-      "materials": [
-        {
-          "name": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 成绩复议申请单.pdf"
-        },
-        {
-          "name": "/_visitcount?siteId=41&type=3&articleId=234626"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6096,18 +5543,6 @@
         "steps.0": {
           "src": "20240710-c6366a234626",
           "quote": "[附件] /_ueditor/themes/default/images/icon_pdf.gif 成绩复议申请单.pdf"
-        },
-        "materials.0": {
-          "src": "20240710-c6366a234626",
-          "quote": "/_upload/column/18/de/6366/picture.jpg"
-        },
-        "materials.1": {
-          "src": "20240710-c6366a234626",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 成绩复议申请单.pdf"
-        },
-        "materials.2": {
-          "src": "20240710-c6366a234626",
-          "quote": "/_visitcount?siteId=41&type=3&articleId=234626"
         }
       },
       "auto": true
@@ -6130,14 +5565,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=255322"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6190,14 +5618,6 @@
         "steps.3": {
           "src": "20250508-c2813a255322",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20250508-c2813a255322",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc"
-        },
-        "materials.1": {
-          "src": "20250508-c2813a255322",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=255322"
         }
       },
       "auto": true
@@ -6219,14 +5639,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 国内公务接待审批表、接待清单(202410).docx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=244320"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6279,14 +5692,6 @@
         "steps.3": {
           "src": "20241021-c2813a244320",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20241021-c2813a244320",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 国内公务接待审批表、接待清单(202410).docx"
-        },
-        "materials.1": {
-          "src": "20241021-c2813a244320",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=244320"
         }
       },
       "auto": true
@@ -6306,14 +5711,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附件9：中国传媒大学境外人员来校讲学申请表.doc"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219220"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6366,14 +5764,6 @@
         "steps.3": {
           "src": "20240429-c2813a219220",
           "quote": "12中国传媒大学备用金申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219220",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附件9：中国传媒大学境外人员来校讲学申请表.doc"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219220",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219220"
         }
       },
       "auto": true
@@ -6393,14 +5783,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附件8：中国传媒大学邀请外宾来访申请表.doc"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219219"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6453,14 +5836,6 @@
         "steps.3": {
           "src": "20240429-c2813a219219",
           "quote": "12中国传媒大学备用金申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219219",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附件8：中国传媒大学邀请外宾来访申请表.doc"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219219",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219219"
         }
       },
       "auto": true
@@ -6482,14 +5857,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_xls.gif 附件4：中国传媒大学因公出差审批单.xlsx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219216"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6542,14 +5910,6 @@
         "steps.3": {
           "src": "20240429-c2813a219216",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219216",
-          "quote": "/_ueditor/themes/default/images/icon_xls.gif 附件4：中国传媒大学因公出差审批单.xlsx"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219216",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219216"
         }
       },
       "auto": true
@@ -6572,14 +5932,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附件6：中国传媒大学学生出国（境）审批表.docx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219215"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6632,14 +5985,6 @@
         "steps.3": {
           "src": "20240429-c2813a219215",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219215",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附件6：中国传媒大学学生出国（境）审批表.docx"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219215",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219215"
         }
       },
       "auto": true
@@ -6659,14 +6004,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附件3：乘坐非国内航空公司航班和改变中转地审批表.docx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219214"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6719,14 +6057,6 @@
         "steps.3": {
           "src": "20240429-c2813a219214",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219214",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附件3：乘坐非国内航空公司航班和改变中转地审批表.docx"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219214",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219214"
         }
       },
       "auto": true
@@ -6746,14 +6076,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 附件2：中国传媒大学因公临时出国任务和预算审批意见表.pdf"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219213"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6806,14 +6129,6 @@
         "steps.3": {
           "src": "20240429-c2813a219213",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219213",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 附件2：中国传媒大学因公临时出国任务和预算审批意见表.pdf"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219213",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219213"
         }
       },
       "auto": true
@@ -6833,14 +6148,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_pdf.gif 附件1：中国传媒大学因公出访人员审批表.pdf"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=219212"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6893,14 +6201,6 @@
         "steps.3": {
           "src": "20240429-c2813a219212",
           "quote": "中国传媒大学境外人员来校讲学申请表"
-        },
-        "materials.0": {
-          "src": "20240429-c2813a219212",
-          "quote": "/_ueditor/themes/default/images/icon_pdf.gif 附件1：中国传媒大学因公出访人员审批表.pdf"
-        },
-        "materials.1": {
-          "src": "20240429-c2813a219212",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=219212"
         }
       },
       "auto": true
@@ -6920,14 +6220,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 科研项目中期检查及结项财务报告申请表.docx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=217631"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -6980,14 +6273,6 @@
         "steps.3": {
           "src": "20240327-c2813a217631",
           "quote": "12中国传媒大学备用金申请表"
-        },
-        "materials.0": {
-          "src": "20240327-c2813a217631",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 科研项目中期检查及结项财务报告申请表.docx"
-        },
-        "materials.1": {
-          "src": "20240327-c2813a217631",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=217631"
         }
       },
       "auto": true
@@ -7009,11 +6294,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=208197"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7066,10 +6347,6 @@
         "steps.3": {
           "src": "20230512-c2813a208197",
           "quote": "12中国传媒大学备用金申请表"
-        },
-        "materials.0": {
-          "src": "20230512-c2813a208197",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=208197"
         }
       },
       "auto": true
@@ -7089,11 +6366,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81805"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7146,10 +6419,6 @@
         "steps.3": {
           "src": "20171115-c2810a81805",
           "quote": "校园统一支付平台及微信缴纳学费操作指南"
-        },
-        "materials.0": {
-          "src": "20171115-c2810a81805",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81805"
         }
       },
       "auto": true
@@ -7169,11 +6438,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81807"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7226,10 +6491,6 @@
         "steps.3": {
           "src": "20170609-c2810a81807",
           "quote": "校园统一支付平台及微信缴纳学费操作指南"
-        },
-        "materials.0": {
-          "src": "20170609-c2810a81807",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81807"
         }
       },
       "auto": true
@@ -7248,11 +6509,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81819"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7321,10 +6578,6 @@
         "pitfalls.2": {
           "src": "20150101-c2811a81819",
           "quote": "市场竞争机制能够有效调节的事项不得设立专项转移支付。"
-        },
-        "materials.0": {
-          "src": "20150101-c2811a81819",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81819"
         }
       },
       "auto": true
@@ -7347,11 +6600,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81806"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7404,10 +6653,6 @@
         "steps.3": {
           "src": "20140429-c2810a81806",
           "quote": "技术开发、技术服务、技术咨询办理免税相关材料"
-        },
-        "materials.0": {
-          "src": "20140429-c2810a81806",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81806"
         }
       },
       "auto": true
@@ -7428,11 +6673,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81815"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7461,10 +6702,6 @@
         "steps.0": {
           "src": "20130925-c2811a81815",
           "quote": "执行中有何问题，请及时反馈我部。"
-        },
-        "materials.0": {
-          "src": "20130925-c2811a81815",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81815"
         }
       },
       "auto": true
@@ -7485,11 +6722,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81814"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7526,10 +6759,6 @@
         "steps.1": {
           "src": "20130925-c2811a81814",
           "quote": "执行中有何问题，请及时反馈我司。"
-        },
-        "materials.0": {
-          "src": "20130925-c2811a81814",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81814"
         }
       },
       "auto": true
@@ -7549,11 +6778,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81813"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7622,10 +6847,6 @@
         "pitfalls.2": {
           "src": "20130925-c2811a81813",
           "quote": "1963年10月18日国务院批转国家经济委员会、财政部《关于国营工业、交通企业设置总会计师的几项规定（草案）》、1978年9月12日国务院发布的《会计人员职权条例》中有关总会计师的规定同时废止。"
-        },
-        "materials.0": {
-          "src": "20130925-c2811a81813",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81813"
         }
       },
       "auto": true
@@ -7646,14 +6867,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_ueditor/themes/default/images/icon_doc.gif 附表.docx"
-        },
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81812"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7722,14 +6936,6 @@
         "pitfalls.2": {
           "src": "20130925-c2811a81812",
           "quote": "第十九条保管期满但未结清的债权债务会计凭证和涉及其他未了事项的会计凭证不得销毁,纸质会计档案应当单独抽出立卷,电子会计档案单独转存,保管到未了事项完结时为止。"
-        },
-        "materials.0": {
-          "src": "20130925-c2811a81812",
-          "quote": "/_ueditor/themes/default/images/icon_doc.gif 附表.docx"
-        },
-        "materials.1": {
-          "src": "20130925-c2811a81812",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81812"
         }
       },
       "auto": true
@@ -7749,11 +6955,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81818"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7817,10 +7019,6 @@
         "pitfalls.1": {
           "src": "20120824-c2811a81818",
           "quote": "居民个人向扣缴义务人提供专项附加扣除信息的，扣缴义务人按月预扣预缴税款时应当按照规定予以扣除，不得拒绝。"
-        },
-        "materials.0": {
-          "src": "20120824-c2811a81818",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81818"
         }
       },
       "auto": true
@@ -7840,11 +7038,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81817"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -7913,10 +7107,6 @@
         "pitfalls.2": {
           "src": "20120824-c2811a81817",
           "quote": "对封存的资料、资产，审计机关可以指定被审计单位负责保管，被审计单位不得损毁或者擅自转移。"
-        },
-        "materials.0": {
-          "src": "20120824-c2811a81817",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81817"
         }
       },
       "auto": true
@@ -7936,11 +7126,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81816"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -8009,10 +7195,6 @@
         "pitfalls.2": {
           "src": "20120824-c2811a81816",
           "quote": "不得拒收支票、银行汇票和银行本票。"
-        },
-        "materials.0": {
-          "src": "20120824-c2811a81816",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81816"
         }
       },
       "auto": true
@@ -8031,11 +7213,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_visitcount?siteId=69&type=3&articleId=81820"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -8104,10 +7282,6 @@
         "pitfalls.2": {
           "src": "20120822-c2811a81820",
           "quote": "任何单位不得以虚假的经济业务事项或者资料进行会计核算。"
-        },
-        "materials.0": {
-          "src": "20120822-c2811a81820",
-          "quote": "/_visitcount?siteId=69&type=3&articleId=81820"
         }
       },
       "auto": true
@@ -9363,20 +8537,7 @@
       ],
       "status": "verified",
       "confidence": "high",
-      "materials": [
-        {
-          "name": "/_upload/tpl/03/58/856/template856/images/logo.svg 后勤综合服务网"
-        },
-        {
-          "name": "/_upload/column/01/7a/378/picture.jpg"
-        },
-        {
-          "name": "/_upload/article/images/51/89/7c6d35444fd794a2ccc2b185bb38/51c10394-621d-44d7-bc67-0d8c670bc005.png"
-        },
-        {
-          "name": "/_upload/article/images/51/89/7c6d35444fd794a2ccc2b185bb38/e8090527-aadf-4d2d-9a51-55bfdcf1755f.png"
-        }
-      ],
+      "materials": [],
       "steps": [
         {
           "when": "第 1 步",
@@ -9429,22 +8590,6 @@
         "steps.3": {
           "src": "20250924-c378a260402",
           "quote": "（二）梆子井学生公寓宿舍学生购电方式：通过支付宝或微信里的“生活缴费”下的“电费”服务模块；"
-        },
-        "materials.0": {
-          "src": "20250924-c378a260402",
-          "quote": "/_upload/tpl/03/58/856/template856/images/logo.svg 后勤综合服务网"
-        },
-        "materials.1": {
-          "src": "20250924-c378a260402",
-          "quote": "/_upload/column/01/7a/378/picture.jpg"
-        },
-        "materials.2": {
-          "src": "20250924-c378a260402",
-          "quote": "/_upload/article/images/51/89/7c6d35444fd794a2ccc2b185bb38/51c10394-621d-44d7-bc67-0d8c670bc005.png"
-        },
-        "materials.3": {
-          "src": "20250924-c378a260402",
-          "quote": "/_upload/article/images/51/89/7c6d35444fd794a2ccc2b185bb38/e8090527-aadf-4d2d-9a51-55bfdcf1755f.png"
         }
       },
       "auto": true
@@ -9622,6 +8767,3788 @@
       },
       "advisory": [
         "不同公寓楼购电方式不一样，别照搬别人的做法（此条为推断，非原文）"
+      ]
+    },
+    {
+      "id": "doc-20260911-c2753a273800",
+      "title": "中国传媒大学图书馆读者行为守则",
+      "aliases": [
+        "中国传媒大学图书馆读者行为守则",
+        "中国传媒大学图书馆读"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "接听手机应避免干扰他人，确有电话等通讯需求，请到楼道间或电梯厅，轻声接打电话"
+        },
+        {
+          "when": "第 2 步",
+          "what": "六、未办理外借手续的馆藏文献资料，不得携带出馆"
+        },
+        {
+          "when": "第 3 步",
+          "what": "七、图书馆二层为报刊阅览区，请勿将报刊带离该层"
+        },
+        {
+          "when": "第 4 步",
+          "what": "三至五层的图书，如未办理外借手续，请勿带入六层阅览"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "一、凭本人校园一卡通或通过人脸识别，由门禁通道出/入馆，不得借用或冒用他人证件",
+        "二、注意个人仪表和举止，衣冠不整者不得入馆",
+        "五、爱护图书报刊，不得撕毁、标记或折页"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学图书馆读者行为守则",
+          "url": "https://xsc.cuc.edu.cn/2026/0911/c2753a273800/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-09-11"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260911-c2753a273800",
+          "quote": "接听手机应避免干扰他人，确有电话等通讯需求，请到楼道间或电梯厅，轻声接打电话。"
+        },
+        "steps.1": {
+          "src": "20260911-c2753a273800",
+          "quote": "六、未办理外借手续的馆藏文献资料，不得携带出馆。"
+        },
+        "steps.2": {
+          "src": "20260911-c2753a273800",
+          "quote": "七、图书馆二层为报刊阅览区，请勿将报刊带离该层。"
+        },
+        "steps.3": {
+          "src": "20260911-c2753a273800",
+          "quote": "三至五层的图书，如未办理外借手续，请勿带入六层阅览。"
+        },
+        "pitfalls.0": {
+          "src": "20260911-c2753a273800",
+          "quote": "一、凭本人校园一卡通或通过人脸识别，由门禁通道出/入馆，不得借用或冒用他人证件。"
+        },
+        "pitfalls.1": {
+          "src": "20260911-c2753a273800",
+          "quote": "二、注意个人仪表和举止，衣冠不整者不得入馆。"
+        },
+        "pitfalls.2": {
+          "src": "20260911-c2753a273800",
+          "quote": "五、爱护图书报刊，不得撕毁、标记或折页；"
+        }
+      }
+    },
+    {
+      "id": "doc-20260909-c2753a273663",
+      "title": "中国传媒大学后勤保障处学生公寓退宿管理规定",
+      "aliases": [
+        "中国传媒大学后勤保障处学生公寓退宿管理规定",
+        "中国传媒大学后勤保障"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第二条本规定适用于我校全日制本科、硕士研究生及博士研究生在校学生的退宿申请、审批、手续办理及住宿费收缴等相关管理工作"
+        },
+        {
+          "when": "第 2 步",
+          "what": "第二章 退宿申请条件"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第三条在校学生满足下列情形之一的，可申请办理退宿："
+        },
+        {
+          "when": "第 4 步",
+          "what": "（一）出国留学、办理休学手续"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学后勤保障处学生公寓退宿管理规定",
+          "url": "https://xsc.cuc.edu.cn/2026/0909/c2753a273663/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-09-09"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260909-c2753a273663",
+          "quote": "第二条本规定适用于我校全日制本科、硕士研究生及博士研究生在校学生的退宿申请、审批、手续办理及住宿费收缴等相关管理工作。"
+        },
+        "steps.1": {
+          "src": "20260909-c2753a273663",
+          "quote": "第二章 退宿申请条件"
+        },
+        "steps.2": {
+          "src": "20260909-c2753a273663",
+          "quote": "第三条在校学生满足下列情形之一的，可申请办理退宿："
+        },
+        "steps.3": {
+          "src": "20260909-c2753a273663",
+          "quote": "（一）出国留学、办理休学手续；"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271144",
+      "title": "中国传媒大学传媒博物馆临时展厅管理办法",
+      "aliases": [
+        "中国传媒大学传媒博物馆临时展厅管理办法",
+        "中国传媒大学传媒博物"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "校外单位如需使用展览场地，需遵守学校和传媒博物馆相关规定"
+        },
+        {
+          "when": "第 2 步",
+          "what": "第二章 展览空间申请"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第四条校内各单位至少提前30天向传媒博物馆提交场地使用申请，填写《传媒博物馆临时展厅使用申请表》（附件1）报送到传媒博物馆展陈部"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第五条对于校外单位除提供书面申请外，应提供展览主办方信函原件"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "未经传媒博物馆允许，不得擅自接水、接电，造成严重后果，由布展单位全权负责"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学传媒博物馆临时展厅管理办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271144/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271144",
+          "quote": "校外单位如需使用展览场地，需遵守学校和传媒博物馆相关规定。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271144",
+          "quote": "第二章 展览空间申请"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271144",
+          "quote": "第四条校内各单位至少提前30天向传媒博物馆提交场地使用申请，填写《传媒博物馆临时展厅使用申请表》（附件1）报送到传媒博物馆展陈部。"
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271144",
+          "quote": "第五条对于校外单位除提供书面申请外，应提供展览主办方信函原件。"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271144",
+          "quote": "未经传媒博物馆允许，不得擅自接水、接电，造成严重后果，由布展单位全权负责。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271143",
+      "title": "中国传媒大学传媒博物馆场馆管理规定",
+      "aliases": [
+        "中国传媒大学传媒博物",
+        "中国传媒大学传媒博物馆场馆管理规定"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "三、校内各职能部门，各部、院、系单位组织团体参观需至少提前2个工作日，按照《中国传媒大学传媒博物馆团体参观预约办法》规定向博物馆预约"
+        },
+        {
+          "when": "第 2 步",
+          "what": "师生陪同校外客人或家长首次参观时需持本人身份证在服务台注册后刷身份证入馆参观，持其他有效证件者需到服务台登记后方可入馆参观"
+        },
+        {
+          "when": "第 3 步",
+          "what": "五、各部、院、系在馆内举办展览、教学科研、现场拍摄等非参观事宜需向馆方提出申请并提交申请表，获得批准后按照场馆管理规定和流程予以实施"
+        },
+        {
+          "when": "第 4 步",
+          "what": "九、参观前请将包裹寄存，贵重物品自行保管"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "七、爱护并正确使用公共设施，不得私自触摸展品及展览设备"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学传媒博物馆场馆管理规定",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271143/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271143",
+          "quote": "三、校内各职能部门，各部、院、系单位组织团体参观需至少提前2个工作日，按照《中国传媒大学传媒博物馆团体参观预约办法》规定向博物馆预约。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271143",
+          "quote": "师生陪同校外客人或家长首次参观时需持本人身份证在服务台注册后刷身份证入馆参观，持其他有效证件者需到服务台登记后方可入馆参观。"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271143",
+          "quote": "五、各部、院、系在馆内举办展览、教学科研、现场拍摄等非参观事宜需向馆方提出申请并提交申请表，获得批准后按照场馆管理规定和流程予以实施。"
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271143",
+          "quote": "九、参观前请将包裹寄存，贵重物品自行保管。"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271143",
+          "quote": "七、爱护并正确使用公共设施，不得私自触摸展品及展览设备。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271141",
+      "title": "中国传媒大学传媒博物馆团体参观预约办法",
+      "aliases": [
+        "中国传媒大学传媒博物馆团体参观预约办法",
+        "中国传媒大学传媒博物"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "二、团体预约是专为5人以上的师生团体，或学校重要外事接待而设，团体参观请提前至少2个工作日进行线上预约，预约方式：关注“传媒博物馆”官方微信号，点击“服务”，进入“参观导览”即可预约"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学传媒博物馆团体参观预约办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271141/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271141",
+          "quote": "二、团体预约是专为5人以上的师生团体，或学校重要外事接待而设，团体参观请提前至少2个工作日进行线上预约，预约方式：关注“传媒博物馆”官方微信号，点击“服务”，进入“参观导览”即可预约。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271140",
+      "title": "中国传媒大学图书馆文献借阅规定",
+      "aliases": [
+        "中国传媒大学图书馆文",
+        "中国传媒大学图书馆文献借阅规定"
+      ],
+      "keywords": [
+        "图书馆文献借阅"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "（二）若需办理续借手续，读者可按有关规定自行办理"
+        },
+        {
+          "when": "第 2 步",
+          "what": "（四）读者办理借书手续时，应检查图书有无污损情况，如发现须当场提出，由图书馆方面加盖“缺损”章"
+        },
+        {
+          "when": "第 3 步",
+          "what": "7.孤本书、解放前出版的图书，根据文献内容、版本和文献价值，另行请专家确定赔偿金额"
+        },
+        {
+          "when": "第 4 步",
+          "what": "（三）馆内二层和六层的文献资料，请在当层阅览"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "（三）借出图书逾期归还者，停止借阅",
+        "（二）读者入馆后要遵守图书馆各项规章制度，服从工作人员管理，不得抢占座位",
+        "图书需办理借阅手续，未办理手续的，不得将图书携出馆外"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学图书馆文献借阅规定",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271140/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271140",
+          "quote": "（二）若需办理续借手续，读者可按有关规定自行办理。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271140",
+          "quote": "（四）读者办理借书手续时，应检查图书有无污损情况，如发现须当场提出，由图书馆方面加盖“缺损”章。"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271140",
+          "quote": "7.孤本书、解放前出版的图书，根据文献内容、版本和文献价值，另行请专家确定赔偿金额。"
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271140",
+          "quote": "（三）馆内二层和六层的文献资料，请在当层阅览；"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271140",
+          "quote": "（三）借出图书逾期归还者，停止借阅。"
+        },
+        "pitfalls.1": {
+          "src": "20260529-c2753a271140",
+          "quote": "（二）读者入馆后要遵守图书馆各项规章制度，服从工作人员管理，不得抢占座位。"
+        },
+        "pitfalls.2": {
+          "src": "20260529-c2753a271140",
+          "quote": "图书需办理借阅手续，未办理手续的，不得将图书携出馆外。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260716-c2753a272808",
+      "title": "中国传媒大学本科毕业论文（设计） 人工智能使用规范实施细则 （...",
+      "aliases": [
+        "中国传媒大学本科毕业",
+        "中国传媒大学本科毕业论文（设计） 人工智能使用规范实施细则 （..."
+      ],
+      "keywords": [
+        "本科毕业论文",
+        "人工智能使用规范",
+        "（..."
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "毕业论文（设计）应以人为主体，成果须具备正确价值导向和原创性"
+        },
+        {
+          "when": "第 2 步",
+          "what": "学生不得将人工智能直接生成的生成内容或观点作为原创成果提交"
+        },
+        {
+          "when": "第 3 步",
+          "what": "学生应充分认识人工智能的局限和风险，人工智能生成内容须经人工核验、学术溯源，确保真实性、准确性、逻辑自洽及引用规范"
+        },
+        {
+          "when": "第 4 步",
+          "what": "学生对其使用人工智能过程情况和提交内容负全责，须如实、完整披露在毕业论文（设计）中的人工智能使用情况，不得隐瞒、虚报或违规使用人工智能工具"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "人工智能仅作为辅助工具使用，不得替代独立思考与创新性研究",
+        "学生不得将人工智能直接生成的生成内容或观点作为原创成果提交",
+        "学生对其使用人工智能过程情况和提交内容负全责，须如实、完整披露在毕业论文（设计）中的人工智能使用情况，不得隐瞒、虚报或违规使用人工智能工具"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学本科毕业论文（设计） 人工智能使用规范实施细则 （...",
+          "url": "https://xsc.cuc.edu.cn/2026/0716/c2753a272808/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260716-c2753a272808",
+          "quote": "毕业论文（设计）应以人为主体，成果须具备正确价值导向和原创性。"
+        },
+        "steps.1": {
+          "src": "20260716-c2753a272808",
+          "quote": "学生不得将人工智能直接生成的生成内容或观点作为原创成果提交。"
+        },
+        "steps.2": {
+          "src": "20260716-c2753a272808",
+          "quote": "学生应充分认识人工智能的局限和风险，人工智能生成内容须经人工核验、学术溯源，确保真实性、准确性、逻辑自洽及引用规范。"
+        },
+        "steps.3": {
+          "src": "20260716-c2753a272808",
+          "quote": "学生对其使用人工智能过程情况和提交内容负全责，须如实、完整披露在毕业论文（设计）中的人工智能使用情况，不得隐瞒、虚报或违规使用人工智能工具。"
+        },
+        "pitfalls.0": {
+          "src": "20260716-c2753a272808",
+          "quote": "人工智能仅作为辅助工具使用，不得替代独立思考与创新性研究。"
+        },
+        "pitfalls.1": {
+          "src": "20260716-c2753a272808",
+          "quote": "学生不得将人工智能直接生成的生成内容或观点作为原创成果提交。"
+        },
+        "pitfalls.2": {
+          "src": "20260716-c2753a272808",
+          "quote": "学生对其使用人工智能过程情况和提交内容负全责，须如实、完整披露在毕业论文（设计）中的人工智能使用情况，不得隐瞒、虚报或违规使用人工智能工具。"
+        }
+      }
+    },
+    {
+      "id": "doc-20190802-c2753a133698",
+      "title": "中国传媒大学集体户口管理暂行规定",
+      "aliases": [
+        "中国传媒大学集体户口",
+        "中国传媒大学集体户口管理暂行规定"
+      ],
+      "keywords": [
+        "集体户口管理暂行"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "一、入校户口办理"
+        },
+        {
+          "when": "第 2 步",
+          "what": "第一条凡属国家计划招生范围内的外埠本科生、二学位、研究生和分配来学校工作的外埠教职工，自愿办理户口迁移手续，落户学校集体户口集中管理"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第二条不属计划招生的本校学生，包括高职生、函授生、夜大生和专修班、进修班、培训班、远程学生，不办理户口迁移手续"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第三条凡属计划招生范围内的外埠学生，必须在规定时间内将户口迁移证交到保卫部（处）户籍科（特殊省市除外）"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "户籍科接收新生户口迁移证的截止时间为入学当年的10月15日,如遇特殊情况不能按期交户口迁移证的必须向户籍科说明原因,逾期视为自愿放弃迁户",
+        "第四条在原籍办理户口迁移证时，迁移证上各项内容要填写完整，不得有缺项，不得私自涂改户口迁移证的任何内容",
+        "逾期不交或户口卡丢失的，按户籍管理有关规定处理"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学集体户口管理暂行规定",
+          "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133698/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20190802-c2753a133698",
+          "quote": "一、入校户口办理"
+        },
+        "steps.1": {
+          "src": "20190802-c2753a133698",
+          "quote": "第一条凡属国家计划招生范围内的外埠本科生、二学位、研究生和分配来学校工作的外埠教职工，自愿办理户口迁移手续，落户学校集体户口集中管理。"
+        },
+        "steps.2": {
+          "src": "20190802-c2753a133698",
+          "quote": "第二条不属计划招生的本校学生，包括高职生、函授生、夜大生和专修班、进修班、培训班、远程学生，不办理户口迁移手续。"
+        },
+        "steps.3": {
+          "src": "20190802-c2753a133698",
+          "quote": "第三条凡属计划招生范围内的外埠学生，必须在规定时间内将户口迁移证交到保卫部（处）户籍科（特殊省市除外）。"
+        },
+        "pitfalls.0": {
+          "src": "20190802-c2753a133698",
+          "quote": "户籍科接收新生户口迁移证的截止时间为入学当年的10月15日,如遇特殊情况不能按期交户口迁移证的必须向户籍科说明原因,逾期视为自愿放弃迁户。"
+        },
+        "pitfalls.1": {
+          "src": "20190802-c2753a133698",
+          "quote": "第四条在原籍办理户口迁移证时，迁移证上各项内容要填写完整，不得有缺项，不得私自涂改户口迁移证的任何内容；"
+        },
+        "pitfalls.2": {
+          "src": "20190802-c2753a133698",
+          "quote": "逾期不交或户口卡丢失的，按户籍管理有关规定处理。"
+        }
+      }
+    },
+    {
+      "id": "doc-20190802-c2753a133697",
+      "title": "中国传媒大学大型活动安全管理规定",
+      "aliases": [
+        "中国传媒大学大型活动",
+        "中国传媒大学大型活动安全管理规定"
+      ],
+      "keywords": [
+        "大型活动安全管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "本规定所称主办者，是指主持办理大型活动的单位"
+        },
+        {
+          "when": "第 2 步",
+          "what": "承办者，是指承担办理大型活动的单位"
+        },
+        {
+          "when": "第 3 步",
+          "what": "校内单位须提请保卫部进行风险评估并签署意见，评估为风险较小且可控并落实相应防范措施后，报本单位主要领导和学校保卫部门批准"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第四条外单位在本校主办、承办大型活动，场地提供单位须提请保卫部进行活动风险预评估并签署意见，报场地主管领导和学校保卫部门批准，安全管理按照《北京市大型群众性活动安全管理条例》执行，并报保卫部备案"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "审核结果书面通知申请人，不予许可的应当在书面通知中说明理由",
+        "第十条大型活动举办时间、地点、内容如发生变更或活动取消，承办者应当至少提前两个工作日向保卫部报告",
+        "第十二条承办者如对不予许可或撤回许可的决定有异议，可向主管保卫工作校领导申请复议"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学大型活动安全管理规定",
+          "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133697/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20190802-c2753a133697",
+          "quote": "本规定所称主办者，是指主持办理大型活动的单位。"
+        },
+        "steps.1": {
+          "src": "20190802-c2753a133697",
+          "quote": "承办者，是指承担办理大型活动的单位。"
+        },
+        "steps.2": {
+          "src": "20190802-c2753a133697",
+          "quote": "校内单位须提请保卫部进行风险评估并签署意见，评估为风险较小且可控并落实相应防范措施后，报本单位主要领导和学校保卫部门批准。"
+        },
+        "steps.3": {
+          "src": "20190802-c2753a133697",
+          "quote": "第四条外单位在本校主办、承办大型活动，场地提供单位须提请保卫部进行活动风险预评估并签署意见，报场地主管领导和学校保卫部门批准，安全管理按照《北京市大型群众性活动安全管理条例》执行，并报保卫部备案。"
+        },
+        "pitfalls.0": {
+          "src": "20190802-c2753a133697",
+          "quote": "审核结果书面通知申请人，不予许可的应当在书面通知中说明理由。"
+        },
+        "pitfalls.1": {
+          "src": "20190802-c2753a133697",
+          "quote": "第十条大型活动举办时间、地点、内容如发生变更或活动取消，承办者应当至少提前两个工作日向保卫部报告。"
+        },
+        "pitfalls.2": {
+          "src": "20190802-c2753a133697",
+          "quote": "第十二条承办者如对不予许可或撤回许可的决定有异议，可向主管保卫工作校领导申请复议。"
+        }
+      }
+    },
+    {
+      "id": "doc-20190802-c2753a133696",
+      "title": "中国传媒大学校园治安管理规定",
+      "aliases": [
+        "中国传媒大学校园治安",
+        "中国传媒大学校园治安管理规定"
+      ],
+      "keywords": [
+        "校园治安管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第九条本校机动车辆、教职员工个人机动车辆、住校内居民个人机动车辆、驻校施工单位机动车辆及其他与学校有关的机动车辆，经过停车系统办理“车证”后可进入校园"
+        },
+        {
+          "when": "第 2 步",
+          "what": "外单位机动车辆原则上不准进入校园，来校公务或因特殊情况确需进入校园，经预约审核系统审核报备通过或相关单位及人员许可后，方可按流程登记进入校园"
+        },
+        {
+          "when": "第 3 步",
+          "what": "入校后须按规定路线行停，不得进入教学区及学生公寓区"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第十一条骑行各类车辆出入学校大门须下车推行"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "入校后须按规定路线行停，不得进入教学区及学生公寓区",
+        "所有车辆不得以任何理由堵塞校门或强行进出校门",
+        "机动车辆出入校门时速不得超过5公里"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学校园治安管理规定",
+          "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133696/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20190802-c2753a133696",
+          "quote": "第九条本校机动车辆、教职员工个人机动车辆、住校内居民个人机动车辆、驻校施工单位机动车辆及其他与学校有关的机动车辆，经过停车系统办理“车证”后可进入校园。"
+        },
+        "steps.1": {
+          "src": "20190802-c2753a133696",
+          "quote": "外单位机动车辆原则上不准进入校园，来校公务或因特殊情况确需进入校园，经预约审核系统审核报备通过或相关单位及人员许可后，方可按流程登记进入校园。"
+        },
+        "steps.2": {
+          "src": "20190802-c2753a133696",
+          "quote": "入校后须按规定路线行停，不得进入教学区及学生公寓区。"
+        },
+        "steps.3": {
+          "src": "20190802-c2753a133696",
+          "quote": "第十一条骑行各类车辆出入学校大门须下车推行。"
+        },
+        "pitfalls.0": {
+          "src": "20190802-c2753a133696",
+          "quote": "入校后须按规定路线行停，不得进入教学区及学生公寓区。"
+        },
+        "pitfalls.1": {
+          "src": "20190802-c2753a133696",
+          "quote": "所有车辆不得以任何理由堵塞校门或强行进出校门。"
+        },
+        "pitfalls.2": {
+          "src": "20190802-c2753a133696",
+          "quote": "机动车辆出入校门时速不得超过5公里。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271139",
+      "title": "中国传媒大学硕博连读生、直博生转为硕士生培养管理办法",
+      "aliases": [
+        "中国传媒大学硕博连读生、直博生转为硕士生培养管理办法",
+        "中国传媒大学硕博连读"
+      ],
+      "keywords": [
+        "硕博连读生"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第三条 博士生可在取得博士生学籍满一年后，提出博士生转为硕士生申请"
+        },
+        {
+          "when": "第 2 步",
+          "what": "若无法按期完成学业，不再延长学习年限，经本人申请按规定发给学习证明、肄业证书或结业证书"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第四条 博士生在学业方面有下列情形之一，可申请转为硕士生培养："
+        },
+        {
+          "when": "第 4 步",
+          "what": "第五条 博士生申请转为硕士生培养，原则上所在培养单位、专业、责任导师不变"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "自博士生入学之日起至硕士生阶段结束，总年限不得超过博士生最长有效修业年限",
+        "若无法按期完成学业，不再延长学习年限，经本人申请按规定发给学习证明、肄业证书或结业证书",
+        "第七条 跨学科或专业类别的硕博连读生，如本人申请退回到原学科或专业类别，经责任导师同意、所在培养单位分委会、原学科或专业类别所在分委会批准，认定可转为原学科或专业类别的硕士生培养的，报学校审核、上级教育行政主管部门核准后，可转为硕士生培养"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学硕博连读生、直博生转为硕士生培养管理办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271139/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271139",
+          "quote": "第三条 博士生可在取得博士生学籍满一年后，提出博士生转为硕士生申请。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271139",
+          "quote": "若无法按期完成学业，不再延长学习年限，经本人申请按规定发给学习证明、肄业证书或结业证书。"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271139",
+          "quote": "第四条 博士生在学业方面有下列情形之一，可申请转为硕士生培养："
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271139",
+          "quote": "第五条 博士生申请转为硕士生培养，原则上所在培养单位、专业、责任导师不变。"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271139",
+          "quote": "自博士生入学之日起至硕士生阶段结束，总年限不得超过博士生最长有效修业年限。"
+        },
+        "pitfalls.1": {
+          "src": "20260529-c2753a271139",
+          "quote": "若无法按期完成学业，不再延长学习年限，经本人申请按规定发给学习证明、肄业证书或结业证书。"
+        },
+        "pitfalls.2": {
+          "src": "20260529-c2753a271139",
+          "quote": "第七条 跨学科或专业类别的硕博连读生，如本人申请退回到原学科或专业类别，经责任导师同意、所在培养单位分委会、原学科或专业类别所在分委会批准，认定可转为原学科或专业类别的硕士生培养的，报学校审核、上级教育行政主管部门核准后，可转为硕士生培养。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271137",
+      "title": "中国传媒大学博士研究生学位论文及 毕业作品匿名评阅办法",
+      "aliases": [
+        "中国传媒大学博士研究生学位论文及 毕业作品匿名评阅办法",
+        "中国传媒大学博士研究"
+      ],
+      "keywords": [
+        "毕业作品匿名评阅"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第二条 博士学位论文及毕业作品实行“双向匿名”方式评阅，评阅过程中须隐去作者及其导师和评阅专家姓名等身份信息"
+        },
+        {
+          "when": "第 2 步",
+          "what": "申请提前毕业的学术学位博士研究生按照提前毕业相关规定执行"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第五条 博士研究生应按照学校要求将导师审定后同意送审的学位论文及毕业作品提交至研究生应用管理平台，由研究生院组织进行学位论文重复率检测，检测结果符合复制比要求方能进入匿名评阅环节"
+        },
+        {
+          "when": "第 4 步",
+          "what": "匿名评阅过程中，培养单位应及时统计评阅意见、上传评阅结果，并及时通知博士研究生及其导师"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "原《中国传媒大学博士研究生学位论文及毕业作品匿名评阅办法》（研究生院〔2025〕2号）同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学博士研究生学位论文及 毕业作品匿名评阅办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271137/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271137",
+          "quote": "第二条 博士学位论文及毕业作品实行“双向匿名”方式评阅，评阅过程中须隐去作者及其导师和评阅专家姓名等身份信息。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271137",
+          "quote": "申请提前毕业的学术学位博士研究生按照提前毕业相关规定执行。"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271137",
+          "quote": "第五条 博士研究生应按照学校要求将导师审定后同意送审的学位论文及毕业作品提交至研究生应用管理平台，由研究生院组织进行学位论文重复率检测，检测结果符合复制比要求方能进入匿名评阅环节。"
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271137",
+          "quote": "匿名评阅过程中，培养单位应及时统计评阅意见、上传评阅结果，并及时通知博士研究生及其导师。"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271137",
+          "quote": "原《中国传媒大学博士研究生学位论文及毕业作品匿名评阅办法》（研究生院〔2025〕2号）同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260529-c2753a271136",
+      "title": "中国传媒大学硕士研究生学位论文及 毕业作品匿名评阅办法",
+      "aliases": [
+        "中国传媒大学硕士研究生学位论文及 毕业作品匿名评阅办法",
+        "中国传媒大学硕士研究"
+      ],
+      "keywords": [
+        "毕业作品匿名评阅"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第二条 硕士学位论文及毕业作品实行“双向匿名”方式评阅，评阅过程中须隐去作者及其导师和评阅专家姓名等身份信息"
+        },
+        {
+          "when": "第 2 步",
+          "what": "申请提前毕业的学术学位硕士研究生按照提前毕业相关规定执行"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第五条 硕士研究生应按照学校要求将导师审定后同意送审的学位论文及毕业作品提交至研究生应用管理平台，由研究生院组织进行学位论文重复率检测，检测结果符合复制比要求方能进入匿名评阅环节"
+        },
+        {
+          "when": "第 4 步",
+          "what": "匿名评阅过程中，培养单位应及时统计评阅意见、上传评阅结果，并及时通知硕士研究生及其导师"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "原《中国传媒大学硕士研究生学位论文及毕业作品匿名评阅办法》（研究生院〔2025〕3号）同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学硕士研究生学位论文及 毕业作品匿名评阅办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271136/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260529-c2753a271136",
+          "quote": "第二条 硕士学位论文及毕业作品实行“双向匿名”方式评阅，评阅过程中须隐去作者及其导师和评阅专家姓名等身份信息。"
+        },
+        "steps.1": {
+          "src": "20260529-c2753a271136",
+          "quote": "申请提前毕业的学术学位硕士研究生按照提前毕业相关规定执行。"
+        },
+        "steps.2": {
+          "src": "20260529-c2753a271136",
+          "quote": "第五条 硕士研究生应按照学校要求将导师审定后同意送审的学位论文及毕业作品提交至研究生应用管理平台，由研究生院组织进行学位论文重复率检测，检测结果符合复制比要求方能进入匿名评阅环节。"
+        },
+        "steps.3": {
+          "src": "20260529-c2753a271136",
+          "quote": "匿名评阅过程中，培养单位应及时统计评阅意见、上传评阅结果，并及时通知硕士研究生及其导师。"
+        },
+        "pitfalls.0": {
+          "src": "20260529-c2753a271136",
+          "quote": "原《中国传媒大学硕士研究生学位论文及毕业作品匿名评阅办法》（研究生院〔2025〕3号）同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260528-c2753a271116",
+      "title": "中国传媒大学本专科学历、学位证书管理办法",
+      "aliases": [
+        "中国传媒大学本专科学历、学位证书管理办法",
+        "中国传媒大学本专科学"
+      ],
+      "keywords": [
+        "本专科学历",
+        "学位证书管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "我校具有正式学籍、申请辅修专业的本科学生，完成本科阶段辅修专业的学习，取得主修专业学位证书，且符合学校授予辅修学士学位的有关规定，由学校学位评定委员会审议批准后授予辅修专业学士学位"
+        },
+        {
+          "when": "第 2 步",
+          "what": "（四）肄业证书：按国家规定招收入学取得正式学籍的本专科学生，学满一学年（含一年）以上申请退学的学生，颁发肄业证书"
+        },
+        {
+          "when": "第 3 步",
+          "what": "学生办理肄业后不能申请换发结业证书和毕业证书"
+        },
+        {
+          "when": "第 4 步",
+          "what": "学生应出具学校规定的相关材料，由教务处办理毕业证明书/学位证明书，毕业证明书/学位证明书与原毕业证书/学位证书具有同等效力"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "（二）各类证书（包括加盖各类印章、编号、登记、发放等）由教务处负责制定及管理，否则证书无效",
+        "（一）对违反国家招生规定取得入学资格或者学籍的，一经查实，学校将取消该生学籍，不得发给学历证书、学位证书",
+        "（三）被撤销的学历证书、学位证书已注册的，学校予以注销并报教育行政部门宣布无效"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学本专科学历、学位证书管理办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271116/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260528-c2753a271116",
+          "quote": "我校具有正式学籍、申请辅修专业的本科学生，完成本科阶段辅修专业的学习，取得主修专业学位证书，且符合学校授予辅修学士学位的有关规定，由学校学位评定委员会审议批准后授予辅修专业学士学位。"
+        },
+        "steps.1": {
+          "src": "20260528-c2753a271116",
+          "quote": "（四）肄业证书：按国家规定招收入学取得正式学籍的本专科学生，学满一学年（含一年）以上申请退学的学生，颁发肄业证书。"
+        },
+        "steps.2": {
+          "src": "20260528-c2753a271116",
+          "quote": "学生办理肄业后不能申请换发结业证书和毕业证书。"
+        },
+        "steps.3": {
+          "src": "20260528-c2753a271116",
+          "quote": "学生应出具学校规定的相关材料，由教务处办理毕业证明书/学位证明书，毕业证明书/学位证明书与原毕业证书/学位证书具有同等效力。"
+        },
+        "pitfalls.0": {
+          "src": "20260528-c2753a271116",
+          "quote": "（二）各类证书（包括加盖各类印章、编号、登记、发放等）由教务处负责制定及管理，否则证书无效。"
+        },
+        "pitfalls.1": {
+          "src": "20260528-c2753a271116",
+          "quote": "（一）对违反国家招生规定取得入学资格或者学籍的，一经查实，学校将取消该生学籍，不得发给学历证书、学位证书；"
+        },
+        "pitfalls.2": {
+          "src": "20260528-c2753a271116",
+          "quote": "（三）被撤销的学历证书、学位证书已注册的，学校予以注销并报教育行政部门宣布无效。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260528-c2753a271115",
+      "title": "中国传媒大学本专科学生退宿管理规定（修订）",
+      "aliases": [
+        "中国传媒大学本专科学",
+        "中国传媒大学本专科学生退宿管理规定（修订）"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "一、申请退宿的条件"
+        },
+        {
+          "when": "第 2 步",
+          "what": "具备以上条件之一者，在校学习期间可允许申请办理退宿"
+        },
+        {
+          "when": "第 3 步",
+          "what": "特殊情况确实需要申请退宿者，必须经学生管理部门审核，报主管学生工作校领导批准方可"
+        },
+        {
+          "when": "第 4 步",
+          "what": "已办理退宿手续的学生，如出国学习、去其他学校交流学习，学习期满可重新申请住宿，需到公寓相关部门办理申请住宿手续，公寓部门视房源情况给予安排"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学本专科学生退宿管理规定（修订）",
+          "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271115/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260528-c2753a271115",
+          "quote": "一、申请退宿的条件"
+        },
+        "steps.1": {
+          "src": "20260528-c2753a271115",
+          "quote": "具备以上条件之一者，在校学习期间可允许申请办理退宿。"
+        },
+        "steps.2": {
+          "src": "20260528-c2753a271115",
+          "quote": "特殊情况确实需要申请退宿者，必须经学生管理部门审核，报主管学生工作校领导批准方可。"
+        },
+        "steps.3": {
+          "src": "20260528-c2753a271115",
+          "quote": "已办理退宿手续的学生，如出国学习、去其他学校交流学习，学习期满可重新申请住宿，需到公寓相关部门办理申请住宿手续，公寓部门视房源情况给予安排。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260528-c2753a271114",
+      "title": "中国传媒大学学生证、校徽管理办法",
+      "aliases": [
+        "中国传媒大学学生证校",
+        "中国传媒大学学生证、校徽管理办法"
+      ],
+      "keywords": [
+        "学生证",
+        "校徽管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第三条每学期开学时，学生须完成注册并加盖注册章，未加盖注册章者无效"
+        },
+        {
+          "when": "第 2 步",
+          "what": "第四条学生证如有遗失，可申请补办，并按学校规定交纳工本费"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第五条学生工作部（处）于每月15日（节假日顺延）集中补办学生证，办理周期为10个工作日"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第六条学生毕业、转学或退学时，应到学生工作部（处）办理学生证注销手续"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "第二条学生证和校徽只限本人使用，学生应珍惜、爱护、妥善保管，不得涂改，不得转借他人",
+        "第三条每学期开学时，学生须完成注册并加盖注册章，未加盖注册章者无效",
+        "毕业班学生距离校时间不足一个月的，不再补办学生证"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学学生证、校徽管理办法",
+          "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271114/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260528-c2753a271114",
+          "quote": "第三条每学期开学时，学生须完成注册并加盖注册章，未加盖注册章者无效。"
+        },
+        "steps.1": {
+          "src": "20260528-c2753a271114",
+          "quote": "第四条学生证如有遗失，可申请补办，并按学校规定交纳工本费。"
+        },
+        "steps.2": {
+          "src": "20260528-c2753a271114",
+          "quote": "第五条学生工作部（处）于每月15日（节假日顺延）集中补办学生证，办理周期为10个工作日。"
+        },
+        "steps.3": {
+          "src": "20260528-c2753a271114",
+          "quote": "第六条学生毕业、转学或退学时，应到学生工作部（处）办理学生证注销手续。"
+        },
+        "pitfalls.0": {
+          "src": "20260528-c2753a271114",
+          "quote": "第二条学生证和校徽只限本人使用，学生应珍惜、爱护、妥善保管，不得涂改，不得转借他人。"
+        },
+        "pitfalls.1": {
+          "src": "20260528-c2753a271114",
+          "quote": "第三条每学期开学时，学生须完成注册并加盖注册章，未加盖注册章者无效。"
+        },
+        "pitfalls.2": {
+          "src": "20260528-c2753a271114",
+          "quote": "毕业班学生距离校时间不足一个月的，不再补办学生证。"
+        }
+      }
+    },
+    {
+      "id": "doc-20260528-c2753a271113",
+      "title": "中国传媒大学学生管理规定",
+      "aliases": [
+        "中国传媒大学学生管理",
+        "中国传媒大学学生管理规定"
+      ],
+      "keywords": [
+        "学生管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "（三）申请奖学金、助学金及助学贷款"
+        },
+        {
+          "when": "第 2 步",
+          "what": "（四）按规定缴纳学费及有关费用，履行获得助学贷款及助学金的相应义务"
+        },
+        {
+          "when": "第 3 步",
+          "what": "学生成立团体，应当按《中国传媒大学学生社团管理规定》提出书面申请，报学校批准并施行登记和年检制度"
+        },
+        {
+          "when": "第 4 步",
+          "what": "学生团体邀请校外组织、人员到校举办讲座等活动，需经学校批准"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "学生不得有酗酒、打架斗殴、赌博、吸毒，传播、复制、贩卖非法书刊和音像制品等违法行为",
+        "不得参与非法传销和进行邪教、封建迷信活动",
+        "不得从事或者参与有损大学生形象、有悖社会公序良俗的活动"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学学生管理规定",
+          "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271113/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2026-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20260528-c2753a271113",
+          "quote": "（三）申请奖学金、助学金及助学贷款；"
+        },
+        "steps.1": {
+          "src": "20260528-c2753a271113",
+          "quote": "（四）按规定缴纳学费及有关费用，履行获得助学贷款及助学金的相应义务；"
+        },
+        "steps.2": {
+          "src": "20260528-c2753a271113",
+          "quote": "学生成立团体，应当按《中国传媒大学学生社团管理规定》提出书面申请，报学校批准并施行登记和年检制度。"
+        },
+        "steps.3": {
+          "src": "20260528-c2753a271113",
+          "quote": "学生团体邀请校外组织、人员到校举办讲座等活动，需经学校批准。"
+        },
+        "pitfalls.0": {
+          "src": "20260528-c2753a271113",
+          "quote": "学生不得有酗酒、打架斗殴、赌博、吸毒，传播、复制、贩卖非法书刊和音像制品等违法行为；"
+        },
+        "pitfalls.1": {
+          "src": "20260528-c2753a271113",
+          "quote": "不得参与非法传销和进行邪教、封建迷信活动；"
+        },
+        "pitfalls.2": {
+          "src": "20260528-c2753a271113",
+          "quote": "不得从事或者参与有损大学生形象、有悖社会公序良俗的活动。"
+        }
+      }
+    },
+    {
+      "id": "doc-20240819-c2753a259252",
+      "title": "中国传媒大学团学工作目标管理细则（社团）",
+      "aliases": [
+        "中国传媒大学团学工作目标管理细则（社团）",
+        "中国传媒大学团学工作"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "突出问题导向和目标导向，对照学校的要求和学生的需求，客观查找问题和不足，有目标的开展社团工作"
+        },
+        {
+          "when": "第 2 步",
+          "what": "此处无需社团填写"
+        },
+        {
+          "when": "第 3 步",
+          "what": "此处无需社团填写"
+        },
+        {
+          "when": "第 4 步",
+          "what": "此处无需社团填写"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学团学工作目标管理细则（社团）",
+          "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259252/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-08-08"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20240819-c2753a259252",
+          "quote": "突出问题导向和目标导向，对照学校的要求和学生的需求，客观查找问题和不足，有目标的开展社团工作。"
+        },
+        "steps.1": {
+          "src": "20240819-c2753a259252",
+          "quote": "此处无需社团填写"
+        },
+        "steps.2": {
+          "src": "20240819-c2753a259252",
+          "quote": "此处无需社团填写"
+        },
+        "steps.3": {
+          "src": "20240819-c2753a259252",
+          "quote": "此处无需社团填写"
+        }
+      }
+    },
+    {
+      "id": "doc-20240819-c2753a259249",
+      "title": "中国传媒大学图书馆港台及外文版赠书书库阅览规则",
+      "aliases": [
+        "中国传媒大学图书馆港台及外文版赠书书库阅览规则",
+        "中国传媒大学图书馆港"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "二、凡申请阅览本库相关图书的读者，须为本校师生"
+        },
+        {
+          "when": "第 2 步",
+          "what": "三、申请者需线上填写阅览图书信息，每人每次不超过五册图书"
+        },
+        {
+          "when": "第 3 步",
+          "what": "四、馆员根据预约信息将相关图书从库中提出，放置图书馆指定阅览区，读者须在该阅览区内阅读，期间不允许将图书带出，禁止拍照、复印"
+        },
+        {
+          "when": "第 4 步",
+          "what": "五、阅览前请先检查文献是否损坏，如发现问题及时报告馆员，否则归还时如有损坏，由读者承担赔偿责任"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "五、阅览前请先检查文献是否损坏，如发现问题及时报告馆员，否则归还时如有损坏，由读者承担赔偿责任"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学图书馆港台及外文版赠书书库阅览规则",
+          "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259249/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-08-08"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20240819-c2753a259249",
+          "quote": "二、凡申请阅览本库相关图书的读者，须为本校师生。"
+        },
+        "steps.1": {
+          "src": "20240819-c2753a259249",
+          "quote": "三、申请者需线上填写阅览图书信息，每人每次不超过五册图书。"
+        },
+        "steps.2": {
+          "src": "20240819-c2753a259249",
+          "quote": "四、馆员根据预约信息将相关图书从库中提出，放置图书馆指定阅览区，读者须在该阅览区内阅读，期间不允许将图书带出，禁止拍照、复印。"
+        },
+        "steps.3": {
+          "src": "20240819-c2753a259249",
+          "quote": "五、阅览前请先检查文献是否损坏，如发现问题及时报告馆员，否则归还时如有损坏，由读者承担赔偿责任。"
+        },
+        "pitfalls.0": {
+          "src": "20240819-c2753a259249",
+          "quote": "五、阅览前请先检查文献是否损坏，如发现问题及时报告馆员，否则归还时如有损坏，由读者承担赔偿责任。"
+        }
+      }
+    },
+    {
+      "id": "doc-20240819-c2753a259245",
+      "title": "中国传媒大学全日制本科生课程考核及成绩管理办法",
+      "aliases": [
+        "中国传媒大学全日制本",
+        "中国传媒大学全日制本科生课程考核及成绩管理办法"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "所有计学分课程必须进行课程考核"
+        },
+        {
+          "when": "第 2 步",
+          "what": "因特殊情况无法参加的，须提前向任课教师或教学活动组织者提出书面请假申请"
+        },
+        {
+          "when": "第 3 步",
+          "what": "（一）累计缺课（含请假）超过课程总学时1/3"
+        },
+        {
+          "when": "第 4 步",
+          "what": "必修课总成绩不合格的在校生及在有效学习年限的结业生，按下列规定申请重考："
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "出现下列情形之一的，取消期末考试资格：",
+        "被取消期末考试资格者，不得参加该课程的期末考试、教师教学质量评估及课程重考，该门课程总成绩记零分",
+        "（一）在取得成绩后的下一学期开学初完成重考报名，逾期未报名者视为放弃重考资格"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学全日制本科生课程考核及成绩管理办法",
+          "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259245/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-07-16"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20240819-c2753a259245",
+          "quote": "所有计学分课程必须进行课程考核。"
+        },
+        "steps.1": {
+          "src": "20240819-c2753a259245",
+          "quote": "因特殊情况无法参加的，须提前向任课教师或教学活动组织者提出书面请假申请。"
+        },
+        "steps.2": {
+          "src": "20240819-c2753a259245",
+          "quote": "（一）累计缺课（含请假）超过课程总学时1/3；"
+        },
+        "steps.3": {
+          "src": "20240819-c2753a259245",
+          "quote": "必修课总成绩不合格的在校生及在有效学习年限的结业生，按下列规定申请重考："
+        },
+        "pitfalls.0": {
+          "src": "20240819-c2753a259245",
+          "quote": "出现下列情形之一的，取消期末考试资格："
+        },
+        "pitfalls.1": {
+          "src": "20240819-c2753a259245",
+          "quote": "被取消期末考试资格者，不得参加该课程的期末考试、教师教学质量评估及课程重考，该门课程总成绩记零分。"
+        },
+        "pitfalls.2": {
+          "src": "20240819-c2753a259245",
+          "quote": "（一）在取得成绩后的下一学期开学初完成重考报名，逾期未报名者视为放弃重考资格。"
+        }
+      }
+    },
+    {
+      "id": "doc-20240819-c2753a259246",
+      "title": "关于《中国传媒大学本科生体育课程管理规定》 的补充规定",
+      "aliases": [
+        "关于《中国传媒大学本科生体育课程管理规定》 的补充规定",
+        "关于中国传媒大学本科"
+      ],
+      "keywords": [
+        "补充"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "为进一步提升体育课程游泳项目的教学质量，满足学生个性化学习需求，根据《中国传媒大学本科生体育课程管理规定》（本科生院〔2023〕62号）和教学实际，现就游泳项目补充规定如下："
+        },
+        {
+          "when": "第 2 步",
+          "what": "同时符合下列两个条件者可申请测试："
+        },
+        {
+          "when": "第 3 步",
+          "what": "第三条 申请参加测试的学生，须持本人有效学生证件及全套泳具，按首次上课时间至南操场集合，由教师统一带队开展测试"
+        },
+        {
+          "when": "第 4 步",
+          "what": "学生须同时履行以下义务："
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "关于《中国传媒大学本科生体育课程管理规定》 的补充规定",
+          "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259246/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-07-14"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20240819-c2753a259246",
+          "quote": "为进一步提升体育课程游泳项目的教学质量，满足学生个性化学习需求，根据《中国传媒大学本科生体育课程管理规定》（本科生院〔2023〕62号）和教学实际，现就游泳项目补充规定如下："
+        },
+        "steps.1": {
+          "src": "20240819-c2753a259246",
+          "quote": "同时符合下列两个条件者可申请测试："
+        },
+        "steps.2": {
+          "src": "20240819-c2753a259246",
+          "quote": "第三条 申请参加测试的学生，须持本人有效学生证件及全套泳具，按首次上课时间至南操场集合，由教师统一带队开展测试。"
+        },
+        "steps.3": {
+          "src": "20240819-c2753a259246",
+          "quote": "学生须同时履行以下义务："
+        }
+      }
+    },
+    {
+      "id": "doc-20240819-c2753a259247",
+      "title": "中国传媒大学本科生选课管理办法",
+      "aliases": [
+        "中国传媒大学本科生选",
+        "中国传媒大学本科生选课管理办法"
+      ],
+      "keywords": [
+        "本科生选课管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "第四条 开课单位负责根据专业教学计划、课程教学大纲及授课对象科学设定课容量，协调课程资源与选课需求"
+        },
+        {
+          "when": "第 2 步",
+          "what": "第六条 学生应以本专业年级对应的培养方案为依据，结合自身学业规划和发展需求，在学院指导下选课"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第七条 学生应严格遵守注册前置的原则，依照国家和学校的相关规定缴纳学费并完成注册或缓注册手续后，方可获得选课资格"
+        },
+        {
+          "when": "第 4 步",
+          "what": "其中，必修课是专业培养方案规定必须修读的课程"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "如原课程不再开设或课程号发生变更，需进行无对应重修，学生应按开课单位要求进行指定课程的重修选课",
+        "第十三条 学生须凭本人统一身份认证登录系统选课，不得委托、代替或盗用他人账号选课",
+        "（一）不得选择时间冲突课程（经批准允许自修或学校另有规定的课程除外）"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学本科生选课管理办法",
+          "url": "https://xsc.cuc.edu.cn/2024/0819/c2753a259247/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-07-11"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20240819-c2753a259247",
+          "quote": "第四条 开课单位负责根据专业教学计划、课程教学大纲及授课对象科学设定课容量，协调课程资源与选课需求。"
+        },
+        "steps.1": {
+          "src": "20240819-c2753a259247",
+          "quote": "第六条 学生应以本专业年级对应的培养方案为依据，结合自身学业规划和发展需求，在学院指导下选课。"
+        },
+        "steps.2": {
+          "src": "20240819-c2753a259247",
+          "quote": "第七条 学生应严格遵守注册前置的原则，依照国家和学校的相关规定缴纳学费并完成注册或缓注册手续后，方可获得选课资格。"
+        },
+        "steps.3": {
+          "src": "20240819-c2753a259247",
+          "quote": "其中，必修课是专业培养方案规定必须修读的课程；"
+        },
+        "pitfalls.0": {
+          "src": "20240819-c2753a259247",
+          "quote": "如原课程不再开设或课程号发生变更，需进行无对应重修，学生应按开课单位要求进行指定课程的重修选课。"
+        },
+        "pitfalls.1": {
+          "src": "20240819-c2753a259247",
+          "quote": "第十三条 学生须凭本人统一身份认证登录系统选课，不得委托、代替或盗用他人账号选课。"
+        },
+        "pitfalls.2": {
+          "src": "20240819-c2753a259247",
+          "quote": "（一）不得选择时间冲突课程（经批准允许自修或学校另有规定的课程除外）；"
+        }
+      }
+    },
+    {
+      "id": "doc-20211009-c2753a254805",
+      "title": "中国传媒大学“优秀毕业生”评选细则",
+      "aliases": [
+        "中国传媒大学“优秀毕业生”评选细则",
+        "中国传媒大学优秀毕业"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "学生对照评选条件，向学院提交自荐申请并提供相关材料"
+        },
+        {
+          "when": "第 2 步",
+          "what": "以班级、专业（方向）为单位，组建优秀毕业生民主推荐工作小组，负责对学生的自荐申请及材料开展评选"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第十五条 具体评选安排请以当年学生工作部（处）印发的工作通知为准"
+        },
+        {
+          "when": "第 4 步",
+          "what": "主要事迹（以第一人称填写，800字以内）："
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "第十七条 本细则自发布之日起施行，《中国传媒大学“优秀毕业生”评选办法（修订）》（中传学字〔2021〕251号）同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中国传媒大学“优秀毕业生”评选细则",
+          "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254805/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-04-17"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20211009-c2753a254805",
+          "quote": "学生对照评选条件，向学院提交自荐申请并提供相关材料。"
+        },
+        "steps.1": {
+          "src": "20211009-c2753a254805",
+          "quote": "以班级、专业（方向）为单位，组建优秀毕业生民主推荐工作小组，负责对学生的自荐申请及材料开展评选。"
+        },
+        "steps.2": {
+          "src": "20211009-c2753a254805",
+          "quote": "第十五条 具体评选安排请以当年学生工作部（处）印发的工作通知为准。"
+        },
+        "steps.3": {
+          "src": "20211009-c2753a254805",
+          "quote": "主要事迹（以第一人称填写，800字以内）："
+        },
+        "pitfalls.0": {
+          "src": "20211009-c2753a254805",
+          "quote": "第十七条 本细则自发布之日起施行，《中国传媒大学“优秀毕业生”评选办法（修订）》（中传学字〔2021〕251号）同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20211009-c2753a254699",
+      "title": "2024年北京市征兵优待政策",
+      "aliases": [
+        "2024年北京市征兵",
+        "2024年北京市征兵优待政策"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "如原就读学校撤销的，由北京市教委参照有关规定办理转入同等学历相关专业高校复学"
+        },
+        {
+          "when": "第 2 步",
+          "what": "高校毕业生士兵退役后1年内，可视同当年的应届毕业生，凭用人单位录（聘）用手续，向原就读高校再次申请办理就业报到手续，户档随迁（直辖市按照有关规定执行）"
+        },
+        {
+          "when": "第 3 步",
+          "what": "退役大学生士兵可视同为普通高等学校毕业生办理招录用手续"
+        },
+        {
+          "when": "第 4 步",
+          "what": "本科以上学历非京籍退役复学后完成学业的在校大学生或应届毕业生，被本市用人单位接收的，可办理进京落户手续"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "2024年北京市征兵优待政策",
+          "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254699/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2025-04-17"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20211009-c2753a254699",
+          "quote": "如原就读学校撤销的，由北京市教委参照有关规定办理转入同等学历相关专业高校复学。"
+        },
+        "steps.1": {
+          "src": "20211009-c2753a254699",
+          "quote": "高校毕业生士兵退役后1年内，可视同当年的应届毕业生，凭用人单位录（聘）用手续，向原就读高校再次申请办理就业报到手续，户档随迁（直辖市按照有关规定执行）；"
+        },
+        "steps.2": {
+          "src": "20211009-c2753a254699",
+          "quote": "退役大学生士兵可视同为普通高等学校毕业生办理招录用手续。"
+        },
+        "steps.3": {
+          "src": "20211009-c2753a254699",
+          "quote": "本科以上学历非京籍退役复学后完成学业的在校大学生或应届毕业生，被本市用人单位接收的，可办理进京落户手续。"
+        }
+      }
+    },
+    {
+      "id": "doc-20190119-c2752a121385",
+      "title": "《普通高等学校军事课教学大纲》2019版",
+      "aliases": [
+        "普通高等学校军事课教",
+        "《普通高等学校军事课教学大纲》2019版"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "现将《大纲》印发给你们，请认真学习贯彻《大纲》的内容，按照《大纲》要求，切实保障学生军事理论教学和军事技能训练课时、内容和要求的落实"
+        },
+        {
+          "when": "第 2 步",
+          "what": "课程内容含“必讲（必训）”内容（以“*”标识）和“选讲（选训）”内容（其他未标识者），各学校可根据本校实际情况在确保完成“必讲（必训）”内容的基础上，灵活选择“选讲（选训）”内容，但必须完成总学时"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "《大纲》于2019年8月起在全国施行，原《大纲》（2006年修订）废止",
+        "《军事技能》训练时间2—3周，实际训练时间不得少于14天112学时，记2学分"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "《普通高等学校军事课教学大纲》2019版",
+          "url": "https://xsc.cuc.edu.cn/2019/0119/c2752a121385/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2019-03-01"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20190119-c2752a121385",
+          "quote": "现将《大纲》印发给你们，请认真学习贯彻《大纲》的内容，按照《大纲》要求，切实保障学生军事理论教学和军事技能训练课时、内容和要求的落实。"
+        },
+        "steps.1": {
+          "src": "20190119-c2752a121385",
+          "quote": "课程内容含“必讲（必训）”内容（以“*”标识）和“选讲（选训）”内容（其他未标识者），各学校可根据本校实际情况在确保完成“必讲（必训）”内容的基础上，灵活选择“选讲（选训）”内容，但必须完成总学时。"
+        },
+        "pitfalls.0": {
+          "src": "20190119-c2752a121385",
+          "quote": "《大纲》于2019年8月起在全国施行，原《大纲》（2006年修订）废止。"
+        },
+        "pitfalls.1": {
+          "src": "20190119-c2752a121385",
+          "quote": "《军事技能》训练时间2—3周，实际训练时间不得少于14天112学时，记2学分。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101548",
+      "title": "中华人民共和国教育部等六部门 关于做好家庭经济困难 学生认定工...",
+      "aliases": [
+        "中华人民共和国教育部等六部门 关于做好家庭经济困难 学生认定工...",
+        "中华人民共和国教育部"
+      ],
+      "keywords": [
+        "做好家庭经济困难",
+        "学生认定工..."
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "做好家庭经济困难学生认定工作，是贯彻落实党中央、国务院决策部署，全面推进精准资助，确保资助政策有效落实的迫切需要"
+        },
+        {
+          "when": "第 2 步",
+          "what": "（四）坚持积极引导与自愿申请相结合"
+        },
+        {
+          "when": "第 3 步",
+          "what": "既要引导学生如实反映家庭经济困难情况，主动利用国家资助完成学业，也要充分尊重学生个人意愿，遵循自愿申请的原则"
+        },
+        {
+          "when": "第 4 步",
+          "what": "工作程序一般应包括提前告知、个人申请、学校认定、结果公示、建档备案等环节"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "各级教育、人力资源社会保障等部门和学校要加强学生资助信息安全管理，不得泄露学生资助信息",
+        "如发现有恶意提供虚假信息的情况，一经核实，学校要及时取消学生的认定资格和已获得的相关资助，并追回资助资金",
+        "《关于认真做好高等学校家庭经济困难学生认定工作的指导意见》（教财〔2007〕8号）同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部等六部门 关于做好家庭经济困难 学生认定工...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101548/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101548",
+          "quote": "做好家庭经济困难学生认定工作，是贯彻落实党中央、国务院决策部署，全面推进精准资助，确保资助政策有效落实的迫切需要。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101548",
+          "quote": "（四）坚持积极引导与自愿申请相结合。"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101548",
+          "quote": "既要引导学生如实反映家庭经济困难情况，主动利用国家资助完成学业，也要充分尊重学生个人意愿，遵循自愿申请的原则。"
+        },
+        "steps.3": {
+          "src": "20181224-c2752a101548",
+          "quote": "工作程序一般应包括提前告知、个人申请、学校认定、结果公示、建档备案等环节。"
+        },
+        "pitfalls.0": {
+          "src": "20181224-c2752a101548",
+          "quote": "各级教育、人力资源社会保障等部门和学校要加强学生资助信息安全管理，不得泄露学生资助信息。"
+        },
+        "pitfalls.1": {
+          "src": "20181224-c2752a101548",
+          "quote": "如发现有恶意提供虚假信息的情况，一经核实，学校要及时取消学生的认定资格和已获得的相关资助，并追回资助资金。"
+        },
+        "pitfalls.2": {
+          "src": "20181224-c2752a101548",
+          "quote": "《关于认真做好高等学校家庭经济困难学生认定工作的指导意见》（教财〔2007〕8号）同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101496",
+      "title": "中华人民共和国教育部文件第11号 教育部关于做好2018届全国普通...",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部文件第11号 教育部关于做好2018届全国普通..."
+      ],
+      "keywords": [
+        "教育部"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "各地各高校要围绕国家经济社会发展需要，主动对接国家发展战略需求，向重点地区、重大工程、重大项目、重要领域输送毕业生"
+        },
+        {
+          "when": "第 2 步",
+          "what": "建立健全国家、省级、高校大学生创业服务平台，聘请行业专家、创业校友等担任导师，通过举办讲座、论坛、沙龙等活动,为大学生创业提供信息咨询、管理运营、项目对接、知识产权保护等方面的指导服务"
+        },
+        {
+          "when": "第 3 步",
+          "what": "各地各高校要广泛应用“互联网+就业”新模式，通过新职业网、智慧就业等平台，根据毕业生和用人单位需求，开展精准对接服务"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部文件第11号 教育部关于做好2018届全国普通...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101496/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101496",
+          "quote": "各地各高校要围绕国家经济社会发展需要，主动对接国家发展战略需求，向重点地区、重大工程、重大项目、重要领域输送毕业生。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101496",
+          "quote": "建立健全国家、省级、高校大学生创业服务平台，聘请行业专家、创业校友等担任导师，通过举办讲座、论坛、沙龙等活动,为大学生创业提供信息咨询、管理运营、项目对接、知识产权保护等方面的指导服务。"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101496",
+          "quote": "各地各高校要广泛应用“互联网+就业”新模式，通过新职业网、智慧就业等平台，根据毕业生和用人单位需求，开展精准对接服务。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101490",
+      "title": "中华人民共和国教育部文件第8号 教育部关于做好2019届全国普通高...",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部文件第8号 教育部关于做好2019届全国普通高..."
+      ],
+      "keywords": [
+        "教育部"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "各地各高校要主动对接国家经济社会发展的人才需要，围绕“一带一路”建设、雄安新区建设、长江经济带发展、粤港澳大湾区建设、海南自贸试验区建设等，引导毕业生到重点地区、重大工程、重大项目、重要领域就业"
+        },
+        {
+          "when": "第 2 步",
+          "what": "各地各高校要结合学科专业特色，主动对接以技术集成和商业模式创新为特点的新业态人才需求，充分利用平台经济、众包经济、共享经济、数字经济等新业态，支持鼓励毕业生实现多元化就业"
+        },
+        {
+          "when": "第 3 步",
+          "what": "各高校要按照《普通高等学校学生管理规定》要求，进一步细化创新创业学分积累与转换、弹性学制管理、保留学籍休学创业、支持创新创业学生复学后转入相关专业学习等政策，允许本科生用创业成果申请学位论文答辩"
+        },
+        {
+          "when": "第 4 步",
+          "what": "鼓励各高校聘请行业专家、创业校友、企业家等担任大学生创业团队指导教师，鼓励专业教师、实验室老师全程指导大学生创新创业"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部文件第8号 教育部关于做好2019届全国普通高...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101490/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101490",
+          "quote": "各地各高校要主动对接国家经济社会发展的人才需要，围绕“一带一路”建设、雄安新区建设、长江经济带发展、粤港澳大湾区建设、海南自贸试验区建设等，引导毕业生到重点地区、重大工程、重大项目、重要领域就业。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101490",
+          "quote": "各地各高校要结合学科专业特色，主动对接以技术集成和商业模式创新为特点的新业态人才需求，充分利用平台经济、众包经济、共享经济、数字经济等新业态，支持鼓励毕业生实现多元化就业。"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101490",
+          "quote": "各高校要按照《普通高等学校学生管理规定》要求，进一步细化创新创业学分积累与转换、弹性学制管理、保留学籍休学创业、支持创新创业学生复学后转入相关专业学习等政策，允许本科生用创业成果申请学位论文答辩。"
+        },
+        "steps.3": {
+          "src": "20181224-c2752a101490",
+          "quote": "鼓励各高校聘请行业专家、创业校友、企业家等担任大学生创业团队指导教师，鼓励专业教师、实验室老师全程指导大学生创新创业。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101484",
+      "title": "中华人民共和国教育部文件第3号 教育部关于加强学生军事训练管理...",
+      "aliases": [
+        "中华人民共和国教育部文件第3号 教育部关于加强学生军事训练管理...",
+        "中华人民共和国教育部"
+      ],
+      "keywords": [
+        "教育部"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "加强学生军事训练管理，提高军事训练质量，是提升学生国防意识、军事素养和综合素质，加强国防建设和国家人才培养的重要任务，关系到学生家庭、学校乃至全社会的和谐稳定，必须高度重视"
+        },
+        {
+          "when": "第 2 步",
+          "what": "进一步健全“学校提需求，教育部门统计划，省军区搞协调”的工作运行机制，及时召开联席会议，统筹各种力量，确保工作落实"
+        },
+        {
+          "when": "第 3 步",
+          "what": "参训学生要参加入学体检，各校要严格按照《学生军事训练规定》的要求，对有严重生理缺陷、残疾或疾病的学生，经本人申请和学校批准，可以减免不适宜参加的军事技能训练科目"
+        },
+        {
+          "when": "第 4 步",
+          "what": "教育行政部门要商请各承训部队对帮训官兵进行安全教育和安全技能培训，增强帮训官兵科学施训、文明施训和安全施训的意识和能力"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "在军事训练开始前，学校要对教师进行安全教育和安全技能培训，增强教师预防和处置突发安全事件的意识和能力，凡未参加相关培训的教师不得带训",
+        "凡未参加相关培训的帮训官兵不得施训"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部文件第3号 教育部关于加强学生军事训练管理...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101484/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101484",
+          "quote": "加强学生军事训练管理，提高军事训练质量，是提升学生国防意识、军事素养和综合素质，加强国防建设和国家人才培养的重要任务，关系到学生家庭、学校乃至全社会的和谐稳定，必须高度重视。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101484",
+          "quote": "进一步健全“学校提需求，教育部门统计划，省军区搞协调”的工作运行机制，及时召开联席会议，统筹各种力量，确保工作落实；"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101484",
+          "quote": "参训学生要参加入学体检，各校要严格按照《学生军事训练规定》的要求，对有严重生理缺陷、残疾或疾病的学生，经本人申请和学校批准，可以减免不适宜参加的军事技能训练科目。"
+        },
+        "steps.3": {
+          "src": "20181224-c2752a101484",
+          "quote": "教育行政部门要商请各承训部队对帮训官兵进行安全教育和安全技能培训，增强帮训官兵科学施训、文明施训和安全施训的意识和能力；"
+        },
+        "pitfalls.0": {
+          "src": "20181224-c2752a101484",
+          "quote": "在军事训练开始前，学校要对教师进行安全教育和安全技能培训，增强教师预防和处置突发安全事件的意识和能力，凡未参加相关培训的教师不得带训。"
+        },
+        "pitfalls.1": {
+          "src": "20181224-c2752a101484",
+          "quote": "凡未参加相关培训的帮训官兵不得施训。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101482",
+      "title": "中华人民共和国教育部 财政部关于印发《高等学校勤工助学管理办...",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部 财政部关于印发《高等学校勤工助学管理办..."
+      ],
+      "keywords": [
+        "财政部"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "为深入贯彻党的十九大精神，不断健全学生资助制度，根据当前学生勤工助学工作的新特点及新需要，教育部、财政部对现行的《高等学校学生勤工助学管理办法》进行了修订"
+        },
+        {
+          "when": "第 2 步",
+          "what": "现将修订后的《高等学校学生勤工助学管理办法（2018年修订）》印发给你们，请遵照执行"
+        },
+        {
+          "when": "第 3 步",
+          "what": "勤工助学活动应坚持“立足校园、服务社会”的宗旨，按照学有余力、自愿申请、信息公开、扶困优先、竞争上岗、遵纪守法的原则，由学校在不影响正常教学秩序和学生正常学习的前提下有组织地开展"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第十六条 接受学生参加勤工助学活动的申请，安排学生勤工助学岗位，为学生和用人单位提供及时有效的服务"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "第二十条 不得组织学生参加有毒、有害和危险的生产作业以及超过学生身体承受能力、有碍学生身心健康的劳动",
+        "教育部财政部印发的《高等学校勤工助学管理办法》（教财〔2007〕7号）同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部 财政部关于印发《高等学校勤工助学管理办...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101482/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101482",
+          "quote": "为深入贯彻党的十九大精神，不断健全学生资助制度，根据当前学生勤工助学工作的新特点及新需要，教育部、财政部对现行的《高等学校学生勤工助学管理办法》进行了修订。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101482",
+          "quote": "现将修订后的《高等学校学生勤工助学管理办法（2018年修订）》印发给你们，请遵照执行。"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101482",
+          "quote": "勤工助学活动应坚持“立足校园、服务社会”的宗旨，按照学有余力、自愿申请、信息公开、扶困优先、竞争上岗、遵纪守法的原则，由学校在不影响正常教学秩序和学生正常学习的前提下有组织地开展。"
+        },
+        "steps.3": {
+          "src": "20181224-c2752a101482",
+          "quote": "第十六条 接受学生参加勤工助学活动的申请，安排学生勤工助学岗位，为学生和用人单位提供及时有效的服务。"
+        },
+        "pitfalls.0": {
+          "src": "20181224-c2752a101482",
+          "quote": "第二十条 不得组织学生参加有毒、有害和危险的生产作业以及超过学生身体承受能力、有碍学生身心健康的劳动。"
+        },
+        "pitfalls.1": {
+          "src": "20181224-c2752a101482",
+          "quote": "教育部财政部印发的《高等学校勤工助学管理办法》（教财〔2007〕7号）同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181224-c2752a101480",
+      "title": "中华人民共和国教育部办公厅文件第5号 教育部办公厅关于进一步做...",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部办公厅文件第5号 教育部办公厅关于进一步做..."
+      ],
+      "keywords": [
+        "教育部办公厅",
+        "进一步做..."
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "充分发挥校园招聘主渠道作用，主动“走出去，请进来”，采取网上网下相结合，多渠道收集发布就业信息，办好各类招聘活动，确保校园招聘活动热度不减、数量提高"
+        },
+        {
+          "when": "第 2 步",
+          "what": "要根据学生创新创业不同阶段的实际需求，不断提高指导服务的针对性和有效性"
+        },
+        {
+          "when": "第 3 步",
+          "what": "各地各高校要建立健全精准推送就业服务机制，准确掌握就业信息，完善毕业生求职意愿信息数据库和用人单位岗位需求信息数据库，搭建精准对接服务平台"
+        },
+        {
+          "when": "第 4 步",
+          "what": "充分利用“互联网+就业”新模式，根据毕业生自身条件、个性特点进行智能化供需匹配，减少毕业生求职盲目性"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部办公厅文件第5号 教育部办公厅关于进一步做...",
+          "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101480/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-24"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181224-c2752a101480",
+          "quote": "充分发挥校园招聘主渠道作用，主动“走出去，请进来”，采取网上网下相结合，多渠道收集发布就业信息，办好各类招聘活动，确保校园招聘活动热度不减、数量提高。"
+        },
+        "steps.1": {
+          "src": "20181224-c2752a101480",
+          "quote": "要根据学生创新创业不同阶段的实际需求，不断提高指导服务的针对性和有效性。"
+        },
+        "steps.2": {
+          "src": "20181224-c2752a101480",
+          "quote": "各地各高校要建立健全精准推送就业服务机制，准确掌握就业信息，完善毕业生求职意愿信息数据库和用人单位岗位需求信息数据库，搭建精准对接服务平台。"
+        },
+        "steps.3": {
+          "src": "20181224-c2752a101480",
+          "quote": "充分利用“互联网+就业”新模式，根据毕业生自身条件、个性特点进行智能化供需匹配，减少毕业生求职盲目性。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181220-c2752a92007",
+      "title": "中华人民共和国教育部令第27号 高等学校档案管理办法",
+      "aliases": [
+        "中华人民共和国教育部令第27号 高等学校档案管理办法",
+        "中华人民共和国教育部"
+      ],
+      "keywords": [
+        "高等学校档案管理"
+      ],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "(三)建立健全与办学规模相适应的高校档案机构，落实人员编制、档案库房、发展档案事业所需设备以及经费"
+        },
+        {
+          "when": "第 2 步",
+          "what": "需要特殊条件保管或者利用频繁且具有一定独立性的档案，可以根据实际需要设立分室单独保管"
+        },
+        {
+          "when": "第 3 步",
+          "what": "有条件的高校档案机构，可以申请创设爱国主义教育基地"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第九条 高校档案馆设馆长一名，根据需要可以设副馆长一至二名"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "未经鉴定和批准，不得销毁任何档案",
+        "第二十四条 高等学校中的个人对其从事教学、科研、管理等职务活动所形成的各种载体形式的档案材料，应当按照规定及时归档，任何个人不得据为己有",
+        "高校档案机构应当为社会利用档案创造便利条件，用于公益目的的，不得收取费用"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部令第27号 高等学校档案管理办法",
+          "url": "https://xsc.cuc.edu.cn/2018/1220/c2752a92007/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-20"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181220-c2752a92007",
+          "quote": "(三)建立健全与办学规模相适应的高校档案机构，落实人员编制、档案库房、发展档案事业所需设备以及经费；"
+        },
+        "steps.1": {
+          "src": "20181220-c2752a92007",
+          "quote": "需要特殊条件保管或者利用频繁且具有一定独立性的档案，可以根据实际需要设立分室单独保管。"
+        },
+        "steps.2": {
+          "src": "20181220-c2752a92007",
+          "quote": "有条件的高校档案机构，可以申请创设爱国主义教育基地。"
+        },
+        "steps.3": {
+          "src": "20181220-c2752a92007",
+          "quote": "第九条 高校档案馆设馆长一名，根据需要可以设副馆长一至二名。"
+        },
+        "pitfalls.0": {
+          "src": "20181220-c2752a92007",
+          "quote": "未经鉴定和批准，不得销毁任何档案。"
+        },
+        "pitfalls.1": {
+          "src": "20181220-c2752a92007",
+          "quote": "第二十四条 高等学校中的个人对其从事教学、科研、管理等职务活动所形成的各种载体形式的档案材料，应当按照规定及时归档，任何个人不得据为己有。"
+        },
+        "pitfalls.2": {
+          "src": "20181220-c2752a92007",
+          "quote": "高校档案机构应当为社会利用档案创造便利条件，用于公益目的的，不得收取费用；"
+        }
+      }
+    },
+    {
+      "id": "doc-20181219-c2752a91624",
+      "title": "中华人民共和国教育部令第43号 普通高等学校辅导员队伍建设规定",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部令第43号 普通高等学校辅导员队伍建设规定"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "指导学生办理助学贷款"
+        },
+        {
+          "when": "第 2 步",
+          "what": "为学生提供科学的职业生涯规划和就业指导以及相关服务，帮助学生树立正确的就业观念，引导学生到基层、到西部、到祖国最需要的地方建功立业"
+        },
+        {
+          "when": "第 3 步",
+          "what": "根据辅导员基本条件要求和实际岗位需要，确定具体选拔条件，通过组织推荐和公开招聘相结合的方式，经过笔试、面试、公示等相关程序进行选拔"
+        },
+        {
+          "when": "第 4 步",
+          "what": "第九条 青年教师晋升高一级专业技术职务（职称），须有至少一年担任辅导员或班主任工作经历并考核合格"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "原《普通高等学校辅导员队伍建设规定》同时废止"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部令第43号 普通高等学校辅导员队伍建设规定",
+          "url": "https://xsc.cuc.edu.cn/2018/1219/c2752a91624/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-19"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181219-c2752a91624",
+          "quote": "指导学生办理助学贷款。"
+        },
+        "steps.1": {
+          "src": "20181219-c2752a91624",
+          "quote": "为学生提供科学的职业生涯规划和就业指导以及相关服务，帮助学生树立正确的就业观念，引导学生到基层、到西部、到祖国最需要的地方建功立业。"
+        },
+        "steps.2": {
+          "src": "20181219-c2752a91624",
+          "quote": "根据辅导员基本条件要求和实际岗位需要，确定具体选拔条件，通过组织推荐和公开招聘相结合的方式，经过笔试、面试、公示等相关程序进行选拔。"
+        },
+        "steps.3": {
+          "src": "20181219-c2752a91624",
+          "quote": "第九条 青年教师晋升高一级专业技术职务（职称），须有至少一年担任辅导员或班主任工作经历并考核合格。"
+        },
+        "pitfalls.0": {
+          "src": "20181219-c2752a91624",
+          "quote": "原《普通高等学校辅导员队伍建设规定》同时废止。"
+        }
+      }
+    },
+    {
+      "id": "doc-20181219-c2752a91648",
+      "title": "中华人民共和国教育部令第41号 普通高等学校学生管理规定",
+      "aliases": [
+        "中华人民共和国教育部",
+        "中华人民共和国教育部令第41号 普通高等学校学生管理规定"
+      ],
+      "keywords": [],
+      "dept": "中国传媒大学",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [],
+      "steps": [
+        {
+          "when": "第 1 步",
+          "what": "（三）申请奖学金、助学金及助学贷款"
+        },
+        {
+          "when": "第 2 步",
+          "what": "（四）按规定缴纳学费及有关费用，履行获得贷学金及助学金的相应义务"
+        },
+        {
+          "when": "第 3 步",
+          "what": "第八条 按国家招生规定录取的新生，持录取通知书，按学校有关要求和规定的期限到校办理入学手续"
+        },
+        {
+          "when": "第 4 步",
+          "what": "因故不能按期入学的，应当向学校请假"
+        }
+      ],
+      "fee": null,
+      "location": null,
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "未请假或者请假逾期的，除因不可抗力等正当事由以外，视为放弃入学资格",
+        "审查发现新生的录取通知、考生信息等证明材料，与本人实际情况不符，或者有其他违反国家招生考试规定情形的，取消入学资格",
+        "审查不合格的，取消入学资格"
+      ],
+      "kind": "rule",
+      "auto": true,
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "中华人民共和国教育部令第41号 普通高等学校学生管理规定",
+          "url": "https://xsc.cuc.edu.cn/2018/1219/c2752a91648/page.htm",
+          "checked": "2026-10-21",
+          "kind": "cdp",
+          "published": "2018-12-19"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20181219-c2752a91648",
+          "quote": "（三）申请奖学金、助学金及助学贷款；"
+        },
+        "steps.1": {
+          "src": "20181219-c2752a91648",
+          "quote": "（四）按规定缴纳学费及有关费用，履行获得贷学金及助学金的相应义务；"
+        },
+        "steps.2": {
+          "src": "20181219-c2752a91648",
+          "quote": "第八条 按国家招生规定录取的新生，持录取通知书，按学校有关要求和规定的期限到校办理入学手续。"
+        },
+        "steps.3": {
+          "src": "20181219-c2752a91648",
+          "quote": "因故不能按期入学的，应当向学校请假。"
+        },
+        "pitfalls.0": {
+          "src": "20181219-c2752a91648",
+          "quote": "未请假或者请假逾期的，除因不可抗力等正当事由以外，视为放弃入学资格。"
+        },
+        "pitfalls.1": {
+          "src": "20181219-c2752a91648",
+          "quote": "审查发现新生的录取通知、考生信息等证明材料，与本人实际情况不符，或者有其他违反国家招生考试规定情形的，取消入学资格。"
+        },
+        "pitfalls.2": {
+          "src": "20181219-c2752a91648",
+          "quote": "审查不合格的，取消入学资格；"
+        }
+      }
+    },
+    {
+      "id": "jiangxuejin",
+      "title": "奖学金评定（国家 / 国家励志 / 校励志 / 优秀本科生）",
+      "aliases": [
+        "奖学金",
+        "国家奖学金",
+        "励志奖学金",
+        "校奖学金",
+        "评奖学金",
+        "奖学金怎么评"
+      ],
+      "keywords": [
+        "奖学金",
+        "国家奖学金",
+        "励志奖学金",
+        "优秀本科生奖学金",
+        "评奖"
+      ],
+      "dept": "学生工作部（处）",
+      "channel": [
+        "线下窗口",
+        "线上系统"
+      ],
+      "audience": [
+        "本科生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "综合素质评价结果（评定主要依据）"
+        },
+        {
+          "name": "体测成绩（国家奖学金要求良好及以上）"
+        }
+      ],
+      "steps": [
+        {
+          "when": "每学年一次",
+          "what": "学生本人向所在学院提出申请",
+          "where": "所在学院"
+        },
+        {
+          "when": "学院初审后",
+          "what": "学院内公示拟获奖初审名单，不少于 5 个工作日",
+          "where": "学院"
+        },
+        {
+          "when": "公示无异议",
+          "what": "报学生工作部（处）汇总审核，再全校公示不少于 5 个工作日",
+          "where": "学生工作部（处）"
+        },
+        {
+          "when": "审批通过",
+          "what": "学校发放奖学金及荣誉证书，获奖情况记入学籍档案",
+          "where": "学校"
+        }
+      ],
+      "fee": null,
+      "location": "所在学院 → 学生工作部（处）",
+      "hours": null,
+      "duration": "两次公示各不少于 5 个工作日",
+      "window": "每学年评审一次，具体时间以当年通知为准",
+      "pitfalls": [
+        "国家奖学金要求二年级以上（含二年级）才能申请",
+        "综合素质评价各维度都不得为 C，且「博学明智」维度排名百分比须在班级前 10%（含）",
+        "国家奖学金与体测挂钩：《国家学生体质健康标准》成绩须良好及以上",
+        "同一学年内不能同时获得国家奖学金和国家励志奖学金",
+        "弄虚作假会取消参评学年获评资格，已获奖的要撤销并追回证书和奖金"
+      ],
+      "slots": [
+        {
+          "key": "kind",
+          "ask": "你问的是哪一类奖学金？",
+          "required": true,
+          "options": [
+            "国家奖学金",
+            "国家励志奖学金",
+            "校励志奖学金",
+            "优秀本科生奖学金"
+          ],
+          "decides": [
+            "fee",
+            "steps"
+          ],
+          "why": "四类金额与条件不同：国家 8000 元/学年、国家励志与校励志 5000 元/学年、优秀本科生 1500 元/学年"
+        }
+      ],
+      "draft": null,
+      "source": [
+        {
+          "title": "《中国传媒大学本科生国家奖学金实施办法（试行）》中传学字〔2024〕196 号",
+          "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262330/page.htm",
+          "checked": "2026-10-26",
+          "effective": "2024-08-12",
+          "applies": "2023 级起"
+        },
+        {
+          "title": "《中国传媒大学本科生国家励志奖学金实施办法（试行）》中传学字〔2024〕195 号",
+          "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262329/page.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "title": "《中国传媒大学本科生校励志奖学金评选办法（试行）》中传学字〔2024〕194 号",
+          "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262328/page.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "title": "《中国传媒大学优秀本科生奖学金评选办法（试行）》中传学字〔2024〕193 号",
+          "url": "https://xsc.cuc.edu.cn/2025/1110/c2760a262327/page.htm",
+          "checked": "2026-10-26"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "学生本人向所在学院提出申请"
+        },
+        "steps.1": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "各学院学生综合素质评价与奖助工作小组初审合格后，在学院内将拟获奖初审名单进行不少于 5 个工作日的公示"
+        },
+        "steps.2": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "学生工作部（处）汇总并审核各学院初审名单"
+        },
+        "steps.3": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "学校每年向获奖学生发放奖学金"
+        },
+        "duration": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "在学院内将拟获奖初审名单进行不少于 5 个工作日的公示"
+        },
+        "window": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "国家奖学金每学年评审一次，实行等额评审"
+        },
+        "pitfalls.0": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "在校生中二年级以上（含二年级）的学生可以申请国家奖学金"
+        },
+        "pitfalls.1": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "申请参评国家奖学金的学生，综合素质评价各个维度评价结果均不得为C"
+        },
+        "pitfalls.2": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "《国家学生体质健康标准》测试成绩达到良好及以上"
+        },
+        "pitfalls.3": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "但不能同时获得国家励志奖学金"
+        },
+        "pitfalls.4": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "如学生有弄虚作假行为，取消其参评学年的获评资格"
+        },
+        "materials.0": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "国家奖学金以当年综合素质评价结果为主要评定依据"
+        },
+        "materials.1": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "《国家学生体质健康标准》测试成绩达到良好及以上"
+        },
+        "location": {
+          "src": "20251110-c2760a262330-att7",
+          "quote": "办公室设在学生工作部（处）"
+        }
+      },
+      "advisory": [
+        "金额：国家奖学金 8000 元/学年；国家励志奖学金、校励志奖学金各 5000 元/学年；优秀本科生奖学金 1500 元/学年（均取自各自文件原文）",
+        "四类奖学金的评审主体都是学生工作部（处），但初审在学院，先问辅导员比查文件快"
+      ]
+    },
+    {
+      "id": "chsi-baogao",
+      "title": "学信网在线验证报告（学历 / 学籍 / 学位）",
+      "aliases": [
+        "在线验证报告",
+        "学历证书电子注册备案表",
+        "学籍在线验证报告",
+        "学位在线验证报告",
+        "学信网报告",
+        "教育部学籍在线验证报告",
+        "备案表"
+      ],
+      "keywords": [
+        "在线验证报告",
+        "电子注册备案表",
+        "学籍在线验证",
+        "学位在线验证",
+        "验证码"
+      ],
+      "dept": "学信网（教育部学生服务与素质发展中心）",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生",
+        "研究生",
+        "校友"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "本人身份证"
+        },
+        {
+          "name": "与学籍一致的姓名、手机号"
+        }
+      ],
+      "steps": [
+        {
+          "when": "准备",
+          "what": "注册并登录学信网账号，进入学信档案",
+          "where": "chsi.com.cn → 学信档案"
+        },
+        {
+          "when": "申请",
+          "what": "在“在线验证”里申请对应报告：学籍 / 学历 / 学位三类",
+          "where": "在线验证"
+        },
+        {
+          "when": "使用",
+          "what": "把报告交给对方，对方用 16 位在线验证码在学信网核验真伪",
+          "where": "验证真伪页"
+        }
+      ],
+      "fee": "免费",
+      "location": "学信网（线上办理）",
+      "hours": null,
+      "duration": null,
+      "window": "自 2018 年 1 月 1 日起免费申请",
+      "pitfalls": [
+        "三类报告不是一回事：学籍报告证明在读，学历备案表证明已毕业，学位报告证明学位",
+        "2019 年 3 月 15 日起新申请的报告，在线验证码是 16 位",
+        "2025 年 3 月 27 日起启用新版《教育部学籍在线验证报告》，旧版样式已变"
+      ],
+      "slots": [
+        {
+          "key": "kind",
+          "ask": "你要哪一类报告？",
+          "required": true,
+          "options": [
+            "学籍在线验证报告（在读）",
+            "学历证书电子注册备案表（已毕业）",
+            "学位在线验证报告"
+          ],
+          "decides": [
+            "steps"
+          ],
+          "why": "三类报告对应三种状态，用人单位要的往往只是其中一种"
+        }
+      ],
+      "draft": null,
+      "source": [
+        {
+          "title": "在线验证报告 · 学信网（教育部学生服务与素质发展中心）",
+          "url": "https://www.chsi.com.cn/xlcx/bgcx.jsp",
+          "checked": "2026-10-26"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "chsi-benren",
+          "quote": "1、注册学信网账号（凭身份证、姓名、手机号）。"
+        },
+        "steps.2": {
+          "src": "chsi-yanzheng",
+          "quote": "2019年3月15日起，新申请的《教育部学籍在线验证报告》及《教育部学历证书电子注册备案表》的在线验证码升级为16位"
+        },
+        "fee": {
+          "src": "chsi-yanzheng",
+          "quote": "自2018年1月1日起，学信网将对《教育部学籍在线验证报告》及《教育部学历证书电子注册备案表》提供免费申请服务"
+        },
+        "window": {
+          "src": "chsi-yanzheng",
+          "quote": "自2018年1月1日起"
+        },
+        "pitfalls.0": {
+          "src": "chsi-yanzheng",
+          "quote": "1.《教育部学籍在线验证报告》（含中文版和翻译件（英文））"
+        },
+        "pitfalls.2": {
+          "src": "chsi-yanzheng",
+          "quote": "2025年3月27日起，启用新版《教育部学籍在线验证报告》"
+        },
+        "materials.1": {
+          "src": "chsi-benren",
+          "quote": "（凭身份证、姓名、手机号）"
+        },
+        "steps.1": {
+          "src": "chsi-yanzheng",
+          "quote": "学籍/学历/学位在线验证报告查询"
+        },
+        "pitfalls.1": {
+          "src": "chsi-yanzheng",
+          "quote": "新申请的《教育部学籍在线验证报告》及《教育部学历证书电子注册备案表》的在线验证码升级为16位"
+        },
+        "location": {
+          "src": "chsi-benren",
+          "quote": "2、访问学信档案。"
+        },
+        "materials.0": {
+          "src": "chsi-benren",
+          "quote": "1、注册学信网账号（凭身份证、姓名、手机号）。"
+        }
+      },
+      "advisory": [
+        "求职、考研复试、留学常要的是「学历证书电子注册备案表」或「学籍在线验证报告」，先问对方要哪一种再申请",
+        "报告有有效期，过期可在线延长，不必重新申请"
+      ]
+    },
+    {
+      "id": "chsi-heshi",
+      "title": "学信档案本人身份核验（实人核验）",
+      "aliases": [
+        "学信网核验",
+        "实人核验",
+        "学信档案登录不了",
+        "身份证核验",
+        "学信网查不到学籍"
+      ],
+      "keywords": [
+        "实人核验",
+        "身份核验",
+        "学信档案",
+        "查不到学籍",
+        "核验失败"
+      ],
+      "dept": "学信网（教育部学生服务与素质发展中心）",
+      "channel": [
+        "线上系统"
+      ],
+      "audience": [
+        "本科生",
+        "研究生",
+        "校友"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "本人身份证"
+        },
+        {
+          "name": "本人姓名与手机号"
+        },
+        {
+          "name": "身份证照片（走上传核验方式时）"
+        }
+      ],
+      "steps": [
+        {
+          "when": "方式 1",
+          "what": "用学信网 App 做实人核验",
+          "where": "学信网 App"
+        },
+        {
+          "when": "方式 2",
+          "what": "用支付宝做实人核验",
+          "where": "支付宝"
+        },
+        {
+          "when": "方式 3",
+          "what": "上传本人身份证照片申请实人核验（工作日 9:00–17:00）",
+          "where": "学信网"
+        },
+        {
+          "when": "方式 4",
+          "what": "输入高等教育的学业信息进行核验",
+          "where": "学信网"
+        }
+      ],
+      "fee": null,
+      "location": "学信网（线上）",
+      "hours": "上传身份证方式：工作日 9:00-17:00",
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "核验不通过时，客服电话 010-67410388，邮箱 kefu@chsi.com.cn",
+        "身份证照片核验只在工作日 9:00-17:00 处理"
+      ],
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "查询本人学籍学历学位信息方法 · 学信网",
+          "url": "https://www.chsi.com.cn/xlcx/brcxff.jsp",
+          "checked": "2026-10-26"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "chsi-benren",
+          "quote": "方式 1：使用学信网App进行实人核验"
+        },
+        "steps.1": {
+          "src": "chsi-benren",
+          "quote": "方式 2：使用支付宝进行实人核验"
+        },
+        "steps.2": {
+          "src": "chsi-benren",
+          "quote": "方式 3：上传本人身份证相关照片申请实人核验（工作日9:00-17:00；客服电话010-67410388）"
+        },
+        "steps.3": {
+          "src": "chsi-benren",
+          "quote": "方式 4：通过输入高等教育的学业信息进行核验"
+        },
+        "materials.0": {
+          "src": "chsi-benren",
+          "quote": "（凭身份证、姓名、手机号）"
+        },
+        "hours": {
+          "src": "chsi-benren",
+          "quote": "工作日9:00-17:00；客服电话010-67410388"
+        },
+        "materials.1": {
+          "src": "chsi-benren",
+          "quote": "（凭身份证、姓名、手机号）"
+        },
+        "materials.2": {
+          "src": "chsi-benren",
+          "quote": "上传本人身份证相关照片"
+        },
+        "pitfalls.0": {
+          "src": "chsi-benren",
+          "quote": "客服电话010-67410388"
+        },
+        "pitfalls.1": {
+          "src": "chsi-benren",
+          "quote": "工作日9:00-17:00"
+        },
+        "location": {
+          "src": "chsi-benren",
+          "quote": "2、访问学信档案。"
+        }
+      },
+      "advisory": [
+        "查不到学籍通常是身份核验没过或姓名/证件号与学籍库不一致，先试学业信息核验方式"
+      ]
+    },
+    {
+      "id": "moe-zhuanxue",
+      "title": "转学（跨校转学）",
+      "aliases": [
+        "转学",
+        "换学校",
+        "转到别的学校",
+        "跨校转学",
+        "想转去其他大学"
+      ],
+      "keywords": [
+        "转学",
+        "转校",
+        "跨校",
+        "换学校"
+      ],
+      "dept": "学生所在学校 / 拟转入学校（依据教育部 41 号令）",
+      "channel": [
+        "线下窗口"
+      ],
+      "audience": [
+        "本科生",
+        "研究生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "转学申请（说明理由）"
+        }
+      ],
+      "steps": [
+        {
+          "when": "第一步",
+          "what": "学生本人提出申请并说明理由",
+          "where": "所在学校"
+        },
+        {
+          "when": "第二步",
+          "what": "所在学校与拟转入学校均同意，由转入学校审核转学条件及相关证明",
+          "where": "两校"
+        },
+        {
+          "when": "第三步",
+          "what": "拟转入学校认为符合培养要求且有培养能力，经校长办公会或专题会议研究决定",
+          "where": "拟转入学校"
+        },
+        {
+          "when": "研究生",
+          "what": "还应当经拟转入专业导师同意",
+          "where": "拟转入专业"
+        }
+      ],
+      "fee": null,
+      "location": "两校学籍管理部门",
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "因病或有特殊困难、无法继续在本校学习或不适应本校学习要求的，才可以申请转学",
+        "以特殊招生形式录取的学生，国家有相关规定或录取前与学校有明确约定的，不得转专业",
+        "转学必须两校都同意，单方同意办不成"
+      ],
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "普通高等学校学生管理规定（教育部令第41号，2017-09-01 施行）",
+          "url": "http://www.moe.gov.cn/srcsite/A02/s5911/moe_621/201702/t20170216_296385.html",
+          "checked": "2026-10-26",
+          "effective": "2017-09-01"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "moe-41",
+          "quote": "第二十三条 学生转学由学生本人提出申请，说明理由"
+        },
+        "steps.1": {
+          "src": "moe-41",
+          "quote": "经所在学校和拟转入学校同意，由转入学校负责审核转学条件及相关证明"
+        },
+        "steps.2": {
+          "src": "moe-41",
+          "quote": "经学校校长办公会或者专题会议研究决定，可以转入"
+        },
+        "steps.3": {
+          "src": "moe-41",
+          "quote": "研究生转学还应当经拟转入专业导师同意"
+        },
+        "pitfalls.0": {
+          "src": "moe-41",
+          "quote": "因患病或者有特殊困难、特别需要，无法继续在本校学习或者不适应本校学习要求的，可以申请转学"
+        },
+        "pitfalls.1": {
+          "src": "moe-41",
+          "quote": "以特殊招生形式录取的学生，国家有相关规定或者录取前与学校有明确约定的，不得转专业"
+        },
+        "pitfalls.2": {
+          "src": "moe-41",
+          "quote": "经所在学校和拟转入学校同意"
+        },
+        "materials.0": {
+          "src": "moe-41",
+          "quote": "学生转学由学生本人提出申请，说明理由"
+        },
+        "location": {
+          "src": "moe-41",
+          "quote": "由转入学校负责审核转学条件及相关证明"
+        },
+        "materials.1": {
+          "src": "moe-41",
+          "quote": "由转入学校负责审核转学条件及相关证明"
+        }
+      },
+      "advisory": [
+        "跨校转学极难，多数情况应优先考虑校内转专业；两者依据不同文件"
+      ]
+    },
+    {
+      "id": "moe-shensu",
+      "title": "学生申诉（对处分/处理决定不服）",
+      "aliases": [
+        "申诉",
+        "处分不服",
+        "被处分了怎么办",
+        "学生申诉委员会",
+        "对处分有异议"
+      ],
+      "keywords": [
+        "申诉",
+        "处分不服",
+        "有异议",
+        "申诉委员会",
+        "处分",
+        "不服"
+      ],
+      "dept": "学校学生申诉处理委员会（依据教育部 41 号令）",
+      "channel": [
+        "线下窗口"
+      ],
+      "audience": [
+        "本科生",
+        "研究生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "书面申诉"
+        },
+        {
+          "name": "学校处理或处分决定书"
+        }
+      ],
+      "steps": [
+        {
+          "when": "收到决定书起 10 日内",
+          "what": "向学校学生申诉处理委员会提出书面申诉",
+          "where": "学生申诉处理委员会"
+        }
+      ],
+      "fee": null,
+      "location": "学校学生申诉处理委员会",
+      "hours": null,
+      "duration": null,
+      "window": "接到处理或处分决定书之日起 10 日内",
+      "pitfalls": [
+        "超过 10 日再提，可能不被受理",
+        "处分决定书里应当写明申诉的途径和期限"
+      ],
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "普通高等学校学生管理规定（教育部令第41号，2017-09-01 施行）",
+          "url": "http://www.moe.gov.cn/srcsite/A02/s5911/moe_621/201702/t20170216_296385.html",
+          "checked": "2026-10-26",
+          "effective": "2017-09-01"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "moe-41",
+          "quote": "可以在接到学校处理或者处分决定书之日起10日内，向学校学生申诉处理委员会提出书面申诉"
+        },
+        "window": {
+          "src": "moe-41",
+          "quote": "接到学校处理或者处分决定书之日起10日内"
+        },
+        "pitfalls.0": {
+          "src": "moe-41",
+          "quote": "接到学校处理或者处分决定书之日起10日内"
+        },
+        "pitfalls.1": {
+          "src": "moe-41",
+          "quote": "（四）申诉的途径和期限"
+        },
+        "materials.0": {
+          "src": "moe-41",
+          "quote": "提出书面申诉"
+        },
+        "location": {
+          "src": "moe-41",
+          "quote": "向学校学生申诉处理委员会提出书面申诉"
+        },
+        "materials.1": {
+          "src": "moe-41",
+          "quote": "接到学校处理或者处分决定书之日起10日内"
+        }
+      },
+      "advisory": [
+        "校内申诉只针对处分/处理决定；对学籍处理（如退学）同样适用"
+      ]
+    },
+    {
+      "id": "dk-zhuxue",
+      "title": "国家助学贷款（生源地 / 校园地）",
+      "aliases": [
+        "助学贷款",
+        "生源地贷款",
+        "校园地贷款",
+        "学费贷款",
+        "贷款怎么申请",
+        "国家助学贷款"
+      ],
+      "keywords": [
+        "助学贷款",
+        "生源地",
+        "校园地",
+        "贷款",
+        "学费代偿"
+      ],
+      "dept": "户籍所在县学生资助管理部门 / 就读高校学生资助管理部门",
+      "channel": [
+        "线下窗口",
+        "线上系统"
+      ],
+      "audience": [
+        "本科生",
+        "研究生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "家庭经济困难相关材料（按当地要求）"
+        },
+        {
+          "name": "身份证、录取通知书/学生证"
+        }
+      ],
+      "steps": [
+        {
+          "when": "生源地贷款",
+          "what": "向户籍所在县（市、区、旗）的学生资助管理部门咨询办理",
+          "where": "户籍地县级学生资助管理部门"
+        },
+        {
+          "when": "校园地贷款",
+          "what": "向就读高校学生资助管理部门咨询办理",
+          "where": "就读高校学生资助管理部门"
+        }
+      ],
+      "fee": "本专科每人每年最高 20000 元；研究生最高 25000 元",
+      "location": "户籍地县级学生资助管理部门 / 就读高校学生资助管理部门",
+      "hours": null,
+      "duration": "贷款期限为学制加 15 年，最长不超过 22 年",
+      "window": null,
+      "pitfalls": [
+        "同一学年内不能同时申请生源地信用助学贷款和校园地国家助学贷款",
+        "在校期间利息由国家承担，毕业后开始计息",
+        "利率按同期同档次 LPR 减 70 个基点执行"
+      ],
+      "slots": [
+        {
+          "key": "kind",
+          "ask": "你办的是生源地贷款还是校园地贷款？",
+          "required": true,
+          "options": [
+            "生源地信用助学贷款（户籍地办）",
+            "校园地国家助学贷款（学校办）"
+          ],
+          "decides": [
+            "steps",
+            "location"
+          ],
+          "why": "两者办理地点与材料不同，且同一学年只能选一种"
+        }
+      ],
+      "draft": null,
+      "source": [
+        {
+          "title": "普通高等教育学生资助政策 · 全国学生资助管理中心（2025-06-06 更新）",
+          "url": "https://www.xszz.edu.cn/n40/c7154/content.html",
+          "checked": "2026-10-26",
+          "effective": "2024-11-05（2025-06-06 更新）"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "zz-jiaoyu",
+          "quote": "可向户籍所在县（市、区、旗）的学生资助管理部门咨询办理生源地信用助学贷款"
+        },
+        "steps.1": {
+          "src": "zz-jiaoyu",
+          "quote": "或向就读高校学生资助管理部门咨询办理校园地国家助学贷款"
+        },
+        "fee": {
+          "src": "zz-jiaoyu",
+          "quote": "每人每年最高不超过20000元"
+        },
+        "duration": {
+          "src": "zz-jiaoyu",
+          "quote": "助学贷款期限为学制加15年，最长不超过22年"
+        },
+        "pitfalls.0": {
+          "src": "zz-jiaoyu",
+          "quote": "借款学生同一学年内不能同时申请生源地信用助学贷款和校园地国家助学贷款"
+        },
+        "pitfalls.1": {
+          "src": "zz-jiaoyu",
+          "quote": "在校期间利息由国家承担"
+        },
+        "pitfalls.2": {
+          "src": "zz-jiaoyu",
+          "quote": "助学贷款利率按照同期同档次贷款市场报价利率（LPR）减70个基点执行"
+        },
+        "materials.1": {
+          "src": "zz-jiaoyu",
+          "quote": "可向户籍所在县（市、区、旗）的学生资助管理部门咨询办理"
+        },
+        "materials.0": {
+          "src": "zz-jiaoyu",
+          "quote": "可向户籍所在县（市、区、旗）的学生资助管理部门咨询办理"
+        },
+        "location": {
+          "src": "zz-jiaoyu",
+          "quote": "或向就读高校学生资助管理部门咨询办理校园地国家助学贷款"
+        }
+      },
+      "advisory": [
+        "本专科上限 20000 元/年，研究生 25000 元/年——两者标准不同，别混"
+      ]
+    },
+    {
+      "id": "zb-zizhu",
+      "title": "服兵役学费补偿 / 贷款代偿 / 学费减免",
+      "aliases": [
+        "当兵学费补偿",
+        "征兵学费",
+        "入伍学费",
+        "退役复学学费减免",
+        "服兵役资助"
+      ],
+      "keywords": [
+        "服兵役",
+        "学费补偿",
+        "学费代偿",
+        "入伍学费",
+        "退役",
+        "学费减免",
+        "学费"
+      ],
+      "dept": "全国学生资助管理中心 / 学校学生资助管理部门",
+      "channel": [
+        "线下窗口"
+      ],
+      "audience": [
+        "本科生",
+        "研究生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "入伍通知书 / 退役证明"
+        },
+        {
+          "name": "学费缴纳凭证"
+        }
+      ],
+      "steps": [
+        {
+          "when": "入伍时",
+          "what": "对在校期间缴纳的学费实行一次性补偿，或代偿用于学费的国家助学贷款",
+          "where": "学校学生资助管理部门"
+        },
+        {
+          "when": "服役期间",
+          "what": "保留学籍或入学资格",
+          "where": "学校"
+        },
+        {
+          "when": "退役复学/入学",
+          "what": "实行学费减免，按学校实际收取学费金额执行",
+          "where": "学校"
+        }
+      ],
+      "fee": "本专科每生每年最高 20000 元；研究生最高 25000 元，超出标准部分不予补偿",
+      "location": "学校学生资助管理部门",
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "补偿金额按「实际缴纳学费」与「用于学费的贷款本息」两者较高者执行",
+        "超出每年上限的部分不予补偿、代偿或减免",
+        "退役复学的学生还可享受国家助学金（本专科 3700 元/年）"
+      ],
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "普通高等教育学生资助政策 · 全国学生资助管理中心（2025-06-06 更新）",
+          "url": "https://www.xszz.edu.cn/n40/c7154/content.html",
+          "checked": "2026-10-26",
+          "effective": "2024-11-05（2025-06-06 更新）"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "zz-jiaoyu",
+          "quote": "在入伍时对其在校期间缴纳的学费实行一次性补偿或用于学费的国家助学贷款实行代偿"
+        },
+        "steps.1": {
+          "src": "zz-jiaoyu",
+          "quote": "服役期间按国家有关规定保留学籍或入学资格"
+        },
+        "steps.2": {
+          "src": "zz-jiaoyu",
+          "quote": "实行学费减免；对退役后，自主就业"
+        },
+        "fee": {
+          "src": "zz-jiaoyu",
+          "quote": "每生每年最高不超过20000元，超出标准部分不予补偿、代偿或减免"
+        },
+        "pitfalls.0": {
+          "src": "zz-jiaoyu",
+          "quote": "按学生实际缴纳的学费或用于学费的国家助学贷款（包括本金及其全部偿还之前产生的利息）两者金额较高者执行"
+        },
+        "pitfalls.2": {
+          "src": "zz-jiaoyu",
+          "quote": "全日制在校退役士兵学生全部享受本专科生国家助学金，资助标准为每生每年3700元"
+        },
+        "materials.0": {
+          "src": "zz-jiaoyu",
+          "quote": "对应征入伍服义务兵役、招收为军士（原士官）的高校学生"
+        },
+        "location": {
+          "src": "zz-jiaoyu",
+          "quote": "在入伍时对其在校期间缴纳的学费实行一次性补偿"
+        },
+        "materials.1": {
+          "src": "zz-jiaoyu",
+          "quote": "对其在校期间缴纳的学费实行一次性补偿"
+        },
+        "pitfalls.1": {
+          "src": "zz-jiaoyu",
+          "quote": "超出标准部分不予补偿、代偿或减免"
+        }
+      },
+      "advisory": [
+        "学费补偿与贷款代偿不叠加，按两者较高者执行"
+      ]
+    },
+    {
+      "id": "zxj-guojia",
+      "title": "国家助学金 / 绿色通道 / 困难认定",
+      "aliases": [
+        "助学金",
+        "国家助学金",
+        "绿色通道",
+        "困难认定",
+        "家庭经济困难",
+        "入学交不起学费"
+      ],
+      "keywords": [
+        "助学金",
+        "绿色通道",
+        "困难认定",
+        "家庭经济困难",
+        "资助"
+      ],
+      "dept": "学校学生资助管理部门",
+      "channel": [
+        "线下窗口"
+      ],
+      "audience": [
+        "本科生",
+        "研究生"
+      ],
+      "status": "verified",
+      "confidence": "high",
+      "materials": [
+        {
+          "name": "家庭经济困难学生认定申请表（不用盖章，需个人承诺并签字）"
+        }
+      ],
+      "steps": [
+        {
+          "when": "新生入学",
+          "what": "暂时筹集不齐学费住宿费的，可通过「绿色通道」先办理入学手续",
+          "where": "学校报到现场"
+        },
+        {
+          "when": "入学后",
+          "what": "学生资助管理部门开展家庭经济困难学生认定，按情况给予不同资助",
+          "where": "学生资助管理部门"
+        }
+      ],
+      "fee": "国家助学金平均每生每年 3700 元（学校在 2500–5000 元区间自主确定，可分 2–3 档）",
+      "location": "学校学生资助管理部门",
+      "hours": null,
+      "duration": null,
+      "window": null,
+      "pitfalls": [
+        "认定申请表不用盖章，但必须个人承诺并签字，如实填写",
+        "开学前后是冒充老师/资助机构的诈骗高发期",
+        "不法网贷以「门槛低、放款快」为饵，不要碰"
+      ],
+      "slots": [],
+      "draft": null,
+      "source": [
+        {
+          "title": "普通高等教育学生资助政策 · 全国学生资助管理中心（2025-06-06 更新）",
+          "url": "https://www.xszz.edu.cn/n40/c7154/content.html",
+          "checked": "2026-10-26",
+          "effective": "2024-11-05（2025-06-06 更新）"
+        }
+      ],
+      "evidence": {
+        "steps.0": {
+          "src": "zz-jiaoyu",
+          "quote": "可在开学报到时，通过高校开设的“绿色通道”先办理入学手续"
+        },
+        "steps.1": {
+          "src": "zz-jiaoyu",
+          "quote": "入学后，高校学生资助管理部门根据学生具体情况开展家庭经济困难学生认定"
+        },
+        "fee": {
+          "src": "zz-jiaoyu",
+          "quote": "平均资助标准为每生每年3700元，具体标准由高校在每生每年2500—5000元范围内自主确定"
+        },
+        "pitfalls.0": {
+          "src": "zz-jiaoyu",
+          "quote": "不用盖章但需个人承诺并签字，请诚实守信、如实填写"
+        },
+        "pitfalls.1": {
+          "src": "zz-jiaoyu",
+          "quote": "开学前后往往是电信、网络诈骗高发期"
+        },
+        "materials.0": {
+          "src": "zz-jiaoyu",
+          "quote": "需要填写家庭经济困难学生认定申请表"
+        },
+        "location": {
+          "src": "zz-jiaoyu",
+          "quote": "入学后，高校学生资助管理部门根据学生具体情况开展家庭经济困难学生认定"
+        },
+        "pitfalls.2": {
+          "src": "zz-jiaoyu",
+          "quote": "一些不法网贷平台以门槛低、办理快、额度高、利率低为噱头"
+        }
+      },
+      "advisory": [
+        "退役士兵学生全部享受国家助学金 3700 元/年，不需要再单独申请认定"
       ]
     }
   ]

@@ -1,0 +1,47 @@
+{
+  "chsi-benren": {
+    "url": "https://www.chsi.com.cn/xlcx/brcxff.jsp",
+    "title": "查询本人学籍学历学位信息方法（学信网）",
+    "chars": 614,
+    "sha256": "dbc276ccb0e690b9",
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "kind": "chsi",
+    "official": true
+  },
+  "chsi-yanzheng": {
+    "url": "https://www.chsi.com.cn/xlcx/bgcx.jsp",
+    "title": "在线验证报告（学信网）",
+    "chars": 841,
+    "sha256": "8b1e8bfe2c8d8ad3",
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "kind": "chsi",
+    "official": true
+  },
+  "chsi-xuewei": {
+    "url": "https://www.chsi.com.cn/xwcx/index.jsp",
+    "title": "学位查询（学信网）",
+    "chars": 574,
+    "sha256": "c01322a0265aa9ae",
+    "fetched_at": "2026-10-26T21:57:49+08:00",
+    "kind": "chsi",
+    "official": true
+  },
+  "chsi-fanwei": {
+    "url": "https://www.chsi.com.cn/help/cxfw.jsp",
+    "title": "学历查询范围（学信网）",
+    "chars": 677,
+    "sha256": "53085301286252e1",
+    "fetched_at": "2026-10-26T21:57:50+08:00",
+    "kind": "chsi",
+    "official": true
+  },
+  "chsi-xueli": {
+    "url": "https://www.chsi.com.cn/xlcx/index.jsp",
+    "title": "学历查询（学信网）",
+    "chars": 649,
+    "sha256": "84820a135137f540",
+    "fetched_at": "2026-10-26T21:57:50+08:00",
+    "kind": "chsi",
+    "official": true
+  }
+}

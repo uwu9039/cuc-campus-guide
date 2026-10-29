@@ -108,6 +108,19 @@ def collect() -> list[tuple[str, Path]]:
     return sorted(out)
 
 
+def build_items_gz() -> None:
+    """items.json 31MB，GitHub 大请求体会超时；每次发布自动同步压缩副本。"""
+    import gzip
+    src = ROOT / "items.json"
+    if not src.exists():
+        return
+    out = gzip.compress(src.read_bytes(), 9, mtime=0)
+    gz = ROOT / "items.json.gz"
+    if not gz.exists() or gz.read_bytes() != out:
+        gz.write_bytes(out)
+        print(f"items.json.gz 已更新：{len(out)/1048576:.2f} MB")
+
+
 def build_archive() -> None:
     """把 sources/ 下的正文（不含隔离区、向量库与二进制）打成发布用压缩包。"""
     import tarfile
@@ -146,6 +159,7 @@ def main() -> None:
     ap.add_argument("--rebuild-archive", action="store_true", help="重新打包 sources-archive.tar.gz")
     args = ap.parse_args()
     tok = token()
+    build_items_gz()
 
     if args.rebuild_archive:
         build_archive()

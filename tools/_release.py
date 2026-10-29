@@ -21,8 +21,12 @@ API = "https://api.github.com"
 OWNER, REPO = "uwu9039", "cuc-campus-guide"
 SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
              "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder"}
-SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json.bak",
-              "items-old.json", "ask-req.json", ".cdp_tab", "app-server.log"}
+SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json.bak",
+              "items-old.json", "ask-req.json", ".cdp_tab", "app-server.log",
+              "_qout.txt", "_check_tmp.py", "_diag_coll.py", "_diag_docs.py",
+              "_diag_failgroups.py", "_diag_quotes.py", "_remote_tree.json",
+              "_clause-items.tmp.json", "huibian-2025.txt",
+              "_pipeline_out.txt", "_eval_out.txt", "_v04_body.md"}
 SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".pptx", ".npy", ".jsonl",
                ".mp3", ".m4a", ".mov", ".webm"}
@@ -68,7 +72,8 @@ def _call_once(method: str, url: str, tok: str, body: dict | None = None, raw: b
         "User-Agent": "dsh-agent", "Content-Type": "application/json",
         "Connection": "close"})
     try:
-        with urllib.request.urlopen(req, timeout=180) as r:
+        # items.json 这类 30MB+ 的文件 base64 后 40MB+，慢网下 180 秒不够
+        with urllib.request.urlopen(req, timeout=600) as r:
             payload = r.read()
             return r.status, (payload if raw else json.loads(payload or b"{}"))
     except urllib.error.HTTPError as e:
@@ -90,7 +95,9 @@ def collect() -> list[tuple[str, Path]]:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
             rel_pdf = p.relative_to(ROOT).as_posix()
-            if not (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans):
+            keep = (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans) \
+                or rel_pdf.startswith("web-next/qr/")   # 微专业报名 / 身份验证二维码要随包发布
+            if not keep:
                 continue
         rel = p.relative_to(ROOT)
         if len(rel.parts) >= 3 and rel.parts[0] == "sources" and rel.parts[1] in BULK_DIRS:
@@ -110,6 +117,8 @@ def build_archive() -> None:
     picked = []
     for p in src.rglob("*"):
         if p.is_dir() or set(p.relative_to(src).parts) & ex_dirs:
+            continue
+        if p.name.startswith("_") or p.name == "huibian-2025.txt":
             continue
         if p.suffix.lower() in keep_ext:
             picked.append(p)
@@ -132,6 +141,7 @@ def main() -> None:
     ap.add_argument("--message", default="", help="提交信息，默认按 tag 生成")
     ap.add_argument("--max", type=int, default=0, help="本批最多上传多少个文件")
     ap.add_argument("--dry-run", action="store_true", help="只打印清单，不写入 GitHub")
+    ap.add_argument("--match", default="", help="只处理路径包含该子串的文件")
     ap.add_argument("--no-tag", action="store_true", help="只提交，不打 tag、不发 release")
     ap.add_argument("--rebuild-archive", action="store_true", help="重新打包 sources-archive.tar.gz")
     args = ap.parse_args()
@@ -162,6 +172,8 @@ def main() -> None:
     print(f"仓库现有 {len(existing)} 个文件")
 
     todo = [(path, p) for path, p in files if existing.get(path) != blob_sha(p)]
+    if args.match:
+        todo = [t for t in todo if args.match in t[0]]
     if args.max:
         todo = todo[: args.max]
     print(f"本地 {len(files)} 个，本次处理 {len(todo)} 个")

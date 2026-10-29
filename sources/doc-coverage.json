@@ -1,27 +1,22 @@
 {
- "items": 574,
- "index_total": 1182,
- "used_src_keys": 544,
+ "items": 18949,
+ "index_total": 1176,
+ "used_src_keys": 753,
  "by_collection": {
   "cdp": {
    "total": 64,
-   "used": 51,
-   "unused": 13
+   "used": 55,
+   "unused": 9
   },
   "chsi": {
    "total": 5,
-   "used": 2,
-   "unused": 3
+   "used": 5,
+   "unused": 0
   },
   "corpus": {
    "total": 619,
-   "used": 263,
-   "unused": 356
-  },
-  "extra": {
-   "total": 6,
-   "used": 5,
-   "unused": 1
+   "used": 448,
+   "unused": 171
   },
   "national": {
    "total": 5,
@@ -35,48 +30,16 @@
   },
   "wendao": {
    "total": 237,
-   "used": 217,
-   "unused": 20
+   "used": 235,
+   "unused": 2
   },
   "wendao-file": {
    "total": 244,
-   "used": 0,
-   "unused": 244
+   "used": 4,
+   "unused": 240
   }
  },
  "unused": [
-  {
-   "key": "20181224-c2752a101498",
-   "title": "中华人民共和国教育部办公厅 国务院国资委办公厅关于举办全国大...",
-   "collection": "cdp",
-   "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101498/page.htm",
-   "file": "",
-   "chars": 1867
-  },
-  {
-   "key": "20181224-c2752a101494",
-   "title": "中华人民共和国教育部办公厅文件第9号 教育部办公厅关于下达2019...",
-   "collection": "cdp",
-   "url": "https://xsc.cuc.edu.cn/2018/1224/c2752a101494/page.htm",
-   "file": "",
-   "chars": 1319
-  },
-  {
-   "key": "20211009-c2753a254695",
-   "title": "中国传媒大学传媒博物馆简介",
-   "collection": "cdp",
-   "url": "https://xsc.cuc.edu.cn/2021/1009/c2753a254695/page.htm",
-   "file": "",
-   "chars": 1317
-  },
-  {
-   "key": "20260529-c2753a271142",
-   "title": "中国传媒大学传媒博物馆简介",
-   "collection": "cdp",
-   "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271142/page.htm",
-   "file": "",
-   "chars": 1259
-  },
   {
    "key": "20250414-c2762a254395",
    "title": "财政部教育部中国人民银行金融监管总局关于调整完善国家助学贷款...",
@@ -150,196 +113,12 @@
    "chars": 387
   },
   {
-   "key": "chsi-fanwei",
-   "title": "学历查询范围（学信网）",
-   "collection": "chsi",
-   "url": "https://www.chsi.com.cn/help/cxfw.jsp",
-   "file": "",
-   "chars": 677
-  },
-  {
-   "key": "chsi-xueli",
-   "title": "学历查询（学信网）",
-   "collection": "chsi",
-   "url": "https://www.chsi.com.cn/xlcx/index.jsp",
-   "file": "",
-   "chars": 649
-  },
-  {
-   "key": "chsi-xuewei",
-   "title": "学位查询（学信网）",
-   "collection": "chsi",
-   "url": "https://www.chsi.com.cn/xwcx/index.jsp",
-   "file": "",
-   "chars": 574
-  },
-  {
-   "key": "2021-07-15-e3ef7aaa",
-   "title": "第十四届全国学生运动会科报会入选论文名单",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzAxNTY2ODUxNw==&mid=2673110290&idx=1&sn=0db8911766b93e87bcfb58c471b902ec&chksm=81204958b657c04e6ef57bb237d45e8c2921d54b9ad868e0bfb5259d54b96b108b6b70cbeaa5&scene=27",
-   "file": "",
-   "chars": 59299
-  },
-  {
-   "key": "9731c11250",
-   "title": "预约入校（www.cuc）",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/rxsq/",
-   "file": "",
-   "chars": 23775
-  },
-  {
-   "key": "hbb91b1b03dc",
-   "title": "中国传媒大学全日制本科生课程考核及成绩管理办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 11857
-  },
-  {
-   "key": "2026-05-02-5a55132a",
-   "title": "中传播音23连冠：今年冠军×4、榜眼×1、探花×1，印象的“大院”统治力还在继续",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5MjIzNjk2Mw==&mid=2650127664&idx=1&sn=452f7e2253f748fe76acef640d3a0f63&chksm=bf62cbabba15f0f8ccb57494951f4912d8d96c73effcca8fe49c2502e4b9f7d9ae4fd463aa0c&scene=27",
-   "file": "",
-   "chars": 11297
-  },
-  {
    "key": "2025-07-18-2dc477ef",
    "title": "中国传媒大学欧洲名校预科项目（海南校区）2025年招生简章",
    "collection": "corpus",
    "url": "https://mp.weixin.qq.com/s?__biz=MzI5ODM3NDI2NQ==&mid=2247524152&idx=1&sn=09d89e6eb209e19237ebbeb187dc9e56&chksm=ed76bb4c2122e7f3ea07972256e9be007c668ae6c44c8ccead16b2998b8a12380fc44002e36b&scene=27",
    "file": "",
    "chars": 9555
-  },
-  {
-   "key": "2026-09-17-88875050",
-   "title": "我为师生办实事|音小录为你答疑解惑（开学综合版）",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzU5OTcwMDM5Mg==&mid=2247566001&idx=1&sn=27fccdab2d094255726a62098245bc85&chksm=ffb37097ea7da3e810bef6a1a7f17bfa5ff7418d90eb925f3a5f4bad0aefe3ceade9ba9b2b29&scene=27",
-   "file": "",
-   "chars": 9144
-  },
-  {
-   "key": "2017-11-13-80211575",
-   "title": "曾祥敏 | 青年教学名师是怎样炼成的？",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzAxMTc0MjkwOA==&mid=2652381642&idx=1&sn=82365bb8e06b0909aa7c1af53f7c49f8&chksm=8050fa19b727730fc79438d1ded929cdb2c56468b760f49d5af1c33181677fb5a0dc41bb3707&scene=27",
-   "file": "",
-   "chars": 9024
-  },
-  {
-   "key": "2024-03-29-790b47a9",
-   "title": "中国传媒大学斩获18张证，连续13年从无一年失手，累计合格证242张！",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5MjIzNjk2Mw==&mid=2650051038&idx=3&sn=6d0da283da9b100fa26dc638dc0e2c96&chksm=bea9651289deec04c3839d9cacaee4fdcef1b74b5a8c585970164b72c31cbb3570dd821152ae&scene=27",
-   "file": "",
-   "chars": 8701
-  },
-  {
-   "key": "7a5b4290e3",
-   "title": "WPS 365（its.cuc）",
-   "collection": "corpus",
-   "url": "https://its.cuc.edu.cn/2026/1022/c8169a275194/page.htm",
-   "file": "",
-   "chars": 7789
-  },
-  {
-   "key": "2023-12-23-cd97cc6c",
-   "title": "【通识核心课程】2024年春季学期通识教育核心课新建课程推介（下）",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzI3NjQxMTg4NQ==&mid=2247496590&idx=1&sn=2f180b73d10965463c2826178dbf9607&chksm=eb77570cdc00de1a4e0fcb05e0fb88b23b4955cbef1157d24f06015d26dbe356d7c3785517b3&scene=27",
-   "file": "",
-   "chars": 7589
-  },
-  {
-   "key": "20260421-c5332a269358",
-   "title": "导师简介-王晔",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269358/page.htm",
-   "file": "",
-   "chars": 7574
-  },
-  {
-   "key": "2024-10-23-70f68d84",
-   "title": "课程介绍 | 本学期艺术欣赏类、创新创业类线下通识选修课选课预通知",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=Mzg3NzcxNTc4Mw==&mid=2247509666&idx=1&sn=990c1eaed1b3cb95617b04f03248c7c1&chksm=cefa030308966572e8c7394166353d172104227c723b3778ef491be4d28cc7d2918c0ea2a222&scene=27",
-   "file": "",
-   "chars": 7261
-  },
-  {
-   "key": "2024-12-20-f21c1e62",
-   "title": "中国传媒大学日本艺术类名校1+4本科项目（海南校区）2025年招生简章",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzI5ODM3NDI2NQ==&mid=2247521972&idx=1&sn=a1016eb25d4e10cb57984113f34c7f7c&chksm=eca413a2dbd39ab4513fce4f238318bc3a643684815d7aece0bbea98474dbf752e782af8cd35&scene=27",
-   "file": "",
-   "chars": 7197
-  },
-  {
-   "key": "2024-04-07-34890edd",
-   "title": "中国传媒大学1+1硕士（预科）项目（第八届）2024年招生简章",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzI5ODM3NDI2NQ==&mid=2247508959&idx=1&sn=394ae8bc063a65299390fa8ae5f58201&chksm=eca426c9dbd3afdf53f52d8f74cc5dc2db1ddbada10b63f543dda42826b30dc480c14d108f71&scene=27",
-   "file": "",
-   "chars": 7081
-  },
-  {
-   "key": "20240908-c1383a242769",
-   "title": "校长张树庭开学致辞｜站在新起点，拥抱智能传播时代",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/2024/0908/c1383a242769/page.htm",
-   "file": "",
-   "chars": 6917
-  },
-  {
-   "key": "20240301-c1382a216818",
-   "title": "中国传媒大学2024年春季工作会议召开",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/2024/0301/c1382a216818/page.htm",
-   "file": "",
-   "chars": 6455
-  },
-  {
-   "key": "hbbd8b17dbea",
-   "title": "中国传媒大学校园治安管理规定（中传保卫字〔2019〕301号）",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 6343
-  },
-  {
-   "key": "2025-02-18-078a055c",
-   "title": "星核喜报 | 火力全开，“杀”进终试！16席终试直通中传，用实力为梦想加冕！",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=Mzg5MzgxODI4OA==&mid=2247515287&idx=1&sn=b8e86963eeb197****9055eb898e6169&chksm=c1123b3cf63f5ea2dd6953adedcddd714af8c410d9af9c41b7e8b6affcdf6ace201c1af38d60&scene=27",
-   "file": "",
-   "chars": 6336
-  },
-  {
-   "key": "2025-05-01-6ab7ffbe",
-   "title": "2025印象成绩盘点 | 6状元14前十107张合格证！中传播音达成19连冠成就！",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5MjIzNjk2Mw==&mid=2650112662&idx=1&sn=95373783278bd11e26b929eeccf81521&chksm=bfd93b46935a167ce431beb23a241fe0cdd0730f4b0ce39833b15e8945ea4a27c11b97a327fa&scene=27",
-   "file": "",
-   "chars": 6239
-  },
-  {
-   "key": "2026-06-07-a609a04b",
-   "title": "2026印象成绩盘点丨102张校考合格证+80席统考前百，艺考航母不是说说而已",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5MjIzNjk2Mw==&mid=2650128081&idx=1&sn=d93680bfc85ae7c19e066e3ab79f50e4&chksm=bfb22c29c32cd9b774801ceb288c450121a7c1e68570f956c93d592c3b411506ce1ab1eb756d&scene=27",
-   "file": "",
-   "chars": 6189
-  },
-  {
-   "key": "20260621-c2064a271930",
-   "title": "智媒共生 融创未来 | 信息传播学院举办“智能传播实践”本科课程作品路演会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271930/page.htm",
-   "file": "",
-   "chars": 5708
   },
   {
    "key": "20260621-c4366a271930",
@@ -350,124 +129,12 @@
    "chars": 5708
   },
   {
-   "key": "20251020-c14745a261245",
-   "title": "迷彩青春，信传启航 | 信息传播学院2025级本科新生军训风采纪实",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1020/c14745a261245/page.htm",
-   "file": "",
-   "chars": 5366
-  },
-  {
-   "key": "20260924-c2064a274322",
-   "title": "相遇信传，向新而行|直击信息传播学院2026级新生报到现场",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274322/page.htm",
-   "file": "",
-   "chars": 5286
-  },
-  {
-   "key": "20260601-c2064a271193",
-   "title": "探路智能体，赋能传媒业： 2026传媒沙龙暨第二届信息传播学术论坛在中国传媒大学举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271193/page.htm",
-   "file": "",
-   "chars": 5072
-  },
-  {
-   "key": "20260601-c2064a271191",
-   "title": "《中国教育报》报道我院龚伟亮副教授面对智能时代的课程建设探索与思考",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271191/page.htm",
-   "file": "",
-   "chars": 4990
-  },
-  {
-   "key": "2026-05-20-99ae633a",
-   "title": "这位老师，用一门课挑战“分心的世界”",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5OTU5MzcyMg==&mid=2653745326&idx=1&sn=6d28cf0e2302eebfcee31ed5558ef47b&chksm=bd1e9556bcbda3e8f365821bbcee0884fc5a2cb505da80ff4ca60b4987af4843226c50827634&scene=27",
-   "file": "",
-   "chars": 4925
-  },
-  {
-   "key": "5a54d96750",
-   "title": "推荐免试攻读研究生 工作办法（yz.cuc）",
-   "collection": "corpus",
-   "url": "https://yz.cuc.edu.cn/2026/0830/c8678a273445/page.htm",
-   "file": "",
-   "chars": 4814
-  },
-  {
    "key": "20260621-c14744a271925",
    "title": "深学细悟党代会精神 聚力赋能高质量发展：信息传播学院举办学习中国传媒大学第四次党代会精神研讨会",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0621/c14744a271925/page.htm",
    "file": "",
    "chars": 4687
-  },
-  {
-   "key": "20260621-c2064a271925",
-   "title": "深学细悟党代会精神 聚力赋能高质量发展：信息传播学院举办学习中国传媒大学第四次党代会精神研讨会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271925/page.htm",
-   "file": "",
-   "chars": 4653
-  },
-  {
-   "key": "2026-05-04-ce1d26c0",
-   "title": "2026印象播音成绩盘点：统考省前百42席，中传17证，浙传30证",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MjM5MjIzNjk2Mw==&mid=2650127673&idx=1&sn=2f9d1e511f899417ba0612a4ee2d4470&chksm=bf09174df5621092fbf469eece1156a3de907777207b5f71c01d26bec2069f7bc74db432c2ee&scene=27",
-   "file": "",
-   "chars": 4629
-  },
-  {
-   "key": "20260505-c2064a269839",
-   "title": "思想纵横（一）｜习近平：推动全民阅读，建设书香社会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269839/page.htm",
-   "file": "",
-   "chars": 4500
-  },
-  {
-   "key": "2026-06-05-360f0c14",
-   "title": "中国传媒大学韩国国际本科名校项目2026年招生简章",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzA5MDM2MTQ3Ng==&mid=2649812332&idx=4&sn=c677383d2946cc42c9f46abe9d72d803&chksm=89ef4463bb54be7f1af22185f3bdca02efdf79c94ddda0575d4f82d9bcab33e29d5f12d4f238&scene=27",
-   "file": "",
-   "chars": 4451
-  },
-  {
-   "key": "20251101-c4365a261714",
-   "title": "第七届全国高等院校信息传播师资班在武汉举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1101/c4365a261714/page.htm",
-   "file": "",
-   "chars": 4177
-  },
-  {
-   "key": "1866ef3a1c",
-   "title": "公共教室管理办法（fnc.cuc）",
-   "collection": "corpus",
-   "url": "https://fnc.cuc.edu.cn/2026/0731/c14935a273067/page.htm",
-   "file": "",
-   "chars": 4162
-  },
-  {
-   "key": "20260331-c14817a268360",
-   "title": "种子课堂概览",
-   "collection": "corpus",
-   "url": "https://jwc.cuc.edu.cn/2026/0331/c14817a268360/page.htm",
-   "file": "",
-   "chars": 4035
-  },
-  {
-   "key": "20251201-c14744a264613",
-   "title": "红船精神砺初心 立德树人启新程 | 我院师生赴浙江红船干部学院开展主题党日暨教师能力培训",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1201/c14744a264613/page.htm",
-   "file": "",
-   "chars": 4034
   },
   {
    "key": "20260621-c14745a271933",
@@ -478,36 +145,12 @@
    "chars": 3985
   },
   {
-   "key": "20260924-c4365a274327",
-   "title": "第十五届新闻学与传播学博士生学术研讨会在京举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c4365a274327/page.htm",
-   "file": "",
-   "chars": 3980
-  },
-  {
    "key": "20260924-c2064a274327",
    "title": "第十五届新闻学与传播学博士生学术研讨会在京举办",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274327/page.htm",
    "file": "",
    "chars": 3980
-  },
-  {
-   "key": "20260621-c2064a271933",
-   "title": "以信息织翼赴时代之约｜信息传播学院举行2026届研究生毕业典礼",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271933/page.htm",
-   "file": "",
-   "chars": 3951
-  },
-  {
-   "key": "20260924-c4365a274328",
-   "title": "第八届全国高等院校信息传播师资班在京举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c4365a274328/page.htm",
-   "file": "",
-   "chars": 3840
   },
   {
    "key": "20260924-c2064a274328",
@@ -518,36 +161,12 @@
    "chars": 3840
   },
   {
-   "key": "20261009-c4365a274641",
-   "title": "中国传媒大学第七届“金蔷薇”学术季博士生创新论坛·国际研究生学术分论坛顺利举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c4365a274641/page.htm",
-   "file": "",
-   "chars": 3820
-  },
-  {
    "key": "20261009-c2064a274641",
    "title": "中国传媒大学第七届“金蔷薇”学术季博士生创新论坛·国际研究生学术分论坛顺利举行",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274641/page.htm",
    "file": "",
    "chars": 3820
-  },
-  {
-   "key": "20260423-c5332a269524",
-   "title": "导师简介-巴欣然",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269524/page.htm",
-   "file": "",
-   "chars": 3813
-  },
-  {
-   "key": "20251202-c4365a264687",
-   "title": "第三届新时代出版家培育与研究研讨会成功举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1202/c4365a264687/page.htm",
-   "file": "",
-   "chars": 3802
   },
   {
    "key": "20260331-c14744a268393",
@@ -558,52 +177,12 @@
    "chars": 3687
   },
   {
-   "key": "20260331-c2064a268393",
-   "title": "信息传播学院召开2025年度党支部书记述职评议考核会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268393/page.htm",
-   "file": "",
-   "chars": 3653
-  },
-  {
-   "key": "20260801-c2064a273091",
-   "title": "“大地的回响”大地传媒坊社会调研五周年成果展顺利举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273091/page.htm",
-   "file": "",
-   "chars": 3537
-  },
-  {
    "key": "20260801-c4366a273091",
    "title": "“大地的回响”大地传媒坊社会调研五周年成果展顺利举办",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0801/c4366a273091/page.htm",
    "file": "",
    "chars": 3537
-  },
-  {
-   "key": "20260924-c2064a274323",
-   "title": "心怀热望，共赴新章|新生班主任、辅导员寄语2026级小白杨",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274323/page.htm",
-   "file": "",
-   "chars": 3507
-  },
-  {
-   "key": "20251231-c14745a265755",
-   "title": "服章载文 华韵新声 | 汉服文化进校园活动在信息传播学院举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1231/c14745a265755/page.htm",
-   "file": "",
-   "chars": 3504
-  },
-  {
-   "key": "20260701-c2064a272347",
-   "title": "“中国系列·新闻学”教材《舆论学》新书发布会暨首届新闻舆论学学术论坛在中国传媒大学举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272347/page.htm",
-   "file": "",
-   "chars": 3465
   },
   {
    "key": "20260701-c4366a272347",
@@ -622,60 +201,12 @@
    "chars": 3429
   },
   {
-   "key": "20261009-c2064a274635",
-   "title": "启序新程|信息传播学院2026级新生班会纪实",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274635/page.htm",
-   "file": "",
-   "chars": 3395
-  },
-  {
    "key": "20260601-c14745a271196",
    "title": "青春聚力竞风采，信传扬帆向未来｜信息传播学院师生参加中国传媒大学第四十四届运动会",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271196/page.htm",
    "file": "",
    "chars": 3315
-  },
-  {
-   "key": "20240827-c1383a242520",
-   "title": "党委书记廖祥忠｜ 以教育家精神引领建强高素质教师队伍",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/2024/0827/c1383a242520/page.htm",
-   "file": "",
-   "chars": 3312
-  },
-  {
-   "key": "20260601-c2064a271196",
-   "title": "青春聚力竞风采，信传扬帆向未来｜信息传播学院师生参加中国传媒大学第四十四届运动会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271196/page.htm",
-   "file": "",
-   "chars": 3281
-  },
-  {
-   "key": "20260505-c2064a269832",
-   "title": "健康第一以体育人｜张一涵：身上有汗，眼里有光，奔跑在赛道上",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269832/page.htm",
-   "file": "",
-   "chars": 3273
-  },
-  {
-   "key": "20260801-c2064a273094",
-   "title": "第六届“大地传媒坊”社会调研项目申报答辩会顺利举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273094/page.htm",
-   "file": "",
-   "chars": 3255
-  },
-  {
-   "key": "20260924-c2064a274321",
-   "title": "逐光启新，传声致远｜信息传播学院2026级新生开学典礼圆满举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274321/page.htm",
-   "file": "",
-   "chars": 3184
   },
   {
    "key": "20261009-c14745a274634",
@@ -686,30 +217,6 @@
    "chars": 3164
   },
   {
-   "key": "hb90ba79a91a",
-   "title": "中国传媒大学传媒博物馆场馆管理规定",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 3150
-  },
-  {
-   "key": "hb9461bd1962",
-   "title": "中国传媒大学大型活动安全管理规定",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 3131
-  },
-  {
-   "key": "20261009-c2064a274634",
-   "title": "院会招新｜信息传播学院学生会骨干名单及招新结果公布",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274634/page.htm",
-   "file": "",
-   "chars": 3130
-  },
-  {
    "key": "20260226-c14745a267061",
    "title": "我院2024级传播学2班团支部获评2024-2025学年校“红旗团支部”",
    "collection": "corpus",
@@ -718,44 +225,12 @@
    "chars": 3074
   },
   {
-   "key": "20260226-c2064a267061",
-   "title": "我院2024级传播学2班团支部获评2024-2025学年校“红旗团支部”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267061/page.htm",
-   "file": "",
-   "chars": 3040
-  },
-  {
    "key": "c4f6a15478",
    "title": "高职学籍管理规定（xsc.cuc）",
    "collection": "corpus",
    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271113/page.htm",
    "file": "",
    "chars": 2967
-  },
-  {
-   "key": "2022-07-24-b0064fc0",
-   "title": "GUI漏洞检测工具 -- Serein",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzI4MDQ5MjY1Mg==&mid=2247502374&idx=1&sn=68609dd346d4e942cd6e38ae3db85ee3&chksm=ebb52525dcc2ac33f69a3cb8d86f059379f39c42fc569ecdc1054238afcb0e05d6b2b40cd565&scene=27",
-   "file": "",
-   "chars": 2958
-  },
-  {
-   "key": "20251230-c14745a265735",
-   "title": "探秘新光影科技，走进机器人世界：信息传播学院师生赴北京经济技术开发区调研",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1230/c14745a265735/page.htm",
-   "file": "",
-   "chars": 2921
-  },
-  {
-   "key": "20260503-c2065a269817",
-   "title": "信息传播学院一层学生服务大厅启用啦！（内附行政管理团队介绍）",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0503/c2065a269817/page.htm",
-   "file": "",
-   "chars": 2890
   },
   {
    "key": "本科生转专业管理办法-2025修订",
@@ -774,84 +249,12 @@
    "chars": 2856
   },
   {
-   "key": "49afb49d92",
-   "title": "实验室工作管理办法（www.cuc）",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/2025/0427/c10096a255040/page.htm",
-   "file": "",
-   "chars": 2841
-  },
-  {
-   "key": "20260601-c2064a271203",
-   "title": "声启旅程，向新而行｜信息传播学院师生荣获2026校级合唱比赛三等奖",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271203/page.htm",
-   "file": "",
-   "chars": 2822
-  },
-  {
-   "key": "20261009-c2064a274636",
-   "title": "文通中外，墨戏同裳|信息传播学院开展中外学生传统文化交流活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274636/page.htm",
-   "file": "",
-   "chars": 2816
-  },
-  {
-   "key": "20260505-c2064a269829",
-   "title": "访企拓岗｜柴剑平副校长带领我院师生赴北京印刷学院调研",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269829/page.htm",
-   "file": "",
-   "chars": 2816
-  },
-  {
-   "key": "20250605-c14744a256560",
-   "title": "传播研究院举办深入贯彻中央八项规定精神学习教育读书班",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/0605/c14744a256560/page.htm",
-   "file": "",
-   "chars": 2806
-  },
-  {
-   "key": "20260701-c2064a272344",
-   "title": "遇见未来的你| 信息传播学院校园开放日活动精彩回顾",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272344/page.htm",
-   "file": "",
-   "chars": 2759
-  },
-  {
-   "key": "a0c2adbc6e",
-   "title": "实验室工作管理办法（www.cuc）",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/cucnews/2025/0427/c10133a255040/page.htm",
-   "file": "",
-   "chars": 2759
-  },
-  {
    "key": "20260801-c14744a273090",
    "title": "信息传播学院领导班子成员讲授树立和践行正确政绩观专题党课",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0801/c14744a273090/page.htm",
    "file": "",
    "chars": 2745
-  },
-  {
-   "key": "9f6c101e01",
-   "title": "团组织关系转接（youth.cuc）",
-   "collection": "corpus",
-   "url": "https://youth.cuc.edu.cn/2022/0917/c9819a206370/page.htm",
-   "file": "",
-   "chars": 2712
-  },
-  {
-   "key": "20260801-c2064a273090",
-   "title": "信息传播学院领导班子成员讲授树立和践行正确政绩观专题党课",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273090/page.htm",
-   "file": "",
-   "chars": 2711
   },
   {
    "key": "hbce40b3e2e1",
@@ -862,14 +265,6 @@
    "chars": 2701
   },
   {
-   "key": "20260919-c2065a274012",
-   "title": "院会招新|信息传播学院学生会，邀你共赴一场数智时代的创意远征",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0919/c2065a274012/page.htm",
-   "file": "",
-   "chars": 2673
-  },
-  {
    "key": "20260601-c14745a271195",
    "title": "“镜头致敬劳动者”影像征集作品",
    "collection": "corpus",
@@ -878,68 +273,12 @@
    "chars": 2654
   },
   {
-   "key": "20260909-c2065a273669",
-   "title": "新闻中心2026秋季招新｜邀请你一同从“台前”走进“幕后”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0909/c2065a273669/page.htm",
-   "file": "",
-   "chars": 2652
-  },
-  {
-   "key": "20260601-c2064a271195",
-   "title": "“镜头致敬劳动者”影像征集作品",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271195/page.htm",
-   "file": "",
-   "chars": 2620
-  },
-  {
-   "key": "20260621-c2065a271931",
-   "title": "展览预告｜信息传播学院“大地的回响”大地传媒坊社会调研五周年成果展即将开幕",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2065a271931/page.htm",
-   "file": "",
-   "chars": 2595
-  },
-  {
-   "key": "20260122-c4365a266725",
-   "title": "讲座回顾 ｜ 传播大讲堂第九十二期：新时代科技期刊的数字化、品牌化、国际化出版传播",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266725/page.htm",
-   "file": "",
-   "chars": 2575
-  },
-  {
-   "key": "hb689df5222a",
-   "title": "中国传媒大学“优秀毕业生”评选细则（中传学字〔2021〕251 号）",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 2545
-  },
-  {
    "key": "260444efa3",
-   "title": "本科修学指南（jwc.cuc）",
+   "title": "修学指南 中国传媒大学 本科生院（jwc.cuc）",
    "collection": "corpus",
    "url": "https://jwc.cuc.edu.cn/main.htm",
    "file": "",
    "chars": 2530
-  },
-  {
-   "key": "20260801-c2065a273095",
-   "title": "第十五届全国新闻学与传播学博士生学术研讨会（2026） 征稿函",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2065a273095/page.htm",
-   "file": "",
-   "chars": 2489
-  },
-  {
-   "key": "20260924-c2064a274326",
-   "title": "新程启幕｜信息传播学院开展研究生和本科新生入学教育",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274326/page.htm",
-   "file": "",
-   "chars": 2479
   },
   {
    "key": "20260601-c14745a271194",
@@ -950,92 +289,12 @@
    "chars": 2464
   },
   {
-   "key": "20260601-c2064a271194",
-   "title": "青春风采 | 我院学子获评“中传青年五四奖章·奋斗青年”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271194/page.htm",
-   "file": "",
-   "chars": 2430
-  },
-  {
-   "key": "20260801-c2065a273096",
-   "title": "第八届全国高等院校信息传播师资班学员招募启事",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2065a273096/page.htm",
-   "file": "",
-   "chars": 2397
-  },
-  {
-   "key": "20260421-c5332a269372",
-   "title": "导师简介-王亚金",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269372/page.htm",
-   "file": "",
-   "chars": 2367
-  },
-  {
-   "key": "20260620-c2064a271917",
-   "title": "信息传播学院师生赴中国国家版本馆中央总馆调研",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0620/c2064a271917/page.htm",
-   "file": "",
-   "chars": 2354
-  },
-  {
-   "key": "20261009-c2064a274643",
-   "title": "讲座回顾 | “红楼梦IP创新实践案例作品研读工作坊”第1期：“品红课”的运作机制与背后故事",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274643/page.htm",
-   "file": "",
-   "chars": 2330
-  },
-  {
-   "key": "20260801-c2064a273092",
-   "title": "信息传播学院教师发展中心成立仪式暨“传智砺师”行动首场教学创新分享会顺利举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273092/page.htm",
-   "file": "",
-   "chars": 2328
-  },
-  {
-   "key": "20260620-c2065a271922",
-   "title": "第六届 “大地传媒坊”（2026）暑期社会调研项目征集令",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0620/c2065a271922/page.htm",
-   "file": "",
-   "chars": 2315
-  },
-  {
-   "key": "20260225-c4365a267045",
-   "title": "“丝路传播”留学案例作品研读工作坊第三、四期顺利开展",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267045/page.htm",
-   "file": "",
-   "chars": 2309
-  },
-  {
    "key": "20260225-c2064a267045",
    "title": "“丝路传播”留学案例作品研读工作坊第三、四期顺利开展",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267045/page.htm",
    "file": "",
    "chars": 2309
-  },
-  {
-   "key": "20260601-c2064a271199",
-   "title": "“同享非遗 匠心同传” 非遗进校园系列活动在中国传媒大学成功举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271199/page.htm",
-   "file": "",
-   "chars": 2285
-  },
-  {
-   "key": "2025-08-01-76d0ea89",
-   "title": "【心理健康】以心育心 护航青春",
-   "collection": "corpus",
-   "url": "https://mp.weixin.qq.com/s?__biz=MzI4NjAzNjAxNg==&mid=2651112969&idx=4&sn=8d4766c0466189f78a309ceca8cac905&chksm=f143d86b6e059ec8c2ce1863c5528be54bd406a2d56b51979b44b29fc32272a8aa95863cbc59&scene=27",
-   "file": "",
-   "chars": 2259
   },
   {
    "key": "20260601-c14745a271198",
@@ -1046,92 +305,12 @@
    "chars": 2253
   },
   {
-   "key": "20260505-c2064a269837",
-   "title": "我院国际留学生研习团受邀参加2026菏泽牡丹国际传播论坛",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269837/page.htm",
-   "file": "",
-   "chars": 2246
-  },
-  {
-   "key": "hb1a4f11f63c",
-   "title": "中国传媒大学传媒博物馆团体参观预约办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 2244
-  },
-  {
-   "key": "20260423-c5332a269542",
-   "title": "导师简介-余绍德",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269542/page.htm",
-   "file": "",
-   "chars": 2233
-  },
-  {
    "key": "20260601-c14745a271190",
    "title": "书香润青春，阅见新世界：信息传播学院顺利开展读书周系列活动",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0601/c14745a271190/page.htm",
    "file": "",
    "chars": 2228
-  },
-  {
-   "key": "20260601-c2064a271198",
-   "title": "书香润心以评促学 | 信息传播学院24、25级专硕班 读书周联合书评活动圆满落幕",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271198/page.htm",
-   "file": "",
-   "chars": 2219
-  },
-  {
-   "key": "20260225-c2064a267043",
-   "title": "我院三名学生荣获全国大学生职业生涯规划大赛校级决赛二等奖和优秀奖",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267043/page.htm",
-   "file": "",
-   "chars": 2215
-  },
-  {
-   "key": "20260225-c4365a267032",
-   "title": "“丝路传播”留学生案例作品研读工作坊第一、二期顺利开展",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267032/page.htm",
-   "file": "",
-   "chars": 2210
-  },
-  {
-   "key": "20260331-c2064a268396",
-   "title": "深学细悟两会精神勇担传媒时代使命——信息传播学院学生开展两会精神学习研讨活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268396/page.htm",
-   "file": "",
-   "chars": 2202
-  },
-  {
-   "key": "20260601-c2064a271190",
-   "title": "书香润青春，阅见新世界：信息传播学院顺利开展读书周系列活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271190/page.htm",
-   "file": "",
-   "chars": 2194
-  },
-  {
-   "key": "20250605-c14744a256551",
-   "title": "传播研究院举办毕业生党员培训会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/0605/c14744a256551/page.htm",
-   "file": "",
-   "chars": 2185
-  },
-  {
-   "key": "20261009-c2064a274637",
-   "title": "喜报｜我院学生创业项目获“青创北京”2026年“挑战杯”首都大学生创业计划竞赛一等奖",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274637/page.htm",
-   "file": "",
-   "chars": 2185
   },
   {
    "key": "20260505-c14745a269835",
@@ -1142,84 +321,12 @@
    "chars": 2161
   },
   {
-   "key": "20251101-c14745a261713",
-   "title": "信传向新，共叙情长｜信息传播学院2025年校友返校日活动圆满举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1101/c14745a261713/page.htm",
-   "file": "",
-   "chars": 2134
-  },
-  {
-   "key": "20261009-c2064a274632",
-   "title": "信息传播学院留学生受邀参加 “2026丝路大V北京行”活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274632/page.htm",
-   "file": "",
-   "chars": 2132
-  },
-  {
-   "key": "20260225-c14745a267027",
-   "title": "砥砺前行，青春奋进 | 信息传播学院团委获评2025年校级“优秀团委”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c14745a267027/page.htm",
-   "file": "",
-   "chars": 2129
-  },
-  {
-   "key": "20260505-c2064a269835",
-   "title": "趣动青春·悦享健康 | 信息传播学院本科班趣味运动会圆满举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269835/page.htm",
-   "file": "",
-   "chars": 2127
-  },
-  {
-   "key": "20260226-c2064a267070",
-   "title": "我院学子获评2025年中国传媒大学“得到读书奖学金”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267070/page.htm",
-   "file": "",
-   "chars": 2111
-  },
-  {
-   "key": "20260226-c4365a267064",
-   "title": "教改项目 | “丝路传播”案例作品研读工作坊圆满完成",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267064/page.htm",
-   "file": "",
-   "chars": 2107
-  },
-  {
    "key": "20260226-c2064a267064",
    "title": "教改项目 | “丝路传播”案例作品研读工作坊圆满完成",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267064/page.htm",
    "file": "",
    "chars": 2107
-  },
-  {
-   "key": "20260122-c4365a266727",
-   "title": "讲座回顾 | 传播大讲堂第九十七期：AIGC在文化传媒行业的应用探索与创新实践",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266727/page.htm",
-   "file": "",
-   "chars": 2102
-  },
-  {
-   "key": "20260620-c2065a271921",
-   "title": "路演预告|“智媒共生 融创未来”信息传播学院本科课程“智能传播实践”作品路演会即将举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0620/c2065a271921/page.htm",
-   "file": "",
-   "chars": 2089
-  },
-  {
-   "key": "20261009-c2064a274640",
-   "title": "以体育人，逐梦赛场｜信息传播学院开展体育院队招新宣讲",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274640/page.htm",
-   "file": "",
-   "chars": 2088
   },
   {
    "key": "20260724-c6364a272951",
@@ -1230,52 +337,12 @@
    "chars": 2080
   },
   {
-   "key": "20260225-c4365a267041",
-   "title": "讲座回顾｜践行习近平文化思想，创新新时代主题出版传播",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267041/page.htm",
-   "file": "",
-   "chars": 2064
-  },
-  {
    "key": "20260225-c2064a267041",
    "title": "讲座回顾｜践行习近平文化思想，创新新时代主题出版传播",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267041/page.htm",
    "file": "",
    "chars": 2064
-  },
-  {
-   "key": "20260801-c2064a273093",
-   "title": "我院李汇群教授参加2026年“为党育人 为国育才”讲述育人故事活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273093/page.htm",
-   "file": "",
-   "chars": 2036
-  },
-  {
-   "key": "20260225-c14744a267033",
-   "title": "信息传播学院召开党员大会选举出席学校第四次党代会代表",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c14744a267033/page.htm",
-   "file": "",
-   "chars": 2021
-  },
-  {
-   "key": "20260122-c4365a266730",
-   "title": "2025年10月29日下午，第107期传播大讲堂在信息传播学院顺利举办。本期讲座邀请中国音像与数字出版协会副秘书长、《中国数字出版》杂志副主编李弘担任主讲嘉宾，讲座主题为“中国数字阅读行业发展现状与趋势”。信息传播学院赵丽华副编审主持讲座。 李弘副秘书长 在信息时代，数字阅读已经成为大众文化生活的重要组成部分。李弘副秘书长详细分析了目前中国数字阅读的市场规模、营收结构以及作品情况，并结合相关政策与行业背景，总结出数字阅读行业的发展趋势——内容高质量转型、商业模式广",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266730/page.htm",
-   "file": "",
-   "chars": 2010
-  },
-  {
-   "key": "20260701-c2064a272346",
-   "title": "“编舟·乘风”2026届出版专业硕士研究生实践创新成果展顺利举办",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272346/page.htm",
-   "file": "",
-   "chars": 1999
   },
   {
    "key": "20260701-c4366a272346",
@@ -1286,36 +353,12 @@
    "chars": 1999
   },
   {
-   "key": "20260225-c4365a267039",
-   "title": "校友沙龙回顾：AI时代的内容营销",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c4365a267039/page.htm",
-   "file": "",
-   "chars": 1986
-  },
-  {
-   "key": "20260505-c2064a269836",
-   "title": "​ 我院国际留学生在多国媒体报道2026菏泽牡丹国际传播论坛",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269836/page.htm",
-   "file": "",
-   "chars": 1975
-  },
-  {
    "key": "20260226-c14745a267065",
    "title": "音为有你，研途趣游| 2025级专硕班团体心理辅导活动圆满举行",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267065/page.htm",
    "file": "",
    "chars": 1935
-  },
-  {
-   "key": "20260226-c4365a267062",
-   "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作工作坊”第六期：为学与为文：学术研究的目标与路径",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267062/page.htm",
-   "file": "",
-   "chars": 1923
   },
   {
    "key": "20260226-c2064a267062",
@@ -1334,52 +377,12 @@
    "chars": 1914
   },
   {
-   "key": "20260225-c2064a267044",
-   "title": "信息传播学院留学生赴北京“机器人大世界”调研",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0225/c2064a267044/page.htm",
-   "file": "",
-   "chars": 1904
-  },
-  {
-   "key": "20260331-c2064a268395",
-   "title": "讲座回顾 | 张开教授为信息传播学院国际留学生做学习全国两会专题讲座",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268395/page.htm",
-   "file": "",
-   "chars": 1901
-  },
-  {
-   "key": "20260226-c2064a267065",
-   "title": "音为有你，研途趣游| 2025级专硕班团体心理辅导活动圆满举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267065/page.htm",
-   "file": "",
-   "chars": 1901
-  },
-  {
    "key": "20260226-c14745a267066",
    "title": "手作书页，共筑心篇 | 信息传播学院2025级博士班开展团体心理辅导活动",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267066/page.htm",
    "file": "",
    "chars": 1891
-  },
-  {
-   "key": "20260505-c2064a269834",
-   "title": "信息传播学院举办树立和践行正确政绩观学习教育读书班",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269834/page.htm",
-   "file": "",
-   "chars": 1880
-  },
-  {
-   "key": "20260226-c4365a267069",
-   "title": "“畅销书出版案例作品研读工作坊”第六期：《爱上北京博物馆》出版案例分析",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267069/page.htm",
-   "file": "",
-   "chars": 1877
   },
   {
    "key": "20260226-c2064a267069",
@@ -1390,164 +393,12 @@
    "chars": 1877
   },
   {
-   "key": "20251201-c4366a264601",
-   "title": "我院学生作品荣获2025年度出版学科专业产学研协同项目创意作品特等奖",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1201/c4366a264601/page.htm",
-   "file": "",
-   "chars": 1866
-  },
-  {
-   "key": "20260422-c5332a269476",
-   "title": "导师简介-司璐",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0422/c5332a269476/page.htm",
-   "file": "",
-   "chars": 1865
-  },
-  {
-   "key": "20260226-c2064a267066",
-   "title": "手作书页，共筑心篇 | 信息传播学院2025级博士班开展团体心理辅导活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267066/page.htm",
-   "file": "",
-   "chars": 1857
-  },
-  {
-   "key": "20260505-c2064a269833",
-   "title": "信息传播学院赴北大红楼开展“追寻红色足迹 传承红色记忆”思政实践活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269833/page.htm",
-   "file": "",
-   "chars": 1843
-  },
-  {
-   "key": "20260331-c2064a268397",
-   "title": "千年结艺连丝路，中外学子共传承——信息传播学院国际留学生与少数民族特培班走进“千年结艺·北魏风华展”",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268397/page.htm",
-   "file": "",
-   "chars": 1833
-  },
-  {
-   "key": "20260701-c2064a272340",
-   "title": "讲座回顾| 算法规训下的创作边界：人工智能伦理与当代设计实践",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272340/page.htm",
-   "file": "",
-   "chars": 1832
-  },
-  {
-   "key": "20260503-c2064a269816",
-   "title": "讲座回顾｜传播大讲堂国际学者讲座：人工智能时代的技术与叙事革新",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0503/c2064a269816/page.htm",
-   "file": "",
-   "chars": 1828
-  },
-  {
-   "key": "20260601-c2064a271189",
-   "title": "徐芳依副教授执导作品《大同密码》在第十六届北京国际电影节获奖",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271189/page.htm",
-   "file": "",
-   "chars": 1827
-  },
-  {
-   "key": "20260123-c4365a266733",
-   "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第三期：中国当代大众文化的历史演变",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266733/page.htm",
-   "file": "",
-   "chars": 1825
-  },
-  {
-   "key": "20260122-c4365a266726",
-   "title": "讲座回顾 | 欧洲近距离：驻外记者国际报道实践与观察",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266726/page.htm",
-   "file": "",
-   "chars": 1822
-  },
-  {
-   "key": "hbd33955782f",
-   "title": "中国传媒大学本科生选课管理办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 1818
-  },
-  {
-   "key": "20260331-c2064a268388",
-   "title": "信息传播学院党委启动部署树立和践行正确政绩观学习教育",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268388/page.htm",
-   "file": "",
-   "chars": 1817
-  },
-  {
-   "key": "hbd9d7bc1592",
-   "title": "中国传媒大学本专科学历、学位证书管理办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 1817
-  },
-  {
    "key": "20260226-c14745a267068",
    "title": "暖心相聚筑同心温情护航伴成长 | 2025级跨文化传播硕士班开展心理健康主题班会活动",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0226/c14745a267068/page.htm",
    "file": "",
    "chars": 1803
-  },
-  {
-   "key": "20260122-c4365a266729",
-   "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第一期：国家与声音——声音现代性的本土探索",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266729/page.htm",
-   "file": "",
-   "chars": 1790
-  },
-  {
-   "key": "20260505-c2064a269838",
-   "title": "讲座回顾 | 职路灯塔—校友讲座：做“技多不压身”的新传人",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269838/page.htm",
-   "file": "",
-   "chars": 1783
-  },
-  {
-   "key": "20260226-c2064a267068",
-   "title": "暖心相聚筑同心温情护航伴成长 | 2025级跨文化传播硕士班开展心理健康主题班会活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267068/page.htm",
-   "file": "",
-   "chars": 1769
-  },
-  {
-   "key": "20251230-c14745a265741",
-   "title": "新生引航|信息传播学院本科班赴朝阳公园开展心理健康主题班会活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1230/c14745a265741/page.htm",
-   "file": "",
-   "chars": 1760
-  },
-  {
-   "key": "20260123-c4365a266736",
-   "title": "讲座回顾 | “在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第四期：人工智能可以写好影视艺术论文吗？一种语言学的视角",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266736/page.htm",
-   "file": "",
-   "chars": 1754
-  },
-  {
-   "key": "20260122-c4365a266728",
-   "title": "讲座回顾 | 传播大讲堂第 101 期：人工智能大模型在网络舆情信息传播治理的应用",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266728/page.htm",
-   "file": "",
-   "chars": 1752
   },
   {
    "key": "20260226-c14745a267067",
@@ -1558,86 +409,6 @@
    "chars": 1750
   },
   {
-   "key": "20260924-c2064a274325",
-   "title": "信息传播学院召开2026级本科新生军训动员大会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0924/c2064a274325/page.htm",
-   "file": "",
-   "chars": 1739
-  },
-  {
-   "key": "20260122-c4365a266724",
-   "title": "讲座回顾 | 校友讲座：人工智能时代的职业选择",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266724/page.htm",
-   "file": "",
-   "chars": 1735
-  },
-  {
-   "key": "20260123-c4365a266734",
-   "title": "讲座回顾丨传播大讲堂第109期：新时代马克思主义新闻文风建设",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266734/page.htm",
-   "file": "",
-   "chars": 1732
-  },
-  {
-   "key": "20260503-c2064a269815",
-   "title": "讲座回顾｜传播大讲堂第116期：新技术、新语态、新视觉——短视频的创作与实践",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0503/c2064a269815/page.htm",
-   "file": "",
-   "chars": 1720
-  },
-  {
-   "key": "20260331-c2064a268392",
-   "title": "信息传播学院举办“挑战杯”赛事专题培训",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268392/page.htm",
-   "file": "",
-   "chars": 1719
-  },
-  {
-   "key": "20260226-c2064a267067",
-   "title": "温暖相伴，携手同行| 2025级传播学硕士班团体心理辅导活动圆满举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c2064a267067/page.htm",
-   "file": "",
-   "chars": 1716
-  },
-  {
-   "key": "20260331-c2064a268391",
-   "title": "讲座回顾 | 传播大讲堂114期：从讲述到共塑：主流媒体国际传播实践创新",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0331/c2064a268391/page.htm",
-   "file": "",
-   "chars": 1708
-  },
-  {
-   "key": "20261009-c2064a274639",
-   "title": "产教融合｜我院师生赴中信出版集团开展智能出版实训",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274639/page.htm",
-   "file": "",
-   "chars": 1704
-  },
-  {
-   "key": "20260123-c4365a266737",
-   "title": "讲座回顾｜“在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第五期：媒介与文化研究：方法论及写作",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266737/page.htm",
-   "file": "",
-   "chars": 1692
-  },
-  {
-   "key": "20260505-c2064a269828",
-   "title": "校友资源赋能教师科研 信息传播学院赴校友企业听花岛调研",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0505/c2064a269828/page.htm",
-   "file": "",
-   "chars": 1684
-  },
-  {
    "key": "20260621-c14745a271927",
    "title": "信息传播学院举办“情绪解压——非遗锡纸画”体验活动",
    "collection": "corpus",
@@ -1646,84 +417,12 @@
    "chars": 1670
   },
   {
-   "key": "20251231-c14745a265747",
-   "title": "新生引航|信息传播学院2025级新生健步走活动圆满举行",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1231/c14745a265747/page.htm",
-   "file": "",
-   "chars": 1648
-  },
-  {
-   "key": "20260122-c4365a266731",
-   "title": "讲座回顾 | “在传播与艺术之间：以人文社科为总体视野的论文写作”工作坊第二期：媒体融合语境下的文艺评论写作",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266731/page.htm",
-   "file": "",
-   "chars": 1645
-  },
-  {
-   "key": "20260123-c4365a266738",
-   "title": "讲座回顾 ｜ 新媒体背景下短视频创作的发展趋势与实践创新",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266738/page.htm",
-   "file": "",
-   "chars": 1642
-  },
-  {
-   "key": "20260621-c2064a271927",
-   "title": "信息传播学院举办“情绪解压——非遗锡纸画”体验活动",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271927/page.htm",
-   "file": "",
-   "chars": 1636
-  },
-  {
-   "key": "20261009-c2064a274644",
-   "title": "讲座回顾|“职”引未来：公考选调备考策略分析",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/1009/c2064a274644/page.htm",
-   "file": "",
-   "chars": 1630
-  },
-  {
    "key": "20260421-c5332a269370",
    "title": "导师简介-耿冰蕊",
    "collection": "corpus",
    "url": "http://ices.cuc.edu.cn/2026/0421/c5332a269370/page.htm",
    "file": "",
    "chars": 1584
-  },
-  {
-   "key": "20260801-c2064a273088",
-   "title": "讲座回顾｜王维佳：从全球史视野重思国际传播",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0801/c2064a273088/page.htm",
-   "file": "",
-   "chars": 1577
-  },
-  {
-   "key": "20251025-c2065a261495",
-   "title": "校友返校日 | 请回信息传播学院“新家”看看",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1025/c2065a261495/page.htm",
-   "file": "",
-   "chars": 1550
-  },
-  {
-   "key": "20260701-c2064a272345",
-   "title": "讲座回顾｜传播大讲堂第122期：全球出版五十强的发展及AI应用",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272345/page.htm",
-   "file": "",
-   "chars": 1545
-  },
-  {
-   "key": "20251230-c2065a265732",
-   "title": "校地携手传文脉华裳雅韵进校园｜信息传播学院汉服文化专场活动即将启幕",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1230/c2065a265732/page.htm",
-   "file": "",
-   "chars": 1544
   },
   {
    "key": "20260701-c14744a272343",
@@ -1742,46 +441,6 @@
    "chars": 1520
   },
   {
-   "key": "hb33c2d11e70",
-   "title": "中国传媒大学硕士研究生学位论文及毕业作品匿名评阅办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 1508
-  },
-  {
-   "key": "20260701-c2064a272343",
-   "title": "初心讲堂 | 信息传播学院举办2026届毕业生党员专题培训会 ​",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0701/c2064a272343/page.htm",
-   "file": "",
-   "chars": 1492
-  },
-  {
-   "key": "ecb9f6042d",
-   "title": "课程成绩管理办法 中传教字 2021 210号（icuc.cuc）",
-   "collection": "corpus",
-   "url": "https://icuc.cuc.edu.cn/2621/",
-   "file": "",
-   "chars": 1476
-  },
-  {
-   "key": "20260621-c2064a271926",
-   "title": "诚信教育｜信息传播学院2025级本科班开展诚信主题教育班会",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0621/c2064a271926/page.htm",
-   "file": "",
-   "chars": 1455
-  },
-  {
-   "key": "20260226-c4365a267063",
-   "title": "讲座回顾｜传播大讲堂第113期：风范：用一生写就的科学家精神",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0226/c4365a267063/page.htm",
-   "file": "",
-   "chars": 1448
-  },
-  {
    "key": "20260226-c2064a267063",
    "title": "讲座回顾｜传播大讲堂第113期：风范：用一生写就的科学家精神",
    "collection": "corpus",
@@ -1798,52 +457,20 @@
    "chars": 1433
   },
   {
-   "key": "20260122-c4365a266732",
-   "title": "讲座回顾｜传播大讲堂第106期：提升国际传播效能的挑战与机遇",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0122/c4365a266732/page.htm",
-   "file": "",
-   "chars": 1433
-  },
-  {
-   "key": "hbe0d10f0443",
-   "title": "中国传媒大学博士研究生学位论文及毕业作品匿名评阅办法",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
-   "file": "",
-   "chars": 1430
-  },
-  {
-   "key": "20260603-c2065a271333",
-   "title": "展览预告｜信息传播学院“编舟·乘风”2026届出版专业硕士研究生实践创新成果展即将开幕",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0603/c2065a271333/page.htm",
-   "file": "",
-   "chars": 1412
-  },
-  {
-   "key": "20260601-c2064a271192",
-   "title": "中传这五年·信息传播学院篇｜守正创新担使命 信息传播启新篇",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271192/page.htm",
-   "file": "",
-   "chars": 1399
-  },
-  {
-   "key": "20260123-c4365a266735",
-   "title": "讲座回顾| AI时代，出版如何选题？",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0123/c4365a266735/page.htm",
-   "file": "",
-   "chars": 1397
-  },
-  {
    "key": "20260506-c5332a269901",
    "title": "导师简介-李正祥",
    "collection": "corpus",
    "url": "http://ices.cuc.edu.cn/2026/0506/c5332a269901/page.htm",
    "file": "",
    "chars": 1385
+  },
+  {
+   "key": "4aa21faedd",
+   "title": "修学指南 中国传媒大学 本科生院（jwc.cuc）",
+   "collection": "corpus",
+   "url": "https://jwc.cuc.edu.cn/zcwj1/list.htm",
+   "file": "",
+   "chars": 1381
   },
   {
    "key": "20230225-c8476a202334",
@@ -1878,14 +505,6 @@
    "chars": 1244
   },
   {
-   "key": "20260423-c5332a269527",
-   "title": "导师简介-王玲",
-   "collection": "corpus",
-   "url": "http://ices.cuc.edu.cn/2026/0423/c5332a269527/page.htm",
-   "file": "",
-   "chars": 1232
-  },
-  {
    "key": "20201021-c2812a174217",
    "title": "《改善基本办学条件专项资金申报、执行管理流程》（财字（2018）223号）",
    "collection": "corpus",
@@ -1910,14 +529,6 @@
    "chars": 1167
   },
   {
-   "key": "its-list2",
-   "title": "通知公告",
-   "collection": "corpus",
-   "url": "https://its.cuc.edu.cn/8169/list2.htm",
-   "file": "",
-   "chars": 1166
-  },
-  {
    "key": "20250326-c6366a252585",
    "title": "【学籍】中国传媒大学学籍变动审批表",
    "collection": "corpus",
@@ -1934,22 +545,6 @@
    "chars": 1131
   },
   {
-   "key": "20260601-c2064a271184",
-   "title": "思想纵横（二）｜总书记“公开课”：显绩与潜绩的辩证法",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2064a271184/page.htm",
-   "file": "",
-   "chars": 1128
-  },
-  {
-   "key": "66a1243f3a",
-   "title": "国有资产管理办法（gzc.cuc）",
-   "collection": "corpus",
-   "url": "https://gzc.cuc.edu.cn/2025/0529/c2581a256246/page.htm",
-   "file": "",
-   "chars": 1125
-  },
-  {
    "key": "20250401-c6471a268919",
    "title": "2026年辅修招生信息",
    "collection": "corpus",
@@ -1964,14 +559,6 @@
    "url": "https://xsc.cuc.edu.cn/2874/list2.htm",
    "file": "",
    "chars": 1078
-  },
-  {
-   "key": "dc026c3859",
-   "title": "推荐免试攻读研究生 工作办法（yz.cuc）",
-   "collection": "corpus",
-   "url": "https://yz.cuc.edu.cn/tm/list.htm",
-   "file": "",
-   "chars": 1043
   },
   {
    "key": "20201021-c2812a174199",
@@ -2020,14 +607,6 @@
    "url": "https://sic.cuc.edu.cn/2026/0331/c2065a268384/page.htm",
    "file": "",
    "chars": 991
-  },
-  {
-   "key": "2d964fc992",
-   "title": "公共实践场馆管理办法（xsc.cuc）",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271143/pagem.htm",
-   "file": "",
-   "chars": 946
   },
   {
    "key": "20251231-c2065a265752",
@@ -2198,14 +777,6 @@
    "chars": 907
   },
   {
-   "key": "20211122-c6367a189157",
-   "title": "明德讲堂第二季 | 人文与科学，共筑精神之园！",
-   "collection": "corpus",
-   "url": "https://jwc.cuc.edu.cn/2021/1122/c6367a189157/page.htm",
-   "file": "",
-   "chars": 906
-  },
-  {
    "key": "20260331-c2065a268389",
    "title": "传播大讲堂第116期｜新技术、新语态、新视觉：短视频的创作与实践",
    "collection": "corpus",
@@ -2278,14 +849,6 @@
    "chars": 897
   },
   {
-   "key": "20251202-c2065a264692",
-   "title": "中国传媒大学研究生教育改革项目｜AI时代，出版如何选题？",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2025/1202/c2065a264692/page.htm",
-   "file": "",
-   "chars": 895
-  },
-  {
    "key": "20251201-c2065a264615",
    "title": "职路灯塔—校友讲座｜国企、公务员与高校的多元职业发展之路",
    "collection": "corpus",
@@ -2330,14 +893,6 @@
    "title": "国际学者讲座｜葡萄牙媒体格局中的历史记忆与数字变革",
    "collection": "corpus",
    "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271201/page.htm",
-   "file": "",
-   "chars": 889
-  },
-  {
-   "key": "20260601-c2065a271185",
-   "title": "青春无畏 逐梦前行｜信息传播学院祝大家青年节快乐！",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0601/c2065a271185/page.htm",
    "file": "",
    "chars": 889
   },
@@ -2438,14 +993,6 @@
    "chars": 883
   },
   {
-   "key": "20260507-c6364a269956",
-   "title": "2026年辅修录取名单",
-   "collection": "corpus",
-   "url": "https://jwc.cuc.edu.cn/2026/0507/c6364a269956/page.htm",
-   "file": "",
-   "chars": 880
-  },
-  {
    "key": "20260525-c2065a270790",
    "title": "五一劳动节｜信息传播学院致敬每一位劳动者",
    "collection": "corpus",
@@ -2478,36 +1025,12 @@
    "chars": 875
   },
   {
-   "key": "20260919-c2065a274013",
-   "title": "信息传播学院祝全体老师教师节快乐！",
-   "collection": "corpus",
-   "url": "https://sic.cuc.edu.cn/2026/0919/c2065a274013/page.htm",
-   "file": "",
-   "chars": 873
-  },
-  {
    "key": "xsc-list11",
    "title": "管理规定",
    "collection": "corpus",
    "url": "https://xsc.cuc.edu.cn/2753/list11.htm",
    "file": "",
    "chars": 849
-  },
-  {
-   "key": "20201021-c2810a174247",
-   "title": "中国传媒大学教育收费公示（2020）",
-   "collection": "corpus",
-   "url": "https://cwc.cuc.edu.cn/2020/1021/c2810a174247/page.htm",
-   "file": "",
-   "chars": 844
-  },
-  {
-   "key": "20190830-c2810a134141",
-   "title": "中国传媒大学教育收费公示（2019）",
-   "collection": "corpus",
-   "url": "https://cwc.cuc.edu.cn/2019/0830/c2810a134141/page.htm",
-   "file": "",
-   "chars": 844
   },
   {
    "key": "20240429-c2813a219217",
@@ -2534,14 +1057,6 @@
    "chars": 825
   },
   {
-   "key": "20170912-c2810a81802",
-   "title": "中国传媒大学教育收费公示（2017）",
-   "collection": "corpus",
-   "url": "https://cwc.cuc.edu.cn/2017/0912/c2810a81802/page.htm",
-   "file": "",
-   "chars": 825
-  },
-  {
    "key": "20240821-c2092a242385",
    "title": "中国传媒大学国际交流与合作处（港澳台事务办公室）工作流程",
    "collection": "corpus",
@@ -2550,28 +1065,12 @@
    "chars": 819
   },
   {
-   "key": "20180903-c2810a81810",
-   "title": "中国传媒大学教育收费公示（2018）",
-   "collection": "corpus",
-   "url": "https://cwc.cuc.edu.cn/2018/0903/c2810a81810/page.htm",
-   "file": "",
-   "chars": 818
-  },
-  {
    "key": "xsc-list3",
    "title": "军事理论课",
    "collection": "corpus",
    "url": "https://xsc.cuc.edu.cn/2771/list3.htm",
    "file": "",
    "chars": 796
-  },
-  {
-   "key": "xsc-list5",
-   "title": "通知公告",
-   "collection": "corpus",
-   "url": "https://xsc.cuc.edu.cn/2874/list5.htm",
-   "file": "",
-   "chars": 772
   },
   {
    "key": "20221027-c8496a200461",
@@ -2612,14 +1111,6 @@
    "url": "https://tiyu.cuc.edu.cn/86/list2.htm",
    "file": "",
    "chars": 755
-  },
-  {
-   "key": "20260311-c6364a267512",
-   "title": "2026年春季学期转专业拟录取名单公示",
-   "collection": "corpus",
-   "url": "https://jwc.cuc.edu.cn/2026/0311/c6364a267512/page.htm",
-   "file": "",
-   "chars": 740
   },
   {
    "key": "20230418-c6366a204232",
@@ -2966,36 +1457,12 @@
    "chars": 547
   },
   {
-   "key": "3ada4747f1",
-   "title": "非学历教育（fnc.cuc）",
-   "collection": "corpus",
-   "url": "https://fnc.cuc.edu.cn/2025/1124/c8054a264237/page.htm",
-   "file": "",
-   "chars": 486
-  },
-  {
    "key": "loc-中国传媒大学2025年军训一日生活制度表-1-3a671e",
    "title": "中国传媒大学2025年军训一日生活制度表 (1)",
    "collection": "corpus",
    "url": "",
    "file": "",
    "chars": 449
-  },
-  {
-   "key": "d3a1419f05",
-   "title": "户籍科常见问题（security.cuc）",
-   "collection": "corpus",
-   "url": "https://security.cuc.edu.cn/hjxg/list.htm",
-   "file": "",
-   "chars": 438
-  },
-  {
-   "key": "9c1582e0ab",
-   "title": "高性能计算平台（hpc.cuc）",
-   "collection": "corpus",
-   "url": "https://hpc.cuc.edu.cn/",
-   "file": "",
-   "chars": 330
   },
   {
    "key": "78209e0940",
@@ -3006,28 +1473,12 @@
    "chars": 323
   },
   {
-   "key": "loc-xuexiao-jianjie",
-   "title": "中国传媒大学简介",
-   "collection": "corpus",
-   "url": "https://www.cuc.edu.cn/xxgk/list.htm",
-   "file": "",
-   "chars": 274
-  },
-  {
    "key": "jwc-list",
    "title": "提示信息",
    "collection": "corpus",
    "url": "http://jwc.cuc.edu.cn/_t427/7083/list.htm",
    "file": "",
    "chars": 183
-  },
-  {
-   "key": "4aa21faedd",
-   "title": "修学指南 中国传媒大学 本科生院（jwc.cuc）",
-   "collection": "extra",
-   "url": "https://jwc.cuc.edu.cn/zcwj1/list.htm",
-   "file": "",
-   "chars": 1381
   },
   {
    "key": "zb-wang",
@@ -3038,46 +1489,6 @@
    "chars": 490
   },
   {
-   "key": "95bf5c42",
-   "title": "2023年 中国传媒大学学生工作规章制度汇编",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=95bf5c42b6894313850818cac799db28",
-   "file": "sources\\wendao\\95bf5c42_2023年 中国传媒大学学生工作规章制度汇编.pdf",
-   "chars": 36095
-  },
-  {
-   "key": "f0b26842",
-   "title": "中国传媒大学本科生体育课程管理规定",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=f0b26842929d4a75bafe723a4ef6e4b8",
-   "file": "sources\\wendao\\f0b26842_中国传媒大学本科生体育课程管理规定.pdf",
-   "chars": 4042
-  },
-  {
-   "key": "a07d9d27",
-   "title": "本科生院〔2025〕69号 关于印发《中国传媒大学全日制本科生课程考核及成绩管理办法》的通知",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=a07d9d273a7a45239f01fa81bc0073e9",
-   "file": "sources\\wendao\\a07d9d27_本科生院〔2025〕69号 关于印发《中国传媒大学全日制本科生课程考核及成绩管理办法》的通知.pdf",
-   "chars": 3802
-  },
-  {
-   "key": "ea0b59c6",
-   "title": "中国传媒大学学生考试与学术违纪处理办法",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=ea0b59c6effb44e584cf91e0b5766709",
-   "file": "sources\\wendao\\ea0b59c6_中国传媒大学学生考试与学术违纪处理办法.pdf",
-   "chars": 3352
-  },
-  {
-   "key": "ace5831c",
-   "title": "中国传媒大学本科生转专业管理办法（2021年修订）",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=ace5831c9cb8476fab8f1b956c958399",
-   "file": "sources\\wendao\\ace5831c_中国传媒大学本科生转专业管理办法（2021年修订）.pdf",
-   "chars": 2705
-  },
-  {
    "key": "d2af71fd",
    "title": "中国传媒大学辅修管理办法",
    "collection": "wendao",
@@ -3086,116 +1497,12 @@
    "chars": 1779
   },
   {
-   "key": "d02e30b4",
-   "title": "中国传媒大学通识教育核心课程、通识教育拓展课程选课办法（试行）",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=d02e30b4de6b4d81a39bc7bca1a922e7",
-   "file": "sources\\wendao\\d02e30b4_中国传媒大学通识教育核心课程、通识教育拓展课程选课办法（试行）.pdf",
-   "chars": 749
-  },
-  {
-   "key": "bc0bd3bb",
-   "title": "辅修报名操作手册-学生.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=bc0bd3bbde8c4edba1d8df58f4b521f8",
-   "file": "sources\\wendao\\bc0bd3bb_辅修报名操作手册-学生.docx_view.pdf",
-   "chars": 370
-  },
-  {
-   "key": "47caaec9",
-   "title": "自助人脸照片上传.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=47caaec97f3440c6867f7a30d0e06125",
-   "file": "sources\\wendao\\47caaec9_自助人脸照片上传.docx_view.pdf",
-   "chars": 346
-  },
-  {
-   "key": "cd72bce4",
-   "title": "简称对应表.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=cd72bce453414bfeb0bbbf9ffd81dfd8",
-   "file": "sources\\wendao\\cd72bce4_简称对应表.docx_view.pdf",
-   "chars": 341
-  },
-  {
-   "key": "b825a538",
-   "title": "误扣款说明公告.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=b825a538dc1344e181c96232900945c1",
-   "file": "sources\\wendao\\b825a538_误扣款说明公告.docx_view.pdf",
-   "chars": 300
-  },
-  {
-   "key": "252a96fb",
-   "title": "信息化处基本信息.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=252a96fb04c04e13b31deb03f90be692",
-   "file": "sources\\wendao\\252a96fb_信息化处基本信息.docx_view.pdf",
-   "chars": 274
-  },
-  {
-   "key": "78a2ab4a",
-   "title": "招生处（本招）.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=78a2ab4a2e5e4a6b8b1ed7e194715760",
-   "file": "sources\\wendao\\78a2ab4a_招生处（本招）.docx_view.pdf",
-   "chars": 262
-  },
-  {
-   "key": "2e0ac4ee",
-   "title": "公共实践场馆相关事项.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=2e0ac4eecf61442a9f69503954ba5713",
-   "file": "sources\\wendao\\2e0ac4ee_公共实践场馆相关事项.docx_view.pdf",
-   "chars": 252
-  },
-  {
-   "key": "0f18a29a",
-   "title": "公共报告厅相关事项.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=0f18a29a50e9496ea2109beb29234394",
-   "file": "sources\\wendao\\0f18a29a_公共报告厅相关事项.docx_view.pdf",
-   "chars": 222
-  },
-  {
-   "key": "dc22a56a",
-   "title": "中国传媒大学基本信息.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=dc22a56aed374bea8b240c63046979cb",
-   "file": "sources\\wendao\\dc22a56a_中国传媒大学基本信息.docx_view.pdf",
-   "chars": 197
-  },
-  {
-   "key": "7684e018",
-   "title": "临时通知——图字〔2024〕9号：图书馆关于2024年国庆节假期开馆安排的通知.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=7684e018f6f54c9c825d5d6817e73b4a",
-   "file": "sources\\wendao\\7684e018_临时通知——图字〔2024〕9号：图书馆关于2024年国庆节假期开馆安排的通知.docx_view.pdf",
-   "chars": 189
-  },
-  {
    "key": "60635f11",
    "title": "【融合门户】服务_国内交流与合作处（校友工作办公室）_有链接.docx",
    "collection": "wendao",
    "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=60635f11b95747ee89a32b862ffa4b17",
    "file": "sources\\wendao\\60635f11_【融合门户】服务_国内交流与合作处（校友工作办公室）_有链接.docx_view.pdf",
    "chars": 181
-  },
-  {
-   "key": "8f3f1ca5",
-   "title": "知识库-家属区管理办公室.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=8f3f1ca570d94a198e88e197d405009d",
-   "file": "sources\\wendao\\8f3f1ca5_知识库-家属区管理办公室.docx_view.pdf",
-   "chars": 140
-  },
-  {
-   "key": "9cf3926b",
-   "title": "校医院就诊流程.docx",
-   "collection": "wendao",
-   "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=9cf3926bb0ce4e07aded8c1b88092829",
-   "file": "sources\\wendao\\9cf3926b_校医院就诊流程.docx_view.pdf",
-   "chars": 101
   },
   {
    "key": "bae9d5cb69dc461eb8b433a7423bd040",
@@ -3230,14 +1537,6 @@
    "chars": 0
   },
   {
-   "key": "1eb28fae507444fc98ce2c3a03910183",
-   "title": "【融合门户】业务部门服务整理 - 信息化服务.xlsx",
-   "collection": "wendao-file",
-   "url": "https://aihub.cuc.edu.cn/debot/doc/document/15a53bd5ce664a9d8beb110496639593/%E3%80%90%E8%9E%8D%E5%90%88%E9%97%A8%E6%88%B7%E3%80%91%E4%B8%9A%E5%8A%A1%E9%83%A8%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%95%B4%E7%90%86%20-%20%E4%BF%A1%E6%81%AF%E5%8C%96%E6%9C%8D%E5%8A%A1.xlsx",
-   "file": "sources\\wendao\\1eb28fae_【融合门户】业务部门服务整理 - 信息化服务.xlsx",
-   "chars": 0
-  },
-  {
    "key": "55b38320eab24ddaa408fdda67727099",
    "title": "【融合门户】服务_实验室与设备管理处_有链接.docx  实验室与设备管理处  实验室安全准入",
    "collection": "wendao-file",
@@ -3259,14 +1558,6 @@
    "collection": "wendao-file",
    "url": "https://aihub.cuc.edu.cn/debot/doc/document/2dde4eabccb94ef1898a6acd904a91ab/%E3%80%90%E8%9E%8D%E5%90%88%E9%97%A8%E6%88%B7%E3%80%91%E6%9C%8D%E5%8A%A1_%E7%A0%94%E7%A9%B6%E7%94%9F%E9%99%A2_%E6%9C%89%E9%93%BE%E6%8E%A5.docx_view.pdf",
    "file": "sources\\wendao\\b3c4b0e4_【融合门户】服务_研究生院_有链接.docx_view.pdf",
-   "chars": 0
-  },
-  {
-   "key": "4b3b7735b34c42f59496d69361c328f5",
-   "title": "业务部门服务整理.xlsx",
-   "collection": "wendao-file",
-   "url": "https://aihub.cuc.edu.cn/debot/doc/document/1989f1cee79c4c749f74e5d9ee4e2088/%E4%B8%9A%E5%8A%A1%E9%83%A8%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%95%B4%E7%90%86.xlsx",
-   "file": "sources\\wendao\\4b3b7735_业务部门服务整理.xlsx",
    "chars": 0
   },
   {
@@ -3763,14 +2054,6 @@
    "collection": "wendao-file",
    "url": "https://aihub.cuc.edu.cn/debot/doc/document/81514bd743f74aa49028760ff4445d00/%E6%A0%A1%E5%8C%BB%E5%AD%9726%E5%8F%B7%E5%85%B3%E4%BA%8E%E5%8D%B0%E5%8F%91%E3%80%8A%E4%B8%AD%E5%9B%BD%E4%BC%A0%E5%AA%92%E5%A4%A7%E5%AD%A6%E6%95%99%E8%81%8C%E5%B7%A5%E5%AD%90%E5%A5%B3%E7%BB%9F%E7%AD%B9%E5%8C%BB%E7%96%97%E7%AE%A1%E7%90%86%E8%A7%84%E5%AE%9A%EF%BC%88%E4%BF%AE%E8%AE%A2%EF%BC%89%E3%80%8B%E7%9A%84%E9%80%9A%E7%9F%A5.docx_view.pdf",
    "file": "sources\\wendao\\16ed38fa_校医字26号关于印发《中国传媒大学教职工子女统筹医疗管理规定（修订）》的通知.docx_view.pdf",
-   "chars": 0
-  },
-  {
-   "key": "18fe5c7d229643eab5244c2fb38aabcb",
-   "title": "QA知识导入模板.xlsx",
-   "collection": "wendao-file",
-   "url": "https://aihub.cuc.edu.cn/debot/doc/document/1639addbfa8e44aca2ceb61aec9cf4b8/QA%E7%9F%A5%E8%AF%86%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx",
-   "file": "sources\\wendao\\18fe5c7d_QA知识导入模板.xlsx",
    "chars": 0
   },
   {
@@ -5075,14 +3358,6 @@
    "collection": "wendao-file",
    "url": "https://aihub.cuc.edu.cn/debot/doc/document/20ec392ed0ca40dfac38d31d5d0ad550/%E6%8B%9B%E7%94%9F%E5%A4%84%EF%BC%88%E6%9C%AC%E6%8B%9B%EF%BC%89.docx_view.pdf",
    "file": "sources\\wendao\\78a2ab4a_招生处（本招）.docx_view.pdf",
-   "chars": 0
-  },
-  {
-   "key": "9c68227725aa4a25b32a60e00d3e697f",
-   "title": "招生处（研招）.docx  联系我们",
-   "collection": "wendao-file",
-   "url": "https://aihub.cuc.edu.cn/debot/doc/document/20ec392ed0ca40dfac38d31d5d0ad550/%E6%8B%9B%E7%94%9F%E5%A4%84%EF%BC%88%E7%A0%94%E6%8B%9B%EF%BC%89.docx_view.pdf",
-   "file": "sources\\wendao\\9c682277_招生处（研招）.docx_view.pdf",
    "chars": 0
   },
   {

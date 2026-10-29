@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import base64
+import gzip
 import json
 import os
 import re
@@ -87,11 +88,25 @@ def api_key() -> str:
 
 
 load_env()
-DATA = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))
+
+
+def _items_file() -> Path:
+    """仓库里大文件以 items.json.gz 发布：明文 31MB 走 GitHub 大请求体会超时，
+    压缩后 2.8MB。本地有明文时仍优先用明文。"""
+    plain = ROOT / "items.json"
+    return plain if plain.exists() else ROOT / "items.json.gz"
+
+
+def _read_items(path: Path) -> dict[str, Any]:
+    raw = gzip.decompress(path.read_bytes()) if path.suffix == ".gz" else path.read_bytes()
+    return json.loads(raw.decode("utf-8"))
+
+
+DATA = _read_items(_items_file())
 ITEMS: list[dict[str, Any]] = DATA["items"]
 ITEM_BY_ID: dict[str, dict[str, Any]] = {i["id"]: i for i in ITEMS}
 DATA_UPDATED = DATA.get("updated", "")
-_MTIME = (ROOT / "items.json").stat().st_mtime
+_MTIME = _items_file().stat().st_mtime
 _SRC_ITEMS: dict[str, list[str]] | None = None
 
 
@@ -103,10 +118,11 @@ def maybe_reload() -> None:
     """改了 items.json 不用重启服务。"""
     global DATA, ITEMS, ITEM_BY_ID, DATA_UPDATED, _MTIME, _SRC_ITEMS, _RELATED_ROWS
     global _WZY_SIBS
-    mtime = (ROOT / "items.json").stat().st_mtime
+    path = _items_file()
+    mtime = path.stat().st_mtime
     if mtime == _MTIME:
         return
-    DATA = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))
+    DATA = _read_items(path)
     ITEMS = DATA["items"]
     ITEM_BY_ID = {i["id"]: i for i in ITEMS}
     DATA_UPDATED = DATA.get("updated", "")

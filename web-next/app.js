@@ -17,6 +17,39 @@
   const num = (n) => Number(n || 0).toLocaleString("zh-CN");
   const pct = (v) => Math.round((Number(v) || 0) * 100) + "%";
 
+  // 校园地点链接化：答案里出现的地点名点一下，就等于问「X 在哪」。
+  // 只收有辨识度的名字：纯数字、太泛的两字词不进链接表。
+  let PLACE_RE = null;
+  const PLACE_SKIP = new Set(["快递", "大集", "教务", "国重", "活动中心"]);
+  const PLACE_TWO = new Set(["主楼", "南门", "北门", "西门", "1教", "一教", "艺传", "南操", "大活", "北苑"]);
+
+  function buildPlaces(pois) {
+    const seen = new Set();
+    const names = [];
+    for (const p of pois || []) {
+      for (const raw of [p.name, ...(p.aliases || [])]) {
+        const s = String(raw || "").trim();
+        if (s.length < 2 || /^\d+$/.test(s) || PLACE_SKIP.has(s)) continue;
+        if (s.length === 2 && !PLACE_TWO.has(s)) continue;
+        if (seen.has(s)) continue;
+        seen.add(s);
+        names.push(s);
+      }
+    }
+    names.sort((a, b) => b.length - a.length);
+    if (!names.length) { PLACE_RE = null; return; }
+    const body = names.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    PLACE_RE = new RegExp(`(?<!第)(?:${body})`, "g");
+  }
+
+  // 只对已转义的纯文本调用；不会碰标签属性。
+  function linkify(html) {
+    if (!PLACE_RE || !html) return html;
+    PLACE_RE.lastIndex = 0;
+    return html.replace(PLACE_RE, (m) =>
+      `<a class="plink" href="#" data-ask="${esc(m + "在哪")}" title="问：${esc(m)}在哪">${m}</a>`);
+  }
+
   // 序号已由列表渲染，泛化的「第 N 步」不再重复出现在后缀里
   const stepNote = (s, i) => {
     if (typeof s === "string") return "";
@@ -161,6 +194,10 @@
       state.presets = (p.groups || []).flatMap((g) => g.items || []);
       renderPresets();
     } catch (e) { /* 预置问法失败不影响主流程 */ }
+    try {
+      const c = await api("/api/campus?limit=500");
+      buildPlaces(c.pois);
+    } catch (e) { /* 地点表失败只影响链接化 */ }
   }
 
   function renderPresets() {
@@ -176,7 +213,7 @@
       <h1>说得清，<em>带得对</em>。</h1>
       <p>每句结论旁边都压着原文。查得到，抄得走，错了知道该找谁。问一句，右边同时打开这件事的档案。</p>
       <div class="chips">${samples.map((s) => `<button type="button" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div>
-      <p class="eexit"><b>全库 600 多件事</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，它说“没写”，不替学校补。</p>
+      <p class="eexit"><b>全库 1 万多条原文事项</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，它说“没写”，不替学校补。</p>
     </div>`;
   }
 
@@ -207,7 +244,7 @@
 
   async function ask(text, opts = {}) {
     text = (text || "").trim();
-    if (text.length < 2) { toast("请再说得具体一点"); return; }
+    if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { toast("请再说得具体一点"); return; }
     if (state.busy) return;
     if (!opts.keepSlots) state.slots = {};
     state.busy = true;
@@ -242,42 +279,65 @@
 
   function renderAnswer(d, ex) {
     if (d.plan) return planCard(d, ex);
-    if (Array.isArray(d.disambiguate) && d.disambiguate.length && d.clarify) return ambiguousCard(d);
     if (!d.matched) return notFoundCard(d);
+    if (Array.isArray(d.disambiguate) && d.disambiguate.length && d.clarify) return ambiguousCard(d);
     if (d.hold) return followupCard(d, ex);
     return answerCard(d, ex);
+  }
+
+  /* 一面答复的渲染：普通答案卡和「先确认」卡共用 */
+  function partHtml(a) {
+    const qs = a.quotes || [];
+    let val;
+    if (!a.found) {
+      val = `<p class="aval none">官方页面没有写这一项。</p>`;
+    } else if (Array.isArray(a.steps) && a.steps.length) {
+      val = `<ol class="asteps">${a.steps.map((s, i) => {
+        const what = typeof s === "string" ? s : (s.what || "");
+        const where = stepNote(s, i);
+        return `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${linkify(esc(what))}${where ? `<span class="w">${linkify(esc(where))}</span>` : ""}</span></li>`;
+      }).join("")}</ol>`;
+    } else if (Array.isArray(a.lines) && a.lines.length) {
+      val = `<ul class="alines">${a.lines.map((s) => `<li>${linkify(esc(s))}</li>`).join("")}</ul>`;
+    } else {
+      const t = a.text == null ? "" : String(a.text);
+      val = `<p class="aval${t.length > 40 ? " long" : ""}">${linkify(esc(t || "官方页面没有写这一项。"))}</p>`;
+    }
+    const q = qs[0] ? quoteLine(qs[0]) : (a.focus === "contact" && a.found
+      ? `<div class="qmore">联系人取自条目归属部门，官方页面没有单列这句话。</div>` : "");
+    const more = qs.length > 1 ? `<div class="qmore">这一面另有 ${qs.length - 1} 条原文，点“核对原文”查看。</div>` : "";
+    return `<div class="aone"><div class="alab">${esc(a.label || "答复")}</div>${val}${q}${more}</div>`;
+  }
+
+  /* 二维码与官方附件 */
+  function attachBlock(item) {
+    const qr = Array.isArray(item.qr) ? item.qr : [];
+    const pdfs = Array.isArray(item.pdf) ? item.pdf : [];
+    if (!qr.length && !pdfs.length) return "";
+    const codes = qr.map((q) => `<figure class="qrcode"><img src="${esc(q.src)}" alt="${esc(q.label || "二维码")}" loading="lazy"><figcaption>${esc(q.label || "")}</figcaption></figure>`).join("");
+    const files = pdfs.length
+      ? `<div class="pdflist"><div class="pdflab">官方简章 PDF · ${pdfs.length} 份</div>${pdfs.map((p) => `<a href="${esc(p.url)}" target="_blank" rel="noreferrer"><span>${esc(p.title)}</span><span class="go">↗</span></a>`).join("")}</div>`
+      : "";
+    return `<div class="attach">${codes ? `<div class="qrwrap">${codes}</div>` : ""}${files}</div>`;
+  }
+
+  /* 相关事项：同一个词还能问什么 */
+  function relatedBlock(list) {
+    if (!Array.isArray(list) || !list.length) return "";
+    const opts = list.map((b) =>
+      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+    return `<div class="sec related"><h3>相关事项（点一下直接问）</h3><div class="opts">${opts}</div></div>`;
   }
 
   /* 普通答案 */
   function answerCard(d, ex) {
     const item = d.item || {};
     const quotes = d.quotes || [];
-    const body = (d.answers || []).map((a) => {
-      const qs = a.quotes || [];
-      let val;
-      if (!a.found) {
-        val = `<p class="aval none">官方页面没有写这一项。</p>`;
-      } else if (Array.isArray(a.steps) && a.steps.length) {
-        val = `<ol class="asteps">${a.steps.map((s, i) => {
-          const what = typeof s === "string" ? s : (s.what || "");
-          const where = stepNote(s, i);
-          return `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${esc(what)}${where ? `<span class="w">${esc(where)}</span>` : ""}</span></li>`;
-        }).join("")}</ol>`;
-      } else if (Array.isArray(a.lines) && a.lines.length) {
-        val = `<ul class="alines">${a.lines.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`;
-      } else {
-        const t = a.text == null ? "" : String(a.text);
-        val = `<p class="aval${t.length > 40 ? " long" : ""}">${esc(t || "官方页面没有写这一项。")}</p>`;
-      }
-      const q = qs[0] ? quoteLine(qs[0]) : (a.focus === "contact" && a.found
-        ? `<div class="qmore">联系人取自条目归属部门，官方页面没有单列这句话。</div>` : "");
-      const more = qs.length > 1 ? `<div class="qmore">这一面另有 ${qs.length - 1} 条原文，点“核对原文”查看。</div>` : "";
-      return `<div class="aone"><div class="alab">${esc(a.label || "答复")}</div>${val}${q}${more}</div>`;
-    }).join("");
+    const body = (d.answers || []).map(partHtml).join("");
 
     const noteBits = [];
-    if (d.note) noteBits.push(esc(d.note));
-    if (d.missing && d.missing.length) noteBits.push(`官方页面没有写「${esc(d.missing.join("、"))}」，不替它补。`);
+    if (d.note) noteBits.push(linkify(esc(d.note)));
+    else if (d.missing && d.missing.length) noteBits.push(`官方页面没有写「${esc(d.missing.join("、"))}」，不替它补。`);
 
     return `<div class="card">
       <div class="cardhead">
@@ -285,7 +345,7 @@
         <span class="norm" title="${esc(d.normalized || "")}">理解成 ${esc(d.normalized || "")}</span>
         <span class="conf" title="规则匹配分数">${pct(d.confidence)}</span>
       </div>
-      <div class="cardbody">${body}${noteBits.length ? `<p class="plannote">${noteBits.join("<br>")}</p>` : ""}</div>
+      <div class="cardbody">${body}${noteBits.length ? `<p class="plannote">${noteBits.join("<br>")}</p>` : ""}${attachBlock(item)}${relatedBlock(d.related)}</div>
       <div class="cardfoot">
         <button class="cf key" type="button" data-act="ev">核对原文<span class="n">${quotes.length}</span></button>
         <button class="cf" type="button" data-act="mat">清单与流程</button>
@@ -317,7 +377,7 @@
       ? "这两件事办起来不是一处。选一个，我按那件事的原文回答，不猜。"
       : "选一个，我按那件事的原文回答，不猜。");
     const opts = (d.disambiguate || []).map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
     return `<div class="notice">
       <h3>${esc(d.clarify || "没太确定你问的是哪一件")}</h3>
       <p>${esc(reason)}</p>
@@ -338,6 +398,9 @@
     const alts = (d.alternatives || []).map((a) =>
       `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.title)}</button>`).join("");
 
+    const dis = (d.disambiguate || []).map((b) =>
+      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+
     const related = (d.related_items || []).map((a) =>
       `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.title)}</button>`).join("");
 
@@ -349,13 +412,38 @@
         ${h.url ? `<a class="lnk" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开部门网站 ↗</a>` : ""}
       </div>`).join("");
 
+    const contacts = (d.contacts || []).map((c) => {
+      const val = c.value || "";
+      const href = c.kind === "phone" ? `tel:${val.replace(/\s/g, "")}`
+        : c.kind === "email" ? `mailto:${val}` : "";
+      const kindLabel = { phone: "电话", email: "邮箱", wechat: "公众号", web: "网址", url: "网址", link: "网址" };
+      return `<div class="ctrow">
+        <div class="cttop"><span class="ctkind">${esc(kindLabel[c.kind] || c.kind || "联系")}</span>
+          <span class="ctval">${href ? `<a href="${esc(href)}" style="border:0;color:inherit">${esc(val)}</a>` : esc(val)}</span></div>
+        <div class="ctdept">${esc(c.dept || "")}${c.purpose ? ` / ${esc(c.purpose)}` : ""}</div>
+        <div class="ctacts">${c.source_url ? `<a href="${esc(c.source_url)}" target="_blank" rel="noreferrer">来源原文 ↗</a>` : ""}</div>
+      </div>`;
+    }).join("");
+
+    const next = (d.next_actions || []).map((s) => `<li>${esc(s)}</li>`).join("");
+
+    const gen = d.llm_answer ? `<div class="genbox">
+      <div class="genhead"><span class="gentag">模型生成</span><span>没有官方条目，以下由大模型直接回答</span></div>
+      <p class="gentext">${esc(d.llm_answer.text || "")}</p>
+      <p class="gencaveat">${esc(d.llm_answer.disclaimer || "内容由大模型生成，可能不准确。")}${d.llm_answer.caveat ? ` ${esc(d.llm_answer.caveat)}` : ""}</p>
+    </div>` : "";
+
     return `<div class="notice">
       <h3>没对上事项。我不硬猜。</h3>
-      <p>${esc(d.search_note || "换个更具体的说法，比如“校园卡补卡”“开成绩单”。下面是我能从原文里找到的线索。")}</p>
+      <p>${d.topic ? `你问的是「${esc(d.topic)}」。` : ""}${esc(d.search_note || "换个更具体的说法，比如“校园卡补卡”“开成绩单”。下面是我能从原文里找到的线索。")}</p>
+      ${gen}
       ${hitRows ? `<div class="hintlist">${hitRows}</div>` : ""}
+      ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "也许你要办的是下面某一类：")}</p><div class="opts">${dis}</div>` : ""}
       ${related ? `<p style="margin-top:14px">这些事项可能是你要的：</p><div class="opts">${related}</div>` : ""}
       ${alts ? `<p style="margin-top:14px">相近的事项：</p><div class="opts">${alts}</div>` : ""}
       ${hints ? `<div class="sec"><h3>归口线索（非官方流程）</h3>${hints}</div>` : ""}
+      ${contacts ? `<div class="sec"><h3>公开联系方式（按你问的事匹配，非办事流程）</h3>${contacts}</div>` : ""}
+      ${next ? `<div class="sec"><h3>接下来可以这样办</h3><ul class="alines">${next}</ul></div>` : ""}
       ${d.suggestion ? `<p style="margin-top:14px;color:var(--ink-3)">${esc(d.suggestion)}</p>` : ""}
       <div class="opts" style="margin-top:14px">
         <button class="opt" type="button" data-searching="${esc(d.query || "")}">拿这句话去原文库搜</button>
@@ -377,10 +465,13 @@
         <div class="opts">${(f.options || []).map((o) =>
           `<button class="opt" type="button" data-key="${esc(f.key)}" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
       </div>`).join("");
+    const base = (d.answers || []).filter((a) => a.found).map(partHtml).join("");
     return `<div class="fu" data-orig="${esc(d.query || "")}">
       <div class="fuhead"><h3>这件事分几种情况，答之前先确认 ${d.followups.length} 件事</h3>
         <span>${esc(d.normalized || "")}</span></div>
       ${knownHtml}${fqs}
+      ${relatedBlock(d.related)}
+      ${base ? `<div class="fubase"><h3>先给你能确定的部分</h3>${base}</div>` : ""}
     </div>`;
   }
 
@@ -437,7 +528,7 @@
         + (on ? "（已开启）" : `<button type="button" data-llmfix="1">开启并重答</button>`);
     } else if (d && d.rule_unsure && !on) {
       el.llmhint.className = "llmhint";
-      el.llmhint.textContent = "规则对这句话没把握。可以开启模型裁决对比，默认保持关闭更稳。";
+      el.llmhint.textContent = "规则对这句话没把握。开启模型裁决后：先把问题翻译成多种校园说法重新检索，再在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考。";
     } else {
       el.llmhint.className = "llmhint";
       el.llmhint.textContent = "";
@@ -514,15 +605,15 @@
 
     const meta = rows.length
       ? `<dl class="metagrid">${rows.map(([k, v, wide]) =>
-          `<div${wide ? ' class="wide"' : ""}><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`
+          `<div${wide ? ' class="wide"' : ""}><dt>${esc(k)}</dt><dd>${linkify(esc(v))}</dd></div>`).join("")}</dl>`
       : `<p class="insempty2">官方页面没有写办理部门、地点与费用。可以看原文或直接问联系人。</p>`;
 
     const pitfalls = (item.pitfalls || []).length
-      ? `<div class="sec"><h3>这几种情况会白跑</h3><div class="warnbox">${item.pitfalls.map((p) => `<p>${esc(p)}</p>`).join("")}</div></div>`
+      ? `<div class="sec"><h3>这几种情况会白跑</h3><div class="warnbox">${item.pitfalls.map((p) => `<p>${linkify(esc(p))}</p>`).join("")}</div></div>`
       : "";
 
     const advisory = (item.advisory || []).length
-      ? `<div class="sec"><h3>办理提示</h3><div class="srcbox">${item.advisory.map((a) => `<p class="insempty2">${esc(a)}</p>`).join("")}</div></div>`
+      ? `<div class="sec"><h3>办理提示</h3><div class="srcbox">${item.advisory.map((a) => `<p class="insempty2">${linkify(esc(a))}</p>`).join("")}</div></div>`
       : "";
 
     const sources = (item.source || []).map((s) => `
@@ -572,7 +663,7 @@
           const what = typeof s === "string" ? s : s.what;
           const where = stepNote(s, i);
           return `<li><span class="n">${String(i + 1).padStart(2, "0")}</span>
-            <span>${esc(what)}${where ? `<span class="w">${esc(where)}</span>` : ""}</span></li>`;
+            <span>${linkify(esc(what))}${where ? `<span class="w">${linkify(esc(where))}</span>` : ""}</span></li>`;
         }).join("")}</ol>`
       : `<p class="insempty2">官方页面没有给出可执行步骤。</p>`;
     el.insbody.innerHTML = `${list}
@@ -879,7 +970,7 @@
     el.thread.addEventListener("click", async (e) => {
       const t = e.target.closest("[data-ask],[data-key],[data-retry],[data-act]");
       if (!t) return;
-      if (t.dataset.ask) { el.q.value = t.dataset.ask; ask(t.dataset.ask); return; }
+      if (t.dataset.ask) { e.preventDefault(); el.q.value = t.dataset.ask; ask(t.dataset.ask); return; }
       if (t.dataset.retry) { el.q.value = t.dataset.retry; ask(t.dataset.retry); return; }
       if (t.dataset.key) {
         state.slots[t.dataset.key] = t.dataset.opt;
@@ -912,6 +1003,7 @@
     document.addEventListener("click", (e) => {
       const askBtn = e.target.closest("[data-ask]");
       if (askBtn && !el.thread.contains(askBtn)) {
+        e.preventDefault();
         el.q.value = askBtn.dataset.ask;
         ask(askBtn.dataset.ask);
         if (state.drawerOpen) closeOverlays("drawer");

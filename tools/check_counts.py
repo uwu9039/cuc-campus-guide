@@ -54,7 +54,9 @@ def main() -> None:
     unknown = sorted(x for x in pids if x not in set(ids))
     if unknown:
         fails.append(f"presets 引用了不存在的事项: {unknown[:5]}")
-    hand_ids = {i["id"] for i in items if not i.get("auto")}
+    # 公告类是陈述性事实，按标题检索可达，不参与「办事问法」覆盖
+    hand_ids = {i["id"] for i in items
+                if not i.get("auto") and i.get("kind") != "notice"}
     missing = sorted(hand_ids - pids)
     if missing:
         fails.append(f"预置问法未覆盖人工条目: {missing[:8]}")

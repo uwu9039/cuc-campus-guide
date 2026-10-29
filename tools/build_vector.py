@@ -396,6 +396,8 @@ def audit_raw() -> dict:
         "xuanke-2025.pdf": ["sources/pdf/xuanke-2025.txt"],
         "xueji-official.pdf": ["sources/pdf/xueji-2025.txt"],
     }
+    for p in sorted((SRC / "pdf").glob("wzy-2026-*.pdf")):
+        pdf_map[p.name] = [f"sources/pdf/{p.stem}.txt"]
     for p in sorted((SRC / "pdf").glob("*.pdf")):
         txts = [t for t in pdf_map.get(p.name, []) if (ROOT / t).exists()]
         ok = bool(txts)

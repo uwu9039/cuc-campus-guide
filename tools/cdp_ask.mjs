@@ -1,7 +1,9 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { connect } from './cdp.mjs';
 
-const ROOT = 'D:/DSH/智能体节';
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const QFILE = `${ROOT}/aia-runs/questions-expanded.txt`;
 const AFILE = `${ROOT}/aia-runs/answers-20261028.jsonl`;
 const LIMIT = Number(process.argv[2] || 0);

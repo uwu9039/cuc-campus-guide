@@ -114,7 +114,9 @@ def main() -> None:
     presets, misses = [], []
     by_group: dict[str, list] = defaultdict(list)
 
-    hand = [i for i in data["items"] if not i.get("auto")]
+    # 公告类是陈述性事实，不是办事流程：套「怎么办」模板会生成怪问句，
+    # 这类条目按标题/关键词检索可达，不预设问法。
+    hand = [i for i in data["items"] if not i.get("auto") and i.get("kind") != "notice"]
     print(f"人工条目 {len(hand)} 条参与生成（制度型条目按标题检索可达，不预设问法）")
 
     by_id = {i["id"]: i for i in hand}

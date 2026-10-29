@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import app  # noqa: E402
 
 CASES = [
-    ("饭卡丢了怎么办艺术与传播大楼 1 层 校园生活服务大厅在哪", "no-plan", "校园卡"),
+    ("饭卡丢了怎么补办", "no-plan", "校园卡"),
     ("艺术与传播大楼", "no-plan", "艺术与传播大楼"),
     ("艺术与传播大楼怎么走", "no-plan", "艺术与传播大楼"),
     ("新闻学院在哪", "no-plan", "新闻学院"),

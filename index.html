@@ -16,6 +16,7 @@
        padding:clamp(18px,3vw,40px) clamp(14px,3vw,40px) 80px;-webkit-font-smoothing:antialiased}
   .wrap{max-width:880px;margin:0 auto}
   a{color:var(--seal);text-decoration:none;border-bottom:1px solid rgba(168,50,42,.3)}
+  .plink{border-bottom-style:dotted}
 
   header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;
          padding-bottom:14px;border-bottom:2px solid var(--ink)}
@@ -77,6 +78,14 @@
     background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.18s}
   .llmsw input:checked + span{background:var(--seal)}
   .llmsw input:checked + span::after{left:17px}
+  .llmsw .risk{font-size:10px;line-height:1;padding:3px 5px;border-radius:5px;
+    background:#f3e3d2;color:#8a4b12;letter-spacing:0;white-space:nowrap}
+  .llmsw input:checked ~ .risk{background:#f7ded8;color:#8c3327}
+  .genblk{border-left:3px solid #b8862f;background:#fbf7ec;padding:12px 14px;margin:0 0 18px}
+  .genblk .gentag{display:inline-block;font-size:10.5px;letter-spacing:.08em;color:#8a4b12;
+    border:1px solid #dcc39a;border-radius:4px;padding:2px 6px;margin-right:8px}
+  .genblk .gentext{white-space:pre-wrap;font-size:14px;line-height:1.75;color:var(--ink);margin:9px 0}
+  .genblk .gencaveat{font-size:12px;color:var(--muted);margin:0}
   .llmhint:empty{display:none}
   .llmhint{margin-top:12px;font-size:12.5px;line-height:1.6;padding:9px 12px;border-left:3px solid var(--line);
     background:#faf7f0;color:var(--muted)}
@@ -202,6 +211,20 @@
             border:1px solid var(--ink);background:var(--paper);color:var(--ink);
             font-size:13px;font-weight:700;text-decoration:none;border-radius:2px}
   .planfile:hover{background:var(--ink);color:var(--paper)}
+  .maplink{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:8px 12px;
+           border:1px dashed var(--seal);color:var(--seal);font-size:13px;font-weight:700;
+           text-decoration:none;border-radius:2px;border-bottom-style:dashed}
+  .maplink:hover{background:rgba(168,50,42,.08)}
+  .att{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .qrw{display:flex;flex-wrap:wrap;gap:14px}
+  .qrc{margin:0;width:136px;text-align:center}
+  .qrc img{width:136px;height:136px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:3px;padding:5px}
+  .qrc figcaption{font-size:11px;color:var(--muted);line-height:1.5;margin-top:5px}
+  .pdfl{margin-top:11px;display:flex;flex-direction:column;gap:4px}
+  .pdflab{font-size:9.5px;letter-spacing:.16em;color:var(--muted);font-weight:700;margin-bottom:2px}
+  .pdfl a{font-size:12.5px;color:var(--seal);text-decoration:none;padding:6px 9px;
+          border:1px solid var(--line);border-radius:2px;background:var(--paper)}
+  .pdfl a:hover{background:rgba(168,50,42,.07)}
 
   /* ---- 转专业完整接收计划 ---- */
   .pfull{margin-top:26px;background:var(--sheet);border:1px solid var(--line);
@@ -261,6 +284,9 @@
   .qmeta{grid-column:2;font-size:10.5px;color:var(--faint)}
   .qmore{font-size:10.5px;color:var(--faint);padding-top:4px}
   .anote{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);font-size:12.5px;color:#7a5a24}
+  .relbox{margin-top:15px;padding-top:12px;border-top:1px dashed var(--line)}
+  .relh{font-size:11.5px;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+  .relbox .fqo{margin-left:0}
   details.full{margin-top:14px}
   details.full > summary{cursor:pointer;font-size:12px;color:var(--muted);letter-spacing:.04em;padding:8px 0;list-style:none}
   details.full > summary::-webkit-details-marker{display:none}
@@ -283,6 +309,7 @@
   .opt{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;font-size:13px;
        padding:6px 12px;border-radius:2px;cursor:pointer}
   .opt:hover{border-color:var(--ink);background:var(--paper)}
+  .opt .odept{display:block;font-size:10.5px;color:var(--muted);font-weight:400;margin-top:1px}
 
   .ev{margin-top:12px;font-size:12.5px}
   .ev summary{cursor:pointer;color:var(--muted);font-size:11.5px;letter-spacing:.04em;
@@ -314,11 +341,12 @@
       <h1>说得清，<em>带得对</em></h1>
     </div>
     <div class="status">
-      <label class="llmsw" title="规则打平时，是否让模型在候选里裁决（只选，不生成事实）">
-        <input type="checkbox" id="llmsw"><span></span>模型裁决
+      <label class="llmsw" title="规则拿不准时让模型在候选里挑；事项库一条都没收录时，由模型直接生成回答。生成内容可能不准确，请自行核对。">
+        <input type="checkbox" id="llmsw"><span></span>模型裁决<em class="risk">含模型生成</em>
       </label>
       <span class="pill"><i class="dot" id="dot"></i><span id="stat">检测中</span></span>
       <span id="meta">数据核验 —</span>
+      <a class="pill" href="/" style="text-decoration:none" title="切到新版界面">新版界面</a>
     </div>
   </header>
 
@@ -351,7 +379,7 @@
   <div id="out"></div>
 
   <footer>
-    <span>校园办事向导 v0.1 · 管理类</span>
+    <span>校园办事向导 v0.4 · 管理类</span>
     <span id="foot">材料以官方窗口为准</span>
   </footer>
 </div>
@@ -362,6 +390,33 @@ const EXAMPLES = ["校园卡丢了怎么办", "我要开个证明", "成绩单�
 let state = { item: null, slots: {} };
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+let PLACE_RE = null;
+const PLACE_SKIP = new Set(["快递", "大集", "教务", "国重", "活动中心"]);
+const PLACE_TWO = new Set(["主楼", "南门", "北门", "西门", "1教", "一教", "艺传", "南操", "大活", "北苑"]);
+function buildPlaces(pois) {
+  const seen = new Set();
+  const names = [];
+  for (const p of pois || []) {
+    for (const raw of [p.name, ...(p.aliases || [])]) {
+      const s = String(raw || "").trim();
+      if (s.length < 2 || /^\d+$/.test(s) || PLACE_SKIP.has(s)) continue;
+      if (s.length === 2 && !PLACE_TWO.has(s)) continue;
+      if (seen.has(s)) continue;
+      seen.add(s); names.push(s);
+    }
+  }
+  names.sort((a, b) => b.length - a.length);
+  PLACE_RE = names.length
+    ? new RegExp(`(?<!第)(?:${names.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g")
+    : null;
+}
+function linkify(html) {
+  if (!PLACE_RE || !html) return html;
+  PLACE_RE.lastIndex = 0;
+  return html.replace(PLACE_RE, (m) =>
+    `<a class="plink" href="#" data-ask="${esc(m + "在哪")}" title="问：${esc(m)}在哪">${m}</a>`);
+}
 
 async function api(path, body) {
   const res = await fetch(path, {
@@ -404,6 +459,11 @@ async function api(path, body) {
     document.querySelector(".presets summary").textContent = `常用问法 · ${pz.total} 条`;
   } catch (e) { /* 预置问法拿不到不影响主流程 */ }
 
+  try {
+    const c = await api("/api/campus?limit=500");
+    buildPlaces(c.pois);
+  } catch (e) { /* 地点表失败只影响链接化 */ }
+
   const ctp = new URLSearchParams(location.search).get("ct");
   if (ctp) {
     await openContacts();
@@ -415,6 +475,13 @@ async function api(path, body) {
 
 $("#clear").onclick = () => { $("#q").value = ""; $("#out").innerHTML = ""; $("#err").textContent = ""; state = { item: null, slots: {} }; };
 $("#go").onclick = run;
+$("#out").addEventListener("click", (ev) => {
+  const a = ev.target.closest("a.plink");
+  if (!a) return;
+  ev.preventDefault();
+  $("#q").value = a.dataset.ask || "";
+  run();
+});
 $("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(); });
 
 /* ---------------- 常用联系方式 ---------------- */
@@ -480,7 +547,7 @@ function showLlmHint(d) {
       + (on ? "（已开启）" : `　<button class="mini" onclick="document.querySelector('#llmsw').click();run(true)">开启并重答</button>`);
   } else if (d.rule_unsure && !on) {
     el.className = "llmhint soft";
-    el.textContent = "规则对这句没把握，可试着开启模型裁决对比效果（默认保持关闭，更稳）";
+    el.textContent = "规则对这句没把握。开启模型裁决后：先在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考。";
   } else {
     el.className = "llmhint";
     el.textContent = "";
@@ -491,7 +558,7 @@ function showLlmHint(d) {
 async function run(keepSlots) {
   const text = $("#q").value.trim();
   $("#err").textContent = "";
-  if (text.length < 2) { $("#err").textContent = "请再说得具体一点"; return; }
+  if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { $("#err").textContent = "请再说得具体一点"; return; }
   if (!keepSlots) state.slots = {};
   $("#go").disabled = true;
   try {
@@ -503,9 +570,15 @@ async function run(keepSlots) {
       return;
     }
     state.item = d.item;
+    if (Array.isArray(d.disambiguate) && d.disambiguate.length && d.clarify) {
+      $("#out").innerHTML = choiceBlock(d);
+      bindChoices();
+      return;
+    }
     if (d.hold) {
       $("#out").innerHTML = followupBlock(d);
       bindFollowups();
+      bindChoices();
       return;
     }
     if (d.plan) {
@@ -517,6 +590,7 @@ async function run(keepSlots) {
     $("#out").innerHTML = answerBlock(d)
       + `<details class="full"><summary>完整事项 · 时间线 / 材料清单 / 文书草稿 / 拍照核对</summary>`
       + buildSheet(d.item, d) + `</details>`;
+    bindChoices();
     bindSheet();
     refreshDeliver();
   } catch (e) {
@@ -534,25 +608,40 @@ function followupBlock(d) {
     : "";
   const qs = d.followups.map((f, i) => `
     <div class="fq">
-      <div class="fqh"><span class="fqi">${i + 1}</span><span>${esc(f.question)}</span></div>
-      <div class="fqw">为什么问：${esc(f.why)}</div>
+      <div class="fqh"><span class="fqi">${i + 1}</span><span>${linkify(esc(f.question))}</span></div>
+      <div class="fqw">为什么问：${linkify(esc(f.why))}</div>
       <div class="fqo">${(f.options || []).map((o) =>
         `<button class="opt" data-key="${esc(f.key)}" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
     </div>`).join("");
+  const rel = (Array.isArray(d.related) ? d.related : []).length
+    ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
+        `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
+    : "";
   return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
     <div class="fbox">
       <div class="fboxh">这件事分几种情况，答之前我得先确认 ${d.followups.length} 件事</div>
-      ${knownLine}${qs}
+      ${knownLine}${qs}${rel}
     </div>`;
 }
 
 function bindFollowups() {
-  document.querySelectorAll(".opt").forEach((b) => {
+  document.querySelectorAll("[data-key]").forEach((b) => {
     b.onclick = () => {
       state.slots[b.dataset.key] = b.dataset.opt;
       run(true);
     };
   });
+}
+
+/* 反问选择题：点一个，按那个说法重新问 */
+function choiceBlock(d) {
+  const opts = (d.disambiguate || []).map((b) =>
+    `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
+  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ ${esc(d.normalized || "")}</span></div>
+    <div class="fbox">
+      <div class="fboxh">${esc(d.clarify || "选一个，我按那件事的原文回答")}</div>
+      <div class="fqo">${opts}</div>
+    </div>`;
 }
 
 /* 先把问题翻译成「事项 + 问的是哪一面」，只答那一面 */
@@ -563,11 +652,11 @@ function answerBlock(d) {
       val = `<div class="aval none">官方页面没有写这一项</div>`;
     } else if (Array.isArray(a.steps) && a.steps.length) {
       val = `<ol class="asteps">${a.steps.map((s, i) =>
-        `<li><span class="sn">${i + 1}</span><span>${esc(s)}</span></li>`).join("")}</ol>`;
+        `<li><span class="sn">${i + 1}</span><span>${linkify(esc(s))}</span></li>`).join("")}</ol>`;
     } else if (Array.isArray(a.lines) && a.lines.length) {
-      val = `<ul class="alines">${a.lines.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`;
+      val = `<ul class="alines">${a.lines.map((s) => `<li>${linkify(esc(s))}</li>`).join("")}</ul>`;
     } else {
-      val = `<div class="aval${(a.text || "").length > 26 ? " long" : ""}">${esc(a.text)}</div>`;
+      val = `<div class="aval${(a.text || "").length > 26 ? " long" : ""}">${linkify(esc(a.text))}</div>`;
     }
     const qs = a.quotes || [];
     const q = qs.length
@@ -583,8 +672,24 @@ function answerBlock(d) {
   const planFile = d.plan_file
     ? `<a class="planfile" href="${esc(d.plan_file)}" target="_blank" rel="noreferrer">打开学院接收计划 PDF ↗</a>`
     : "";
+  const mapLink = d.map
+    ? `<a class="maplink" href="${esc(d.map.url || d.map.marker || "#")}" target="_blank" rel="noreferrer">在地图上打开「${esc(d.map.label || d.map.name || "这个地点")}」↗</a>`
+    : "";
+  const it = d.item || {};
+  const qrs = Array.isArray(it.qr) ? it.qr : [];
+  const pdfs = Array.isArray(it.pdf) ? it.pdf : [];
+  const attach = (qrs.length || pdfs.length) ? `<div class="att">
+    ${qrs.length ? `<div class="qrw">${qrs.map((q) =>
+      `<figure class="qrc"><img src="${esc(q.src)}" alt="${esc(q.label || "二维码")}" loading="lazy"><figcaption>${esc(q.label || "")}</figcaption></figure>`).join("")}</div>` : ""}
+    ${pdfs.length ? `<div class="pdfl"><div class="pdflab">官方简章 PDF · ${pdfs.length} 份</div>${pdfs.map((p) =>
+      `<a href="${esc(p.url)}" target="_blank" rel="noreferrer">${esc(p.title)} ↗</a>`).join("")}</div>` : ""}
+  </div>` : "";
+  const related = (Array.isArray(d.related) ? d.related : []).length
+    ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
+        `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
+    : "";
   return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
-  <div class="ablock">${rows}${planFile}${d.note ? `<div class="anote">${esc(d.note)}</div>` : ""}</div>`;
+  <div class="ablock">${rows}${planFile}${mapLink}${attach}${related}${d.note ? `<div class="anote">${linkify(esc(d.note))}</div>` : ""}</div>`;
 }
 
 /* ---------------- 转专业：整份接收计划，按专业逐条展开 ---------------- */
@@ -699,7 +804,7 @@ function planBlock(d) {
 function hitList(hits) {
   const rows = hits.map((h) => `<li class="hit">
     <div class="ht"><span>${esc(h.title)}</span><span class="hk">${esc(h.kind)}${h.page ? " · " + esc(h.page) : ""}</span></div>
-    <div class="hs">${esc(h.snippet)}</div>
+    <div class="hs">${linkify(esc(h.snippet))}</div>
     <div class="hm">${h.url ? `<a href="${esc(h.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}
       <span>相关度 ${Math.round((h.score || 0) * 100)}</span>
       ${(h.item_ids || []).length ? `<span>涉及 ${h.item_ids.length} 个事项</span>` : ""}</div>
@@ -711,12 +816,32 @@ function notFound(r) {
   const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
   const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
   const hits = r.original_search || [];
+  const gen = r.llm_answer ? `<section class="blk genblk">
+      <div><span class="gentag">模型生成</span><span class="h">没有官方条目，以下由大模型直接回答</span></div>
+      <p class="gentext">${linkify(esc(r.llm_answer.text || ""))}</p>
+      <p class="gencaveat">${esc(r.llm_answer.disclaimer || "内容由大模型生成，可能不准确。")}${r.llm_answer.caveat ? ` ${esc(r.llm_answer.caveat)}` : ""}</p>
+    </section>` : "";
+  const contacts = (r.contacts || []).map((c) => {
+    const val = c.value || "";
+    const href = c.kind === "phone" ? `tel:${val.replace(/\s/g, "")}`
+      : c.kind === "email" ? `mailto:${val}` : "";
+    const kind = { phone: "电话", email: "邮箱", wechat: "公众号", web: "网址", url: "网址", link: "网址" }[c.kind] || "联系";
+    return `<li class="hit"><div class="ht"><span>${esc(c.purpose || kind)}</span><span class="hk">${esc(c.dept || kind)}</span></div>
+      <div class="hs">${href ? `<a href="${esc(href)}">${esc(val)}</a>` : esc(val)}</div></li>`;
+  }).join("");
+  const next = (r.next_actions || []).map((s) => `<li>${linkify(esc(s))}</li>`).join("");
   return `<div class="sheet">
     <div class="sheet-top"><div><div class="t">没查到这条</div>
-      <div class="s">${esc(r.reason || "规则没有对上具体事项")}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
-    <section class="blk"><div class="chips" id="alts">${alts || '<span class="hint">暂无可选项</span>'}</div></section>
+      <div class="s">${r.topic ? `你问的是「${esc(r.topic)}」。` : ""}${esc(r.reason || "规则没有对上具体事项")}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
+    ${gen}
+    ${alts ? `<section class="blk"><div class="bh"><span class="i">相近</span><span class="h">这些事项名称接近</span></div>
+      <div class="chips" id="alts">${alts}</div></section>` : ""}
     ${related ? `<section class="blk"><div class="bh"><span class="i">线索</span><span class="h">原文里提到这些事项</span></div>
       <div class="chips">${related}</div></section>` : ""}
+    ${contacts ? `<section class="blk"><div class="bh"><span class="i">电话</span><span class="h">公开联系方式（按你问的事匹配）</span></div>
+      <ul class="hits">${contacts}</ul></section>` : ""}
+    ${next ? `<section class="blk"><div class="bh"><span class="i">下一步</span><span class="h">接下来可以这样办</span></div>
+      <ul>${next}</ul></section>` : ""}
     ${hits.length ? `<section class="blk"><div class="bh"><span class="i">原文</span><span class="h">原文库相近段落（${hits.length}）</span></div>
       <div class="hint">${esc(r.search_note || "只是原文线索，不是办理结论。")}</div>${hitList(hits)}</section>` : ""}
   </div>`;

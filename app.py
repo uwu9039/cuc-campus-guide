@@ -443,6 +443,21 @@ def map_place(text: str) -> dict[str, Any] | None:
     return rows[-1] if rows else None
 
 
+def _named_place_item(places: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """地点本身就是一条具体事项（如快递驿站）时，交给事项回答，信息更全。"""
+    names = {norm(p["name"]) for p in places}
+    for it in ITEMS:
+        if it.get("archive_only") or it["id"].startswith("campus-"):
+            continue
+        if re.search(r"借用|预约|申请|办理|查询|入口|清单|对照", it["title"]):
+            continue
+        for raw in (it["title"], *it.get("aliases", [])):
+            k = norm(raw)
+            if len(k) >= 3 and any(k in n or n in k for n in names):
+                return it
+    return None
+
+
 # ---------------------------------------------------------------- matching
 
 PUNCT = re.compile(r"[\s，。！？、；：\"'“”‘’（）()【】\[\]—…·.,!?;:]")
@@ -1626,7 +1641,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
             "confidence": 0.99,
             "band": "high",
             "ambiguous": False,
-            "item": public(place_item(places)),
+            "item": public(_named_place_item(places) or place_item(places)),
             "answers": parts,
             "focus": ["location"],
             "hold": False,

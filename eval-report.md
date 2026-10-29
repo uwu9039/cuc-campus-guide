@@ -3,7 +3,7 @@
 - 用例数：33
 - 规则识别准确率：**100.0%**（33/33）
 - 拒答正确率：4/4
-- 事项库：355 条，其中已核验 333 条
+- 事项库：645 条，其中已核验 614 条
 
 | 问题 | 期望 | 实际 | 分数 | 类型 | 结果 |
 |---|---|---|---|---|---|
@@ -37,6 +37,6 @@
 | 宿舍能不能换 | 拒绝 | 拒绝 | 53 | absent | OK |
 | 奖学金怎么申请 | jiangxuejin | jiangxuejin | 87 | normal | OK |
 | 图书馆能续借吗 | lib-jieyue | lib-jieyue | 94 | normal | OK |
-| 研究生能换导师吗 | 拒绝 | 拒绝 | 0 | absent | OK |
+| 研究生能换导师吗 | 拒绝 | 拒绝 | 52 | absent | OK |
 | 学历证书电子注册备案表怎么申请 | chsi-baogao | chsi-baogao | 92 | normal | OK |
 | 想转学去别的学校 | moe-zhuanxue | moe-zhuanxue | 86 | normal | OK |

@@ -29,6 +29,14 @@ SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
 SKIP_PREFIX = ("shot", "llm-", "aia")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
 BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text"}
+PLAN_DIR = "sources/local/_files"
+
+
+def plan_pdf_names() -> set[str]:
+    """转专业接收计划原件随包发布，前端「打开原始 PDF」才可用。"""
+    data = json.loads((ROOT / "transfer-plans.json").read_text(encoding="utf-8"))
+    return {Path(v["file"]).name for v in data.values()
+            if isinstance(v, dict) and v.get("file")}
 
 
 def token() -> str:
@@ -74,13 +82,16 @@ def blob_sha(path: Path) -> str:
 
 def collect() -> list[tuple[str, Path]]:
     out = []
+    plans = plan_pdf_names()
     for p in ROOT.rglob("*"):
         if p.is_dir() or set(p.parts) & SKIP_DIRS:
             continue
         if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX) or ".bak" in p.name:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
-            continue
+            rel_pdf = p.relative_to(ROOT).as_posix()
+            if not (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans):
+                continue
         rel = p.relative_to(ROOT)
         if len(rel.parts) >= 3 and rel.parts[0] == "sources" and rel.parts[1] in BULK_DIRS:
             continue
@@ -105,7 +116,7 @@ def build_archive() -> None:
     out = ROOT / "sources-archive.tar.gz"
     with tarfile.open(out, "w:gz", compresslevel=9) as tf:
         for p in sorted(picked, key=lambda x: x.as_posix()):
-            ti = tf.gettarinfo(str(p), arcname=p.as_posix())
+            ti = tf.gettarinfo(str(p), arcname=p.relative_to(ROOT).as_posix())
             ti.mtime = 0
             ti.uid = ti.gid = 0
             ti.uname = ti.gname = ""

@@ -3,7 +3,7 @@
 参赛作品：2026 首届智能体节「智启未来·体创万象」· 管理类 · 单人。
 一句话：学生问“校园卡丢了怎么办”，它不只回答，而是给出一张**能打印带走的单子**——时间线、材料清单、文书草稿，还能拍照核对缺哪样。
 
-当前版本：**v0.3**（2026-10-29）。645 条事项 / 688 份语料 / 36 处校园地点 / 16 个学院转专业计划。
+当前版本：**v0.3.1**（2026-10-29）。645 条事项 / 688 份语料 / 36 处校园地点 / 16 个学院转专业计划。
 
 ## 快速开始
 
@@ -35,6 +35,32 @@ python web-next/serve.py 8090                 # 再起预览（/api 自动反代
 
 打开 <http://127.0.0.1:8090>。问「一教在哪」「中传礼堂在哪」会在左侧弹出地图抽屉并定位；
 问「饭卡丢了怎么办」会给出办理地点 + 三步流程；问学院转专业会按专业列出接收计划。
+
+## 从 GitHub 部署到另一台机器
+
+仓库里是能直接运行的代码，但有三样东西按设计不入库，换机器时补上就与本地一致：
+
+| 没入库的 | 影响 | 怎么补 |
+|---|---|---|
+| `.env`（DeepSeek Key） | 只有拍照核对不可用，问答不受影响 | 复制 `.env.example` 为 `.env`，填 Key |
+| `sources/` 正文（964 份） | 问答不受影响；`check_quotes.py`、原文检索需要 | 解压 `sources-archive.tar.gz` |
+| `sources/vector/`（74 MB 索引） | `/api/search` 返回 503，规则没命中时少一层原文线索 | 跑 `tools/build_vector.py` 重建（约 1–2 分钟，纯本地计算，不联网） |
+
+Windows（Python 3.11+）：
+
+```bat
+git clone https://github.com/uwu9039/cuc-campus-guide.git
+cd cuc-campus-guide
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+tar -xzf sources-archive.tar.gz
+.venv\Scripts\python.exe tools\build_vector.py
+.venv\Scripts\python.exe -m uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+`tar` 用 Windows 10 自带的即可，解出来就是 `sources/...`，不会多一层目录。
+16 份转专业计划原始 PDF 已随仓库提供，`/api/plan-file` 可直接下载；其余 PDF/DOCX 只保留抽取后的文本（在归档包里）。
+视频样片、采集中间产物（`dist/`、`aia-runs/`、`wendao/`）和隔离语料不在仓库里，也不影响运行。
 
 ## 热加载（开发时不用重启）
 

@@ -13,7 +13,7 @@ from pathlib import Path
 
 from pypdf import PdfReader
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 TZ = timezone(timedelta(hours=8))
 
 TOC = re.compile(r"^(中国传媒大学.{2,44}?(?:办法|规定|细则|准则|制度|方案|规程|规范|标准))[.…\s]{2,}(\d{1,3})\s*$")

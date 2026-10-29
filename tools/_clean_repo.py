@@ -9,8 +9,9 @@ from __future__ import annotations
 import base64
 import json
 import sys
+from pathlib import Path
 
-sys.path.insert(0, "D:/DSH/智能体节/tools")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 import _release as r  # noqa: E402
 
 API = "https://api.github.com"

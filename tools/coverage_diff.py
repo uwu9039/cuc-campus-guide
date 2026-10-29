@@ -9,7 +9,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "sources"
 
 # 清单里的关键条目（学生向，需要核对是否已有）

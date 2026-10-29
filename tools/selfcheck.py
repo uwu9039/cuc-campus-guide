@@ -9,7 +9,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 
 # (板块, [(主题, [匹配关键词...])])
 BOARDS: list[tuple[str, list[tuple[str, list[str]]]]] = [

@@ -8,7 +8,7 @@ import os
 import re
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "sources"
 NEWS = re.compile(r"喜报|举行|召开|斩获|风采|纪实|致辞|报道|讲座|论坛|活动|盘点|招生简章|论文名单|成绩盘点|连冠|获证|合格证|夏令营|毕业典礼")
 RULE = re.compile(r"办法|规定|细则|制度|准则|方案|规程|规范|章程|指引|指南|须知|流程|通知|协议|责任书|标准")

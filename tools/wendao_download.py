@@ -16,7 +16,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "sources" / "wendao"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 VIEW = "https://aihub.cuc.edu.cn/doc/view/fileview?fileId={}"

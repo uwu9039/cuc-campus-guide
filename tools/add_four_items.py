@@ -6,7 +6,7 @@ import json
 import pathlib
 import re
 
-ROOT = pathlib.Path("D:/DSH/智能体节")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "sources"
 
 

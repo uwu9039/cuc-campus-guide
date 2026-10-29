@@ -17,7 +17,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "faculty.json"
 CDP = "http://localhost:3456"
 TZ = timezone(timedelta(hours=8))

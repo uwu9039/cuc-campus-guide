@@ -7,7 +7,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 TARGETS = [ROOT / "index.html", ROOT / "app.py"]
 
 PATTERNS: list[tuple[str, re.Pattern, str]] = [

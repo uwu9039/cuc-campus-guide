@@ -6,7 +6,7 @@ import urllib.parse
 import urllib.request
 import uuid
 
-ROOT = pathlib.Path("D:/DSH/智能体节")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 cfg = json.loads((ROOT / "aia-api.json").read_text(encoding="utf-8"))
 cfg.update({"content": "转专业什么时候申请", "requestId": str(uuid.uuid4()),
             "startTime": int(time.time() * 1000), "newRequest": True})

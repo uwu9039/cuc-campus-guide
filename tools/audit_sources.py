@@ -15,7 +15,7 @@ import re
 import shutil
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "sources"
 Q = SRC / "_quarantine"
 

@@ -27,8 +27,8 @@ RULES = [
     ("GitHub Token", re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}")),
     ("手机号", re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)")),
     ("邮箱", re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")),
-    ("本机用户路径", re.compile(r"[A-Za-z]:\\\\?Users\\\\?admin", re.I)),
-    ("本地项目路径", re.compile(r"[A-Za-z]:\\\\?DSH[\\\\/]")),
+    ("本机用户路径", re.compile(r"[A-Za-z]:[\\\\/]+Users[\\\\/]+admin", re.I)),
+    ("本地项目路径", re.compile(r"[A-Za-z]:[\\\\/]+DSH[\\\\/]")),
     ("file:// 本地引用", re.compile(r"file:///[A-Za-z]:/")),
 ]
 
@@ -76,8 +76,8 @@ def main() -> None:
         if fix:
             new = text
             new = re.sub(r"file:///[A-Za-z]:/[^\"'\s]*", "（本地文件，未入库）", new)
-            new = re.sub(r"[A-Za-z]:\\\\?DSH[\\\\/][^\"'\s]*", "（本地路径已隐藏）", new)
-            new = re.sub(r"[A-Za-z]:\\\\?Users\\\\?admin[^\"'\s]*", "（本地路径已隐藏）", new)
+            new = re.sub(r"[A-Za-z]:[\\/]+DSH[\\/][^\"'\s]*", "（本地路径已隐藏）", new)
+            new = re.sub(r"[A-Za-z]:[\\/]+Users[\\/]+admin[^\"'\s]*", "（本地路径已隐藏）", new)
             if new != text:
                 p.write_text(new, encoding="utf-8")
                 changed += 1

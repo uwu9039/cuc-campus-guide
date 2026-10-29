@@ -121,6 +121,7 @@ def main() -> None:
     ap.add_argument("--message", default="", help="提交信息，默认按 tag 生成")
     ap.add_argument("--max", type=int, default=0, help="本批最多上传多少个文件")
     ap.add_argument("--dry-run", action="store_true", help="只打印清单，不写入 GitHub")
+    ap.add_argument("--no-tag", action="store_true", help="只提交，不打 tag、不发 release")
     ap.add_argument("--rebuild-archive", action="store_true", help="重新打包 sources-archive.tar.gz")
     args = ap.parse_args()
     tok = token()
@@ -190,6 +191,8 @@ def main() -> None:
     call("PATCH", f"{API}/repos/{OWNER}/{REPO}/git/refs/heads/main", tok,
          {"sha": new_commit["sha"], "force": True})
     print(f"✓ 提交 {new_commit['sha'][:8]}，新增/更新 {len(entries)} 个文件")
+    if args.no_tag:
+        return
 
     st, _ = call("POST", f"{API}/repos/{OWNER}/{REPO}/git/refs", tok,
                  {"ref": f"refs/tags/{args.tag}", "sha": new_commit["sha"]})

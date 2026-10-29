@@ -1,6 +1,6 @@
 """把用户下载的本地文件（PDF/DOCX/XLSX）提取成文本，入 sources/local。
 
-用法：python tools/ingest_local_batch.py --dir "C:/Users/admin/Desktop/1"
+用法：python tools/ingest_local_batch.py --dir "<素材目录>"
 """
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import shutil
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "sources" / "local"
 KEEP = ROOT / "sources" / "local" / "_files"
 TZ = timezone(timedelta(hours=8))

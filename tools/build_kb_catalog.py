@@ -9,7 +9,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 LINK = re.compile(r"\[([^\]]+)\]\((https://aihub\.cuc\.edu\.cn/doc/view/fileview\?fileId=([a-f0-9]{32})[^)]*)\)")
 BLOCK = re.compile(r"^=====\s*(.+)$", re.M)
 

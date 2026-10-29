@@ -13,7 +13,7 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 WD = ROOT / "sources" / "wendao"
 TXT = ROOT / "sources" / "wendao-text"
 IDX = WD / "index.json"

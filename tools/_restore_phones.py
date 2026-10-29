@@ -11,10 +11,10 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "D:/DSH/智能体节/tools")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 import _release as r  # noqa: E402
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.github.com"
 REPO = "uwu9039/cuc-campus-guide"
 MASK = re.compile(r"1[3-9]\d\*\*\*\*\d{4}")

@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 
 CDP = "http://localhost:3456"
-TAB = Path("D:/DSH/智能体节/.cdp_tab")
+TAB = Path(__file__).resolve().parent.parent / ".cdp_tab"
 
 
 def esc(t: str) -> str:

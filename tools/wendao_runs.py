@@ -11,7 +11,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "aia-runs"
 OUT = ROOT / "aia-raw-5.md"
 CAT = ROOT / "kb-catalog-new.json"

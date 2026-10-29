@@ -9,7 +9,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "sources"
 
 INDEXES = ["index.json", "crawl-index.json", "cdp-index.json", "wechat-index.json",

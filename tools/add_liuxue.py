@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-ROOT = Path("D:/DSH/智能体节")
+ROOT = Path(__file__).resolve().parent.parent
 p = ROOT / "items.json"
 d = json.loads(p.read_text(encoding="utf-8"))
 have = {i["id"] for i in d["items"]}

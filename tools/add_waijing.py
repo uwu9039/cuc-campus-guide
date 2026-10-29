@@ -7,7 +7,7 @@ import json
 import pathlib
 import re
 
-ROOT = pathlib.Path("D:/DSH/智能体节")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 idx = json.loads((ROOT / "sources/extra-index.json").read_text(encoding="utf-8"))
 slug = next(k for k, v in idx.items() if "境外交流" in v["title"])
 body = (ROOT / "sources" / "extra" / f"{slug}.txt").read_text(encoding="utf-8")

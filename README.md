@@ -55,6 +55,8 @@ python web-next/serve.py 8090                 # 再起预览（/api 自动反代
 | `sources/` 正文（归档包） | 问答不受影响；`check_quotes.py`、原文检索需要 | 解压 `sources-archive.tar.gz` |
 | `sources/vector/`（约 74 MB 索引） | `/api/search` 返回 503，规则没命中时少一层原文线索 | 跑 `tools/build_vector.py` 重建（约 1–2 分钟，纯本地计算，不联网） |
 
+> 事项库在仓库里是 `items.json.gz`（明文 31 MB，压缩后 2.8 MB）。`app.py` 两种都认：有明文读明文，没有就自动解压 gz，**运行不需要手动解压**。只有当你跑 `check_quotes.py` 这类只认明文的脚本时，先执行 `.venv\Scripts\python.exe tools\unpack_items.py`。
+
 Windows（Python 3.11+）：
 
 ```bat
@@ -103,7 +105,7 @@ python -m uvicorn app:app --host 0.0.0.0 --port 8000
 浏览器（新版 web-next 默认 /，旧版 index.html 在 /classic，均无构建）
    ↓
 FastAPI（app.py）
-   ├── items.json        → 18,949 条结构化校园事项（18,917 条有原文正文）
+   ├── items.json(.gz)   → 18,949 条结构化校园事项（18,917 条有原文正文）
    ├── sources/          → 688 份官方原文 / 7,622 段向量（只做辅助检索）
    ├── transfer-plans.json → 16 个学院转专业接收计划（88 个专业、94 个年级块）
    ├── campus-map.json   → 37 个地图 POI；接口共 189 条地点词条，问答联动高德地图
@@ -173,7 +175,7 @@ FastAPI（app.py）
 |---|---|
 | `app.py` | 后端：问答接口 + 两个界面（`/` 新版、`/classic` 旧版） |
 | `web-next/` | 新版前端：地点抽屉、步骤列表、转专业计划、反问与核对 |
-| `items.json` | 事项库（`status=verified` 已逐条核对官方页面，`source-thin` 仅定位入口） |
+| `items.json.gz` | 事项库（`verified` 已逐条核对官方页面，`source-thin` 仅定位入口）；本地有 `items.json` 明文时优先用明文 |
 | `transfer-plans.json` | 16 个学院转专业接收计划，逐专业、逐年级保留原文 |
 | `campus-map.json` | 校园地点与地图坐标，供地点问答跳转 |
 | `eval.py` | 33 条评测集，输出准确率与拒答率 |

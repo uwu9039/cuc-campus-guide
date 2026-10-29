@@ -32,6 +32,12 @@ for s, m in load("crawl-index.json").items():
     add(s, m, "官网·采集")
 for s, m in load("cdp-index.json").items():
     add(s, m, "官网·渲染")
+for s, m in load("local-index.json").items():
+    add(s, m, "本地文件")
+for s, m in load("huibian-index.json").items():
+    add(s, m, "制度汇编")
+for s, m in load("extra-index.json").items():
+    add(s, m, "官网·检索")
 for s, m in load("chsi-index.json").items():
     add(s, m, "学信网")
 for s, m in load("moe-index.json").items():

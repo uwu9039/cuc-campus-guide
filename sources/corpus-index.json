@@ -390,7 +390,8 @@
     "fetched_at": "2026-10-21T23:18:27+08:00",
     "official": true,
     "used_by_items": [
-      "doc-20231208-c10302a214544"
+      "doc-20231208-c10302a214544",
+      "rule-20231208-c10302a214544"
     ]
   },
   "20260331-c14817a268360": {
@@ -928,7 +929,9 @@
     "chars": 613,
     "fetched_at": "2026-10-21T23:17:55+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20250716-c6487a258496"
+    ]
   },
   "20250715-c6487a258431": {
     "slug": "20250715-c6487a258431",
@@ -964,7 +967,9 @@
     "chars": 724,
     "fetched_at": "2026-10-21T23:17:56+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20241029-c6487a244794"
+    ]
   },
   "20260116-c6487a266577": {
     "slug": "20260116-c6487a266577",
@@ -976,7 +981,9 @@
     "chars": 609,
     "fetched_at": "2026-10-21T23:17:56+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260116-c6487a266577"
+    ]
   },
   "20240304-c6487a216885": {
     "slug": "20240304-c6487a216885",
@@ -988,7 +995,9 @@
     "chars": 675,
     "fetched_at": "2026-10-21T23:17:56+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216885"
+    ]
   },
   "20240304-c6487a216884": {
     "slug": "20240304-c6487a216884",
@@ -1000,7 +1009,9 @@
     "chars": 645,
     "fetched_at": "2026-10-21T23:17:58+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216884"
+    ]
   },
   "20240304-c6487a216883": {
     "slug": "20240304-c6487a216883",
@@ -1012,7 +1023,9 @@
     "chars": 661,
     "fetched_at": "2026-10-21T23:17:58+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216883"
+    ]
   },
   "20240304-c6487a216882": {
     "slug": "20240304-c6487a216882",
@@ -1024,7 +1037,9 @@
     "chars": 658,
     "fetched_at": "2026-10-21T23:17:59+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216882"
+    ]
   },
   "20240304-c6487a216881": {
     "slug": "20240304-c6487a216881",
@@ -1036,7 +1051,9 @@
     "chars": 679,
     "fetched_at": "2026-10-21T23:17:59+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216881"
+    ]
   },
   "20240304-c6487a216880": {
     "slug": "20240304-c6487a216880",
@@ -1060,7 +1077,9 @@
     "chars": 663,
     "fetched_at": "2026-10-21T23:18:00+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216879"
+    ]
   },
   "20240304-c6487a216878": {
     "slug": "20240304-c6487a216878",
@@ -1084,7 +1103,9 @@
     "chars": 668,
     "fetched_at": "2026-10-21T23:18:00+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216877"
+    ]
   },
   "jwc-list2": {
     "slug": "jwc-list2",
@@ -1436,7 +1457,9 @@
     "chars": 555,
     "fetched_at": "2026-10-21T23:22:20+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260106-c6364a265996"
+    ]
   },
   "20260106-c6479a265996": {
     "slug": "20260106-c6479a265996",
@@ -1588,7 +1611,9 @@
     "chars": 579,
     "fetched_at": "2026-10-21T23:22:23+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6366a176046"
+    ]
   },
   "20201124-c6366a176044": {
     "slug": "20201124-c6366a176044",
@@ -1600,7 +1625,9 @@
     "chars": 615,
     "fetched_at": "2026-10-21T23:22:23+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6366a176044"
+    ]
   },
   "20201124-c6487a176021": {
     "slug": "20201124-c6487a176021",
@@ -1612,7 +1639,9 @@
     "chars": 694,
     "fetched_at": "2026-10-21T23:22:24+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6487a176021"
+    ]
   },
   "20201124-c6487a176030": {
     "slug": "20201124-c6487a176030",
@@ -1653,7 +1682,8 @@
     "fetched_at": "2026-10-21T23:22:24+08:00",
     "official": true,
     "used_by_items": [
-      "kaoshi-weiji"
+      "kaoshi-weiji",
+      "rule-20201124-c6487a176027"
     ]
   },
   "20201124-c6487a176024": {
@@ -1666,7 +1696,9 @@
     "chars": 611,
     "fetched_at": "2026-10-21T23:22:25+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6487a176024"
+    ]
   },
   "20260422-c2810a269469": {
     "slug": "20260422-c2810a269469",
@@ -1690,7 +1722,9 @@
     "chars": 1032,
     "fetched_at": "2026-10-21T23:22:25+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260422-c2812a269470"
+    ]
   },
   "20250508-c2813a255322": {
     "slug": "20250508-c2813a255322",
@@ -1900,7 +1934,9 @@
     "chars": 1143,
     "fetched_at": "2026-10-21T23:22:30+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240328-c2812a217698"
+    ]
   },
   "20240328-c2812a217697": {
     "slug": "20240328-c2812a217697",
@@ -1912,7 +1948,9 @@
     "chars": 1155,
     "fetched_at": "2026-10-21T23:22:30+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240328-c2812a217697"
+    ]
   },
   "20240328-c2812a217696": {
     "slug": "20240328-c2812a217696",
@@ -1924,7 +1962,9 @@
     "chars": 1188,
     "fetched_at": "2026-10-21T23:22:30+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240328-c2812a217696"
+    ]
   },
   "20240328-c2812a217695": {
     "slug": "20240328-c2812a217695",
@@ -1936,7 +1976,9 @@
     "chars": 1128,
     "fetched_at": "2026-10-21T23:22:31+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240328-c2812a217695"
+    ]
   },
   "20240328-c2812a217694": {
     "slug": "20240328-c2812a217694",
@@ -1948,7 +1990,9 @@
     "chars": 1167,
     "fetched_at": "2026-10-21T23:22:31+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240328-c2812a217694"
+    ]
   },
   "20240327-c2813a217631": {
     "slug": "20240327-c2813a217631",
@@ -1974,7 +2018,9 @@
     "chars": 653,
     "fetched_at": "2026-10-21T23:22:31+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216875"
+    ]
   },
   "20240304-c6487a216870": {
     "slug": "20240304-c6487a216870",
@@ -1986,7 +2032,9 @@
     "chars": 651,
     "fetched_at": "2026-10-21T23:22:32+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240304-c6487a216870"
+    ]
   },
   "20240301-c1382a216818": {
     "slug": "20240301-c1382a216818",
@@ -2062,7 +2110,9 @@
     "chars": 1032,
     "fetched_at": "2026-10-21T23:22:58+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20230512-c2812a208196"
+    ]
   },
   "20230512-c2813a208197": {
     "slug": "20230512-c2813a208197",
@@ -2100,7 +2150,9 @@
     "chars": 1046,
     "fetched_at": "2026-10-21T23:22:59+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20220701-c2812a194586"
+    ]
   },
   "20220701-c2812a194585": {
     "slug": "20220701-c2812a194585",
@@ -2112,7 +2164,9 @@
     "chars": 1123,
     "fetched_at": "2026-10-21T23:22:59+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20220701-c2812a194585"
+    ]
   },
   "20220701-c2812a194584": {
     "slug": "20220701-c2812a194584",
@@ -2124,7 +2178,9 @@
     "chars": 1269,
     "fetched_at": "2026-10-21T23:23:00+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20220701-c2812a194584"
+    ]
   },
   "20211220-c6364a190232": {
     "slug": "20211220-c6364a190232",
@@ -2160,7 +2216,9 @@
     "chars": 1372,
     "fetched_at": "2026-10-21T23:23:00+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20210715-c2812a184294"
+    ]
   },
   "20201124-c6366a176045": {
     "slug": "20201124-c6366a176045",
@@ -2172,7 +2230,9 @@
     "chars": 582,
     "fetched_at": "2026-10-21T23:23:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6366a176045"
+    ]
   },
   "20201124-c6366a176036": {
     "slug": "20201124-c6366a176036",
@@ -2196,7 +2256,9 @@
     "chars": 674,
     "fetched_at": "2026-10-21T23:23:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6487a176031"
+    ]
   },
   "20201124-c6487a176029": {
     "slug": "20201124-c6487a176029",
@@ -2208,7 +2270,9 @@
     "chars": 677,
     "fetched_at": "2026-10-21T23:23:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201124-c6487a176029"
+    ]
   },
   "20201120-c2812a175824": {
     "slug": "20201120-c2812a175824",
@@ -2220,7 +2284,9 @@
     "chars": 1050,
     "fetched_at": "2026-10-21T23:23:03+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201120-c2812a175824"
+    ]
   },
   "20201120-c2812a175823": {
     "slug": "20201120-c2812a175823",
@@ -2232,7 +2298,9 @@
     "chars": 1124,
     "fetched_at": "2026-10-21T23:23:03+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201120-c2812a175823"
+    ]
   },
   "20201021-c2810a174247": {
     "slug": "20201021-c2810a174247",
@@ -2256,7 +2324,9 @@
     "chars": 1082,
     "fetched_at": "2026-10-21T23:23:03+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174246"
+    ]
   },
   "20201021-c2812a174236": {
     "slug": "20201021-c2812a174236",
@@ -2268,7 +2338,9 @@
     "chars": 1054,
     "fetched_at": "2026-10-21T23:23:04+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174236"
+    ]
   },
   "20201021-c2812a174234": {
     "slug": "20201021-c2812a174234",
@@ -2280,7 +2352,9 @@
     "chars": 1044,
     "fetched_at": "2026-10-21T23:23:04+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174234"
+    ]
   },
   "20201021-c2812a174231": {
     "slug": "20201021-c2812a174231",
@@ -2292,7 +2366,9 @@
     "chars": 1044,
     "fetched_at": "2026-10-21T23:23:05+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174231"
+    ]
   },
   "20201021-c2812a174221": {
     "slug": "20201021-c2812a174221",
@@ -2304,7 +2380,9 @@
     "chars": 1042,
     "fetched_at": "2026-10-21T23:23:05+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174221"
+    ]
   },
   "20201021-c2812a174220": {
     "slug": "20201021-c2812a174220",
@@ -2316,7 +2394,9 @@
     "chars": 1034,
     "fetched_at": "2026-10-21T23:23:06+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174220"
+    ]
   },
   "20201021-c2812a174218": {
     "slug": "20201021-c2812a174218",
@@ -2328,7 +2408,9 @@
     "chars": 1042,
     "fetched_at": "2026-10-21T23:23:06+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174218"
+    ]
   },
   "20201021-c2812a174217": {
     "slug": "20201021-c2812a174217",
@@ -2352,7 +2434,9 @@
     "chars": 1198,
     "fetched_at": "2026-10-21T23:23:06+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174215"
+    ]
   },
   "20201021-c2812a174214": {
     "slug": "20201021-c2812a174214",
@@ -2364,7 +2448,9 @@
     "chars": 1048,
     "fetched_at": "2026-10-21T23:23:07+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174214"
+    ]
   },
   "20201021-c2812a174213": {
     "slug": "20201021-c2812a174213",
@@ -2376,7 +2462,9 @@
     "chars": 1032,
     "fetched_at": "2026-10-21T23:23:07+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174213"
+    ]
   },
   "20201021-c2812a174202": {
     "slug": "20201021-c2812a174202",
@@ -2388,7 +2476,9 @@
     "chars": 1040,
     "fetched_at": "2026-10-21T23:23:07+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20201021-c2812a174202"
+    ]
   },
   "20201021-c2812a174199": {
     "slug": "20201021-c2812a174199",
@@ -3936,7 +4026,9 @@
     "chars": 915,
     "fetched_at": "2026-10-21T23:43:50+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251009-c2065a260713"
+    ]
   },
   "20250924-c378a260402": {
     "slug": "20250924-c378a260402",
@@ -3964,7 +4056,9 @@
     "chars": 2845,
     "fetched_at": "2026-10-21T23:43:51+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20250624-c14744a257612"
+    ]
   },
   "20250605-c14744a256559": {
     "slug": "20250605-c14744a256559",
@@ -3976,7 +4070,9 @@
     "chars": 1739,
     "fetched_at": "2026-10-21T23:43:51+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20250605-c14744a256559"
+    ]
   },
   "20250605-c14744a256560": {
     "slug": "20250605-c14744a256560",
@@ -3988,7 +4084,9 @@
     "chars": 2806,
     "fetched_at": "2026-10-21T23:43:51+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20250605-c14744a256560"
+    ]
   },
   "20240821-c2092a242386": {
     "slug": "20240821-c2092a242386",
@@ -4000,7 +4098,9 @@
     "chars": 877,
     "fetched_at": "2026-10-21T23:43:51+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240821-c2092a242386"
+    ]
   },
   "20240821-c2092a242385": {
     "slug": "20240821-c2092a242385",
@@ -4024,7 +4124,9 @@
     "chars": 2330,
     "fetched_at": "2026-10-21T23:43:52+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20240322-c4365a217450"
+    ]
   },
   "20260505-c2064a269829": {
     "slug": "20260505-c2064a269829",
@@ -5380,7 +5482,9 @@
     "chars": 617,
     "fetched_at": "2026-10-26T21:30:01+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251110-c2760a262331"
+    ]
   },
   "20251110-c2760a262330": {
     "slug": "20251110-c2760a262330",
@@ -5392,7 +5496,9 @@
     "chars": 557,
     "fetched_at": "2026-10-26T21:30:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251110-c2760a262330"
+    ]
   },
   "20251110-c2760a262329": {
     "slug": "20251110-c2760a262329",
@@ -5404,7 +5510,9 @@
     "chars": 563,
     "fetched_at": "2026-10-26T21:30:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251110-c2760a262329"
+    ]
   },
   "20251110-c2760a262328": {
     "slug": "20251110-c2760a262328",
@@ -5416,7 +5524,9 @@
     "chars": 560,
     "fetched_at": "2026-10-26T21:30:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251110-c2760a262328"
+    ]
   },
   "20251110-c2760a262327": {
     "slug": "20251110-c2760a262327",
@@ -5428,7 +5538,9 @@
     "chars": 557,
     "fetched_at": "2026-10-26T21:30:02+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20251110-c2760a262327"
+    ]
   },
   "20251111-c2761a262337": {
     "slug": "20251111-c2761a262337",
@@ -5628,7 +5740,9 @@
     "chars": 403,
     "fetched_at": "2026-10-26T21:30:10+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20230904-c2753a211308"
+    ]
   },
   "20220713-c2753a194883": {
     "slug": "20220713-c2753a194883",
@@ -5640,7 +5754,9 @@
     "chars": 406,
     "fetched_at": "2026-10-26T21:30:12+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20220713-c2753a194883"
+    ]
   },
   "20210930-c2753a187012": {
     "slug": "20210930-c2753a187012",
@@ -5664,7 +5780,9 @@
     "chars": 403,
     "fetched_at": "2026-10-26T21:30:12+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20230904-c2753a242497"
+    ]
   },
   "20230904-c2753a259796": {
     "slug": "20230904-c2753a259796",
@@ -5676,7 +5794,9 @@
     "chars": 403,
     "fetched_at": "2026-10-26T21:30:12+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20230904-c2753a259796"
+    ]
   },
   "20260911-c2753a273800": {
     "slug": "20260911-c2753a273800",
@@ -5702,7 +5822,9 @@
     "chars": 405,
     "fetched_at": "2026-10-26T21:30:14+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260909-c2753a273664"
+    ]
   },
   "20260909-c2753a273662": {
     "slug": "20260909-c2753a273662",
@@ -5714,7 +5836,9 @@
     "chars": 405,
     "fetched_at": "2026-10-26T21:30:14+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260909-c2753a273662"
+    ]
   },
   "20260909-c2753a273661": {
     "slug": "20260909-c2753a273661",
@@ -5980,7 +6104,9 @@
     "chars": 2455,
     "fetched_at": "2026-10-26T21:30:29+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260529-c2753a271135"
+    ]
   },
   "20260528-c2753a271115": {
     "slug": "20260528-c2753a271115",
@@ -6034,7 +6160,9 @@
     "chars": 1244,
     "fetched_at": "2026-10-26T21:30:32+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-20260528-c2753a271112"
+    ]
   },
   "20240819-c2753a259252": {
     "slug": "20240819-c2753a259252",
@@ -6169,6 +6297,7 @@
     "fetched_at": "2026-10-26T21:33:46+08:00",
     "official": true,
     "used_by_items": [
+      "doc-20251110-c2760a262330-att7",
       "jiangxuejin"
     ]
   },
@@ -6182,7 +6311,9 @@
     "chars": 1968,
     "fetched_at": "2026-10-26T21:33:47+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "doc-20251110-c2760a262329-att9"
+    ]
   },
   "20251110-c2760a262328-att8": {
     "slug": "20251110-c2760a262328-att8",
@@ -6194,7 +6325,9 @@
     "chars": 1881,
     "fetched_at": "2026-10-26T21:33:48+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "doc-20251110-c2760a262328-att8"
+    ]
   },
   "20251110-c2760a262327-att7": {
     "slug": "20251110-c2760a262327-att7",
@@ -6206,7 +6339,2124 @@
     "chars": 2484,
     "fetched_at": "2026-10-26T21:33:48+08:00",
     "official": true,
+    "used_by_items": [
+      "doc-20251110-c2760a262327-att7"
+    ]
+  },
+  "loc-2026级本科生入学须知-714fe3": {
+    "slug": "loc-2026级本科生入学须知-714fe3",
+    "kind": "本地文件",
+    "title": "2026级本科生入学须知",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 12415,
+    "fetched_at": "2026-10-27T12:24:40+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-714fe3"
+    ]
+  },
+  "loc-2026级本科生入学须知-校本部-2cdd30": {
+    "slug": "loc-2026级本科生入学须知-校本部-2cdd30",
+    "kind": "本地文件",
+    "title": "2026级本科生入学须知（校本部）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 12415,
+    "fetched_at": "2026-10-27T12:24:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-2cdd30"
+    ]
+  },
+  "loc-中传校园支付平台使用方法-bb55cf": {
+    "slug": "loc-中传校园支付平台使用方法-bb55cf",
+    "kind": "本地文件",
+    "title": "中传校园支付平台使用方法",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1245,
+    "fetched_at": "2026-10-27T12:24:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-bb55cf"
+    ]
+  },
+  "loc-中国传媒大学2025年军训一日生活制度表-1-3a671e": {
+    "slug": "loc-中国传媒大学2025年军训一日生活制度表-1-3a671e",
+    "kind": "本地文件",
+    "title": "中国传媒大学2025年军训一日生活制度表 (1)",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 449,
+    "fetched_at": "2026-10-27T12:24:44+08:00",
+    "official": true,
     "used_by_items": []
+  },
+  "loc-中国传媒大学2026-2027学年校历-406d2e": {
+    "slug": "loc-中国传媒大学2026-2027学年校历-406d2e",
+    "kind": "本地文件",
+    "title": "中国传媒大学2026—2027学年校历",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 2164,
+    "fetched_at": "2026-10-27T12:24:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-2027-406d2e"
+    ]
+  },
+  "loc-中国传媒大学学生公寓住宿协议书-a9f629": {
+    "slug": "loc-中国传媒大学学生公寓住宿协议书-a9f629",
+    "kind": "本地文件",
+    "title": "中国传媒大学学生公寓住宿协议书",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1494,
+    "fetched_at": "2026-10-27T12:24:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-a9f629"
+    ]
+  },
+  "loc-中国传媒大学学生公寓安全责任书-6918f1": {
+    "slug": "loc-中国传媒大学学生公寓安全责任书-6918f1",
+    "kind": "本地文件",
+    "title": "中国传媒大学学生公寓安全责任书",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 800,
+    "fetched_at": "2026-10-27T12:24:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-6918f1"
+    ]
+  },
+  "loc-新生指南2026-水印版-76f3d8": {
+    "slug": "loc-新生指南2026-水印版-76f3d8",
+    "kind": "本地文件",
+    "title": "师哥师姐们说",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 57348,
+    "fetched_at": "2026-10-27T12:24:48+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-76f3d8"
+    ]
+  },
+  "loc-本科生院-2026-50号关于开展2026-2027学年秋季学期2026级新生选-641590": {
+    "slug": "loc-本科生院-2026-50号关于开展2026-2027学年秋季学期2026级新生选-641590",
+    "kind": "本地文件",
+    "title": "本科生院[2026] 50号关于开展2026—2027学年秋季学期2026级新生选课工作的通知",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1052,
+    "fetched_at": "2026-10-27T12:24:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-50-2026-2027-2026-641590"
+    ]
+  },
+  "loc-身体素质评分标准与游泳课考试评分标准1-e1233e": {
+    "slug": "loc-身体素质评分标准与游泳课考试评分标准1-e1233e",
+    "kind": "本地文件",
+    "title": "身体素质评分标准与游泳课考试评分标准1",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1388,
+    "fetched_at": "2026-10-27T12:24:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-1-e1233e"
+    ]
+  },
+  "loc-迎新服务-本科生使用手册v2-0-121110": {
+    "slug": "loc-迎新服务-本科生使用手册v2-0-121110",
+    "kind": "本地文件",
+    "title": "迎新服务-本科生使用手册v2.0",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1362,
+    "fetched_at": "2026-10-27T12:24:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-v2-0-121110"
+    ]
+  },
+  "loc-附件5-中国传媒大学2025年参训学生应备物资清单-fd6bb2": {
+    "slug": "loc-附件5-中国传媒大学2025年参训学生应备物资清单-fd6bb2",
+    "kind": "本地文件",
+    "title": "附件5-中国传媒大学2025年参训学生应备物资清单",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 756,
+    "fetched_at": "2026-10-27T12:24:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-5-2025-fd6bb2"
+    ]
+  },
+  "loc-音乐与录音艺术学院本科生综合素质评价项目-20250819更新-8c1f4c": {
+    "slug": "loc-音乐与录音艺术学院本科生综合素质评价项目-20250819更新-8c1f4c",
+    "kind": "本地文件",
+    "title": "音乐与录音艺术学院本科生综合素质评价项目（20250819更新）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 6329,
+    "fetched_at": "2026-10-27T12:24:50+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-20250819-8c1f4c"
+    ]
+  },
+  "loc-中传宿舍平面图-89b73b": {
+    "slug": "loc-中传宿舍平面图-89b73b",
+    "kind": "本地文件",
+    "title": "中传宿舍平面图",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1130,
+    "fetched_at": "2026-10-27T12:25:20+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-89b73b"
+    ]
+  },
+  "loc-中国传媒大学2026级新生售书单-be2342": {
+    "slug": "loc-中国传媒大学2026级新生售书单-be2342",
+    "kind": "本地文件",
+    "title": "中国传媒大学2026级新生售书单",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 76526,
+    "fetched_at": "2026-10-27T12:25:21+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-be2342"
+    ]
+  },
+  "loc-本科专业简称-2026年版-b89980": {
+    "slug": "loc-本科专业简称-2026年版-b89980",
+    "kind": "本地文件",
+    "title": "本科专业简称（2026年版）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 2833,
+    "fetched_at": "2026-10-27T12:25:23+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2026-b89980"
+    ]
+  },
+  "loc-附件1-2026秋季学期本科公共课程教材选用目录-学生版-8dd5cc": {
+    "slug": "loc-附件1-2026秋季学期本科公共课程教材选用目录-学生版-8dd5cc",
+    "kind": "本地文件",
+    "title": "附件1- 2026秋季学期本科公共课程教材选用目录（学生版）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 128785,
+    "fetched_at": "2026-10-27T12:25:23+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-1-2026-8dd5cc"
+    ]
+  },
+  "loc-附件1-中国传媒大学家庭经济困难学生认定申请表-2026年-f2272f": {
+    "slug": "loc-附件1-中国传媒大学家庭经济困难学生认定申请表-2026年-f2272f",
+    "kind": "本地文件",
+    "title": "附件1：中国传媒大学家庭经济困难学生认定申请表（2026年）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 6795,
+    "fetched_at": "2026-10-27T12:25:23+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-1-2026-f2272f"
+    ]
+  },
+  "loc-附件2-中国传媒大学家庭经济困难学生认定审批表-2026年-734833": {
+    "slug": "loc-附件2-中国传媒大学家庭经济困难学生认定审批表-2026年-734833",
+    "kind": "本地文件",
+    "title": "附件2：中国传媒大学家庭经济困难学生认定审批表（2026年）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 5535,
+    "fetched_at": "2026-10-27T12:25:23+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2-2026-734833"
+    ]
+  },
+  "loc-附件6-中国传媒大学音乐与录音艺术学院本科生综合素质评价办法实施细则-20250-00b513": {
+    "slug": "loc-附件6-中国传媒大学音乐与录音艺术学院本科生综合素质评价办法实施细则-20250-00b513",
+    "kind": "本地文件",
+    "title": "附件6 中国传媒大学音乐与录音艺术学院本科生综合素质评价办法实施细则（20250728修订）",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 29392,
+    "fetched_at": "2026-10-27T12:25:24+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-6-20250-00b513"
+    ]
+  },
+  "loc-1-中国传媒大学播音主持艺术学院2025年秋季学期本科生转专业工作接收计划-427238": {
+    "slug": "loc-1-中国传媒大学播音主持艺术学院2025年秋季学期本科生转专业工作接收计划-427238",
+    "kind": "本地文件",
+    "title": "1.中国传媒大学播音主持艺术学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 630,
+    "fetched_at": "2026-10-27T12:25:41+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-1-2025-427238"
+    ]
+  },
+  "loc-10-中国传媒大学文化产业管理学院2025年秋季学期本科生转专业工作接收计划-a0b869": {
+    "slug": "loc-10-中国传媒大学文化产业管理学院2025年秋季学期本科生转专业工作接收计划-a0b869",
+    "kind": "本地文件",
+    "title": "10.中国传媒大学文化产业管理学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 475,
+    "fetched_at": "2026-10-27T12:25:41+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-10-2025-a0b869"
+    ]
+  },
+  "loc-11-中国传媒大学戏剧影视学院2025年秋季学期本科生转专业工作接收计划-9da4da": {
+    "slug": "loc-11-中国传媒大学戏剧影视学院2025年秋季学期本科生转专业工作接收计划-9da4da",
+    "kind": "本地文件",
+    "title": "11.中国传媒大学戏剧影视学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 5995,
+    "fetched_at": "2026-10-27T12:25:42+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-11-2025-9da4da"
+    ]
+  },
+  "loc-12-中国传媒大学新闻学院2025年秋季学期本科生转专业工作接收计划-9dc9ed": {
+    "slug": "loc-12-中国传媒大学新闻学院2025年秋季学期本科生转专业工作接收计划-9dc9ed",
+    "kind": "本地文件",
+    "title": "12.中国传媒大学新闻学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1963,
+    "fetched_at": "2026-10-27T12:25:42+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-12-2025-9dc9ed"
+    ]
+  },
+  "loc-13-中国传媒大学信息传播学院2025年秋季学期本科生转专业工作接收计划-c97c3a": {
+    "slug": "loc-13-中国传媒大学信息传播学院2025年秋季学期本科生转专业工作接收计划-c97c3a",
+    "kind": "本地文件",
+    "title": "13.中国传媒大学信息传播学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 456,
+    "fetched_at": "2026-10-27T12:25:42+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-13-2025-c97c3a"
+    ]
+  },
+  "loc-14-中国传媒大学信息与通信工程学院2025年秋季学期本科生转专业工作接收计划-ce4cf4": {
+    "slug": "loc-14-中国传媒大学信息与通信工程学院2025年秋季学期本科生转专业工作接收计划-ce4cf4",
+    "kind": "本地文件",
+    "title": "14.中国传媒大学信息与通信工程学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1205,
+    "fetched_at": "2026-10-27T12:25:42+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-14-2025-ce4cf4"
+    ]
+  },
+  "loc-15-中国传媒大学音乐与录音艺术学院-2025年秋季学期本科生转专业工作接收计划-9dc050": {
+    "slug": "loc-15-中国传媒大学音乐与录音艺术学院-2025年秋季学期本科生转专业工作接收计划-9dc050",
+    "kind": "本地文件",
+    "title": "15.中国传媒大学音乐与录音艺术学院 2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 2409,
+    "fetched_at": "2026-10-27T12:25:42+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-15-2025-9dc050"
+    ]
+  },
+  "loc-16-中国传媒大学政府与公共事务学院2025年秋季学期本科生转专业工作接收计划-0eb22f": {
+    "slug": "loc-16-中国传媒大学政府与公共事务学院2025年秋季学期本科生转专业工作接收计划-0eb22f",
+    "kind": "本地文件",
+    "title": "16.中国传媒大学政府与公共事务学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 958,
+    "fetched_at": "2026-10-27T12:25:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-16-2025-0eb22f"
+    ]
+  },
+  "loc-2-中国传媒大学广告与品牌学院2025年秋季学期本科生转专业工作接收计划-5cffb9": {
+    "slug": "loc-2-中国传媒大学广告与品牌学院2025年秋季学期本科生转专业工作接收计划-5cffb9",
+    "kind": "本地文件",
+    "title": "2.中国传媒大学广告与品牌学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 3611,
+    "fetched_at": "2026-10-27T12:25:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-2-2025-5cffb9"
+    ]
+  },
+  "loc-3-中国传媒大学计算机与网络空间安全学院2025年秋季学期本科生转专业工作接收计-09b80a": {
+    "slug": "loc-3-中国传媒大学计算机与网络空间安全学院2025年秋季学期本科生转专业工作接收计-09b80a",
+    "kind": "本地文件",
+    "title": "3.中国传媒大学计算机与网络空间安全学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 805,
+    "fetched_at": "2026-10-27T12:25:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-3-2025-09b80a"
+    ]
+  },
+  "loc-4-中国传媒大学电视学院2025年秋季学期本科生转专业工作接收计划-85f679": {
+    "slug": "loc-4-中国传媒大学电视学院2025年秋季学期本科生转专业工作接收计划-85f679",
+    "kind": "本地文件",
+    "title": "4.中国传媒大学电视学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 3538,
+    "fetched_at": "2026-10-27T12:25:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-4-2025-85f679"
+    ]
+  },
+  "loc-5-中国传媒大学动画与数字艺术学院2025年秋季学期本科生转专业工作接收计划-645c8b": {
+    "slug": "loc-5-中国传媒大学动画与数字艺术学院2025年秋季学期本科生转专业工作接收计划-645c8b",
+    "kind": "本地文件",
+    "title": "5.中国传媒大学动画与数字艺术学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 5938,
+    "fetched_at": "2026-10-27T12:25:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-5-2025-645c8b"
+    ]
+  },
+  "loc-6-中国传媒大学经济与管理学院2025年秋季学期本科生转专业工作接收计划-7139bc": {
+    "slug": "loc-6-中国传媒大学经济与管理学院2025年秋季学期本科生转专业工作接收计划-7139bc",
+    "kind": "本地文件",
+    "title": "6.中国传媒大学经济与管理学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1821,
+    "fetched_at": "2026-10-27T12:25:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-6-2025-7139bc"
+    ]
+  },
+  "loc-7-中国传媒大学人文学院2025年秋季学期本科生转专业工作接收计划-6c7955": {
+    "slug": "loc-7-中国传媒大学人文学院2025年秋季学期本科生转专业工作接收计划-6c7955",
+    "kind": "本地文件",
+    "title": "7.中国传媒大学人文学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1485,
+    "fetched_at": "2026-10-27T12:25:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-7-2025-6c7955"
+    ]
+  },
+  "loc-8-中国传媒大学数据科学与智能媒体学院2025年秋季学期本科生转专业工作接收计划-8e23a3": {
+    "slug": "loc-8-中国传媒大学数据科学与智能媒体学院2025年秋季学期本科生转专业工作接收计划-8e23a3",
+    "kind": "本地文件",
+    "title": "8.中国传媒大学数据科学与智能媒体学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 1200,
+    "fetched_at": "2026-10-27T12:25:44+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-8-2025-8e23a3"
+    ]
+  },
+  "loc-9-中国传媒大学外国语言文化学院2025年秋季学期本科生转专业工作接收计划-b1f732": {
+    "slug": "loc-9-中国传媒大学外国语言文化学院2025年秋季学期本科生转专业工作接收计划-b1f732",
+    "kind": "本地文件",
+    "title": "9.中国传媒大学外国语言文化学院2025年秋季学期本科生转专业工作接收计划",
+    "account": "",
+    "date": "",
+    "url": "",
+    "chars": 7370,
+    "fetched_at": "2026-10-27T12:25:45+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-loc-9-2025-b1f732"
+    ]
+  },
+  "loc-xuexiao-jianjie": {
+    "slug": "loc-xuexiao-jianjie",
+    "kind": "本地文件",
+    "title": "中国传媒大学简介",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/xxgk/list.htm",
+    "chars": 274,
+    "fetched_at": "2026-10-27T12:27:40+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hbce40b3e2e1": {
+    "slug": "hbce40b3e2e1",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学生管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2701,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb6f60b8e9ec": {
+    "slug": "hb6f60b8e9ec",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学生纪律处分管理规定（中传教字〔2021〕207号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 9262,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb6f60b8e9ec"
+    ]
+  },
+  "hbbd8b17dbea": {
+    "slug": "hbbd8b17dbea",
+    "kind": "制度汇编",
+    "title": "中国传媒大学校园治安管理规定（中传保卫字〔2019〕301号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 6343,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb86645debec": {
+    "slug": "hb86645debec",
+    "kind": "制度汇编",
+    "title": "中国传媒大学校园卡管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 9102,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb86645debec"
+    ]
+  },
+  "hbd00f08a619": {
+    "slug": "hbd00f08a619",
+    "kind": "制度汇编",
+    "title": "中国传媒大学控烟管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2797,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbd00f08a619"
+    ]
+  },
+  "hb720eed2f55": {
+    "slug": "hb720eed2f55",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学生公费医疗管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1932,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb720eed2f55"
+    ]
+  },
+  "hbcac8e2b503": {
+    "slug": "hbcac8e2b503",
+    "kind": "制度汇编",
+    "title": "中国传媒大学班级学生委员会工作办法（中传学字〔2009〕160号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 4338,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbcac8e2b503"
+    ]
+  },
+  "hb9461bd1962": {
+    "slug": "hb9461bd1962",
+    "kind": "制度汇编",
+    "title": "中国传媒大学大型活动安全管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3131,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb49833f4409": {
+    "slug": "hb49833f4409",
+    "kind": "制度汇编",
+    "title": "中国传媒大学集体户口管理暂行规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 4970,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb42a3ca6cbc": {
+    "slug": "hb42a3ca6cbc",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学生社团建设管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 20976,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb42a3ca6cbc"
+    ]
+  },
+  "hbc4ef87bf22": {
+    "slug": "hbc4ef87bf22",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科生学籍管理规定（中传教字〔2017〕241号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 9176,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbc4ef87bf22"
+    ]
+  },
+  "hbaeeebaa20d": {
+    "slug": "hbaeeebaa20d",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生学籍管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 11347,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "liuxue-jiaoliu",
+      "rule-hbaeeebaa20d"
+    ]
+  },
+  "hb9ba7fd4edc": {
+    "slug": "hb9ba7fd4edc",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学生考试与学术违纪处理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3192,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb9ba7fd4edc"
+    ]
+  },
+  "hb9bc8c2793f": {
+    "slug": "hb9bc8c2793f",
+    "kind": "制度汇编",
+    "title": "中国传媒大学全日制本科生学士学位授予工作实施办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 5893,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb9bc8c2793f"
+    ]
+  },
+  "hbd33955782f": {
+    "slug": "hbd33955782f",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科生选课管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1818,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hbd9d7bc1592": {
+    "slug": "hbd9d7bc1592",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本专科学历、学位证书管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1817,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hbb91b1b03dc": {
+    "slug": "hbb91b1b03dc",
+    "kind": "制度汇编",
+    "title": "中国传媒大学全日制本科生课程考核及成绩管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 11857,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb8d9e1380f5": {
+    "slug": "hb8d9e1380f5",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科学生在读证明办理管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1201,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb8d9e1380f5"
+    ]
+  },
+  "hb89efe99078": {
+    "slug": "hb89efe99078",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科生转专业管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3058,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb89efe99078"
+    ]
+  },
+  "hbe31650f36d": {
+    "slug": "hbe31650f36d",
+    "kind": "制度汇编",
+    "title": "中国传媒大学辅修管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1515,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbe31650f36d"
+    ]
+  },
+  "hb4b8c331839": {
+    "slug": "hb4b8c331839",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科生体育课程管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 10213,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb4b8c331839"
+    ]
+  },
+  "hbf17d9e79a5": {
+    "slug": "hbf17d9e79a5",
+    "kind": "制度汇编",
+    "title": "中国传媒大学攻读学术学位硕士研究生培养工作规定（中传研字〔2024〕\n124号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 5868,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbf17d9e79a5"
+    ]
+  },
+  "hb1f31e1766b": {
+    "slug": "hb1f31e1766b",
+    "kind": "制度汇编",
+    "title": "中国传媒大学攻读专业学位硕士研究生培养工作规定（中传研字〔2024〕\n125号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 6891,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb1f31e1766b"
+    ]
+  },
+  "hb7c8a86726e": {
+    "slug": "hb7c8a86726e",
+    "kind": "制度汇编",
+    "title": "中国传媒大学攻读学术学位博士研究生培养工作规定（中传研字〔2024〕\n119号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 6683,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb7c8a86726e"
+    ]
+  },
+  "hbf9b9429eb4": {
+    "slug": "hbf9b9429eb4",
+    "kind": "制度汇编",
+    "title": "中国传媒大学攻读专业学位博士研究生培养工作规定（中传研字〔2024〕\n120号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 7810,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbf9b9429eb4"
+    ]
+  },
+  "hb7942db213f": {
+    "slug": "hb7942db213f",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生教学管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3566,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb7942db213f"
+    ]
+  },
+  "hb2138ae8458": {
+    "slug": "hb2138ae8458",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生赴境外大学学习课程认定及学分转换管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 854,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb2138ae8458"
+    ]
+  },
+  "hbaab1311592": {
+    "slug": "hbaab1311592",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学术学位硕士研究生学位论文中期考核工作办法（中传研字〔2024〕124号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1083,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbaab1311592"
+    ]
+  },
+  "hb1c44b20332": {
+    "slug": "hb1c44b20332",
+    "kind": "制度汇编",
+    "title": "中国传媒大学硕士研究生学位论文及毕业作品选题报告工作办法（中传研字〔2024〕124号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1586,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb1c44b20332"
+    ]
+  },
+  "hb0277ac774b": {
+    "slug": "hb0277ac774b",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学术学位硕士研究生基本文献考试管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1104,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb0277ac774b"
+    ]
+  },
+  "hb6886c409c6": {
+    "slug": "hb6886c409c6",
+    "kind": "制度汇编",
+    "title": "中国传媒大学硕士学位、博士学位授予工作实施办法（中传研字〔2023〕136号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 4206,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb6886c409c6"
+    ]
+  },
+  "hbaa4c08b40d": {
+    "slug": "hbaa4c08b40d",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学术学位博士研究生学位论文中期考核工作办法（中传研字〔2024〕119号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1097,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbaa4c08b40d"
+    ]
+  },
+  "hba1a222d7b5": {
+    "slug": "hba1a222d7b5",
+    "kind": "制度汇编",
+    "title": "中国传媒大学博士研究生学位论文及毕业作品选题报告工作办法（中传研字〔2024〕119号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1593,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hba1a222d7b5"
+    ]
+  },
+  "hb7c66073b13": {
+    "slug": "hb7c66073b13",
+    "kind": "制度汇编",
+    "title": "中国传媒大学硕士研究生学位论文预答辩工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 951,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb7c66073b13"
+    ]
+  },
+  "hb974c49a444": {
+    "slug": "hb974c49a444",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位硕士研究生学位论文答辩工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3545,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb974c49a444"
+    ]
+  },
+  "hb679500654c": {
+    "slug": "hb679500654c",
+    "kind": "制度汇编",
+    "title": "中国传媒大学博士研究生学位论文预答辩工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1239,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb679500654c"
+    ]
+  },
+  "hb532affdff9": {
+    "slug": "hb532affdff9",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学术学位博士研究生学位论文答辩工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1705,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb532affdff9"
+    ]
+  },
+  "hb71540d7767": {
+    "slug": "hb71540d7767",
+    "kind": "制度汇编",
+    "title": "中国传媒大学博士候选人资格考试管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1372,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb71540d7767"
+    ]
+  },
+  "hbe3f13f7883": {
+    "slug": "hbe3f13f7883",
+    "kind": "制度汇编",
+    "title": "中国传媒大学学术学位博士研究生在学期间发表学术论文等科研成果管理规定（中传研字〔2022〕36号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1243,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbe3f13f7883"
+    ]
+  },
+  "hb33c2d11e70": {
+    "slug": "hb33c2d11e70",
+    "kind": "制度汇编",
+    "title": "中国传媒大学硕士研究生学位论文及毕业作品匿名评阅办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1508,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hbe0d10f0443": {
+    "slug": "hbe0d10f0443",
+    "kind": "制度汇编",
+    "title": "中国传媒大学博士研究生学位论文及毕业作品匿名评阅办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1430,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb860d51f028": {
+    "slug": "hb860d51f028",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生公共外语课程教学管理办法（中传研字〔2022〕37\n号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1305,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb860d51f028"
+    ]
+  },
+  "hbea9aa6543d": {
+    "slug": "hbea9aa6543d",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生思想政治理论课程管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 845,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbea9aa6543d"
+    ]
+  },
+  "hbfe67dc235d": {
+    "slug": "hbfe67dc235d",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位博士研究生专业实践能力考核工作办法（中传研字〔2024〕120号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1227,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbfe67dc235d"
+    ]
+  },
+  "hb6cbd109795": {
+    "slug": "hb6cbd109795",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位硕士研究生专业实践能力考核工作办法（中传研字〔2024〕125号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1214,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb6cbd109795"
+    ]
+  },
+  "hbcef538ff74": {
+    "slug": "hbcef538ff74",
+    "kind": "制度汇编",
+    "title": "中国传媒大学研究生学位论文查重检测办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 905,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbcef538ff74"
+    ]
+  },
+  "hb0807a6cd8f": {
+    "slug": "hb0807a6cd8f",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位博士研究生学位论文答辩工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1028,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb0807a6cd8f"
+    ]
+  },
+  "hb1de9b9a607": {
+    "slug": "hb1de9b9a607",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位博士研究生毕业作品展示考核工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3103,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb1de9b9a607"
+    ]
+  },
+  "hbadf714d521": {
+    "slug": "hbadf714d521",
+    "kind": "制度汇编",
+    "title": "中国传媒大学专业学位硕士研究生毕业作品展示考核工作办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1281,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbadf714d521"
+    ]
+  },
+  "hb921f79f1f2": {
+    "slug": "hb921f79f1f2",
+    "kind": "制度汇编",
+    "title": "中国传媒大学关于专业学位博士研究生攻读学位期间取得创新成果的规定（中传学字〔2016〕152号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 64350,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "liuxue-jiaoliu",
+      "rule-hb921f79f1f2"
+    ]
+  },
+  "hb689df5222a": {
+    "slug": "hb689df5222a",
+    "kind": "制度汇编",
+    "title": "中国传媒大学“优秀毕业生”评选细则（中传学字〔2021〕251 号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2545,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hbffbdcb5daf": {
+    "slug": "hbffbdcb5daf",
+    "kind": "制度汇编",
+    "title": "中国传媒大学优秀班集体评选办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 1670,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbffbdcb5daf"
+    ]
+  },
+  "hbf8ecd720c7": {
+    "slug": "hbf8ecd720c7",
+    "kind": "制度汇编",
+    "title": "中国传媒大学家庭经济困难学生认定实施办法（中传学字〔2017〕32号）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 11762,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbf8ecd720c7"
+    ]
+  },
+  "hbf7d1b95508": {
+    "slug": "hbf7d1b95508",
+    "kind": "制度汇编",
+    "title": "中国传媒大学图书馆校园“一卡通”管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3101,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hbf7d1b95508"
+    ]
+  },
+  "hb1a4f11f63c": {
+    "slug": "hb1a4f11f63c",
+    "kind": "制度汇编",
+    "title": "中国传媒大学传媒博物馆团体参观预约办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2244,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb90ba79a91a": {
+    "slug": "hb90ba79a91a",
+    "kind": "制度汇编",
+    "title": "中国传媒大学传媒博物馆场馆管理规定",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 3150,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "hb8c15262f61": {
+    "slug": "hb8c15262f61",
+    "kind": "制度汇编",
+    "title": "中国传媒大学校史馆开放管理办法",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2619,
+    "fetched_at": "2026-10-27T12:03:49+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-hb8c15262f61"
+    ]
+  },
+  "hbkechengzhihuan": {
+    "slug": "hbkechengzhihuan",
+    "kind": "制度汇编",
+    "title": "中国传媒大学本科学生课程置换及学分认定管理办法（试行）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0904/c2753a259796/page.htm",
+    "chars": 2203,
+    "fetched_at": "2026-10-27T13:04:14+09:00",
+    "official": true,
+    "used_by_items": [
+      "liuxue-jiaoliu",
+      "rule-hbkechengzhihuan"
+    ]
+  },
+  "013d48a620": {
+    "slug": "013d48a620",
+    "kind": "官网·检索",
+    "title": "公费医疗管理办法（xyy.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xyy.cuc.edu.cn/2018/1101/c934a16918/page.htm",
+    "chars": 5087,
+    "fetched_at": "2026-10-27T11:27:01+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-013d48a620"
+    ]
+  },
+  "8eae7f42f0": {
+    "slug": "8eae7f42f0",
+    "kind": "官网·检索",
+    "title": "校园卡管理办法（its.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://its.cuc.edu.cn/2022/0702/c8488a194625/page.htm",
+    "chars": 4751,
+    "fetched_at": "2026-10-27T11:27:11+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-8eae7f42f0"
+    ]
+  },
+  "1866ef3a1c": {
+    "slug": "1866ef3a1c",
+    "kind": "官网·检索",
+    "title": "公共教室管理办法（fnc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://fnc.cuc.edu.cn/2026/0731/c14935a273067/page.htm",
+    "chars": 4162,
+    "fetched_at": "2026-10-27T11:27:20+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-1866ef3a1c"
+    ]
+  },
+  "74cba6a512": {
+    "slug": "74cba6a512",
+    "kind": "官网·检索",
+    "title": "信息公开·学生管理服务信息（xxgk.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xxgk.cuc.edu.cn/5399/list.htm",
+    "chars": 905,
+    "fetched_at": "2026-10-27T11:27:21+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-74cba6a512"
+    ]
+  },
+  "f1adde051f": {
+    "slug": "f1adde051f",
+    "kind": "官网·检索",
+    "title": "门急诊时间（xyy.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xyy.cuc.edu.cn/mainm.htm",
+    "chars": 659,
+    "fetched_at": "2026-10-27T11:27:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-f1adde051f"
+    ]
+  },
+  "7b301c9e6a": {
+    "slug": "7b301c9e6a",
+    "kind": "官网·检索",
+    "title": "门急诊时间（xyy.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xyy.cuc.edu.cn/",
+    "chars": 913,
+    "fetched_at": "2026-10-27T11:27:45+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "d3a1419f05": {
+    "slug": "d3a1419f05",
+    "kind": "官网·检索",
+    "title": "户籍科常见问题（security.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://security.cuc.edu.cn/hjxg/list.htm",
+    "chars": 438,
+    "fetched_at": "2026-10-27T11:27:54+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-d3a1419f05"
+    ]
+  },
+  "9731c11250": {
+    "slug": "9731c11250",
+    "kind": "官网·检索",
+    "title": "预约入校（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/rxsq/",
+    "chars": 23775,
+    "fetched_at": "2026-10-27T11:28:05+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-9731c11250"
+    ]
+  },
+  "402ecf2831": {
+    "slug": "402ecf2831",
+    "kind": "官网·检索",
+    "title": "团组织关系转接（youth.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://youth.cuc.edu.cn/",
+    "chars": 4119,
+    "fetched_at": "2026-10-27T11:28:15+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-402ecf2831"
+    ]
+  },
+  "9f6c101e01": {
+    "slug": "9f6c101e01",
+    "kind": "官网·检索",
+    "title": "团组织关系转接（youth.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://youth.cuc.edu.cn/2022/0917/c9819a206370/page.htm",
+    "chars": 2712,
+    "fetched_at": "2026-10-27T11:28:15+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "2d964fc992": {
+    "slug": "2d964fc992",
+    "kind": "官网·检索",
+    "title": "公共实践场馆管理办法（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0529/c2753a271143/pagem.htm",
+    "chars": 946,
+    "fetched_at": "2026-10-27T11:28:27+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-2d964fc992"
+    ]
+  },
+  "9afbe465e6": {
+    "slug": "9afbe465e6",
+    "kind": "官网·检索",
+    "title": "校历（jwc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jwc.cuc.edu.cn/2026/0716/c8669a272798/page.htm",
+    "chars": 576,
+    "fetched_at": "2026-10-27T11:28:59+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-9afbe465e6"
+    ]
+  },
+  "78209e0940": {
+    "slug": "78209e0940",
+    "kind": "官网·检索",
+    "title": "课程质量评价（jyzl.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jyzl.cuc.edu.cn/2025/1224/c3870a265511/page.htm",
+    "chars": 323,
+    "fetched_at": "2026-10-27T11:29:08+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "c99c4ed38d": {
+    "slug": "c99c4ed38d",
+    "kind": "官网·检索",
+    "title": "课程质量评价（jyzl.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jyzl.cuc.edu.cn/2024/0628/c3873a245656/page.htm",
+    "chars": 1444,
+    "fetched_at": "2026-10-27T11:29:09+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-c99c4ed38d"
+    ]
+  },
+  "cdad821440": {
+    "slug": "cdad821440",
+    "kind": "官网·检索",
+    "title": "高职学籍管理规定（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2020/0624/c2753a171406/page.htm",
+    "chars": 7563,
+    "fetched_at": "2026-10-27T11:29:19+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-cdad821440"
+    ]
+  },
+  "c4f6a15478": {
+    "slug": "c4f6a15478",
+    "kind": "官网·检索",
+    "title": "高职学籍管理规定（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2026/0528/c2753a271113/page.htm",
+    "chars": 2967,
+    "fetched_at": "2026-10-27T11:29:19+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "baa04f656e": {
+    "slug": "baa04f656e",
+    "kind": "官网·检索",
+    "title": "研究生学籍管理规定（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2023/0615/c2741a209724/page.htm",
+    "chars": 8319,
+    "fetched_at": "2026-10-27T11:29:30+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-baa04f656e"
+    ]
+  },
+  "9f297a4902": {
+    "slug": "9f297a4902",
+    "kind": "官网·检索",
+    "title": "印章管理办法（office.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://office.cuc.edu.cn/2023/0516/c9793a208997/page.htm",
+    "chars": 832,
+    "fetched_at": "2026-10-27T11:29:39+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-9f297a4902"
+    ]
+  },
+  "727bb7ca51": {
+    "slug": "727bb7ca51",
+    "kind": "官网·检索",
+    "title": "印章管理办法（mra.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://mra.cuc.edu.cn/2024/1118/c10321a245465/page.htm",
+    "chars": 655,
+    "fetched_at": "2026-10-27T11:29:39+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-727bb7ca51"
+    ]
+  },
+  "3f6cd79b32": {
+    "slug": "3f6cd79b32",
+    "kind": "官网·检索",
+    "title": "课程成绩管理办法 中传教字 2021 210号（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2020/0624/c2753a171395/page.htm",
+    "chars": 2343,
+    "fetched_at": "2026-10-27T11:32:08+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-3f6cd79b32"
+    ]
+  },
+  "ecb9f6042d": {
+    "slug": "ecb9f6042d",
+    "kind": "官网·检索",
+    "title": "课程成绩管理办法 中传教字 2021 210号（icuc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://icuc.cuc.edu.cn/2621/",
+    "chars": 1476,
+    "fetched_at": "2026-10-27T11:32:09+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-ecb9f6042d"
+    ]
+  },
+  "2d738892fe": {
+    "slug": "2d738892fe",
+    "kind": "官网·检索",
+    "title": "家属区管理办法（zchq.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://zchq.cuc.edu.cn/147/list2.htm",
+    "chars": 1035,
+    "fetched_at": "2026-10-27T11:32:19+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-2d738892fe"
+    ]
+  },
+  "fa42d232d1": {
+    "slug": "fa42d232d1",
+    "kind": "官网·检索",
+    "title": "家属区管理办法（xsc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xsc.cuc.edu.cn/2019/0802/c2753a133696/page.htm",
+    "chars": 6497,
+    "fetched_at": "2026-10-27T11:32:20+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-fa42d232d1"
+    ]
+  },
+  "78137397a4": {
+    "slug": "78137397a4",
+    "kind": "官网·检索",
+    "title": "快递服务中心（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/",
+    "chars": 24298,
+    "fetched_at": "2026-10-27T11:32:34+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-78137397a4"
+    ]
+  },
+  "b739c4e2de": {
+    "slug": "b739c4e2de",
+    "kind": "官网·检索",
+    "title": "WPS 365（its.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://its.cuc.edu.cn/2025/0410/c8169a254199/page.htm",
+    "chars": 4757,
+    "fetched_at": "2026-10-27T11:32:43+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-b739c4e2de"
+    ]
+  },
+  "7a5b4290e3": {
+    "slug": "7a5b4290e3",
+    "kind": "官网·检索",
+    "title": "WPS 365（its.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://its.cuc.edu.cn/2026/1022/c8169a275194/page.htm",
+    "chars": 7789,
+    "fetched_at": "2026-10-27T11:32:46+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "f694bb0ef7": {
+    "slug": "f694bb0ef7",
+    "kind": "官网·检索",
+    "title": "高性能计算平台（its.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://its.cuc.edu.cn/2025/0530/c8169a256339/page.htm",
+    "chars": 3565,
+    "fetched_at": "2026-10-27T11:32:57+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-f694bb0ef7"
+    ]
+  },
+  "9c1582e0ab": {
+    "slug": "9c1582e0ab",
+    "kind": "官网·检索",
+    "title": "高性能计算平台（hpc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://hpc.cuc.edu.cn/",
+    "chars": 330,
+    "fetched_at": "2026-10-27T11:32:58+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "8ba974f830": {
+    "slug": "8ba974f830",
+    "kind": "官网·检索",
+    "title": "国有资产管理办法（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/",
+    "chars": 2478,
+    "fetched_at": "2026-10-27T12:13:14+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-8ba974f830"
+    ]
+  },
+  "66a1243f3a": {
+    "slug": "66a1243f3a",
+    "kind": "官网·检索",
+    "title": "国有资产管理办法（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/2025/0529/c2581a256246/page.htm",
+    "chars": 1125,
+    "fetched_at": "2026-10-27T12:13:14+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "47a09807d2": {
+    "slug": "47a09807d2",
+    "kind": "官网·检索",
+    "title": "招标采购管理办法（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/2024/1120/c1755a245620/page.htm",
+    "chars": 962,
+    "fetched_at": "2026-10-27T12:13:23+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-47a09807d2"
+    ]
+  },
+  "9015703667": {
+    "slug": "9015703667",
+    "kind": "官网·检索",
+    "title": "招标采购管理办法（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/2016/0608/c1755a28472/page.htm",
+    "chars": 6267,
+    "fetched_at": "2026-10-27T12:13:23+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "e7c0dbeb08": {
+    "slug": "e7c0dbeb08",
+    "kind": "官网·检索",
+    "title": "科研项目经费管理办法（research.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://research.cuc.edu.cn/2025/0609/c4795a256680/page.htm",
+    "chars": 742,
+    "fetched_at": "2026-10-27T12:13:30+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-e7c0dbeb08"
+    ]
+  },
+  "d6ced290a7": {
+    "slug": "d6ced290a7",
+    "kind": "官网·检索",
+    "title": "科研项目经费管理办法（research.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://research.cuc.edu.cn/xxwj/list.htm",
+    "chars": 1520,
+    "fetched_at": "2026-10-27T12:13:31+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "49afb49d92": {
+    "slug": "49afb49d92",
+    "kind": "官网·检索",
+    "title": "实验室工作管理办法（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/2025/0427/c10096a255040/page.htm",
+    "chars": 2841,
+    "fetched_at": "2026-10-27T12:13:39+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-49afb49d92"
+    ]
+  },
+  "a0c2adbc6e": {
+    "slug": "a0c2adbc6e",
+    "kind": "官网·检索",
+    "title": "实验室工作管理办法（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/cucnews/2025/0427/c10133a255040/page.htm",
+    "chars": 2759,
+    "fetched_at": "2026-10-27T12:13:39+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "32f02aa026": {
+    "slug": "32f02aa026",
+    "kind": "官网·检索",
+    "title": "非学历教育（fnc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://fnc.cuc.edu.cn/2026/1009/c8054a274579/page.htm",
+    "chars": 515,
+    "fetched_at": "2026-10-27T12:13:47+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-32f02aa026"
+    ]
+  },
+  "3ada4747f1": {
+    "slug": "3ada4747f1",
+    "kind": "官网·检索",
+    "title": "非学历教育（fnc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://fnc.cuc.edu.cn/2025/1124/c8054a264237/page.htm",
+    "chars": 486,
+    "fetched_at": "2026-10-27T12:13:49+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "b40caabc3d": {
+    "slug": "b40caabc3d",
+    "kind": "官网·检索",
+    "title": "学校章程（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/1405/list.htm",
+    "chars": 1410,
+    "fetched_at": "2026-10-27T12:13:58+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-b40caabc3d"
+    ]
+  },
+  "d9a4220c4b": {
+    "slug": "d9a4220c4b",
+    "kind": "官网·检索",
+    "title": "国有资产管理 中传资产字（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/gyzcglc/list.htm",
+    "chars": 1039,
+    "fetched_at": "2026-10-27T12:14:13+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-d9a4220c4b"
+    ]
+  },
+  "811aed3ce1": {
+    "slug": "811aed3ce1",
+    "kind": "官网·检索",
+    "title": "招标采购 中国传媒大学（gzc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://gzc.cuc.edu.cn/1746/list.htm",
+    "chars": 1377,
+    "fetched_at": "2026-10-27T12:14:21+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-811aed3ce1"
+    ]
+  },
+  "d5087dbc8d": {
+    "slug": "d5087dbc8d",
+    "kind": "官网·检索",
+    "title": "招标采购 中国传媒大学（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/_t86/2026/0713/c1384a272725/page.htm",
+    "chars": 2651,
+    "fetched_at": "2026-10-27T12:14:22+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-d5087dbc8d"
+    ]
+  },
+  "00d6a8b3e1": {
+    "slug": "00d6a8b3e1",
+    "kind": "官网·检索",
+    "title": "基本科研业务费（research.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://research.cuc.edu.cn/2017/0930/c1197a21257/page.htm",
+    "chars": 860,
+    "fetched_at": "2026-10-27T12:14:29+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-00d6a8b3e1"
+    ]
+  },
+  "da4dc28584": {
+    "slug": "da4dc28584",
+    "kind": "官网·检索",
+    "title": "基本科研业务费（zlzhmzgtt.cuc）",
+    "account": "",
+    "date": "",
+    "url": "http://zlzhmzgtt.cuc.edu.cn/2025/1117/c12911a263772/page.htm",
+    "chars": 604,
+    "fetched_at": "2026-10-27T12:14:30+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-da4dc28584"
+    ]
+  },
+  "4ab90dbf75": {
+    "slug": "4ab90dbf75",
+    "kind": "官网·检索",
+    "title": "科研机构管理办法（research.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://research.cuc.edu.cn/2025/0609/c4795a256677/page.htm",
+    "chars": 747,
+    "fetched_at": "2026-10-27T12:14:38+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-4ab90dbf75"
+    ]
+  },
+  "987c50521a": {
+    "slug": "987c50521a",
+    "kind": "官网·检索",
+    "title": "公共实践场馆（srv.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://srv.cuc.edu.cn/8898/list.htm",
+    "chars": 416,
+    "fetched_at": "2026-10-27T12:14:45+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-987c50521a"
+    ]
+  },
+  "11bc34c4b4": {
+    "slug": "11bc34c4b4",
+    "kind": "官网·检索",
+    "title": "设备共享中心（srv.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://srv.cuc.edu.cn/9456/list.htm",
+    "chars": 648,
+    "fetched_at": "2026-10-27T12:14:53+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-11bc34c4b4"
+    ]
+  },
+  "564077f057": {
+    "slug": "564077f057",
+    "kind": "官网·检索",
+    "title": "设备共享中心（hainan.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://hainan.cuc.edu.cn/2025/0612/c14160a256943/page.htm",
+    "chars": 2091,
+    "fetched_at": "2026-10-27T12:14:53+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-564077f057"
+    ]
+  },
+  "260444efa3": {
+    "slug": "260444efa3",
+    "kind": "官网·检索",
+    "title": "本科修学指南（jwc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jwc.cuc.edu.cn/main.htm",
+    "chars": 2530,
+    "fetched_at": "2026-10-27T12:15:14+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-260444efa3"
+    ]
+  },
+  "4de7f654f1": {
+    "slug": "4de7f654f1",
+    "kind": "官网·检索",
+    "title": "本科修学指南（jwc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jwc.cuc.edu.cn/2024/1125/c13082a245903/page.htm",
+    "chars": 574,
+    "fetched_at": "2026-10-27T12:15:14+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "6938268628": {
+    "slug": "6938268628",
+    "kind": "官网·检索",
+    "title": "博士招生简章（yz.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://yz.cuc.edu.cn/2025/1111/c8549a262367/page.htm",
+    "chars": 8310,
+    "fetched_at": "2026-10-27T12:15:22+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-6938268628"
+    ]
+  },
+  "ad06cf1d7d": {
+    "slug": "ad06cf1d7d",
+    "kind": "官网·检索",
+    "title": "博士招生简章（yz.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://yz.cuc.edu.cn/zsjz/list.htm",
+    "chars": 993,
+    "fetched_at": "2026-10-27T12:15:24+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "7c1eca7aed": {
+    "slug": "7c1eca7aed",
+    "kind": "官网·检索",
+    "title": "融合门户 服务（www.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://www.cuc.edu.cn/rhfwmh/list.htm",
+    "chars": 1415,
+    "fetched_at": "2026-10-27T12:15:32+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-7c1eca7aed"
+    ]
+  },
+  "88863360a6": {
+    "slug": "88863360a6",
+    "kind": "官网·检索",
+    "title": "无犯罪记录证明（rwxy.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://rwxy.cuc.edu.cn/2020/0118/c1348a165020/page.htm",
+    "chars": 1082,
+    "fetched_at": "2026-10-27T12:15:47+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-88863360a6"
+    ]
+  },
+  "34b50ccb77": {
+    "slug": "34b50ccb77",
+    "kind": "官网·检索",
+    "title": "无犯罪记录证明（rwxy.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://rwxy.cuc.edu.cn/1348/list.htm",
+    "chars": 1167,
+    "fetched_at": "2026-10-27T12:15:48+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "dc026c3859": {
+    "slug": "dc026c3859",
+    "kind": "官网·检索",
+    "title": "推荐免试攻读研究生 工作办法（yz.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://yz.cuc.edu.cn/tm/list.htm",
+    "chars": 1043,
+    "fetched_at": "2026-10-27T12:27:19+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-dc026c3859"
+    ]
+  },
+  "5a54d96750": {
+    "slug": "5a54d96750",
+    "kind": "官网·检索",
+    "title": "推荐免试攻读研究生 工作办法（yz.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://yz.cuc.edu.cn/2026/0830/c8678a273445/page.htm",
+    "chars": 4814,
+    "fetched_at": "2026-10-27T12:27:20+08:00",
+    "official": true,
+    "used_by_items": []
+  },
+  "db58092d1c": {
+    "slug": "db58092d1c",
+    "kind": "官网·检索",
+    "title": "推免 遴选（tft.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://tft.cuc.edu.cn/2026/0911/c14988a273824/page.htm",
+    "chars": 642,
+    "fetched_at": "2026-10-27T12:27:27+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-db58092d1c"
+    ]
+  },
+  "73b707493f": {
+    "slug": "73b707493f",
+    "kind": "官网·检索",
+    "title": "本科生院 服务事项（jwc.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://jwc.cuc.edu.cn/",
+    "chars": 2530,
+    "fetched_at": "2026-10-27T12:27:58+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-73b707493f"
+    ]
+  },
+  "7c868e9fa3": {
+    "slug": "7c868e9fa3",
+    "kind": "官网·检索",
+    "title": "本科生院 服务事项（xxgk.cuc）",
+    "account": "",
+    "date": "",
+    "url": "https://xxgk.cuc.edu.cn/5376/list.htm",
+    "chars": 1040,
+    "fetched_at": "2026-10-27T12:27:58+08:00",
+    "official": true,
+    "used_by_items": [
+      "rule-7c868e9fa3"
+    ]
   },
   "chsi-benren": {
     "slug": "chsi-benren",
@@ -6220,7 +8470,8 @@
     "official": true,
     "used_by_items": [
       "chsi-baogao",
-      "chsi-heshi"
+      "chsi-heshi",
+      "rule-chsi-benren"
     ]
   },
   "chsi-yanzheng": {
@@ -6234,7 +8485,8 @@
     "fetched_at": "2026-10-26T21:57:49+08:00",
     "official": true,
     "used_by_items": [
-      "chsi-baogao"
+      "chsi-baogao",
+      "rule-chsi-yanzheng"
     ]
   },
   "chsi-xuewei": {
@@ -6247,7 +8499,9 @@
     "chars": 574,
     "fetched_at": "2026-10-26T21:57:49+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-chsi-xuewei"
+    ]
   },
   "chsi-fanwei": {
     "slug": "chsi-fanwei",
@@ -6259,7 +8513,9 @@
     "chars": 677,
     "fetched_at": "2026-10-26T21:57:50+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-chsi-fanwei"
+    ]
   },
   "chsi-xueli": {
     "slug": "chsi-xueli",
@@ -6271,7 +8527,9 @@
     "chars": 649,
     "fetched_at": "2026-10-26T21:57:50+08:00",
     "official": true,
-    "used_by_items": []
+    "used_by_items": [
+      "rule-chsi-xueli"
+    ]
   },
   "moe-41": {
     "slug": "moe-41",
@@ -6471,7 +8729,7 @@
   "2025-08-21-4797ab1b": {
     "slug": "2025-08-21-4797ab1b",
     "kind": "公众号",
-    "title": "新生引航丨2025级新生指南——生活篇",
+    "title": "师哥师姐们说·生活篇",
     "account": "意如计网",
     "date": "2025-08-21",
     "url": "https://mp.weixin.qq.com/s?__biz=Mzg2NzAxNTE5MA==&mid=2247660789&idx=4&sn=34923fce9caa443f63fbc9310a2b32ee&chksm=cf4c76b80a4262aba0485f7448c34030cf38b47ef334d1fe60ca737fe078fd7a540674a2a4a2&scene=27",

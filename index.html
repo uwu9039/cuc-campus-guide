@@ -43,8 +43,32 @@
   .chip{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:var(--sheet);
         border-radius:2px;padding:5px 10px;cursor:pointer}
   .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .hits{list-style:none;display:flex;flex-direction:column;margin-top:4px}
+  .hit{padding:12px 0;border-top:1px dotted #e5e0d3}
+  .hit:first-child{border-top:none;padding-top:2px}
+  .hit .ht{font-size:13.5px;font-weight:700;display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+  .hit .hk{font-family:var(--mono);font-size:10px;color:var(--seal);flex:none}
+  .hit .hs{font-size:12.5px;color:#4a4640;line-height:1.7;margin-top:5px}
+  .hit .hm{font-size:11px;color:var(--faint);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
+  .hit .hm a{color:var(--seal);word-break:break-all}
 
   .hint{font-size:12.5px;color:var(--faint);margin-top:10px}
+  .ctpanel{margin-top:16px;border:1px solid var(--line);background:var(--sheet);border-radius:3px}
+  .cthead{display:flex;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);
+    flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+  .cthead select,.cthead input{font:inherit;padding:5px 8px;border:1px solid var(--line);
+    background:#fffdf8;color:var(--ink);border-radius:3px}
+  .cthead input{min-width:190px}
+  .ctcount{margin-left:auto;font-size:11.5px;color:var(--faint)}
+  .ctlist{max-height:420px;overflow:auto}
+  .ctrow{display:flex;gap:12px;padding:11px 14px;border-bottom:1px dashed var(--line)}
+  .ctrow:last-child{border-bottom:none}
+  .ctkind{flex:0 0 34px;font-size:10.5px;letter-spacing:.1em;color:var(--seal);font-weight:700;padding-top:3px}
+  .ctmain{flex:1;min-width:0}
+  .ctval{font-family:var(--mono);font-size:14px;letter-spacing:.02em}
+  .ctmain a{color:var(--seal);word-break:break-all;font-size:12.5px}
+  .ctctx{margin-top:4px;font-size:11.5px;color:var(--faint);line-height:1.5}
+  .ctempty{padding:26px 14px;color:var(--faint);font-size:12.5px;text-align:center}
   .llmsw{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);
     letter-spacing:.04em;cursor:pointer;user-select:none;margin-right:18px}
   .llmsw input{display:none}
@@ -94,10 +118,13 @@
   .bh .h{font-size:10.5px;letter-spacing:.16em;color:var(--muted);font-weight:700}
 
   .route{list-style:none}
-  .route li{display:grid;grid-template-columns:76px 1fr;gap:11px;font-size:13.5px;padding:6px 0}
+  .route li{display:grid;grid-template-columns:70px 1fr;gap:12px;font-size:13.5px;
+            padding:11px 0;align-items:start;line-height:1.65}
   .route li+li{border-top:1px dotted #e5e0d3}
-  .route .when{font-family:var(--mono);font-size:10.5px;color:var(--seal);padding-top:3px}
-  .route .where{color:var(--muted);font-size:12.5px}
+  .route .when{font-family:var(--mono);font-size:10.5px;color:var(--seal);padding:3px 6px;
+               border:1px solid #e3d9c6;background:var(--paper);border-radius:2px;
+               text-align:center;white-space:nowrap}
+  .route .where{color:var(--muted);font-size:12.5px;display:block;margin-top:3px}
 
   .checks{list-style:none;display:flex;flex-direction:column;gap:8px}
   .checks li{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
@@ -153,8 +180,76 @@
           padding:16px 18px}
   .aone + .aone{margin-top:14px;padding-top:13px;border-top:1px dashed var(--line)}
   .alab{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:700;margin-bottom:5px}
+  .aval.long{font-size:17px;font-weight:500;line-height:1.65;letter-spacing:0}
   .aval{font-size:17px;line-height:1.65;font-weight:600;letter-spacing:-.01em}
   .aval.none{font-size:14px;color:var(--seal);font-weight:600}
+
+  /* 一步一行：流程时间线 */
+  .asteps{list-style:none;margin:2px 0 0;padding:0}
+  .asteps li{position:relative;display:grid;grid-template-columns:26px 1fr;gap:11px;
+             padding:10px 0;font-size:14.5px;line-height:1.7}
+  .asteps li+li{border-top:1px dotted var(--line)}
+  .asteps li:not(:last-child)::after{content:"";position:absolute;left:11px;top:34px;
+             bottom:-2px;border-left:1px dashed #ded5c3}
+  .asteps .sn{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);
+              font-family:var(--mono);font-size:11px;display:flex;align-items:center;
+              justify-content:center;margin-top:2px;position:relative;z-index:1}
+  .alines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+  .alines li{position:relative;padding-left:16px;font-size:14px;line-height:1.75;color:var(--ink)}
+  .alines li::before{content:"";position:absolute;left:2px;top:.72em;width:5px;height:5px;
+                     border-radius:50%;background:var(--seal)}
+  .planfile{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:8px 12px;
+            border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+            font-size:13px;font-weight:700;text-decoration:none;border-radius:2px}
+  .planfile:hover{background:var(--ink);color:var(--paper)}
+
+  /* ---- 转专业完整接收计划 ---- */
+  .pfull{margin-top:26px;background:var(--sheet);border:1px solid var(--line);
+         border-top:3px solid var(--ink);padding:20px 22px}
+  .pfhead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .pflab{font-size:9.5px;letter-spacing:.18em;color:var(--muted);font-weight:700}
+  .pftitle{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-top:3px}
+  .pfsub{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .pfhead .planfile{margin-top:0;flex:none}
+  .pfocus{margin-top:16px;padding:13px 15px;border-left:4px solid var(--seal);background:#fbf4ec}
+  .pfmain{font-size:18px;font-weight:800;margin-top:3px;line-height:1.5}
+  .pfmeta{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.7}
+  .pstat{display:inline-block;margin-top:7px;font-family:var(--mono);font-size:10.5px;font-weight:700;
+         border:1px solid currentColor;border-radius:2px;padding:2px 7px;color:var(--ok)}
+  .pstat.old{color:var(--amber)} .pstat.none{color:var(--seal)}
+  .pfnote{margin-top:9px;padding:8px 10px;background:#fbf1e3;color:#7a5a24;font-size:12.5px;
+          line-height:1.7;border-left:2px solid var(--amber)}
+  .pnote{margin-top:12px;padding:10px 12px;background:var(--paper);border-left:3px solid var(--line);
+         font-size:12.5px;color:var(--muted);line-height:1.75}
+  details.pmajor{margin-top:14px;border:1px solid var(--line);background:#fffefa}
+  details.pmajor>summary{cursor:pointer;list-style:none;padding:11px 14px;display:flex;gap:10px;
+                         align-items:baseline;flex-wrap:wrap}
+  details.pmajor>summary::-webkit-details-marker{display:none}
+  details.pmajor>summary::before{content:"＋";font-family:var(--mono);font-size:11px;color:var(--seal);font-weight:700}
+  details.pmajor[open]>summary::before{content:"－"}
+  details.pmajor[open]>summary{background:#faf7f0;border-bottom:1px solid var(--line)}
+  .pmname{font-size:15px;font-weight:700}
+  .pmgrades{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+  .pmcount{margin-left:auto;font-size:10.5px;color:var(--faint)}
+  .pmtag{font-size:9.5px;letter-spacing:.1em;color:var(--paper);background:var(--seal);
+         padding:2px 6px;border-radius:2px;font-weight:700}
+  .pbody{padding:2px 15px 14px}
+  .pblock{padding:10px 0 2px;border-top:1px dashed var(--line)}
+  .pblock:first-child{border-top:0}
+  .pbhead{font-family:var(--mono);font-size:10.5px;color:var(--seal);letter-spacing:.05em;margin-bottom:2px}
+  .psec{margin-top:10px}
+  .psec h4{font-size:9.5px;letter-spacing:.15em;color:var(--muted);font-weight:700;margin-bottom:3px}
+  .psec .alines li{font-size:13.5px}
+  .praw{margin-top:10px}
+  .praw>summary{cursor:pointer;list-style:none;font-size:11.5px;color:var(--faint);padding:5px 0}
+  .praw>summary::-webkit-details-marker{display:none}
+  .praw>summary::before{content:"＋ ";color:var(--seal);font-weight:700}
+  .praw[open]>summary::before{content:"－ "}
+  .prawname{font-size:9.5px;letter-spacing:.12em;color:var(--muted);font-weight:700;margin:7px 0 3px}
+  .praw pre{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:11.5px;
+            line-height:1.7;background:var(--paper);border:1px solid var(--line);padding:9px 10px;color:#4a4640}
+  .pfoot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.75}
+  .pfoot .planfile{margin-top:10px}
   .aq{margin-top:8px;font-size:11.5px;color:#7a7468;line-height:1.7}
   .qline{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:baseline;
          padding:5px 0;border-top:1px dotted var(--line)}
@@ -228,16 +323,29 @@
   </header>
 
   <div class="ask">
-    <textarea id="q" placeholder="你要办什么事？比如：校园卡丢了怎么办 / 我要开个证明 / 成绩单怎么打"></textarea>
+    <textarea id="q" placeholder="你要办什么事？比如：校园卡丢了怎么办、成绩单怎么打"></textarea>
     <div class="row">
       <button id="go">开始</button>
       <button class="ghost" id="clear">清空</button>
+      <button class="ghost" id="ctbtn">常用联系方式</button>
+      <button class="ghost" id="searchbtn" title="在全部官方原文里找相近段落，不生成答案">搜原文</button>
     </div>
     <div class="chips" id="chips"></div>
-    <details class="presets" id="presets"><summary>常用问法（点一下直接问）</summary><div id="pbody"></div></details>
-    <div class="hint">识别靠别名表，不靠模型自由发挥；答不出会直接告诉你查不到。</div>
+    <details class="presets" id="presets"><summary>常用问法</summary><div id="pbody"></div></details>
+    <div class="hint">认得出就答，认不出就说没有。每条答案下面压着原文。</div>
     <div class="err" id="err"></div>
   <div class="llmhint" id="llmhint"></div>
+  <section class="ctpanel" id="ctpanel" hidden>
+    <div class="cthead">
+      <label>用途
+        <select id="ctpurpose"><option value="">全部</option></select>
+      </label>
+      <input id="ctq" placeholder="也可以搜部门 / 关键词">
+      <span class="ctcount" id="ctcount"></span>
+      <button class="ghost" id="ctclose">关闭</button>
+    </div>
+    <div class="ctlist" id="ctlist"></div>
+  </section>
   </div>
 
   <div id="out"></div>
@@ -277,7 +385,9 @@ async function api(path, body) {
     const h = await api("/api/health");
     $("#dot").className = "dot " + (h.key_configured ? "on" : "off");
     $("#stat").textContent = h.key_configured ? "在线 · 模型已接入" : "本地模式 · 未配 Key";
-    $("#meta").textContent = `事项 ${h.items} 条 · 核验 ${h.data_updated}`;
+    $("#meta").textContent = `事项 ${h.items} 条（${h.verified} 可核验）· 原文 ${h.sources_official} 份`
+      + (h.vector_chunks ? ` · 向量库 ${h.vector_sources} 份 / ${h.vector_chunks} 段` : "")
+      + ` · 核验 ${h.data_updated}`;
     $("#foot").textContent = `材料以官方窗口为准 · 数据核验 ${h.data_updated}`;
   } catch {
     $("#stat").textContent = "后端未启动";
@@ -291,10 +401,14 @@ async function api(path, body) {
     document.querySelectorAll("#pbody .chip").forEach((el) => {
       el.onclick = () => { $("#q").value = el.dataset.q; run(); };
     });
-    document.querySelector(".presets summary").textContent = `常用问法（${pz.total} 条，按主题）`;
+    document.querySelector(".presets summary").textContent = `常用问法 · ${pz.total} 条`;
   } catch (e) { /* 预置问法拿不到不影响主流程 */ }
 
-  if (!new URLSearchParams(location.search).get("q")) $("#presets").open = true;  // 空状态直接展开常用问法
+  const ctp = new URLSearchParams(location.search).get("ct");
+  if (ctp) {
+    await openContacts();
+    if (ctp !== "1") { $("#ctpurpose").value = ctp; await filterContacts(); }
+  }
   const pre = new URLSearchParams(location.search).get("q");
   if (pre) { $("#q").value = pre; run(); }
 })();
@@ -302,6 +416,58 @@ async function api(path, body) {
 $("#clear").onclick = () => { $("#q").value = ""; $("#out").innerHTML = ""; $("#err").textContent = ""; state = { item: null, slots: {} }; };
 $("#go").onclick = run;
 $("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(); });
+
+/* ---------------- 常用联系方式 ---------------- */
+async function openContacts() {
+  const panel = $("#ctpanel");
+  panel.hidden = false;
+  if (!panel.dataset.loaded) {
+    const d = await api("/api/contacts");
+    const sel = $("#ctpurpose");
+    d.purposes.forEach((p) => {
+      const o = document.createElement("option");
+      o.value = p; o.textContent = p;
+      sel.appendChild(o);
+    });
+    panel.dataset.loaded = "1";
+    renderContacts(d.items);
+  }
+}
+
+function ctRow(it) {
+  const icon = it.kind === "phone" ? "电话" : it.kind === "email" ? "邮箱" : "网址";
+  const val = it.kind === "url"
+    ? `<a href="${esc(it.value)}" target="_blank" rel="noopener">${esc(it.value)}</a>`
+    : `<span class="ctval">${esc(it.value)}</span>`
+    + `<button class="mini" data-copy="${esc(it.value)}">复制</button>`;
+  return `<div class="ctrow">
+    <span class="ctkind">${icon}</span>
+    <div class="ctmain">${val}
+      <div class="ctctx">${esc(it.dept)}${it.context ? " · " + esc(it.context) : ""}</div>
+    </div>
+  </div>`;
+}
+
+function renderContacts(items) {
+  $("#ctcount").textContent = `${items.length} 条`;
+  $("#ctlist").innerHTML = items.length
+    ? items.map(ctRow).join("")
+    : `<div class="ctempty">这个用途下暂时没有收录到公开联系方式。换个用途，或直接问我。</div>`;
+  $("#ctlist").querySelectorAll("[data-copy]").forEach((b) => {
+    b.onclick = async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已复制"; }
+      catch { b.textContent = "复制失败"; }
+      setTimeout(() => (b.textContent = "复制"), 1200);
+    };
+  });
+}
+
+async function filterContacts() {
+  const p = $("#ctpurpose").value;
+  const q = $("#ctq").value.trim();
+  const d = await api(`/api/contacts?purpose=${encodeURIComponent(p)}&q=${encodeURIComponent(q)}`);
+  renderContacts(d.items);
+}
 
 /* 敏感词 → 建议开启模型裁决；普通词 → 建议关闭 */
 function showLlmHint(d) {
@@ -333,12 +499,19 @@ async function run(keepSlots) {
     showLlmHint(d);
     if (!d.matched) {
       $("#out").innerHTML = notFound(d);
+      bindChoices();
       return;
     }
     state.item = d.item;
     if (d.hold) {
       $("#out").innerHTML = followupBlock(d);
       bindFollowups();
+      return;
+    }
+    if (d.plan) {
+      $("#out").innerHTML = planBlock(d);
+      const ex = $("#pexpand");
+      if (ex) ex.onclick = () => document.querySelectorAll("details.pmajor").forEach((x) => x.open = true);
       return;
     }
     $("#out").innerHTML = answerBlock(d)
@@ -385,9 +558,17 @@ function bindFollowups() {
 /* 先把问题翻译成「事项 + 问的是哪一面」，只答那一面 */
 function answerBlock(d) {
   const rows = d.answers.map((a) => {
-    const val = a.found
-      ? `<div class="aval">${esc(a.text)}</div>`
-      : `<div class="aval none">官方页面没有写这一项</div>`;
+    let val;
+    if (!a.found) {
+      val = `<div class="aval none">官方页面没有写这一项</div>`;
+    } else if (Array.isArray(a.steps) && a.steps.length) {
+      val = `<ol class="asteps">${a.steps.map((s, i) =>
+        `<li><span class="sn">${i + 1}</span><span>${esc(s)}</span></li>`).join("")}</ol>`;
+    } else if (Array.isArray(a.lines) && a.lines.length) {
+      val = `<ul class="alines">${a.lines.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`;
+    } else {
+      val = `<div class="aval${(a.text || "").length > 26 ? " long" : ""}">${esc(a.text)}</div>`;
+    }
     const qs = a.quotes || [];
     const q = qs.length
       ? `<div class="aq">${qs.slice(0, 2).map((c) =>
@@ -399,17 +580,153 @@ function answerBlock(d) {
     return `<div class="aone"><div class="alab">${esc(a.label)}</div>${val}${q}</div>`;
   }).join("");
 
+  const planFile = d.plan_file
+    ? `<a class="planfile" href="${esc(d.plan_file)}" target="_blank" rel="noreferrer">打开学院接收计划 PDF ↗</a>`
+    : "";
   return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
-  <div class="ablock">${rows}${d.note ? `<div class="anote">${esc(d.note)}</div>` : ""}</div>`;
+  <div class="ablock">${rows}${planFile}${d.note ? `<div class="anote">${esc(d.note)}</div>` : ""}</div>`;
+}
+
+/* ---------------- 转专业：整份接收计划，按专业逐条展开 ---------------- */
+const PLAN_COLS = [
+  ["conditions", "接收条件"], ["materials", "申请材料"],
+  ["exam", "考核方式"], ["contacts", "联系方式"], ["note", "备注"],
+];
+const PLAN_RAW = { conditions: "接收条件", materials: "申请材料", exam: "考核方式",
+                   contacts: "联系方式", note: "备注" };
+const PLAN_STATUS = {
+  current: ["现行专业", ""], until_listed: ["旧名 · 已停招", "old"],
+  until: ["已停招", "old"], unlisted: ["2025 计划未单列", "none"],
+  no_plan: ["暂无接收计划", "none"],
+};
+
+function planNorm(s) {
+  return (s || "").normalize("NFKC")
+    .replace(/[（(]\s*至\s*\d{4}\s*[)）]/g, "")
+    .replace(/\s+/g, "")
+    .replace(/专业$/, "");
+}
+
+function planSection(label, lines) {
+  if (!Array.isArray(lines) || !lines.length) return "";
+  return `<div class="psec"><h4>${esc(label)}</h4>
+    <ul class="alines">${lines.map((s) => `<li>${esc(s)}</li>`).join("")}</ul></div>`;
+}
+
+function planRaw(block) {
+  const cols = Object.entries(block.raw || {}).filter(([, v]) => v && String(v).trim());
+  if (!cols.length) return "";
+  return `<details class="praw"><summary>原表文字 · 未删减</summary>
+    ${cols.map(([k, v]) => `<div class="prawname">${esc(PLAN_RAW[k] || k)}</div>
+      <pre>${esc(v)}</pre>`).join("")}</details>`;
+}
+
+function planFocusCard(f, noPlan) {
+  if (!f) return "";
+  const meta = PLAN_STATUS[f.status] || ["简称表记录", ""];
+  return `<div class="pfocus">
+    <div class="pflab">你说的「${esc(f.query)}」</div>
+    <div class="pfmain">${esc(f.major)}</div>
+    <div class="pfmeta">${esc(f.college)}${f.abbr ? ` · 简称「${esc(f.abbr)}」` : ""}${
+      f.plan_major ? ` · 接收计划里对应「${esc(f.plan_major)}」`
+                   : (noPlan ? "" : " · 2025 接收计划未单列此专业")}</div>
+    <span class="pstat ${meta[1]}">${esc(meta[0])}</span>
+    ${f.note ? `<div class="pfnote">${esc(f.note)}</div>` : ""}
+  </div>`;
+}
+
+function planMajor(m, idx, focus, openFirst) {
+  const hit = focus && focus.plan_major && planNorm(m.name) === planNorm(focus.plan_major);
+  const blocks = (m.blocks && m.blocks.length) ? m.blocks : [m];
+  const body = blocks.map((b, bi) => {
+    const grades = (b.grades || []).length ? b.grades.join(" · ") : (bi === 0 ? "计划原文" : "");
+    const sections = PLAN_COLS.map(([key, label]) => planSection(label, b[key])).join("");
+    return `<div class="pblock">${grades ? `<div class="pbhead">${esc(grades)}</div>` : ""}
+      ${sections}${planRaw(b)}</div>`;
+  }).join("");
+  const shared = m.shared_from
+    ? `<div class="pfnote">该专业的条件与「${esc(m.shared_from)}」共用同一单元格。</div>` : "";
+  return `<details class="pmajor" ${hit || (openFirst && idx === 0) ? "open" : ""}>
+    <summary>
+      <span class="pmname">${esc(m.name)}</span>
+      ${hit ? `<span class="pmtag">你的目标</span>` : ""}
+      <span class="pmgrades">${esc((m.grades || []).join(" · "))}</span>
+      <span class="pmcount">${blocks.length} 组要求</span>
+    </summary>
+    <div class="pbody">${shared}${body}</div>
+  </details>`;
+}
+
+function planBlock(d) {
+  const p = d.plan || {};
+  const focus = p.focus || null;
+  const majors = p.majors || [];
+  const noPlan = p.no_plan || d.plan_no_file;
+  const file = d.plan_file
+    ? `<a class="planfile" href="${esc(d.plan_file)}" target="_blank" rel="noreferrer">打开原始 PDF ↗</a>` : "";
+  const head = `<div class="pfhead">
+    <div>
+      <div class="pflab">${noPlan ? "转专业 · 2025 年接收计划" : "2025 年秋季学期 · 本科生转专业接收计划"}</div>
+      <div class="pftitle">${esc(p.college_label || p.college || "")}</div>
+      <div class="pfsub">${noPlan ? "现有 16 份接收计划中没有这个学院"
+        : `${majors.length} 个专业 · 年级、条件、材料、考核、联系方式全部保留`}</div>
+    </div>
+    ${file}
+    ${!noPlan && majors.length > 2 ? `<button class="mini" id="pexpand" type="button">展开全部</button>` : ""}
+  </div>`;
+  const renameNote = p.renamed
+    ? `<div class="pnote">「${esc(p.college_label)}」是 2026 年版简称表的学院名；2025 年接收计划列在「${esc(p.college)}」名下，下面照录该计划原文。</div>` : "";
+  const focusCard = planFocusCard(focus, noPlan);
+  if (noPlan) {
+    return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+      <div class="pfull">${head}${focusCard}${renameNote}
+        <div class="pnote">${esc(p.note || d.note || "")}</div></div>`;
+  }
+  const anyHit = focus && focus.plan_major
+    && majors.some((m) => planNorm(m.name) === planNorm(focus.plan_major));
+  const list = majors.map((m, i) => planMajor(m, i,
+    anyHit ? focus : null, !anyHit)).join("");
+  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+    <div class="pfull">${head}${focusCard}${renameNote}
+      <div class="pnote">${esc(p.note || d.note || "")}</div>
+      ${list || `<div class="pnote">这份计划没有可抽取的专业行，请打开 PDF 核对。</div>`}
+      ${p.full_text ? `<details class="praw pfulltext"><summary>整份 PDF 转出全文 · 未删减</summary>
+        <pre>${esc(p.full_text)}</pre></details>` : ""}
+      <div class="pfoot">原始文件：${esc(p.file || "")}</div>
+    </div>`;
+}
+
+function hitList(hits) {
+  const rows = hits.map((h) => `<li class="hit">
+    <div class="ht"><span>${esc(h.title)}</span><span class="hk">${esc(h.kind)}${h.page ? " · " + esc(h.page) : ""}</span></div>
+    <div class="hs">${esc(h.snippet)}</div>
+    <div class="hm">${h.url ? `<a href="${esc(h.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}
+      <span>相关度 ${Math.round((h.score || 0) * 100)}</span>
+      ${(h.item_ids || []).length ? `<span>涉及 ${h.item_ids.length} 个事项</span>` : ""}</div>
+  </li>`).join("");
+  return `<ul class="hits">${rows}</ul>`;
 }
 
 function notFound(r) {
   const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+  const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+  const hits = r.original_search || [];
   return `<div class="sheet">
     <div class="sheet-top"><div><div class="t">没查到这条</div>
-      <div class="s">${esc(r.reason)}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
+      <div class="s">${esc(r.reason || "规则没有对上具体事项")}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
     <section class="blk"><div class="chips" id="alts">${alts || '<span class="hint">暂无可选项</span>'}</div></section>
+    ${related ? `<section class="blk"><div class="bh"><span class="i">线索</span><span class="h">原文里提到这些事项</span></div>
+      <div class="chips">${related}</div></section>` : ""}
+    ${hits.length ? `<section class="blk"><div class="bh"><span class="i">原文</span><span class="h">原文库相近段落（${hits.length}）</span></div>
+      <div class="hint">${esc(r.search_note || "只是原文线索，不是办理结论。")}</div>${hitList(hits)}</section>` : ""}
   </div>`;
+}
+
+function bindChoices() {
+  document.querySelectorAll("[data-alt]").forEach((el) => el.onclick = () => {
+    $("#q").value = el.dataset.alt;
+    run();
+  });
 }
 
 function evidenceBlock(item) {
@@ -463,7 +780,7 @@ function buildSheet(item, intake) {
 
     <section class="blk"><div class="bh"><span class="i">02</span><span class="h">怎么办</span></div>
       <ol class="route">${(item.steps || []).map((s) => `<li><span class="when">${esc(s.when || "")}</span>
-        <span>${esc(s.what)}<span class="where"> · ${esc(s.where || "")}</span></span></li>`).join("")}</ol>
+        <span>${esc(s.what)}${s.where ? `<span class="where">${esc(s.where)}</span>` : ""}</span></li>`).join("")}</ol>
       <div id="mats"></div>
     </section>
 
@@ -501,8 +818,33 @@ function bindSheet() {
   if (vbtn) vbtn.onclick = () => doVerify();
   const pb = $("#pbtn");
   if (pb) pb.onclick = () => window.print();
-  document.querySelectorAll("[data-alt]").forEach((el) => el.onclick = () => { $("#q").value = el.dataset.alt; run(); });
+  bindChoices();
 }
+
+async function runSearch() {
+  const text = $("#q").value.trim();
+  $("#err").textContent = "";
+  if (text.length < 2) { $("#err").textContent = "请再说得具体一点"; return; }
+  $("#searchbtn").disabled = true;
+  $("#out").innerHTML = `<div class="hint">在官方原文里检索…</div>`;
+  try {
+    const d = await api(`/api/search?q=${encodeURIComponent(text)}&k=8`);
+    const hits = d.hits || [];
+    $("#out").innerHTML = `<div class="sheet">
+      <div class="sheet-top"><div><div class="t">原文检索</div>
+        <div class="s">「${esc(text)}」· 命中 ${hits.length} 段 · 库内 ${d.vector_sources || 0} 份 / ${d.vector_chunks || 0} 段</div></div></div>
+      <section class="blk">${hits.length
+        ? hitList(hits)
+        : '<div class="hint">原文库里没有相近段落。换个说法，或者直接问要办的事项。</div>'}</section>
+    </div>`;
+  } catch (e) {
+    $("#out").innerHTML = "";
+    $("#err").textContent = e.message;
+  } finally {
+    $("#searchbtn").disabled = false;
+  }
+}
+$("#searchbtn").onclick = runSearch;
 
 async function refreshDeliver() {
   if (!state.item) return;

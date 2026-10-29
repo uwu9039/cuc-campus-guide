@@ -35,6 +35,8 @@ def ev_list(ev: dict) -> list[dict]:
 
 def needed_fields(item: dict) -> list[str]:
     keys = [k for k in ("fee", "location", "hours", "duration", "window") if item.get(k)]
+    if item.get("answer"):
+        keys.append("answer")
     keys += [f"materials.{i}" for i in range(len(item.get("materials") or []))]
     keys += [f"steps.{i}" for i in range(len(item.get("steps") or []))]
     keys += [f"pitfalls.{i}" for i in range(len(item.get("pitfalls") or []))]
@@ -45,7 +47,7 @@ def main() -> None:
     data = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))
     index = json.loads((SRC / "index.json").read_text(encoding="utf-8"))
     texts = {slug: squash((SRC / f"{slug}.txt").read_text(encoding="utf-8")) for slug in index}
-    for sub in ("wechat", "crawl", "cdp", "pdf", "chsi", "moe", "national"):
+    for sub in ("wechat", "crawl", "cdp", "pdf", "chsi", "moe", "national", "extra", "huibian", "local", "wendao-extra", "wendao-text"):
         for f in (SRC / sub).glob("*.txt"):
             texts[f.stem] = squash(f.read_text(encoding="utf-8"))
 

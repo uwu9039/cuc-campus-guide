@@ -14,6 +14,7 @@ import json
 import re
 import sys
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -72,6 +73,8 @@ def variants(item: dict) -> list[str]:
         if "{a}" in tpl:
             for a in aliases:
                 out.append(tpl.format(t=t, a=a, k=""))
+        elif re.search(r"怎么办|怎么开|怎么弄|怎么查$", t) and "{" + "a" + "}" not in tpl and tpl != "{t}":
+            continue   # 词干本身已是问句，再套模板会变成"怎么办怎么办"
         elif tpl == "我想{t}" and re.search(r"指南|办理|证明|申请|登记|补卡|办法|规定", t):
             continue   # 名词性标题加"我想"不通顺
         else:
@@ -79,11 +82,31 @@ def variants(item: dict) -> list[str]:
     return out
 
 
+# 同义说法归一：一组词映射到同一个规范词，避免"丢了/没了/不见了"生成三条一样的问法
+SYNONYMS = [
+    (re.compile(r"丢了|没了|不见了|找不到|掉了|遗失"), "丢"),
+    (re.compile(r"怎么办|怎么弄|怎么处理|如何办理|怎么办理"), "怎么办"),
+    (re.compile(r"在哪办|去哪里办|到哪办|哪儿办"), "在哪办"),
+    (re.compile(r"要带什么|需要什么材料|带什么|准备什么材料"), "带什么"),
+    (re.compile(r"多少钱|费用|收费|价格"), "多少钱"),
+]
+
 SUFFIX = re.compile(r"(怎么办|怎么办理|怎么弄|流程|要带什么|需要什么材料|在哪办|去哪里办|要多久|多少钱|什么时候能办|找谁|该找哪个部门|截止时间)$")
 
 
+def tidy(q: str) -> str:
+    """把"在读证明怎么开怎么办"这类叠加后缀收干净。"""
+    q = re.sub(r"(怎么办|怎么弄|怎么开)(怎么办|怎么弄)$", r"", q)
+    q = re.sub(r"(怎么办)(怎么开|怎么弄)", r"", q)
+    return q
+
+
 def stem(q: str) -> str:
-    return SUFFIX.sub("", q)
+    """归一化后比较：近义说法算同一个问题。"""
+    t = SUFFIX.sub("", q)
+    for rx, rep in SYNONYMS:
+        t = rx.sub(rep, t)
+    return t
 
 
 def main() -> None:
@@ -92,13 +115,18 @@ def main() -> None:
     by_group: dict[str, list] = defaultdict(list)
 
     hand = [i for i in data["items"] if not i.get("auto")]
-    auto_n = len(data["items"]) - len(hand)
-    print(f"人工条目 {len(hand)} 条参与生成（机器抽取的 {auto_n} 条不预设问法，它们是原句摘要）")
+    print(f"人工条目 {len(hand)} 条参与生成（制度型条目按标题检索可达，不预设问法）")
+
+    by_id = {i["id"]: i for i in hand}
+
+    def keyset(it: dict) -> set[str]:
+        raw = [it["title"], core.core_title(it["title"]), *it.get("aliases", []), *it.get("keywords", [])]
+        return {core.norm(k) for k in raw if k}
 
     for item in hand:
         ok_here = 0
         seen_stems: set[str] = set()
-        for q in dict.fromkeys(variants(item)):     # 去重保序
+        for q in dict.fromkeys(tidy(v) for v in variants(item)):   # 去重保序
             d = core.answer_question(q)
             hit = (d.get("item") or {}).get("id")
             if not d.get("matched"):
@@ -111,6 +139,9 @@ def main() -> None:
                     presets.append({"q": q, "item": item["id"], "group": group_of(item["title"])})
                     ok_here += 1
             elif hit and hit != item["id"]:
+                other = by_id.get(hit)
+                if other and keyset(item) & keyset(other):
+                    continue   # 别名本来就被两条共用（如「三方协议」「VPN」），命中哪条都算对
                 misses.append({"q": q, "want": item["id"], "got": hit,
                                "want_title": item["title"], "got_title": d["item"]["title"]})
         if ok_here == 0:
@@ -120,9 +151,34 @@ def main() -> None:
     for p in presets:
         by_group[p["group"]].append(p["q"])
 
-    out = {"version": "1", "generated": "2026-10-21",
+    # 校园地图单独成组，放在常用问法最前面（界面默认展开）
+    map_presets = []
+    for q in (
+        "一教在哪",
+        "48教在哪",
+        "中传礼堂在哪",
+        "中传讲堂在哪",
+        "校医院在哪",
+        "图书馆在哪",
+        "菜鸟驿站在哪",
+        "明德楼是哪栋",
+    ):
+        d = core.answer_question(q)
+        if d.get("matched") and d.get("item"):
+            map_presets.append({"q": q, "item": d["item"]["id"], "group": "校园地图 / 指路"})
+            by_group["校园地图 / 指路"].append(q)
+            presets.append(map_presets[-1])
+
+    coverage: dict[str, list[str]] = defaultdict(list)
+    for p in presets:
+        coverage[p["item"]].append(p["q"])
+
+    out = {"version": "1", "generated": date.today().isoformat(),
            "total": len(presets),
-           "groups": [{"name": k, "items": v} for k, v in by_group.items()]}
+           "coverage": dict(coverage),
+           "groups": ([{"name": "校园地图 / 指路", "items": by_group["校园地图 / 指路"]}]
+                      if by_group.get("校园地图 / 指路") else [])
+                     + [{"name": k, "items": v} for k, v in by_group.items() if k != "校园地图 / 指路"]}
     (ROOT / "presets.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
 
     covered = len({p["item"] for p in presets})
@@ -145,6 +201,9 @@ def main() -> None:
     if "--keep-miss" in sys.argv and misses:
         for m in misses[:15]:
             print(f"  ✗ {m['q'][:32]:<34} 期望 {m['want_title'][:14]}  实际 {m['got_title'][:14]}")
+    if misses and "--allow-miss" not in sys.argv:
+        print("✗ 预置问法有跑偏/缺口，先修关键词再生成")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

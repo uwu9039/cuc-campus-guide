@@ -1,0 +1,2069 @@
+{
+  "_meta": {
+    "title": "中国传媒大学本科专业简称（2026年版）",
+    "source": "sources/reference/本科专业简称（2026年版）.docx",
+    "sha256": "dc11a8555e2d984e58a972a2baf72973e14bedeb378089275af4875224be4b37",
+    "rows": 103,
+    "generated_by": "tools/import_major_aliases.py"
+  },
+  "colleges": {
+    "新闻学院": {
+      "label": "新闻学院",
+      "aliases": [
+        "新闻学院",
+        "新闻"
+      ],
+      "plan_college": "新闻学院",
+      "has_plan": true
+    },
+    "电视学院": {
+      "label": "电视学院",
+      "aliases": [
+        "电视学院",
+        "电视"
+      ],
+      "plan_college": "电视学院",
+      "has_plan": true
+    },
+    "戏剧影视学院": {
+      "label": "戏剧影视学院(戏影)",
+      "aliases": [
+        "戏剧影视学院",
+        "戏剧影视",
+        "戏影",
+        "戏影学院",
+        "戏影"
+      ],
+      "plan_college": "戏剧影视学院",
+      "has_plan": true
+    },
+    "播音主持艺术学院": {
+      "label": "播音主持艺术学院",
+      "aliases": [
+        "播音主持艺术学院",
+        "播音主持艺术",
+        "播院",
+        "播音学院",
+        "播音"
+      ],
+      "plan_college": "播音主持艺术学院",
+      "has_plan": true
+    },
+    "动画与数字艺术学院": {
+      "label": "动画与数字艺术学院(动院)",
+      "aliases": [
+        "动画与数字艺术学院",
+        "动画与数字艺术",
+        "动院",
+        "动画学院",
+        "动院"
+      ],
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true
+    },
+    "音乐与录音艺术学院": {
+      "label": "音乐与录音艺术学院(音录)",
+      "aliases": [
+        "音乐与录音艺术学院",
+        "音乐与录音艺术",
+        "音录",
+        "音录学院",
+        "音录"
+      ],
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true
+    },
+    "信息与通信工程学院": {
+      "label": "信息与通信工程学院(信通)",
+      "aliases": [
+        "信息与通信工程学院",
+        "信息与通信工程",
+        "信通",
+        "信通学院",
+        "信通"
+      ],
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true
+    },
+    "计算机与网络空间安全学院": {
+      "label": "计算机与网络空间安全学院(计网)",
+      "aliases": [
+        "计算机与网络空间安全学院",
+        "计算机与网络空间安全",
+        "计网",
+        "计网院",
+        "网安学院",
+        "计算机学院",
+        "计网"
+      ],
+      "plan_college": "计算机与网络空间安全学院",
+      "has_plan": true
+    },
+    "数据科学与智能媒体学院": {
+      "label": "数据科学与智能媒体学院(数智)",
+      "aliases": [
+        "数据科学与智能媒体学院",
+        "数据科学与智能媒体",
+        "数智",
+        "数智学院",
+        "数据学院",
+        "数智"
+      ],
+      "plan_college": "数据科学与智能媒体学院",
+      "has_plan": true
+    },
+    "人文学院": {
+      "label": "人文学院",
+      "aliases": [
+        "人文学院",
+        "人文"
+      ],
+      "plan_college": "人文学院",
+      "has_plan": true
+    },
+    "国际传播学院": {
+      "label": "国际传播学院(外院)",
+      "aliases": [
+        "国际传播学院",
+        "国际传播",
+        "外院",
+        "外语学院",
+        "外国语言文化学院",
+        "外国语言文化",
+        "外院"
+      ],
+      "plan_college": "外国语言文化学院",
+      "has_plan": true
+    },
+    "经济与管理学院": {
+      "label": "经济与管理学院(经管)",
+      "aliases": [
+        "经济与管理学院",
+        "经济与管理",
+        "经管",
+        "经管学院",
+        "经管"
+      ],
+      "plan_college": "经济与管理学院",
+      "has_plan": true
+    },
+    "政府与公共事务学院": {
+      "label": "政府与公共事务学院(政院)",
+      "aliases": [
+        "政府与公共事务学院",
+        "政府与公共事务",
+        "政院",
+        "政府学院",
+        "政院"
+      ],
+      "plan_college": "政府与公共事务学院",
+      "has_plan": true
+    },
+    "广告与品牌学院": {
+      "label": "广告与品牌学院",
+      "aliases": [
+        "广告与品牌学院",
+        "广告与品牌",
+        "广告学院"
+      ],
+      "plan_college": "广告与品牌学院",
+      "has_plan": true
+    },
+    "文化产业管理学院": {
+      "label": "文化产业管理学院(文产)",
+      "aliases": [
+        "文化产业管理学院",
+        "文化产业管理",
+        "文产",
+        "文产学院",
+        "文产"
+      ],
+      "plan_college": "文化产业管理学院",
+      "has_plan": true
+    },
+    "信息传播学院": {
+      "label": "信息传播学院",
+      "aliases": [
+        "信息传播学院",
+        "信息传播",
+        "信传",
+        "信传学院"
+      ],
+      "plan_college": "信息传播学院",
+      "has_plan": true
+    },
+    "国际传媒教育学院": {
+      "label": "国际传媒教育学院",
+      "aliases": [
+        "国际传媒教育学院",
+        "国际传媒教育",
+        "国际传媒",
+        "国传学院"
+      ],
+      "plan_college": "",
+      "has_plan": false
+    },
+    "海南国际教育学院": {
+      "label": "海南国际教育学院",
+      "aliases": [
+        "海南国际教育学院",
+        "海南国际教育",
+        "海南学院",
+        "海南国际"
+      ],
+      "plan_college": "",
+      "has_plan": false
+    }
+  },
+  "majors": [
+    {
+      "id": 1,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "新闻学",
+      "abbr": "新闻",
+      "until": null,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "新闻学",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 2,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "新闻学(数据新闻方向)(至2024)",
+      "abbr": "数新",
+      "until": 2024,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 3,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "传播学",
+      "abbr": "传播",
+      "until": null,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "传播学",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 4,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "传播学(舆情分析方向)(至2024)",
+      "abbr": "舆情",
+      "until": 2024,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "「舆情」旧属新闻学院，该方向2024年停招；现行方向在信息传播学院；简称重复：传播学(舆情与社会治理方向)（信息传播学院）",
+      "ambiguous": true
+    },
+    {
+      "id": 5,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "传播学(智能与计算传播方向)",
+      "abbr": "智传",
+      "until": null,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "传播学（智能与计算传播方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 6,
+      "college": "新闻学院",
+      "college_label": "新闻学院",
+      "college_alias": "",
+      "major": "新闻学(新闻舆论学方向)",
+      "abbr": "新舆",
+      "until": null,
+      "plan_college": "新闻学院",
+      "has_plan": true,
+      "plan_major": "新闻学（新闻舆论学）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 7,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "国际新闻与传播(卓越人才实验班)",
+      "abbr": "国新",
+      "until": null,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "国际新闻与传播",
+      "status": "current",
+      "note": "2025接收计划按国际新闻与传播整体列出，未单列实验班",
+      "ambiguous": false
+    },
+    {
+      "id": 8,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "网络与新媒体",
+      "abbr": "网新",
+      "until": null,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "网络与新媒体",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 9,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "广播电视学(视听传播方向)",
+      "abbr": "广电",
+      "until": null,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "广播电视学（视听传播方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 10,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "广播电视编导(视听编辑方向)",
+      "abbr": "电编",
+      "until": null,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "广播电视编导（视听编辑方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 11,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "数字出版",
+      "abbr": "数版",
+      "until": null,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "数字出版",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 12,
+      "college": "电视学院",
+      "college_label": "电视学院",
+      "college_alias": "",
+      "major": "编辑出版学(新媒体方向)(至2024)",
+      "abbr": "编版",
+      "until": 2024,
+      "plan_college": "电视学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 13,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "广播电视编导(文艺编导方向)",
+      "abbr": "文编",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "广播电视编导（文艺编导方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 14,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "戏剧影视文学",
+      "abbr": "戏文",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "戏剧影视文学",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 15,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "戏剧影视导演",
+      "abbr": "导演",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "导演",
+      "status": "current",
+      "note": "接收计划中写作「导演」",
+      "ambiguous": false
+    },
+    {
+      "id": 16,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "表演",
+      "abbr": "表演",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "表演",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 17,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "摄影(至2025)",
+      "abbr": "摄影",
+      "until": 2025,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 18,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "影视摄影与制作",
+      "abbr": "摄制",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "影视摄影与制作",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 19,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "环境设计(光影空间艺术方向)",
+      "abbr": "光环境",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "环境设计（光影空间艺术）",
+      "status": "current",
+      "note": "「光环境」是光影空间艺术方向，属戏剧影视学院",
+      "ambiguous": false
+    },
+    {
+      "id": 20,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "戏剧影视美术设计",
+      "abbr": "戏美",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "戏剧影视美术设计",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 21,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "音乐剧",
+      "abbr": "音乐剧",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "音乐剧",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 22,
+      "college": "戏剧影视学院",
+      "college_label": "戏剧影视学院(戏影)",
+      "college_alias": "戏影",
+      "major": "智能影像艺术",
+      "abbr": "智影艺",
+      "until": null,
+      "plan_college": "戏剧影视学院",
+      "has_plan": true,
+      "plan_major": "智能影像艺术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 23,
+      "college": "播音主持艺术学院",
+      "college_label": "播音主持艺术学院",
+      "college_alias": "",
+      "major": "播音与主持艺术",
+      "abbr": "播本",
+      "until": null,
+      "plan_college": "播音主持艺术学院",
+      "has_plan": true,
+      "plan_major": "播音与主持艺术专业",
+      "status": "current",
+      "note": "「播本」指播音与主持艺术本科",
+      "ambiguous": false
+    },
+    {
+      "id": 24,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "数字媒体技术(游戏科学与技术方向)",
+      "abbr": "游技",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "数字媒体技术（游戏科学与技术方向）",
+      "status": "current",
+      "note": "「游技」在动画与数字艺术学院，不是信息与通信工程学院的数字媒体技术（数媒技）",
+      "ambiguous": false
+    },
+    {
+      "id": 25,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "漫画(至2025)",
+      "abbr": "漫画",
+      "until": 2025,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 26,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "动画",
+      "abbr": "动画",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "动画",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 27,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "动画(游戏艺术方向)(至2025)",
+      "abbr": "游艺",
+      "until": 2025,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "动画（游戏艺术）",
+      "status": "until_listed",
+      "note": "「游艺」旧名，2025年停招；现行专业为游戏艺术设计；简称重复：游戏艺术设计（动画与数字艺术学院）",
+      "ambiguous": true
+    },
+    {
+      "id": 28,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "游戏艺术设计",
+      "abbr": "游艺",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "动画（游戏艺术）",
+      "status": "current",
+      "note": "「游艺」现行专业，前身为动画（游戏艺术方向）；简称重复：动画(游戏艺术方向)(至2025)（动画与数字艺术学院）",
+      "ambiguous": true
+    },
+    {
+      "id": 29,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "新媒体艺术(至2025)",
+      "abbr": "新媒艺",
+      "until": 2025,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 30,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "数字媒体艺术",
+      "abbr": "数媒艺",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "数字媒体艺术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 31,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "艺术与科技(数字娱乐方向)(至2024)",
+      "abbr": "数娱",
+      "until": 2024,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "艺术与科技（数字娱乐方向）",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 32,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "艺术与科技(电子竞技方向)",
+      "abbr": "电竞",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "艺术与科技（电子竞技方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 33,
+      "college": "动画与数字艺术学院",
+      "college_label": "动画与数字艺术学院(动院)",
+      "college_alias": "动院",
+      "major": "智能工程与创意设计",
+      "abbr": "智创",
+      "until": null,
+      "plan_college": "动画与数字艺术学院",
+      "has_plan": true,
+      "plan_major": "智能工程与创意设计",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 34,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "录音艺术(录音工程方向)",
+      "abbr": "音工",
+      "until": null,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "录音艺术（录音工程方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 35,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "录音艺术(音响导演方向)",
+      "abbr": "音导",
+      "until": null,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "录音艺术（音响导演方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 36,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "音乐学(音乐传播方向)(至2025)",
+      "abbr": "音传",
+      "until": 2025,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "音乐学（音乐传播方向）",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 37,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "音乐学(音乐编导与传播方向)",
+      "abbr": "音乐学",
+      "until": null,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "音乐学（音乐编导方向）",
+      "status": "current",
+      "note": "2025接收计划分列音乐学（音乐编导方向）与音乐学（音乐编辑方向）",
+      "ambiguous": false
+    },
+    {
+      "id": 38,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "作曲与作曲技术理论(电子音乐方向)",
+      "abbr": "电音",
+      "until": null,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "作曲与作曲技术理论（电子音乐方向）",
+      "status": "current",
+      "note": "「电音」是电子音乐方向，不是电子竞技",
+      "ambiguous": false
+    },
+    {
+      "id": 39,
+      "college": "音乐与录音艺术学院",
+      "college_label": "音乐与录音艺术学院(音录)",
+      "college_alias": "音录",
+      "major": "音乐表演(声乐演唱方向)",
+      "abbr": "声表",
+      "until": null,
+      "plan_college": "音乐与录音艺术学院",
+      "has_plan": true,
+      "plan_major": "音乐表演（声乐演唱方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 40,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "通信工程",
+      "abbr": "通信",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "通信工程",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 41,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "电子信息工程",
+      "abbr": "电信",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "电子信息工程",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 42,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "广播电视工程(智能视听技术方向)(至2024)",
+      "abbr": "广电工",
+      "until": 2024,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "广播电视工程（智能视听技术方向）",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 43,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "数字媒体技术",
+      "abbr": "数媒技",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "数字媒体技术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 44,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "物联网工程(至2024)",
+      "abbr": "物联网",
+      "until": 2024,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 45,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "人工智能(智能视听卓越人才实验班)",
+      "abbr": "人工智能",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "人工智能",
+      "status": "current",
+      "note": "2025接收计划按人工智能整体列出，未单列实验班",
+      "ambiguous": false
+    },
+    {
+      "id": 46,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "智能装备与系统(演艺工程与智能技术方向)(至2025)",
+      "abbr": "智装",
+      "until": 2025,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "智能装备与系统（演艺工程与智能技术方向）",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 47,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "智能视听工程",
+      "abbr": "智视听",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "智能视听工程",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 48,
+      "college": "信息与通信工程学院",
+      "college_label": "信息与通信工程学院(信通)",
+      "college_alias": "信通",
+      "major": "人工智能(数字演艺工程方向)",
+      "abbr": "数演",
+      "until": null,
+      "plan_college": "信息与通信工程学院",
+      "has_plan": true,
+      "plan_major": "人工智能",
+      "status": "current",
+      "note": "2025接收计划按人工智能整体列出，未单列该方向",
+      "ambiguous": false
+    },
+    {
+      "id": 49,
+      "college": "计算机与网络空间安全学院",
+      "college_label": "计算机与网络空间安全学院(计网)",
+      "college_alias": "计网",
+      "major": "计算机科学与技术",
+      "abbr": "计科",
+      "until": null,
+      "plan_college": "计算机与网络空间安全学院",
+      "has_plan": true,
+      "plan_major": "计算机科学与技术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 50,
+      "college": "计算机与网络空间安全学院",
+      "college_label": "计算机与网络空间安全学院(计网)",
+      "college_alias": "计网",
+      "major": "网络空间安全",
+      "abbr": "网安",
+      "until": null,
+      "plan_college": "计算机与网络空间安全学院",
+      "has_plan": true,
+      "plan_major": "网络空间安全",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 51,
+      "college": "计算机与网络空间安全学院",
+      "college_label": "计算机与网络空间安全学院(计网)",
+      "college_alias": "计网",
+      "major": "网络空间安全(AI治理与视听安全方向)",
+      "abbr": "",
+      "until": null,
+      "plan_college": "计算机与网络空间安全学院",
+      "has_plan": true,
+      "plan_major": "网络空间安全",
+      "status": "current",
+      "note": "2026年版原表未给简称；2025接收计划按网络空间安全整体列出，未单列该方向",
+      "ambiguous": false
+    },
+    {
+      "id": 52,
+      "college": "数据科学与智能媒体学院",
+      "college_label": "数据科学与智能媒体学院(数智)",
+      "college_alias": "数智",
+      "major": "智能科学与技术",
+      "abbr": "智科",
+      "until": null,
+      "plan_college": "数据科学与智能媒体学院",
+      "has_plan": true,
+      "plan_major": "智能科学与技术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 53,
+      "college": "数据科学与智能媒体学院",
+      "college_label": "数据科学与智能媒体学院(数智)",
+      "college_alias": "数智",
+      "major": "数据科学与大数据技术",
+      "abbr": "数科",
+      "until": null,
+      "plan_college": "数据科学与智能媒体学院",
+      "has_plan": true,
+      "plan_major": "数据科学与大数据技术",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 54,
+      "college": "人文学院",
+      "college_label": "人文学院",
+      "college_alias": "",
+      "major": "汉语言文学",
+      "abbr": "汉文",
+      "until": null,
+      "plan_college": "人文学院",
+      "has_plan": true,
+      "plan_major": "汉语言文学",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 55,
+      "college": "人文学院",
+      "college_label": "人文学院",
+      "college_alias": "",
+      "major": "汉语言(语言数据与智能应用方向)",
+      "abbr": "汉语言",
+      "until": null,
+      "plan_college": "人文学院",
+      "has_plan": true,
+      "plan_major": "汉语言",
+      "status": "current",
+      "note": "2025接收计划按汉语言整体列出，未单列该方向",
+      "ambiguous": false
+    },
+    {
+      "id": 56,
+      "college": "人文学院",
+      "college_label": "人文学院",
+      "college_alias": "",
+      "major": "汉语国际教育(至2025)",
+      "abbr": "汉教",
+      "until": 2025,
+      "plan_college": "人文学院",
+      "has_plan": true,
+      "plan_major": "汉语国际教育",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 57,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "英语(区域国别卓越人才实验班)",
+      "abbr": "英语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "英语（区域国别卓越人才实验班）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 58,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "翻译(至2024)",
+      "abbr": "翻译",
+      "until": 2024,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 59,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "乌尔都语",
+      "abbr": "乌语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 60,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "德语(中德文化交流与国际事务方向)",
+      "abbr": "德语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "德语（中德文化交流与国际事务方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 61,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "阿拉伯语",
+      "abbr": "阿语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 62,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "俄语(中俄文化交流与国际事务方向)",
+      "abbr": "俄语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 63,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "法语",
+      "abbr": "法语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 64,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "葡萄牙语(中葡文化交流与国际事务方向)",
+      "abbr": "葡语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "葡萄牙语（中葡文化交流与国际事务方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 65,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "马来语(中马文化交流与国际事务方向)",
+      "abbr": "马来语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 66,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "日语(中日文化交流与国际事务方向)",
+      "abbr": "日语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "日语（中日文化交流与国际事务方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 67,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "斯瓦希里语",
+      "abbr": "斯语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 68,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "土耳其语",
+      "abbr": "土语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 69,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "尼泊尔语(跨文化交流与国际事务方向)",
+      "abbr": "尼语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 70,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "意大利语(中意文化交流与国际事务方向)",
+      "abbr": "意语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 71,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "匈牙利语(中匈文化交流与国际事务方向)",
+      "abbr": "匈语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 72,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "印地语(中印文化交流与国际事务方向)",
+      "abbr": "印地语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 73,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "西班牙语",
+      "abbr": "西语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 74,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "孟加拉语",
+      "abbr": "孟语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 75,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "普什图语(跨文化交流与国际事务方向)",
+      "abbr": "普语",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 76,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "播音与主持艺术(中英双语播音主持方向)",
+      "abbr": "中英双播",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "播音与主持艺术（中英双语播音主持方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；学院2026年由外国语言文化学院更名；2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 77,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "播音与主持艺术(中朝、中韩双语播音主持方向)",
+      "abbr": "中朝双播",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "播音与主持艺术（中朝、中韩双语播音主持方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 78,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "播音与主持艺术(中西双语播音主持方向)",
+      "abbr": "中西双播",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "播音与主持艺术（中西双语播音主持方向）",
+      "status": "current",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名",
+      "ambiguous": false
+    },
+    {
+      "id": 79,
+      "college": "国际传播学院",
+      "college_label": "国际传播学院(外院)",
+      "college_alias": "外院",
+      "major": "播音与主持艺术(中日双语播音主持方向)",
+      "abbr": "中日双播",
+      "until": null,
+      "plan_college": "外国语言文化学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "学院2026年由外国语言文化学院更名，2025接收计划仍用旧名；2025接收计划未单列此专业，以学院当年通知为准",
+      "ambiguous": false
+    },
+    {
+      "id": 80,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "大数据管理与应用(智能商务分析方向)",
+      "abbr": "数管",
+      "until": null,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "大数据管理与应用",
+      "status": "current",
+      "note": "2025接收计划按大数据管理与应用整体列出，未单列该方向",
+      "ambiguous": false
+    },
+    {
+      "id": 81,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "信息管理与信息系统",
+      "abbr": "信管",
+      "until": null,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "信息管理与信息系统",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 82,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "经济学(传媒经济方向)(至2025)",
+      "abbr": "传经",
+      "until": 2025,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 83,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "数字经济",
+      "abbr": "数经",
+      "until": null,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "数字经济",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 84,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "工商管理(智能商业管理方向)",
+      "abbr": "工管",
+      "until": null,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "工商管理",
+      "status": "current",
+      "note": "2025接收计划按工商管理整体列出，未单列该方向",
+      "ambiguous": false
+    },
+    {
+      "id": 85,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "市场营销(至2025)",
+      "abbr": "营销",
+      "until": 2025,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 86,
+      "college": "经济与管理学院",
+      "college_label": "经济与管理学院(经管)",
+      "college_alias": "经管",
+      "major": "跨境电子商务(至2025)",
+      "abbr": "跨电",
+      "until": 2025,
+      "plan_college": "经济与管理学院",
+      "has_plan": true,
+      "plan_major": "跨境电子商务",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 87,
+      "college": "政府与公共事务学院",
+      "college_label": "政府与公共事务学院(政院)",
+      "college_alias": "政院",
+      "major": "行政管理(媒介与公共治理方向)",
+      "abbr": "行管",
+      "until": null,
+      "plan_college": "政府与公共事务学院",
+      "has_plan": true,
+      "plan_major": "行政管理（媒介与公共治理方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 88,
+      "college": "政府与公共事务学院",
+      "college_label": "政府与公共事务学院(政院)",
+      "college_alias": "政院",
+      "major": "政治学与行政学(政治传播与政府治理方向)",
+      "abbr": "政行",
+      "until": null,
+      "plan_college": "政府与公共事务学院",
+      "has_plan": true,
+      "plan_major": "政治学与行政学（政治传播与政府治理方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 89,
+      "college": "广告与品牌学院",
+      "college_label": "广告与品牌学院",
+      "college_alias": "",
+      "major": "广告学(品牌学方向)",
+      "abbr": "广告",
+      "until": null,
+      "plan_college": "广告与品牌学院",
+      "has_plan": true,
+      "plan_major": "广告学（品牌学方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 90,
+      "college": "广告与品牌学院",
+      "college_label": "广告与品牌学院",
+      "college_alias": "",
+      "major": "公共关系学(至2024)",
+      "abbr": "公关",
+      "until": 2024,
+      "plan_college": "广告与品牌学院",
+      "has_plan": true,
+      "plan_major": "公共关系学",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 91,
+      "college": "广告与品牌学院",
+      "college_label": "广告与品牌学院",
+      "college_alias": "",
+      "major": "网络与新媒体(智能融媒体运营方向)",
+      "abbr": "新媒",
+      "until": null,
+      "plan_college": "广告与品牌学院",
+      "has_plan": true,
+      "plan_major": "网络与新媒体（智能融媒体运营方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 92,
+      "college": "广告与品牌学院",
+      "college_label": "广告与品牌学院",
+      "college_alias": "",
+      "major": "视觉传达设计(至2025)",
+      "abbr": "视传",
+      "until": 2025,
+      "plan_college": "广告与品牌学院",
+      "has_plan": true,
+      "plan_major": "视觉传达设计",
+      "status": "until_listed",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 93,
+      "college": "广告与品牌学院",
+      "college_label": "广告与品牌学院",
+      "college_alias": "",
+      "major": "广告学(计算广告双学士学位实验班)",
+      "abbr": "计广",
+      "until": null,
+      "plan_college": "广告与品牌学院",
+      "has_plan": true,
+      "plan_major": "广告学（计算广告双学士学位实验班）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 94,
+      "college": "文化产业管理学院",
+      "college_label": "文化产业管理学院(文产)",
+      "college_alias": "文产",
+      "major": "文化产业管理",
+      "abbr": "文管",
+      "until": null,
+      "plan_college": "文化产业管理学院",
+      "has_plan": true,
+      "plan_major": "文化产业管理",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 95,
+      "college": "文化产业管理学院",
+      "college_label": "文化产业管理学院(文产)",
+      "college_alias": "文产",
+      "major": "艺术管理(至2024)",
+      "abbr": "艺管",
+      "until": 2024,
+      "plan_college": "文化产业管理学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "until",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 96,
+      "college": "信息传播学院",
+      "college_label": "信息传播学院",
+      "college_alias": "",
+      "major": "传播学(信息传播方向)",
+      "abbr": "信传",
+      "until": null,
+      "plan_college": "信息传播学院",
+      "has_plan": true,
+      "plan_major": "传播学（信息传播方向）",
+      "status": "current",
+      "note": "",
+      "ambiguous": false
+    },
+    {
+      "id": 97,
+      "college": "信息传播学院",
+      "college_label": "信息传播学院",
+      "college_alias": "",
+      "major": "传播学(舆情与社会治理方向)",
+      "abbr": "舆情",
+      "until": null,
+      "plan_college": "信息传播学院",
+      "has_plan": true,
+      "plan_major": "",
+      "status": "unlisted",
+      "note": "「舆情」现行方向，属信息传播学院；2025接收计划未单列此专业，以学院当年通知为准；简称重复：传播学(舆情分析方向)(至2024)（新闻学院）",
+      "ambiguous": true
+    },
+    {
+      "id": 98,
+      "college": "国际传媒教育学院",
+      "college_label": "国际传媒教育学院",
+      "college_alias": "",
+      "major": "传播学(中外合作办学)",
+      "abbr": "国传传播",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    },
+    {
+      "id": 99,
+      "college": "国际传媒教育学院",
+      "college_label": "国际传媒教育学院",
+      "college_alias": "",
+      "major": "广告学(中外合作办学)",
+      "abbr": "国传广告",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    },
+    {
+      "id": 100,
+      "college": "国际传媒教育学院",
+      "college_label": "国际传媒教育学院",
+      "college_alias": "",
+      "major": "数字经济(中外合作办学)",
+      "abbr": "国传数经",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    },
+    {
+      "id": 101,
+      "college": "海南国际教育学院",
+      "college_label": "海南国际教育学院",
+      "college_alias": "",
+      "major": "智能科学与技术(中外合作办学)",
+      "abbr": "海南智科",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    },
+    {
+      "id": 102,
+      "college": "海南国际教育学院",
+      "college_label": "海南国际教育学院",
+      "college_alias": "",
+      "major": "视觉传达设计(中外合作办学)",
+      "abbr": "海南视传",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    },
+    {
+      "id": 103,
+      "college": "海南国际教育学院",
+      "college_label": "海南国际教育学院",
+      "college_alias": "",
+      "major": "数字媒体技术(中外合作办学)",
+      "abbr": "海南数媒技",
+      "until": null,
+      "plan_college": "",
+      "has_plan": false,
+      "plan_major": "",
+      "status": "no_plan",
+      "note": "本次16份2025接收计划未包含该学院",
+      "ambiguous": false
+    }
+  ],
+  "abbr_index": {
+    "新闻": [
+      1
+    ],
+    "数新": [
+      2
+    ],
+    "传播": [
+      3
+    ],
+    "舆情": [
+      4,
+      97
+    ],
+    "智传": [
+      5
+    ],
+    "新舆": [
+      6
+    ],
+    "国新": [
+      7
+    ],
+    "网新": [
+      8
+    ],
+    "广电": [
+      9
+    ],
+    "电编": [
+      10
+    ],
+    "数版": [
+      11
+    ],
+    "编版": [
+      12
+    ],
+    "文编": [
+      13
+    ],
+    "戏文": [
+      14
+    ],
+    "导演": [
+      15
+    ],
+    "表演": [
+      16
+    ],
+    "摄影": [
+      17
+    ],
+    "摄制": [
+      18
+    ],
+    "光环境": [
+      19
+    ],
+    "戏美": [
+      20
+    ],
+    "音乐剧": [
+      21
+    ],
+    "智影艺": [
+      22
+    ],
+    "播本": [
+      23
+    ],
+    "游技": [
+      24
+    ],
+    "漫画": [
+      25
+    ],
+    "动画": [
+      26
+    ],
+    "游艺": [
+      27,
+      28
+    ],
+    "新媒艺": [
+      29
+    ],
+    "数媒艺": [
+      30
+    ],
+    "数娱": [
+      31
+    ],
+    "电竞": [
+      32
+    ],
+    "智创": [
+      33
+    ],
+    "音工": [
+      34
+    ],
+    "音导": [
+      35
+    ],
+    "音传": [
+      36
+    ],
+    "音乐学": [
+      37
+    ],
+    "电音": [
+      38
+    ],
+    "声表": [
+      39
+    ],
+    "通信": [
+      40
+    ],
+    "电信": [
+      41
+    ],
+    "广电工": [
+      42
+    ],
+    "数媒技": [
+      43
+    ],
+    "物联网": [
+      44
+    ],
+    "人工智能": [
+      45
+    ],
+    "智装": [
+      46
+    ],
+    "智视听": [
+      47
+    ],
+    "数演": [
+      48
+    ],
+    "计科": [
+      49
+    ],
+    "网安": [
+      50
+    ],
+    "智科": [
+      52
+    ],
+    "数科": [
+      53
+    ],
+    "汉文": [
+      54
+    ],
+    "汉语言": [
+      55
+    ],
+    "汉教": [
+      56
+    ],
+    "英语": [
+      57
+    ],
+    "翻译": [
+      58
+    ],
+    "乌语": [
+      59
+    ],
+    "德语": [
+      60
+    ],
+    "阿语": [
+      61
+    ],
+    "俄语": [
+      62
+    ],
+    "法语": [
+      63
+    ],
+    "葡语": [
+      64
+    ],
+    "马来语": [
+      65
+    ],
+    "日语": [
+      66
+    ],
+    "斯语": [
+      67
+    ],
+    "土语": [
+      68
+    ],
+    "尼语": [
+      69
+    ],
+    "意语": [
+      70
+    ],
+    "匈语": [
+      71
+    ],
+    "印地语": [
+      72
+    ],
+    "西语": [
+      73
+    ],
+    "孟语": [
+      74
+    ],
+    "普语": [
+      75
+    ],
+    "中英双播": [
+      76
+    ],
+    "中朝双播": [
+      77
+    ],
+    "中西双播": [
+      78
+    ],
+    "中日双播": [
+      79
+    ],
+    "数管": [
+      80
+    ],
+    "信管": [
+      81
+    ],
+    "传经": [
+      82
+    ],
+    "数经": [
+      83
+    ],
+    "工管": [
+      84
+    ],
+    "营销": [
+      85
+    ],
+    "跨电": [
+      86
+    ],
+    "行管": [
+      87
+    ],
+    "政行": [
+      88
+    ],
+    "广告": [
+      89
+    ],
+    "公关": [
+      90
+    ],
+    "新媒": [
+      91
+    ],
+    "视传": [
+      92
+    ],
+    "计广": [
+      93
+    ],
+    "文管": [
+      94
+    ],
+    "艺管": [
+      95
+    ],
+    "信传": [
+      96
+    ],
+    "国传传播": [
+      98
+    ],
+    "国传广告": [
+      99
+    ],
+    "国传数经": [
+      100
+    ],
+    "海南智科": [
+      101
+    ],
+    "海南视传": [
+      102
+    ],
+    "海南数媒技": [
+      103
+    ]
+  }
+}

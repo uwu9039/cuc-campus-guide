@@ -27,7 +27,7 @@ CASES: list[tuple[str, str | None, str]] = [
     ("在读证明需要盖章吗", "jwc-zaidu", "normal"),
     ("选课没选上怎么办", "jwc-buxuanke", "normal"),
     ("想退一门课", "jwc-buxuanke", "normal"),
-    ("成绩不对能复核吗", "jwc-kaoshi", "normal"),
+    ("成绩不对能复核吗", "jwc-chengji-fuhe", "normal"),
     ("想申请自修", "jwc-zixiu", "normal"),
     ("体育课能免修吗", "jwc-tiyu", "normal"),
     ("交换的学分怎么认定", "jwc-zhuanhuan", "normal"),
@@ -46,7 +46,7 @@ CASES: list[tuple[str, str | None, str]] = [
     ("毕业证明书丢了能补吗", "doc-20240412-c6366a218572", "normal"),
     ("宿舍能不能换", None, "absent"),
     ("奖学金怎么申请", "jiangxuejin", "normal"),
-    ("图书馆能续借吗", None, "absent"),
+    ("图书馆能续借吗", "lib-jieyue", "normal"),
     ("研究生能换导师吗", None, "absent"),
     ("学历证书电子注册备案表怎么申请", "chsi-baogao", "normal"),
     ("想转学去别的学校", "moe-zhuanxue", "normal"),
@@ -90,7 +90,7 @@ FAMILY_CASES: list[tuple[str, list[tuple[str, str]]]] = [
     ]),
     ("考试三件事", [
         ("考试作弊被抓什么后果", "kaoshi-weiji"),
-        ("成绩不对想复核", "jwc-kaoshi"),
+        ("成绩不对想复核", "jwc-chengji-fuhe"),
         ("四六级怎么报名", "jwc-cet"),
     ]),
     ("体育两件事", [

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f3ee">
+<title>校园办事向导 · 说得清，带得对</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#thread">跳到对话内容</a>
+
+<div class="app">
+  <!-- ============ 主栏：对话 ============ -->
+  <section class="rail" aria-label="对话">
+    <header class="topbar">
+      <div class="brand">
+        <b>校园办事向导</b>
+        <span>证据可查</span>
+      </div>
+      <div class="statline" id="statline" aria-live="polite">正在连接本地事项库…</div>
+      <div class="topacts">
+        <button class="ghostbtn" type="button" id="ctbtn">联系方式</button>
+        <button class="ghostbtn" type="button" id="searchbtn">搜原文</button>
+        <button class="ghostbtn" type="button" id="sheetbtn" aria-controls="inspector" aria-expanded="false">条目档案</button>
+      </div>
+    </header>
+
+    <div class="scroller" id="scroller">
+      <div class="thread" id="thread" aria-live="polite" aria-relevant="additions text"></div>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <div class="composer-in">
+        <div class="presets" id="presets" aria-label="常用问法"></div>
+        <div class="box">
+          <label class="sr" for="q">你的问题</label>
+          <textarea id="q" rows="1" placeholder="比如：校园卡丢了怎么办 / 转专业到新闻学院要什么条件"></textarea>
+          <div class="boxfoot">
+            <button class="hintbtn" type="button" id="clearbtn" title="清空条件，重新问">重新问</button>
+            <label class="llm" title="规则拿不准时，让模型只在候选里挑一个，不生成事实">
+              <input type="checkbox" id="llmsw">
+              <span class="track" aria-hidden="true"><i></i></span>
+              模型裁决
+            </label>
+            <span class="footnote">材料以官方原文为准</span>
+            <button class="send" type="submit" id="send" aria-label="发送问题">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <p class="llmhint" id="llmhint" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ 右栏：条目档案 ============ -->
+  <aside class="inspector" id="inspector" aria-label="条目档案">
+    <div class="sheetbar" id="sheetbar" aria-hidden="true"><i></i></div>
+    <div class="inshead">
+      <div class="insrow">
+        <h2 id="institle">条目档案</h2>
+        <button class="iconbtn close" type="button" id="insclose" aria-label="关闭条目档案">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p class="jnsub" id="jnsub">问一个问题，这里会出现它的官方依据、材料与流程。</p>
+    </div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="档案分区">
+      <button role="tab" type="button" data-tab="overview" aria-selected="true" id="tab-overview" aria-controls="insbody">概览</button>
+      <button role="tab" type="button" data-tab="material" aria-selected="false" id="tab-material" aria-controls="insbody">材料</button>
+      <button role="tab" type="button" data-tab="steps" aria-selected="false" id="tab-steps" aria-controls="insbody">流程</button>
+      <button role="tab" type="button" data-tab="quotes" aria-selected="false" id="tab-quotes" aria-controls="insbody">原文 <span id="qcount">0</span></button>
+    </div>
+    <div class="insbody" id="insbody" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+      <div class="insempty">
+        <p class="ek">条目档案</p>
+        <h3>右边不是附件，是答案的出处</h3>
+        <p>问一句，这里会固定显示四项：办理信息、要带的材料、可执行步骤、原文引文。任何一条结论都能落到原文上。</p>
+        <ul>
+          <li>原文没写的字段，显示“官方页面没有写”，不补全。</li>
+          <li>转专业会直接展开学院接收计划，按专业列出条件与考核。</li>
+          <li>清单可以打印，也可以复制成纯文本带走。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="insfoot">
+      <button class="ghostbtn" type="button" id="printbtn">打印</button>
+      <button class="ghostbtn" type="button" id="copyallbtn">复制清单</button>
+      <span class="stamp" id="insstamp">NO. —</span>
+    </div>
+  </aside>
+</div>
+
+<!-- ============ 高德地图抽屉：问地点时从左侧滑出，占半屏，不挡对话 ============ -->
+<aside id="map-drawer" aria-label="高德地图" aria-hidden="true" data-open="false">
+  <div class="mapdrawerbar">
+    <div class="maphead">
+      <b>地图导航</b>
+      <span id="maptarget">中国传媒大学</span>
+    </div>
+    <div class="mapacts">
+      <a id="mapopen" href="#" target="_blank" rel="noreferrer">在高德打开 ↗</a>
+      <button type="button" id="mapclose" aria-label="关闭地图">×</button>
+    </div>
+  </div>
+  <div class="mapframe">
+    <div id="mapcanvas" class="mapcanvas" role="application" aria-label="位置地图"></div>
+  </div>
+  <p class="mapfoot" id="mapfoot">地图按高德搜索结果定位；楼内位置以官方原文为准。</p>
+</aside>
+
+<!-- ============ 抽屉：联系方式 / 原文检索 ============ -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawertitle" hidden>
+  <div class="drawerbar">
+    <h2 id="drawertitle">联系方式</h2>
+    <button class="iconbtn" type="button" id="drawerclose" aria-label="关闭">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="drawerbody" id="drawerbody"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="printsheet" id="printsheet" aria-hidden="true"></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js" defer></script>
+</body>
+</html>

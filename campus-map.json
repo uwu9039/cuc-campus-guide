@@ -1,0 +1,871 @@
+{
+  "updated": "2026-10-29",
+  "center": {
+    "lat": 39.912615,
+    "lng": 116.558006,
+    "crs": "GCJ-02",
+    "note": "取全部有坐标 POI 的算术平均，非校区多边形重心"
+  },
+  "amap_key_env": "AMAP_KEY",
+  "pois": [
+    {
+      "id": "nanmen",
+      "name": "南门",
+      "aliases": [
+        "南校门",
+        "学校南门",
+        "中国传媒大学南门"
+      ],
+      "category": "gate",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "朝阳区定福庄东街1号（建国路北侧）",
+      "source": "待确认：OSM/高德公开页面均未返回门体点位",
+      "confidence": "low",
+      "note": "官方原文：主楼位于南门正对着的高楼。据此南门在主楼正南、建国路北侧，但未取到可核实的门点位，故坐标为 null。"
+    },
+    {
+      "id": "beimen",
+      "name": "北门",
+      "aliases": [
+        "北校门",
+        "北门转盘"
+      ],
+      "category": "gate",
+      "lat": 39.914937,
+      "lng": 116.555886,
+      "wgs84": {
+        "lat": 39.913849,
+        "lng": 116.550045
+      },
+      "wgs84_derived": false,
+      "address": "朝阳路南侧，校内北门转盘处",
+      "source": "OpenStreetMap W783282804「北门转盘」",
+      "confidence": "medium",
+      "note": "取 OSM「北门转盘」点位；实际门线更靠北（近朝阳路），约偏北 50 m。",
+      "source_url": "https://www.openstreetmap.org/way/783282804"
+    },
+    {
+      "id": "ximen",
+      "name": "西门",
+      "aliases": [
+        "西校门",
+        "定福庄东街校门"
+      ],
+      "category": "gate",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "定福庄东街一侧",
+      "source": "待确认：OSM 未单独标注西门",
+      "confidence": "low",
+      "note": "校园西侧沿定福庄东街（3/4/7 号楼一线），但未取到门体点位。"
+    },
+    {
+      "id": "lidelou",
+      "name": "立德楼",
+      "aliases": [
+        "1教",
+        "一教",
+        "1号楼",
+        "一号教学楼",
+        "立德楼（1号楼）"
+      ],
+      "category": "teaching",
+      "lat": 39.910873,
+      "lng": 116.557034,
+      "wgs84": {
+        "lat": 39.909787,
+        "lng": 116.551197
+      },
+      "wgs84_derived": true,
+      "address": "定福庄东街1号 中国传媒大学（传媒大学地铁站东北口步行约420米）",
+      "source": "高德地图 POI「中国传媒大学立德楼」B0FFKHN1MM",
+      "confidence": "high",
+      "note": "高德点位；OSM 另有「1教」楼体中心（W198238561），与本点相距约 90 m。",
+      "source_url": "https://www.amap.com/place/B0FFKHN1MM"
+    },
+    {
+      "id": "boxuelou",
+      "name": "博学楼",
+      "aliases": [
+        "48教",
+        "四十八教",
+        "48号楼",
+        "四十八号楼"
+      ],
+      "category": "teaching",
+      "lat": 39.91344,
+      "lng": 116.555315,
+      "wgs84": {
+        "lat": 39.91235,
+        "lng": 116.549473
+      },
+      "wgs84_derived": true,
+      "address": "定福庄东街1号 中国传媒大学",
+      "source": "高德地图 POI「中国传媒大学博学楼」B0FFHUU1AY",
+      "confidence": "high",
+      "note": "高德点位；OSM 楼体中心 W255744677 在东偏北约 70 m。",
+      "source_url": "https://www.amap.com/place/B0FFHUU1AY",
+      "facilities": [
+        {
+          "floor": 1,
+          "toilets": {
+            "female": 3,
+            "male": 1
+          },
+          "note": "一层 3 女 1 男",
+          "source": "user"
+        }
+      ]
+    },
+    {
+      "id": "yichuan",
+      "name": "艺术与传播大楼",
+      "aliases": [
+        "27号楼",
+        "艺传大楼",
+        "艺传",
+        "艺术传播大楼"
+      ],
+      "category": "teaching",
+      "lat": 39.911941,
+      "lng": 116.556485,
+      "wgs84": {
+        "lat": 39.910854,
+        "lng": 116.550646
+      },
+      "wgs84_derived": true,
+      "address": "南操场西侧，艺术展览中心北侧，阳明书院南侧（2024 年新建）",
+      "source": "高德地图 POI「中国传媒大学艺术与传播大楼」B0K0UZXD1C",
+      "confidence": "high",
+      "note": "官方：本科生院 3 层 301、学生工作部 2 层、财务处 4 层、校园建设处 5 层均在楼内。",
+      "source_url": "https://www.amap.com/place/B0K0UZXD1C",
+      "facilities": [
+        {
+          "type": "elevator",
+          "note": "有电梯（原文「三楼出电梯左转本科生院」）",
+          "source": "25bc194d"
+        },
+        {
+          "type": "service_hall",
+          "floor": 1,
+          "note": "1 层校园生活服务大厅（进门往左）",
+          "source": "1b97d899"
+        }
+      ]
+    },
+    {
+      "id": "tushuguan",
+      "name": "图书馆",
+      "aliases": [
+        "大阅城",
+        "49号楼",
+        "中传图书馆",
+        "图书馆大阅城"
+      ],
+      "category": "teaching",
+      "lat": 39.913935,
+      "lng": 116.558324,
+      "wgs84": {
+        "lat": 39.912851,
+        "lng": 116.552489
+      },
+      "wgs84_derived": true,
+      "address": "49 号楼（大阅城），钢琴湖畔；副楼 1 层校史馆、2 层圆形报告厅与 4K 影厅",
+      "source": "高德地图 POI「中国传媒大学图书馆」B000AA0V9S",
+      "confidence": "high",
+      "note": "高德点位；OSM 大阅城楼体 W523569201 中心在西南约 70 m。东门另有 POI「中国传媒大学图书馆(东门)」B0FFH20K1L。",
+      "source_url": "https://www.amap.com/place/B000AA0V9S",
+      "facilities": [
+        {
+          "type": "elevator",
+          "note": "各层有电梯；视听间位于三至五层电梯南侧",
+          "source": "图书馆读者手册2024"
+        },
+        {
+          "type": "toilet",
+          "note": "每层设卫生间（垃圾桶设于每层卫生间）",
+          "source": "图书馆读者手册2024"
+        },
+        {
+          "type": "silent_booth",
+          "note": "静音舱：二至五层东侧",
+          "source": "图书馆读者手册2024"
+        },
+        {
+          "type": "seminar_room",
+          "note": "研讨间：二至四层南侧（304-305 为教师专用）",
+          "source": "图书馆读者手册2024"
+        }
+      ]
+    },
+    {
+      "id": "benkeshengyuan",
+      "name": "本科生院",
+      "aliases": [
+        "本科生院301",
+        "艺术与传播大楼301",
+        "教务"
+      ],
+      "category": "office",
+      "lat": 39.911941,
+      "lng": 116.556485,
+      "wgs84": {
+        "lat": 39.910854,
+        "lng": 116.550646
+      },
+      "wgs84_derived": true,
+      "address": "艺术与传播大楼 3 层 301、309-316",
+      "source": "官方位置表 1b97d899；坐标取艺传大楼楼体点位",
+      "confidence": "medium",
+      "note": "楼内房间，坐标沿用艺术与传播大楼。"
+    },
+    {
+      "id": "kawu",
+      "name": "校园卡服务中心（卡务中心）",
+      "aliases": [
+        "卡务中心",
+        "校园卡中心",
+        "学生综合服务大厅",
+        "校园生活服务大厅"
+      ],
+      "category": "office",
+      "lat": 39.911941,
+      "lng": 116.556485,
+      "wgs84": {
+        "lat": 39.910854,
+        "lng": 116.550646
+      },
+      "wgs84_derived": true,
+      "address": "艺术与传播大楼 1 层（进门往左）",
+      "source": "官方位置表 1b97d899 / 信息化指南 48e1da04",
+      "confidence": "medium",
+      "note": "官方 2024-2025 版位置为艺传大楼 1 层；任务描述中的「44 号楼卡务中心」疑为旧位置，建议现场确认。"
+    },
+    {
+      "id": "b30",
+      "name": "30号楼（保卫处综合服务厅）",
+      "aliases": [
+        "30号楼",
+        "30号教学楼",
+        "保卫处",
+        "保卫部（处）综合办事大厅"
+      ],
+      "category": "office",
+      "lat": 39.910686,
+      "lng": 116.558299,
+      "wgs84": {
+        "lat": 39.909603,
+        "lng": 116.552465
+      },
+      "wgs84_derived": false,
+      "address": "南操场正西侧，艺传大楼正东侧（保卫部（处）在 1 层 101）",
+      "source": "OpenStreetMap W783788116「30号教学楼」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心；官方描述方位与之一致，但 OSM 另有「保卫处」楼（东侧），未采用。",
+      "source_url": "https://www.openstreetmap.org/way/783788116"
+    },
+    {
+      "id": "b21",
+      "name": "21号楼（国际交流中心）",
+      "aliases": [
+        "21号楼",
+        "国际交流中心",
+        "21号楼C区",
+        "21号楼D区"
+      ],
+      "category": "office",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "南操场正东侧（棕色高楼）",
+      "source": "待确认：官方方位明确，OSM 未标注该楼",
+      "confidence": "low",
+      "note": "官方原文：位于南操场正东边，一栋棕色高楼。OSM 该位置仅标有「东看台」，未取到楼体点位。"
+    },
+    {
+      "id": "b44",
+      "name": "44号楼",
+      "aliases": [
+        "44号楼",
+        "四十四号楼"
+      ],
+      "category": "office",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "47 号楼东侧、校内菜鸟驿站（临建1）南侧",
+      "source": "待确认：OSM 该区域仅有「学生办」「广告学院」等要素",
+      "confidence": "low",
+      "note": "官方位置表只给出相对关系（临建1 在 47 号楼东侧、44 号楼北侧），未取到楼体点位。"
+    },
+    {
+      "id": "mingdelou",
+      "name": "明德楼（2号楼）",
+      "aliases": [
+        "2号楼",
+        "二号楼",
+        "明德楼"
+      ],
+      "category": "teaching",
+      "lat": 39.912365,
+      "lng": 116.555908,
+      "wgs84": {
+        "lat": 39.911277,
+        "lng": 116.550068
+      },
+      "wgs84_derived": false,
+      "address": "校园中西部，中传学术中心在其正后方",
+      "source": "OpenStreetMap W768059205「2号楼」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心；楼内有 4K 演播馆（2 层）与多个机关（8-12 层）。",
+      "source_url": "https://www.openstreetmap.org/way/768059205"
+    },
+    {
+      "id": "zhulou",
+      "name": "主楼",
+      "aliases": [
+        "学校主楼",
+        "主楼"
+      ],
+      "category": "landmark",
+      "lat": 39.910385,
+      "lng": 116.556184,
+      "wgs84": {
+        "lat": 39.909297,
+        "lng": 116.550345
+      },
+      "wgs84_derived": false,
+      "address": "南门正对，东西两侧为东配楼、西配楼",
+      "source": "OpenStreetMap W772369994「学校主楼」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心；招生处 3 层、戏剧影视学院灯光暗房 B1 层。",
+      "source_url": "https://www.openstreetmap.org/way/772369994"
+    },
+    {
+      "id": "xiaoyiyuan",
+      "name": "校医院",
+      "aliases": [
+        "学校医院",
+        "20号楼（原幼儿园）",
+        "中传校医院"
+      ],
+      "category": "medical",
+      "lat": 39.915277,
+      "lng": 116.554355,
+      "wgs84": {
+        "lat": 39.914185,
+        "lng": 116.548511
+      },
+      "wgs84_derived": false,
+      "address": "校内 20 号楼（原幼儿园），近北苑餐厅与定福庄东街",
+      "source": "OpenStreetMap N7321277718（amenity=hospital）+ W781983689 楼体",
+      "confidence": "high",
+      "note": "OSM 同时有楼体与 POI 节点，二者相距约 20 m。",
+      "source_url": "https://www.openstreetmap.org/node/7321277718"
+    },
+    {
+      "id": "zhongchuanlitang",
+      "name": "中传礼堂",
+      "aliases": [
+        "1500报",
+        "1500人报告厅",
+        "1500",
+        "大报告厅",
+        "大礼堂"
+      ],
+      "category": "venue",
+      "lat": 39.910262,
+      "lng": 116.560869,
+      "wgs84": {
+        "lat": 39.909183,
+        "lng": 116.555041
+      },
+      "wgs84_derived": false,
+      "address": "国重大楼（22 号楼）1 层",
+      "source": "OpenStreetMap W783787656「1500人报告厅」",
+      "confidence": "high",
+      "note": "与 400 报同处 22 号楼 1 层；OSM 以「1500人报告厅」命名该楼体。",
+      "source_url": "https://www.openstreetmap.org/way/783787656"
+    },
+    {
+      "id": "zhongchuanjiangtang",
+      "name": "中传讲堂",
+      "aliases": [
+        "400报",
+        "400人报告厅",
+        "400",
+        "小讲堂"
+      ],
+      "category": "venue",
+      "lat": 39.910262,
+      "lng": 116.560869,
+      "wgs84": {
+        "lat": 39.909183,
+        "lng": 116.555041
+      },
+      "wgs84_derived": false,
+      "address": "国重大楼（22 号楼）1 层",
+      "source": "官方位置表 1b97d899 + 简称表 cd72bce4；坐标取 1500 报同楼点位",
+      "confidence": "medium",
+      "note": "与中传礼堂同楼同层，无独立点位，坐标共用。"
+    },
+    {
+      "id": "guozhong",
+      "name": "国重大楼（22号楼）",
+      "aliases": [
+        "22号楼",
+        "国重大楼",
+        "国重",
+        "国家重点实验室大楼"
+      ],
+      "category": "landmark",
+      "lat": 39.910262,
+      "lng": 116.560869,
+      "wgs84": {
+        "lat": 39.909183,
+        "lng": 116.555041
+      },
+      "wgs84_derived": false,
+      "address": "校园东南部，1 层为中传礼堂（1500 报）与中传讲堂（400 报）",
+      "source": "OpenStreetMap W783787656（OSM 以「1500人报告厅」命名该楼体）",
+      "confidence": "medium",
+      "note": "楼内 1-16 层为实验室与研究中心（官方位置表）；电梯需梯控授权。",
+      "source_url": "https://www.openstreetmap.org/way/783787656",
+      "facilities": [
+        {
+          "type": "elevator_access",
+          "note": "电梯梯控须在融合门户申请，审批通过次日 11:00 生效",
+          "source": "48e1da04"
+        },
+        {
+          "type": "toilet",
+          "note": "场馆配套含卫生间、化妆间、贵宾室",
+          "source": "5ee0f0ae"
+        }
+      ]
+    },
+    {
+      "id": "xueshuzhongxin",
+      "name": "中传学术中心",
+      "aliases": [
+        "学术中心"
+      ],
+      "category": "venue",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "2 号楼（明德楼）正后方，正门朝西",
+      "source": "待确认：仅有官方方位描述",
+      "confidence": "low",
+      "note": "OSM 在 2 号楼正后方有「演播厅」楼（W783788781），可能即学术中心或 4K 演播馆，未能确认，坐标留空。"
+    },
+    {
+      "id": "yuanxing",
+      "name": "圆形报告厅",
+      "aliases": [
+        "圆形报告厅",
+        "图书馆圆形报告厅"
+      ],
+      "category": "venue",
+      "lat": 39.913935,
+      "lng": 116.558324,
+      "wgs84": {
+        "lat": 39.912851,
+        "lng": 116.552489
+      },
+      "wgs84_derived": true,
+      "address": "大阅城（图书馆）副楼 2 层",
+      "source": "图书馆读者手册 00f4cdcc；坐标取图书馆点位",
+      "confidence": "medium",
+      "note": "读者手册：副楼一层校史馆，副楼二层为圆形报告厅和 4K 影厅。"
+    },
+    {
+      "id": "yanboguan",
+      "name": "中传演播馆",
+      "aliases": [
+        "1400平米演播馆",
+        "1400",
+        "4K演播馆",
+        "4K演播室",
+        "4K演播厅"
+      ],
+      "category": "venue",
+      "lat": 39.912781,
+      "lng": 116.555928,
+      "wgs84": {
+        "lat": 39.911693,
+        "lng": 116.550088
+      },
+      "wgs84_derived": false,
+      "address": "2 号楼（明德楼）2 层（官方）；OSM 点位在 2 号楼正后方",
+      "source": "简称表 cd72bce4（中传演播馆=4K演播馆）+ 官方位置表 1b97d899；坐标取 OSM「演播厅」W783788781",
+      "confidence": "medium",
+      "note": "面积 1400㎡（公共实践场馆管理办法）。OSM「演播厅」楼紧邻 2 号楼，认定为同一组建筑，仍需现场核对。",
+      "source_url": "https://www.openstreetmap.org/way/783788781"
+    },
+    {
+      "id": "yinyueting",
+      "name": "中传音乐厅",
+      "aliases": [
+        "音乐厅"
+      ],
+      "category": "venue",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "待确认（209 座）",
+      "source": "待确认：管理办法只给面积/座位，未给楼栋",
+      "confidence": "low",
+      "note": "《公共实践场馆管理办法》：中传音乐厅 209 座，配套三角钢琴；未查到所在楼栋。"
+    },
+    {
+      "id": "k4fangying",
+      "name": "4K放映厅",
+      "aliases": [
+        "4K影厅",
+        "中传放映厅",
+        "4K放映厅"
+      ],
+      "category": "venue",
+      "lat": 39.913935,
+      "lng": 116.558324,
+      "wgs84": {
+        "lat": 39.912851,
+        "lng": 116.552489
+      },
+      "wgs84_derived": true,
+      "address": "大阅城（图书馆）副楼 2 层",
+      "source": "图书馆读者手册 00f4cdcc；坐标取图书馆点位",
+      "confidence": "medium",
+      "note": "与圆形报告厅同层；另有 84 座的「中传放映厅」列于公共实践场馆，二者是否同一处待确认。"
+    },
+    {
+      "id": "yizhan",
+      "name": "艺术展览中心",
+      "aliases": [
+        "艺展中心",
+        "展览中心",
+        "原南苑餐厅"
+      ],
+      "category": "venue",
+      "lat": 39.910672,
+      "lng": 116.557838,
+      "wgs84": {
+        "lat": 39.909588,
+        "lng": 116.552003
+      },
+      "wgs84_derived": false,
+      "address": "南操场西侧、艺传大楼南侧（原南苑餐厅）",
+      "source": "OpenStreetMap W783788117「南苑食堂」",
+      "confidence": "medium",
+      "note": "官方：艺术展览中心（原南苑餐厅），2 层为离退休工作处、工会；OSM 仍沿用旧名「南苑食堂」。",
+      "source_url": "https://www.openstreetmap.org/way/783788117"
+    },
+    {
+      "id": "caochang",
+      "name": "操场（南操场）",
+      "aliases": [
+        "南操场",
+        "南操",
+        "田径场",
+        "风雨操场",
+        "中传体育场",
+        "足球场"
+      ],
+      "category": "sports",
+      "lat": 39.911429,
+      "lng": 116.558886,
+      "wgs84": {
+        "lat": 39.910347,
+        "lng": 116.553053
+      },
+      "wgs84_derived": false,
+      "address": "校园南部，艺传大楼东侧、21 号楼西侧",
+      "source": "OpenStreetMap W198238559「中传足球场」",
+      "confidence": "high",
+      "note": "取球场多边形中心；看台在东西两侧（W 侧「操场主看台」、E 侧「东看台」）。",
+      "source_url": "https://www.openstreetmap.org/way/198238559"
+    },
+    {
+      "id": "youyongguan",
+      "name": "游泳馆",
+      "aliases": [
+        "游泳池",
+        "中传游泳馆",
+        "水立方"
+      ],
+      "category": "sports",
+      "lat": 39.913659,
+      "lng": 116.560009,
+      "wgs84": {
+        "lat": 39.912579,
+        "lng": 116.554178
+      },
+      "wgs84_derived": false,
+      "address": "校园中部偏东，手球馆南侧",
+      "source": "OpenStreetMap N5096880463（leisure=sports_centre）",
+      "confidence": "high",
+      "note": "北侧有地下通道通手球馆（官方）。",
+      "source_url": "https://www.openstreetmap.org/node/5096880463",
+      "facilities": [
+        {
+          "type": "underground_passage",
+          "note": "北侧地下通道可抵手球馆（51 号楼）",
+          "source": "1b97d899"
+        }
+      ]
+    },
+    {
+      "id": "shouqiuguan",
+      "name": "手球馆",
+      "aliases": [
+        "羽毛球馆",
+        "羽毛球场",
+        "新利体育馆",
+        "51号楼"
+      ],
+      "category": "sports",
+      "lat": 39.915265,
+      "lng": 116.561277,
+      "wgs84": {
+        "lat": 39.914187,
+        "lng": 116.555449
+      },
+      "wgs84_derived": false,
+      "address": "51 号楼，游泳馆北侧（可走地下通道）",
+      "source": "OpenStreetMap W523569198（leisure=sports_centre）",
+      "confidence": "high",
+      "note": "官方：51 号楼，可通过中传游泳馆北侧地下通道抵达；羽毛球场地在此预约。",
+      "source_url": "https://www.openstreetmap.org/way/523569198"
+    },
+    {
+      "id": "dahuodong",
+      "name": "大学生活动中心",
+      "aliases": [
+        "大活",
+        "活动中心",
+        "55号楼",
+        "大学生活动中心体育馆"
+      ],
+      "category": "sports",
+      "lat": 39.913991,
+      "lng": 116.560417,
+      "wgs84": {
+        "lat": 39.912911,
+        "lng": 116.554587
+      },
+      "wgs84_derived": false,
+      "address": "55 号楼，1 层为体育馆（篮球/排球/气排球/乒乓球）",
+      "source": "OpenStreetMap W523220221「学生活动中心」",
+      "confidence": "medium",
+      "note": "OSM 另有一处 amenity=community_centre 的「大学生活动中心」节点（东偏南约 180 m），未采用，建议现场核对。",
+      "source_url": "https://www.openstreetmap.org/way/523220221",
+      "facilities": [
+        {
+          "type": "gym",
+          "floor": 1,
+          "note": "1 层体育馆，团体/个人预约均可",
+          "source": "4b3b7735"
+        }
+      ]
+    },
+    {
+      "id": "beiyuan",
+      "name": "北苑餐厅",
+      "aliases": [
+        "北苑",
+        "北苑食堂",
+        "一食堂"
+      ],
+      "category": "life",
+      "lat": 39.914534,
+      "lng": 116.554467,
+      "wgs84": {
+        "lat": 39.913443,
+        "lng": 116.548623
+      },
+      "wgs84_derived": false,
+      "address": "校园西北角，近定福庄东街与校医院",
+      "source": "OpenStreetMap W523254357",
+      "confidence": "high",
+      "note": "OSM 楼体中心。",
+      "source_url": "https://www.openstreetmap.org/way/523254357"
+    },
+    {
+      "id": "yixiangyuan",
+      "name": "溢香苑餐厅",
+      "aliases": [
+        "溢香园",
+        "溢香苑",
+        "40号楼餐厅"
+      ],
+      "category": "life",
+      "lat": 39.913482,
+      "lng": 116.557204,
+      "wgs84": {
+        "lat": 39.912396,
+        "lng": 116.551367
+      },
+      "wgs84_derived": false,
+      "address": "40 号楼（官方位置表：溢香园位于 40 号楼）",
+      "source": "OpenStreetMap W523569205「溢香苑餐厅」",
+      "confidence": "medium",
+      "note": "OSM 该楼体类型标为 dormitory，与「餐厅」不一致，取点位但降为 medium。",
+      "source_url": "https://www.openstreetmap.org/way/523569205"
+    },
+    {
+      "id": "jibenhuo",
+      "name": "基本伙食堂",
+      "aliases": [
+        "基本伙",
+        "学生基本伙",
+        "基本伙窗口"
+      ],
+      "category": "life",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "待确认",
+      "source": "待确认：《中国传媒大学食堂管理办法》只区分「基本伙」与合作经营食堂",
+      "confidence": "low",
+      "note": "校规中「基本伙」是食堂类别而非独立楼栋；北苑餐厅、溢香苑为常见学生食堂，基本伙窗口具体在哪栋未核实。"
+    },
+    {
+      "id": "kuaidi",
+      "name": "快递驿站（菜鸟驿站）",
+      "aliases": [
+        "菜鸟驿站",
+        "快递",
+        "取快递",
+        "快递柜"
+      ],
+      "category": "life",
+      "lat": null,
+      "lng": null,
+      "wgs84": null,
+      "wgs84_derived": null,
+      "address": "临建1（47 号楼东侧、44 号楼北侧）",
+      "source": "待确认：官方位置表 1b97d899 只有相对位置",
+      "confidence": "low",
+      "note": "OSM 的「菜鸟驿站」（定福庄东街西侧）在校外，未采用；快递柜点位未查到。"
+    },
+    {
+      "id": "d10",
+      "name": "10号楼（宿舍）",
+      "aliases": [
+        "10号楼",
+        "十号楼"
+      ],
+      "category": "dorm",
+      "lat": 39.913159,
+      "lng": 116.559934,
+      "wgs84": {
+        "lat": 39.912079,
+        "lng": 116.554103
+      },
+      "wgs84_derived": false,
+      "address": "校园中部偏东，11 号楼北侧",
+      "source": "OpenStreetMap W523569212「住宅（10号楼）」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心。",
+      "source_url": "https://www.openstreetmap.org/way/523569212"
+    },
+    {
+      "id": "d11",
+      "name": "11号楼（宿舍）",
+      "aliases": [
+        "11号楼",
+        "十一号楼"
+      ],
+      "category": "dorm",
+      "lat": 39.912826,
+      "lng": 116.560026,
+      "wgs84": {
+        "lat": 39.911746,
+        "lng": 116.554195
+      },
+      "wgs84_derived": false,
+      "address": "校园中部偏东，10 号楼南侧",
+      "source": "OpenStreetMap W198238556「住宅（11号楼）」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心。",
+      "source_url": "https://www.openstreetmap.org/way/198238556"
+    },
+    {
+      "id": "d14",
+      "name": "14号楼（宿舍）",
+      "aliases": [
+        "14号楼",
+        "十四号楼"
+      ],
+      "category": "dorm",
+      "lat": 39.912542,
+      "lng": 116.559375,
+      "wgs84": {
+        "lat": 39.911461,
+        "lng": 116.553543
+      },
+      "wgs84_derived": false,
+      "address": "校园中部，南操场东北侧",
+      "source": "OpenStreetMap W198239285「14号楼」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心。",
+      "source_url": "https://www.openstreetmap.org/way/198239285"
+    },
+    {
+      "id": "d16",
+      "name": "16号楼（宿舍）",
+      "aliases": [
+        "16号楼",
+        "十六号楼"
+      ],
+      "category": "dorm",
+      "lat": 39.912496,
+      "lng": 116.558781,
+      "wgs84": {
+        "lat": 39.911413,
+        "lng": 116.552948
+      },
+      "wgs84_derived": false,
+      "address": "校园中部，14 号楼西侧",
+      "source": "OpenStreetMap W198239281「16号楼」",
+      "confidence": "medium",
+      "note": "OSM 楼体中心。",
+      "source_url": "https://www.openstreetmap.org/way/198239281"
+    }
+  ],
+  "routes": [
+    {
+      "from": "youyongguan",
+      "to": "shouqiuguan",
+      "type": "underground_passage",
+      "note": "手球馆可通过中传游泳馆北侧地下通道抵达",
+      "source": "官方 1b97d899"
+    },
+    {
+      "from": "nanmen",
+      "to": "zhulou",
+      "type": "walk",
+      "note": "南门正对主楼，进门即主楼前广场（喷泉广场）",
+      "source": "官方 1b97d899"
+    }
+  ],
+  "notes": [
+    "坐标系：lat/lng 为 GCJ-02（高德/腾讯底图可直接用）；wgs84 为 WGS84（OSM/Leaflet 用）。",
+    "wgs84_derived=true 表示由 GCJ-02 用标准算法反算，非原始观测；OSM 来源的 wgs84 是原生坐标，lat/lng 才是换算值。",
+    "高德点位与 OSM 楼体中心存在 50–150 m 差异（POI 点 vs 楼体中心），同一点位请优先用 confidence 高者。",
+    "南门、西门、21号楼、44号楼、中传学术中心、中传音乐厅、基本伙食堂、快递驿站未能取到可核实坐标，lat/lng 为 null，未做估算。",
+    "2026-10-29 采集：高德网页版 poiInfo 接口在连续请求后触发滑块验证，仅完成 4 个楼宇查询；未使用任何 API Key / 付费接口。",
+    "建议现场核对：21/44 号楼位置、中传音乐厅所在楼栋、演播馆与学术中心、快递驿站与快递柜。"
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "people": [
+    {
+      "姓名": "柴剑平",
+      "职称": "教授",
+      "职务": "学校党委常委、副校长",
+      "邮箱": "jp_chai@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123002/page.htm",
+      "fetched_at": "2026-10-27T09:33:07+08:00"
+    },
+    {
+      "姓名": "陈涛",
+      "职称": "副教授，硕士生导师",
+      "电话": "010-6578-3726",
+      "邮箱": "chentao@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123086/page.htm",
+      "fetched_at": "2026-10-27T09:33:18+08:00"
+    },
+    {
+      "姓名": "陈见柯",
+      "职称": "讲师",
+      "邮箱": "jkchen@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123087/page.htm",
+      "fetched_at": "2026-10-27T09:33:30+08:00"
+    },
+    {
+      "姓名": "范伟健",
+      "职称": "无",
+      "邮箱": "wjfan@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2025/1009/c4580a260706/page.htm",
+      "fetched_at": "2026-10-27T09:33:39+08:00"
+    },
+    {
+      "姓名": "洪志国",
+      "职称": "副教授",
+      "邮箱": "hongzhiguo@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2021/0406/c4580a179639/page.htm",
+      "fetched_at": "2026-10-27T09:33:49+08:00"
+    },
+    {
+      "姓名": "胡舒展",
+      "职称": "讲师",
+      "邮箱": "hushuzhan@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2025/1009/c4580a260708/page.htm",
+      "fetched_at": "2026-10-27T09:34:01+08:00"
+    },
+    {
+      "姓名": "姜泽勋",
+      "职称": "副教授",
+      "邮箱": "jiangzx2023@cuc.edu.cn",
+      "研究方向": "多智能体系统",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2025/1010/c4580a260727/page.htm",
+      "fetched_at": "2026-10-27T09:44:45+08:00"
+    },
+    {
+      "姓名": "靳聪",
+      "研究方向": "为生成式AI、人机混合智能和智慧教育。主持国家自然科学基金F07教育交叉方向项目1项，参与国家自然科学基金重点项目、北京市自然科学基金-小米联合基金项目和科技部重点研发计划等项目。在国内外期刊和会议上共发表学术论文40余篇，其中SCI检索期",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2024/0622/c4580a232634/page.htm",
+      "fetched_at": "2026-10-27T09:44:54+08:00"
+    },
+    {
+      "姓名": "康彤",
+      "职称": "教授，博士生导师",
+      "邮箱": "kangtong@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0426/c4580a123095/page.htm",
+      "fetched_at": "2026-10-27T09:45:05+08:00"
+    },
+    {
+      "姓名": "刘开贤",
+      "职称": "副教授",
+      "职务": "副院长",
+      "邮箱": "xt_0312@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123107/page.htm",
+      "fetched_at": "2026-10-27T09:45:16+08:00"
+    },
+    {
+      "姓名": "吕颖",
+      "职称": "副教授",
+      "邮箱": "ly@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123091/page.htm",
+      "fetched_at": "2026-10-27T09:45:26+08:00"
+    },
+    {
+      "姓名": "李波",
+      "职称": "副教授",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0426/c4580a123096/page.htm",
+      "fetched_at": "2026-10-27T09:45:38+08:00"
+    },
+    {
+      "姓名": "梁泽雨",
+      "职称": "讲师",
+      "邮箱": "zeyuliang@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2025/1009/c4580a260705/page.htm",
+      "fetched_at": "2026-10-27T09:45:47+08:00"
+    },
+    {
+      "姓名": "孟放",
+      "职称": "副教授",
+      "电话": "010-65783580",
+      "邮箱": "mengfang@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2020/1230/c4580a177607/page.htm",
+      "fetched_at": "2026-10-27T09:45:56+08:00"
+    },
+    {
+      "姓名": "孟明",
+      "邮箱": "mengming@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2025/1009/c4580a260704/page.htm",
+      "fetched_at": "2026-10-27T09:46:06+08:00"
+    },
+    {
+      "姓名": "闵素芹",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123008/page.htm",
+      "fetched_at": "2026-10-27T09:46:16+08:00"
+    },
+    {
+      "姓名": "马博琴",
+      "职称": "副教授",
+      "电话": "13552140881",
+      "邮箱": "maboqin@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123092/page.htm",
+      "fetched_at": "2026-10-27T09:46:25+08:00"
+    },
+    {
+      "姓名": "倪业鹏",
+      "职称": "副教授",
+      "邮箱": "nyp_2010@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2020/1230/c4580a177609/page.htm",
+      "fetched_at": "2026-10-27T09:46:35+08:00"
+    },
+    {
+      "姓名": "史建华",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123009/page.htm",
+      "fetched_at": "2026-10-27T09:46:47+08:00"
+    },
+    {
+      "姓名": "宋金宝",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0510/c4580a215109/page.htm",
+      "fetched_at": "2026-10-27T09:46:54+08:00"
+    },
+    {
+      "姓名": "田少华",
+      "职称": "讲师",
+      "电话": "010-65779606",
+      "邮箱": "tianshaohua@cuc.edu.cn",
+      "college": "数据科学与智能媒体学院",
+      "url": "https://dsmi.cuc.edu.cn/2019/0425/c4580a123013/page.htm",
+      "fetched_at": "2026-10-27T09:47:04+08:00"
+    }
+  ],
+  "updated": "2026-10-27T09:47:48+08:00"
+}

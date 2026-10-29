@@ -19,12 +19,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.github.com"
 OWNER, REPO = "uwu9039", "cuc-campus-guide"
-SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules"}
-SKIP_FILES = {".env", "urls.txt", "items.json.bak", ".cdp_tab"}
-SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log"}
+SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
+             "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder"}
+SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json.bak",
+              "items-old.json", "ask-req.json", ".cdp_tab", "app-server.log"}
+SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
+               ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".pptx", ".npy", ".jsonl",
+               ".mp3", ".m4a", ".mov", ".webm"}
 SKIP_PREFIX = ("shot", "llm-", "aia")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
-BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf"}
+BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text"}
 
 
 def token() -> str:
@@ -73,7 +77,7 @@ def collect() -> list[tuple[str, Path]]:
     for p in ROOT.rglob("*"):
         if p.is_dir() or set(p.parts) & SKIP_DIRS:
             continue
-        if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX):
+        if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX) or ".bak" in p.name:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
             continue
@@ -86,13 +90,56 @@ def collect() -> list[tuple[str, Path]]:
     return sorted(out)
 
 
+def build_archive() -> None:
+    """把 sources/ 下的正文（不含隔离区、向量库与二进制）打成发布用压缩包。"""
+    import tarfile
+    src = ROOT / "sources"
+    ex_dirs = {"_quarantine", "vector"}
+    keep_ext = {".txt", ".md", ".html", ".htm", ".json", ".csv"}
+    picked = []
+    for p in src.rglob("*"):
+        if p.is_dir() or set(p.relative_to(src).parts) & ex_dirs:
+            continue
+        if p.suffix.lower() in keep_ext:
+            picked.append(p)
+    out = ROOT / "sources-archive.tar.gz"
+    with tarfile.open(out, "w:gz", compresslevel=9) as tf:
+        for p in sorted(picked, key=lambda x: x.as_posix()):
+            ti = tf.gettarinfo(str(p), arcname=p.as_posix())
+            ti.mtime = 0
+            ti.uid = ti.gid = 0
+            ti.uname = ti.gname = ""
+            with p.open("rb") as fh:
+                tf.addfile(ti, fh)
+    print(f"语料归档：{len(picked)} 份，{out.stat().st_size/1048576:.2f} MB")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
     ap.add_argument("--notes", default="")
+    ap.add_argument("--message", default="", help="提交信息，默认按 tag 生成")
     ap.add_argument("--max", type=int, default=0, help="本批最多上传多少个文件")
+    ap.add_argument("--dry-run", action="store_true", help="只打印清单，不写入 GitHub")
+    ap.add_argument("--rebuild-archive", action="store_true", help="重新打包 sources-archive.tar.gz")
     args = ap.parse_args()
     tok = token()
+
+    if args.rebuild_archive:
+        build_archive()
+
+    files = collect()
+    if args.dry_run:
+        import collections
+        size = sum(p.stat().st_size for _, p in files)
+        tops = collections.Counter(path.split("/")[0] if "/" in path else path for path, _ in files)
+        print(f"待发布 {len(files)} 个文件，{size/1048576:.1f} MB")
+        for name, count in tops.most_common(20):
+            print(f"  {name}: {count}")
+        for path, p in files:
+            if p.name in SKIP_FILES or "quarantine" in path:
+                print("  !! 敏感项", path)
+        return
 
     st, ref = call("GET", f"{API}/repos/{OWNER}/{REPO}/git/ref/heads/main", tok)
     parent = ref["object"]["sha"]
@@ -102,7 +149,6 @@ def main() -> None:
     existing = {t["path"]: t["sha"] for t in tree["tree"] if t["type"] == "blob"}
     print(f"仓库现有 {len(existing)} 个文件")
 
-    files = collect()
     todo = [(path, p) for path, p in files if existing.get(path) != blob_sha(p)]
     if args.max:
         todo = todo[: args.max]
@@ -131,10 +177,12 @@ def main() -> None:
                         {"base_tree": base_tree, "tree": entries})
     if st != 201:
         raise SystemExit(f"tree 失败 {st}")
-    msg = (f"feat({args.tag}): 学信网/国家级政策、路由审计、模型裁决开关\n\n"
-           f"- 语料 538 份，条目 147，事实 780，0 缺证\n"
-           f"- 新增 tools/pipeline.py 交付前四步体检\n"
-           f"- 敏感词由压测推导（sensitive.json），不再手写\n")
+    msg = args.message or (
+        f"feat({args.tag}): 条目扩展、校园地图、web-next 前端与路由修复\n\n"
+        f"- 645 条事项 / 688 份语料 / 2744 条证据，0 缺证\n"
+        f"- 新增校园地图 POI 36 处、16 学院转专业计划整份结构化\n"
+        f"- 新增 web-next 双栏前端（地图抽屉、步骤列表、反问）\n"
+        f"- 修复地点/复合问句被转专业计划劫持；清理文件名式标题\n")
     st, new_commit = call("POST", f"{API}/repos/{OWNER}/{REPO}/git/commits", tok,
                           {"message": msg, "tree": new_tree["sha"], "parents": [parent]})
     if st != 201:

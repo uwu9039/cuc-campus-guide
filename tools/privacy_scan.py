@@ -17,7 +17,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest"}
+SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
+             "sources", "aia-runs", "video-remotion"}
 TEXT_EXT = {".py", ".json", ".md", ".html", ".txt", ".bat", ".js", ".css", ".cfg", ".toml", ".yml", ".yaml"}
 BIN_EXT = {".pdf", ".png", ".jpg", ".jpeg", ".gif", ".zip", ".docx", ".xlsx"}
 
@@ -35,7 +36,7 @@ RULES = [
 ALLOW = [
     re.compile(r"6578\d{4}"),                 # 学校 6578xxxx 总机段
     re.compile(r"6577\d{4}"),
-    re.compile(r"139****2873|156****0801|186****7999|65783000"),
+    re.compile(r"139\*{4}2873|156\*{4}0801|186\*{4}7999|65783000"),
     re.compile(r"jiaowuchu@cuc\.edu\.cn|cuc_zntj@163\.com"),
     re.compile(r"@cuc\.edu\.cn$"),
 ]

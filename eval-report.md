@@ -2,8 +2,8 @@
 
 - 用例数：33
 - 规则识别准确率：**100.0%**（33/33）
-- 拒答正确率：5/5
-- 事项库：147 条，其中已核验 144 条
+- 拒答正确率：4/4
+- 事项库：355 条，其中已核验 333 条
 
 | 问题 | 期望 | 实际 | 分数 | 类型 | 结果 |
 |---|---|---|---|---|---|
@@ -17,10 +17,10 @@
 | 在读证明需要盖章吗 | jwc-zaidu | jwc-zaidu | 88 | normal | OK |
 | 选课没选上怎么办 | jwc-buxuanke | jwc-buxuanke | 86 | normal | OK |
 | 想退一门课 | jwc-buxuanke | jwc-buxuanke | 88 | normal | OK |
-| 成绩不对能复核吗 | jwc-kaoshi | jwc-kaoshi | 86 | normal | OK |
+| 成绩不对能复核吗 | jwc-chengji-fuhe | jwc-chengji-fuhe | 86 | normal | OK |
 | 想申请自修 | jwc-zixiu | jwc-zixiu | 86 | normal | OK |
-| 体育课能免修吗 | jwc-tiyu | jwc-tiyu | 93 | normal | OK |
-| 交换的学分怎么认定 | jwc-zhuanhuan | jwc-zhuanhuan | 86 | normal | OK |
+| 体育课能免修吗 | jwc-tiyu | jwc-tiyu | 94 | normal | OK |
+| 交换的学分怎么认定 | jwc-zhuanhuan | jwc-zhuanhuan | 89 | normal | OK |
 | 六级怎么报名 | jwc-cet | jwc-cet | 86 | normal | OK |
 | 校外怎么上知网 | it-vpn | it-vpn | 100 | normal | OK |
 | 校园网密码忘了 | it-mima | it-mima | 100 | normal | OK |
@@ -33,10 +33,10 @@
 | 课表上有门课错了 | jwc-buxuanke | jwc-buxuanke | 86 | vague | OK |
 | 我要办个证明 | 拒绝 | 拒绝 | 0 | trap | OK |
 | 卡的事怎么弄 | 拒绝 | 拒绝 | 0 | trap | OK |
-| 毕业证明书丢了能补吗 | doc-20240412-c6366a218572 | doc-20240412-c6366a218572 | 56 | normal | OK |
+| 毕业证明书丢了能补吗 | doc-20240412-c6366a218572 | doc-20240412-c6366a218572 | 87 | normal | OK |
 | 宿舍能不能换 | 拒绝 | 拒绝 | 53 | absent | OK |
 | 奖学金怎么申请 | jiangxuejin | jiangxuejin | 87 | normal | OK |
-| 图书馆能续借吗 | 拒绝 | 拒绝 | 0 | absent | OK |
+| 图书馆能续借吗 | lib-jieyue | lib-jieyue | 94 | normal | OK |
 | 研究生能换导师吗 | 拒绝 | 拒绝 | 0 | absent | OK |
 | 学历证书电子注册备案表怎么申请 | chsi-baogao | chsi-baogao | 92 | normal | OK |
 | 想转学去别的学校 | moe-zhuanxue | moe-zhuanxue | 86 | normal | OK |

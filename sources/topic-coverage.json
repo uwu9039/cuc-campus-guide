@@ -1,0 +1,365 @@
+{
+ "updated": "2026-10-29",
+ "total_topics": 30,
+ "topics": [
+  {
+   "group": "生活事务",
+   "topic": "宿舍水电费充值",
+   "items": [
+    "hq-goudian",
+    "zyshui-butie",
+    "xyk-chongzhi"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "生活事务",
+   "topic": "热水 / 洗浴规则",
+   "items": [
+    "sushe-xizao",
+    "zyshui-butie"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "生活事务",
+   "topic": "校园卡使用与丢失补办",
+   "items": [
+    "xyk-buka",
+    "xyk-guashi",
+    "xyk-yishi",
+    "xyk-yanqi",
+    "xyk-chongzhi",
+    "shitang-wukou"
+   ],
+   "count": 6,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "生活事务",
+   "topic": "宿舍电器使用规则",
+   "items": [
+    "sushe-dianqi"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "生活事务",
+   "topic": "报修流程",
+   "items": [
+    "hq-baoxiu",
+    "it-wangluo",
+    "xinxi-fuwu-daohang"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "生活事务",
+   "topic": "快递和外卖存放点",
+   "items": [
+    "kuaidi-yizhan"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": "快递有官方依据；外卖存放点官方文件未收录，只会答“知识库未收录”"
+  },
+  {
+   "group": "生活事务",
+   "topic": "洗衣晾晒规则",
+   "items": [
+    "xiyi-liangshai"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "学习教务",
+   "topic": "选课流程",
+   "items": [
+    "jwc-buxuanke",
+    "rule-20201124-c6366a176044",
+    "fuxiu-baoming"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "学习教务",
+   "topic": "转专业规则",
+   "items": [
+    "zhuanzhuanye"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": "另有 20+ 条学院转专业细则条目"
+  },
+  {
+   "group": "学习教务",
+   "topic": "绩点 / 学分 / 重修",
+   "items": [
+    "xueji-liuji",
+    "xueji-biye",
+    "jwc-zhuanhuan"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "学习教务",
+   "topic": "考试与考勤",
+   "items": [
+    "jwc-cet",
+    "kaoshi-weiji",
+    "jwc-chengji-fuhe",
+    "jwc-kaoshi"
+   ],
+   "count": 4,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "学习教务",
+   "topic": "免修 / 缓考 / 休学",
+   "items": [
+    "jwc-tiyu",
+    "tizhi-miance",
+    "jwc-zixiu",
+    "xueji-huankao",
+    "xueji-xiuxue",
+    "xueji-fuxue",
+    "xueji-baoliu"
+   ],
+   "count": 7,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "学习教务",
+   "topic": "教材 / 实验课 / 机房要求",
+   "items": [
+    "jiaocai-fafang",
+    "rule-20240304-c6487a216884",
+    "rule-dfb6c69a",
+    "rule-3f058183",
+    "qa-18fe5c7d-48"
+   ],
+   "count": 5,
+   "covered": true,
+   "note": "机房使用规则官方文件未单独收录"
+  },
+  {
+   "group": "校园空间",
+   "topic": "教学楼 / 教室编号",
+   "items": [
+    "campus-jiancheng",
+    "campus-louming",
+    "jiaoshi-jieyong",
+    "baogaoting-yuyue"
+   ],
+   "count": 4,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "校园空间",
+   "topic": "图书馆使用",
+   "items": [
+    "lib-jieyue"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "校园空间",
+   "topic": "校医院就医与医保",
+   "items": [
+    "xyy-jiuzhen",
+    "xyy-gongfei"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "校园空间",
+   "topic": "校园网和账号",
+   "items": [
+    "it-wangluo",
+    "it-wangfei",
+    "it-mima",
+    "it-vpn",
+    "it-ganzhi",
+    "it-jihuo",
+    "it-shensu",
+    "it-youxiang",
+    "xinxi-fuwu-daohang"
+   ],
+   "count": 9,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "校园空间",
+   "topic": "校内交通",
+   "items": [
+    "it-jiaotong",
+    "zxc-chongdian"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": "校车 / 班车、共享单车官方文件未收录，只会答“知识库未收录”"
+  },
+  {
+   "group": "制度手续",
+   "topic": "奖助学金",
+   "items": [
+    "jiangxuejin",
+    "zxj-guojia",
+    "xszz-qingong"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "制度手续",
+   "topic": "助学贷款和缴费",
+   "items": [
+    "dk-zhuxue",
+    "zb-zizhu"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": "学费缴纳另有《校园统一支付平台》操作指南条目"
+  },
+  {
+   "group": "制度手续",
+   "topic": "党团关系转接",
+   "items": [
+    "rule-da6bcf3c",
+    "rule-402ecf2831",
+    "rule-ebd32b2d",
+    "rule-e9b74298dd"
+   ],
+   "count": 4,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "制度手续",
+   "topic": "请假 / 走读 / 换宿",
+   "items": [
+    "qa-18fe5c7d-13",
+    "sushe-huansu",
+    "sushe-tuixiu"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "制度手续",
+   "topic": "学生证 / 身份证 / 档案材料管理",
+   "items": [
+    "qa-18fe5c7d-43",
+    "doc-20260528-c2753a271114",
+    "jwc-zaidu",
+    "jwc-chengjidan",
+    "chsi-baogao",
+    "biye-hukou-dangan"
+   ],
+   "count": 6,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "军训与新生报到",
+   "items": [
+    "xinsheng-baodao"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "就业手续",
+   "items": [
+    "jy-shouxu",
+    "chsi-baogao"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "出国 / 境外交流",
+   "items": [
+    "liuxue-jiaoliu",
+    "waijing-jiaoliu",
+    "jwc-zhuanhuan"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "体育课与体测",
+   "items": [
+    "jwc-tiyu",
+    "tizhi-miance"
+   ],
+   "count": 2,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "宿舍门禁与安全",
+   "items": [
+    "sushe-menjin",
+    "sushe-yaoshi",
+    "sushe-zhengming"
+   ],
+   "count": 3,
+   "covered": true,
+   "note": null
+  },
+  {
+   "group": "延伸",
+   "topic": "食堂与餐饮",
+   "items": [
+    "shitang-wukou"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": "仅覆盖误扣款；菜品、营业时间官方文件未收录"
+  },
+  {
+   "group": "延伸",
+   "topic": "推免 / 保研",
+   "items": [
+    "tuimian-2027"
+   ],
+   "count": 1,
+   "covered": true,
+   "note": null
+  }
+ ]
+}

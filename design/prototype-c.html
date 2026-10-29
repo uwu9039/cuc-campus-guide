@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>方案 C · 手卡 | 校园办事向导</title>
+<style>
+  :root{
+    --bg:#ece9e0;
+    --card:#fcfaf4;
+    --card-2:#f6f3ea;
+    --ink:#1c1b17;
+    --ink-2:#57544a;
+    --ink-3:#8b8677;
+    --line:rgba(28,27,23,.1);
+    --hair:rgba(28,27,23,.06);
+    --red:#a5372c;
+    --red-soft:#f7eae6;
+    --green:#2f6b4f;
+    --ease-out:cubic-bezier(.23,1,.32,1);
+    --ease-drawer:cubic-bezier(.32,.72,0,1);
+    --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;
+    --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",Georgia,serif;
+    --mono:"Cascadia Mono",ui-monospace,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.7;
+    -webkit-font-smoothing:antialiased;min-height:100dvh}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(90% 50% at 50% 0%,rgba(255,255,255,.75),transparent 70%)}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(165,55,44,.3)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+  .app{position:relative;z-index:1;max-width:600px;margin:0 auto;min-height:100dvh;
+    display:flex;flex-direction:column;padding-bottom:150px}
+
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;
+    padding:14px 18px 12px;padding-top:max(14px,env(safe-area-inset-top));
+    background:rgba(236,233,224,.72);backdrop-filter:blur(18px) saturate(150%);
+    border-bottom:1px solid var(--hair)}
+  .brand{display:flex;flex-direction:column;gap:1px}
+  .brand b{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+  .brand span{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ink-3)}
+  .hstat{margin-left:auto;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:9.5px;color:var(--ink-3)}
+  .dot{display:inline-flex;align-items:center;gap:5px}
+  .dot i{width:5px;height:5px;border-radius:50%;background:var(--green)}
+  .iconbtn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(28,27,23,.05);
+    transition:transform 140ms var(--ease-out),background 140ms}
+  .iconbtn:active{transform:scale(.94)}
+  .iconbtn svg{width:16px;height:16px}
+
+  /* hero */
+  .hero{padding:30px 20px 10px}
+  .hero .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--red)}
+  .hero h1{font-size:clamp(25px,7vw,31px);line-height:1.25;letter-spacing:-.02em;margin-top:10px;font-weight:600}
+  .hero h1 em{font-style:normal;color:var(--red)}
+  .hero p{font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.8;max-width:34ch}
+  .hero .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px}
+  .hero .chips button{font-size:12.5px;padding:7px 12px;border-radius:999px;background:var(--card);
+    box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2);transition:transform 140ms var(--ease-out)}
+  .hero .chips button:active{transform:scale(.97)}
+
+  /* thread */
+  .thread{display:flex;flex-direction:column;gap:18px;padding:16px 12px 8px}
+  .ex{display:flex;flex-direction:column;gap:8px;animation:in 240ms var(--ease-out) both}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .me{align-self:flex-end;max-width:84%;background:var(--ink);color:#f3f0e6;border-radius:16px 16px 5px 16px;
+    padding:9px 14px;font-size:13.5px;line-height:1.6;letter-spacing:.005em}
+  .card{background:var(--card);border-radius:16px 16px 16px 5px;
+    box-shadow:0 1px 2px rgba(28,27,23,.05),0 14px 30px -26px rgba(28,27,23,.55);overflow:hidden}
+  .card-in{padding:15px 16px 14px}
+  .ctop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ctop .tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--green);background:rgba(47,107,79,.09);
+    border-radius:3px;padding:2px 6px}
+  .ctop .norm{font-size:11px;color:var(--ink-3);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ctop .conf{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--ink-3)}
+  .alab{font-size:10px;letter-spacing:.14em;color:var(--ink-3);margin:12px 0 6px}
+  .aval{font-size:16px;line-height:1.62;font-weight:500;letter-spacing:-.005em;text-wrap:pretty}
+  .steps{list-style:none}
+  .steps li{display:grid;grid-template-columns:22px 1fr;gap:9px;padding:8px 0;font-size:14px;line-height:1.65}
+  .steps li+li{border-top:1px solid var(--hair)}
+  .steps .n{font-family:var(--mono);font-size:10px;color:var(--red);padding-top:4px;font-variant-numeric:tabular-nums}
+  .steps .where{display:block;font-size:11px;color:var(--ink-3)}
+
+  .evtoggle{display:inline-flex;align-items:center;gap:6px;margin-top:11px;font-size:11.5px;color:var(--red);
+    background:var(--red-soft);padding:4px 10px;border-radius:999px;transition:transform 140ms var(--ease-out)}
+  .evtoggle:active{transform:scale(.97)}
+  .fold{display:grid;grid-template-rows:0fr;transition:grid-template-rows 240ms var(--ease-out)}
+  .fold[data-open="true"]{grid-template-rows:1fr}
+  .fold>.in{min-height:0;overflow:hidden}
+  .quotes{padding:12px 0 0;display:flex;flex-direction:column;gap:10px}
+  .q{border-left:2px solid rgba(165,55,44,.24);padding-left:11px}
+  .q .txt{font-family:var(--serif);font-size:12.5px;line-height:1.85;color:#3c3931}
+  .q .met{font-size:10px;color:var(--ink-3);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+  .q .met .b{border:1px solid var(--line);border-radius:2px;padding:0 4px;color:var(--ink-2)}
+
+  .cardfoot{display:flex;gap:6px;padding:8px 10px;background:rgba(28,27,23,.025);border-top:1px solid var(--hair)}
+  .cf{font-size:11px;color:var(--ink-2);padding:5px 9px;border-radius:6px;background:var(--card-2);
+    box-shadow:inset 0 0 0 1px var(--hair);transition:transform 140ms var(--ease-out)}
+  .cf:active{transform:scale(.97)}
+  .cf.primary{color:var(--red);box-shadow:inset 0 0 0 1px rgba(165,55,44,.25);background:transparent}
+  .cf[data-done="1"]{color:var(--green)}
+
+  /* followup */
+  .fu .h{font-size:14.5px;font-weight:600;line-height:1.55}
+  .fu .why{font-size:11.5px;color:var(--ink-3);margin-top:4px}
+  .fu .opts{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+  .opt{font-size:12.5px;padding:7px 12px;border-radius:999px;background:var(--card-2);
+    box-shadow:inset 0 0 0 1px var(--line);transition:transform 140ms var(--ease-out),background 140ms,color 140ms}
+  .opt:active{transform:scale(.97)}
+  .fu[data-done="1"] .opt{opacity:.38;pointer-events:none}
+  .fu[data-done="1"] .opt[data-picked="1"]{opacity:1;background:var(--red);color:#fdf8ef;box-shadow:none}
+
+  .notice h3{font-size:14.5px;font-weight:600;line-height:1.55}
+  .notice p{font-size:12.5px;color:var(--ink-2);margin-top:5px;line-height:1.7}
+
+  /* quick bar above composer */
+  .quickbar{position:fixed;left:0;right:0;bottom:calc(96px + env(safe-area-inset-bottom));z-index:11;
+    display:flex;gap:6px;padding:0 16px 8px;overflow-x:auto;scrollbar-width:none;
+    mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 20px),transparent)}
+  .quickbar::-webkit-scrollbar{display:none}
+  .quickbar button{flex:none;font-size:11.5px;color:var(--ink-2);background:rgba(252,250,244,.92);
+    box-shadow:inset 0 0 0 1px var(--line),0 6px 18px -16px rgba(28,27,23,.6);border-radius:999px;padding:6px 11px;backdrop-filter:blur(10px)}
+
+  .composer{position:fixed;left:0;right:0;bottom:0;z-index:12;padding:8px 12px max(12px,env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,rgba(236,233,224,0),rgba(236,233,224,.9) 30%,var(--bg) 62%)}
+  .cbox{max-width:576px;margin:0 auto;background:var(--card);border-radius:22px;
+    box-shadow:inset 0 0 0 1px var(--line),0 14px 34px -24px rgba(28,27,23,.7);padding:5px 5px 5px 14px;
+    display:flex;align-items:flex-end;gap:6px;transition:box-shadow 160ms var(--ease-out)}
+  .cbox:focus-within{box-shadow:inset 0 0 0 1px rgba(28,27,23,.32),0 0 0 3px rgba(28,27,23,.05)}
+  textarea{flex:1;border:0;outline:0;background:transparent;resize:none;font:inherit;font-size:15px;line-height:1.55;
+    padding:8px 0 7px;min-height:40px;max-height:120px;color:var(--ink)}
+  textarea::placeholder{color:var(--ink-3)}
+  .send{width:36px;height:36px;flex:none;border-radius:50%;background:var(--ink);color:var(--card);display:grid;place-items:center;
+    transition:transform 140ms var(--ease-out),opacity 140ms}
+  .send:active{transform:scale(.94)}
+  .send[disabled]{opacity:.4}
+  .send svg{width:17px;height:17px}
+  .cfoot{max-width:576px;margin:6px auto 0;display:flex;align-items:center;gap:10px;font-size:9.5px;color:var(--ink-3);
+    padding:0 6px;font-family:var(--mono)}
+  .llm{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-family:var(--sans);font-size:10.5px;color:var(--ink-3)}
+  .llm input{position:absolute;opacity:0}
+  .llm span{width:24px;height:14px;border-radius:14px;background:rgba(28,27,23,.16);position:relative;transition:background 150ms}
+  .llm span::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--card);transition:transform 150ms var(--ease-out)}
+  .llm input:checked+span{background:var(--red)}
+  .llm input:checked+span::after{transform:translateX(10px)}
+
+  /* sheet */
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-radius:20px 20px 0 0;
+    height:76dvh;transform:translateY(100%);transition:transform 320ms var(--ease-drawer);
+    box-shadow:0 -24px 60px -30px rgba(28,27,23,.6);display:flex;flex-direction:column;
+    padding-bottom:env(safe-area-inset-bottom)}
+  .sheet[data-open="true"]{transform:translateY(0)}
+  .sheet[data-drag="1"]{transition:none}
+  .grab{padding:9px 0 4px;display:grid;place-items:center;cursor:grab;touch-action:none}
+  .grab i{width:38px;height:4px;border-radius:4px;background:rgba(28,27,23,.18)}
+  .sheethead{padding:4px 18px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--hair)}
+  .sheethead h2{font-size:15px;font-weight:600}
+  .sheethead .sub{font-size:10.5px;color:var(--ink-3);margin-top:1px}
+  .sheetclose{margin-left:auto;width:30px;height:30px;border-radius:50%;background:rgba(28,27,23,.05);display:grid;place-items:center}
+  .seg{display:flex;gap:4px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}
+  .seg button{flex:none;font-size:12px;padding:6px 12px;border-radius:999px;color:var(--ink-3);transition:background 140ms,color 140ms}
+  .seg button[aria-selected="true"]{background:var(--ink);color:var(--card)}
+  .sheetbody{flex:1;overflow-y:auto;padding:14px 18px 20px;overscroll-behavior:contain}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border-radius:10px;overflow:hidden}
+  .fields div{background:var(--card);padding:10px 12px}
+  .fields span{display:block;font-size:9.5px;letter-spacing:.1em;color:var(--ink-3)}
+  .fields b{font-size:12.5px;font-weight:500;display:block;margin-top:2px;line-height:1.5}
+  .checks{list-style:none;margin-top:4px}
+  .checks li{display:flex;gap:10px;padding:8px 0;font-size:13px;cursor:pointer;align-items:flex-start}
+  .b2{width:17px;height:17px;flex:none;margin-top:2px;border:1.5px solid rgba(28,27,23,.3);border-radius:5px;display:grid;place-items:center;transition:background 130ms,border-color 130ms}
+  .b2::after{content:"";width:8px;height:4px;border-left:1.8px solid var(--card);border-bottom:1.8px solid var(--card);
+    transform:rotate(-45deg) translateY(-1px) scale(.4);opacity:0;transition:transform 150ms var(--ease-out),opacity 110ms}
+  .checks li[aria-checked="true"] .b2{background:var(--green);border-color:var(--green)}
+  .checks li[aria-checked="true"] .b2::after{transform:rotate(-45deg) translateY(-1px) scale(1);opacity:1}
+  .checks li[aria-checked="true"] .nm{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--hair)}
+  .sheetnote{font-size:11px;color:var(--ink-3);line-height:1.7;margin-top:14px}
+  .maplarge{height:170px;border-radius:12px;position:relative;background:
+    linear-gradient(0deg,rgba(28,27,23,.05) 1px,transparent 1px) 0 0/100% 20px,
+    linear-gradient(90deg,rgba(28,27,23,.05) 1px,transparent 1px) 0 0/20px 100%,#e9e5d8;overflow:hidden}
+  .maplarge::before{content:"";position:absolute;left:16%;top:-20%;width:24%;height:150%;background:rgba(255,255,255,.7);transform:rotate(10deg)}
+  .maplarge::after{content:"";position:absolute;left:46%;top:44%;width:10px;height:10px;border-radius:50% 50% 50% 0;background:var(--red);
+    transform:rotate(-45deg);box-shadow:0 0 0 4px rgba(165,55,44,.15)}
+  .maglabel{position:absolute;left:10px;bottom:10px;font-size:11px;background:rgba(252,250,244,.94);padding:3px 8px;border-radius:5px;box-shadow:0 0 0 1px var(--hair)}
+  .scrim{position:fixed;inset:0;z-index:29;background:rgba(28,27,23,.24);opacity:0;pointer-events:none;transition:opacity 220ms var(--ease-out)}
+  .scrim[data-open="true"]{opacity:1;pointer-events:auto}
+
+  .toast{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom));transform:translate(-50%,8px);
+    background:rgba(28,27,23,.92);color:#f4f1e7;font-size:11.5px;padding:7px 13px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out);z-index:40}
+  .toast[data-on="1"]{opacity:1;transform:translate(-50%,0)}
+
+  .scheme{position:fixed;left:12px;top:calc(env(safe-area-inset-top) + 10px);z-index:50;display:flex;gap:2px;
+    background:rgba(28,27,23,.9);padding:3px;border-radius:6px;font-size:10.5px}
+  .scheme a{color:rgba(255,255,255,.6);text-decoration:none;border:0;padding:3px 8px;border-radius:4px}
+  .scheme a[aria-current="true"]{background:rgba(255,255,255,.94);color:#1c1b17}
+
+  @media (max-width:899px){
+    .scheme{display:none}
+  }
+  @media (min-width:900px){
+    .app{max-width:620px;box-shadow:0 0 0 1px var(--hair),0 40px 90px -70px rgba(28,27,23,.8);background:rgba(252,250,244,.35)}
+    header{border-radius:0}
+    .quickbar{max-width:600px;left:50%;transform:translateX(-50%)}
+    .composer{max-width:600px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,rgba(236,233,224,0),rgba(236,233,224,.94) 40%)}
+    .sheet{max-width:600px;left:50%;transform:translate(-50%,100%)}
+    .sheet[data-open="true"]{transform:translate(-50%,0)}
+    .scrim{max-width:600px;left:50%;transform:translateX(-50%)}
+    .scheme{left:calc(50% - 300px);top:18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ex{animation:none}
+    .sheet{transition:opacity 200ms var(--ease-out)}
+    .fold{transition:none}
+    *{animation-duration:200ms!important;animation-iteration-count:1!important}
+  }
+  @media print{.quickbar,.composer,.sheet,.scrim,.scheme{display:none!important}.app{padding-bottom:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><b>校园办事向导</b><span>SCHEME C / 手卡</span></div>
+    <div class="hstat"><span class="dot"><i></i>本地规则</span></div>
+    <button class="iconbtn" type="button" id="ctbtn" aria-label="常用联系方式">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4.5 3.5h3l1.2 3-1.8 1.3a9 9 0 0 0 4.3 4.3l1.3-1.8 3 1.2v3c0 .8-.7 1.5-1.5 1.5A12.5 12.5 0 0 1 3 5c0-.8.7-1.5 1.5-1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="iconbtn" type="button" id="searchbtn" aria-label="原文检索">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M12.4 12.4 16 16" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="k">CAMPUS CONCIERGE</div>
+    <h1>出门前问一句，<br><em>材料带对</em>再走。</h1>
+    <p>只答你问的那一面。答案下面压着官方原文，点开逐字核对；材料清单可以勾着带走。</p>
+    <div class="chips">
+      <button type="button" data-q="校园卡丢了怎么办">校园卡丢了怎么办</button>
+      <button type="button" data-q="成绩单怎么打">成绩单怎么打</button>
+      <button type="button" data-q="校园卡">校园卡（先反问）</button>
+      <button type="button" data-q="我要开个证明">我要开个证明（未命中）</button>
+    </div>
+  </section>
+
+  <div class="thread" id="thread" aria-live="polite"></div>
+</div>
+
+<div class="quickbar" id="quickbar">
+  <button type="button" data-q="校园卡丢了怎么办">补卡</button>
+  <button type="button" data-q="成绩单怎么打">成绩单</button>
+  <button type="button" data-q="从新闻学转到电视学要什么条件">转专业</button>
+  <button type="button" data-q="校园网连不上">校园网</button>
+  <button type="button" data-q="我要开个证明">开证明</button>
+</div>
+
+<form class="composer" id="askform">
+  <div class="cbox">
+    <label class="sr" for="q">你要办什么事</label>
+    <textarea id="q" rows="1" placeholder="你要办什么事？"></textarea>
+    <button class="send" type="submit" id="send" aria-label="发送">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 15V5M10 5l4 4M10 5 6 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="cfoot">
+    <span>635 事项 / 604 已核验</span>
+    <label class="llm"><input type="checkbox" id="llm"><span></span>模型裁决</label>
+  </div>
+</form>
+
+<div class="scrim" id="scrim"></div>
+
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="事项详情">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="sheethead">
+    <div><h2 id="sheettitle">校园卡补卡</h2><div class="sub" id="sheetsub">信息化处 / 原文已核验</div></div>
+    <button class="sheetclose" type="button" id="sheetclose" aria-label="关闭">
+      <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="seg" role="tablist" aria-label="事项分区">
+    <button role="tab" aria-selected="true" data-tab="overview">概览</button>
+    <button role="tab" aria-selected="false" data-tab="materials">材料</button>
+    <button role="tab" aria-selected="false" data-tab="steps">流程</button>
+    <button role="tab" aria-selected="false" data-tab="quotes">原文</button>
+    <button role="tab" aria-selected="false" data-tab="map">位置</button>
+  </div>
+  <div class="sheetbody" id="sheetbody"></div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<nav class="scheme" aria-label="方案切换">
+  <a href="prototype-a.html">A 凭据</a>
+  <a href="prototype-b.html">B 窗格</a>
+  <a href="prototype-c.html" aria-current="true">C 手卡</a>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const ITEM = {
+    title: "校园卡补卡", dept: "信息化处", confidence: 0.87,
+    fee: "20 元（微信支付）", location: "艺术与传播大楼 1 层 校园生活服务大厅",
+    duration: "补卡机当场出卡", channel: ["自助机", "人工窗口"],
+    materials: ["本人（到自助补卡机现场办理）", "微信支付，工本费 20 元"],
+    steps: [
+      { when: "第 1 步", what: "到艺术与传播大楼 1 层 校园生活服务大厅", where: "自助补卡机" },
+      { when: "第 2 步", what: "在自助补卡机上按提示补办" },
+      { when: "第 3 步", what: "微信支付 20 元工本费，机器出卡" }
+    ],
+    pitfalls: ["付钱后不出卡、卡面信息打印错误、未写卡 → 到窗口人工补办", "校园卡及网络报修电话：65783878"],
+    source: { title: "校园卡补卡 · 信息化处", url: "https://its.cuc.edu.cn/xykbk/list.htm", checked: "2026-10-20" }
+  };
+  const QUOTES = [
+    { quote: "校园卡丢失或损坏，请到艺术与传播大楼1层校园生活服务大厅自助补卡机补办", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" },
+    { quote: "自助补卡机补办", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" },
+    { quote: "并微信支付交纳补卡工本费20元，补卡机出卡", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" }
+  ];
+  const FOLLOW = {
+    q: "你是在读还是已毕业？哪一届？",
+    why: "2020 届以前毕业的不能走自助系统",
+    options: ["在读", "2020 届及以后毕业", "2020 届以前毕业"]
+  };
+  const F_STEPS = ["登录可信电子成绩单系统自助下载并打印", "如需密封章：周二、周四 14:00–16:30 现场核验并密封", "如需学校邮箱代发：编辑好邮件主题、正文与附件后发至本科生院邮箱"];
+  const F_QUOTES = [
+    { quote: "在校生及2020届以后毕业的学生均可自助在线下载电子版成绩单及各类证明材料", kind: "官网", label: "成绩单办理", date: "2021-01-28", url: "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm" },
+    { quote: "每周二、周四14:00-16:30（节假日除外）到艺术传播大楼三等东侧办公室现场核验并密封", kind: "官网", label: "成绩单办理", date: "2021-01-28", url: "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm" }
+  ];
+  const CONTACTS = [
+    { kind: "邮箱", value: "jiaowuchu@cuc.edu.cn", dept: "成绩单办理", ctx: "出国留学需官方邮箱发送成绩单时使用" },
+    { kind: "电话", value: "65783878", dept: "校园卡及网络报修", ctx: "信息化处报修电话" },
+    { kind: "电话", value: "65783304", dept: "电视学院教务", ctx: "转专业接收计划联系人 王老师" }
+  ];
+
+  const thread = $("#thread");
+  let seq = 0, pending = false, cur = null, tab = "overview";
+
+  /* ---------- answer card ---------- */
+  function answerCard(o) {
+    const id = "ev" + (++seq);
+    const steps = o.steps.map((s, i) => `<li><span class="n">${String(i + 1).padStart(2, "0")}</span>
+      <span>${esc(s)}${o.stepWhere && o.stepWhere[i] ? `<span class="where">${esc(o.stepWhere[i])}</span>` : ""}</span></li>`).join("");
+    return `<article class="card">
+      <div class="card-in">
+        <div class="ctop">
+          <span class="tag">原文已核验</span>
+          <span class="norm">${esc(o.normalized)}</span>
+          <span class="conf">${Math.round((o.conf || .87) * 100)}%</span>
+        </div>
+        <div class="alab">${esc(o.label)}</div>
+        <ol class="steps">${steps}</ol>
+        <button class="evtoggle" type="button" aria-expanded="false" aria-controls="${id}">原文 ${o.quotes.length} 条</button>
+        <div class="fold" id="${id}" data-open="false"><div class="in"><div class="quotes">
+          ${o.quotes.map((q) => `<div class="q"><div class="txt">${esc(q.quote)}</div>
+            <div class="met"><span class="b">${esc(q.kind)}</span><span>${esc(q.label)}</span>
+            ${q.date ? `<span>${esc(q.date)}</span>` : ""}${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}</div></div>`).join("")}
+        </div></div></div>
+      </div>
+      <div class="cardfoot">
+        <button class="cf primary" type="button" data-sheet="${esc(o.itemKey || "xyk")}">清单与流程</button>
+        <button class="cf" type="button" data-copyans="1">复制</button>
+        <button class="cf" type="button" data-map="1">位置</button>
+      </div>
+    </article>`;
+  }
+
+  function addEx(q, html) {
+    const el = document.createElement("section");
+    el.className = "ex";
+    el.innerHTML = `<div class="me">${esc(q)}</div>${html}`;
+    thread.appendChild(el);
+    bind(el);
+    el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    return el;
+  }
+
+  function ask(q) {
+    if (pending) return;
+    pending = true; $("#send").disabled = true;
+    $("#hero")?.remove();
+    const load = document.createElement("section");
+    load.className = "ex";
+    load.innerHTML = `<div class="me">${esc(q)}</div><article class="card"><div class="card-in" style="color:var(--ink-3);font-size:12.5px">正在对事项库和原文…</div></article>`;
+    thread.appendChild(load);
+    load.scrollIntoView({ block: "nearest", behavior: "smooth" });
+
+    setTimeout(() => {
+      load.remove();
+      if (q.indexOf("成绩单") > -1) {
+        const el = addEx(q, `<article class="card"><div class="card-in fu" data-done="0">
+          <div class="h">${esc(FOLLOW.q)}</div>
+          <div class="why">为什么问：${esc(FOLLOW.why)}</div>
+          <div class="opts">${FOLLOW.options.map((o) => `<button class="opt" type="button" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
+        </div></article>`);
+        el.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", () => {
+          el.querySelector(".fu").dataset.done = "1";
+          b.dataset.picked = "1";
+          addEx("成绩单办理 / " + b.dataset.opt, answerCard({
+            normalized: "成绩单办理 / 整体流程", label: "整体流程", steps: F_STEPS, quotes: F_QUOTES, itemKey: "cjd", conf: .86
+          }));
+          setSheet({ title: "成绩单办理", sub: "教务处 / 本科生院", kind: "cjd" });
+        }));
+      } else if (q === "校园卡") {
+        addEx(q, `<article class="card"><div class="card-in notice">
+          <h3>你是想问「校园卡补卡」还是「校园卡挂失 / 解挂」？</h3>
+          <p>这两个办起来不是一处。补卡去校园生活服务大厅自助机，挂失解挂在网上办。</p>
+          <div class="opts" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">校园卡补卡</button>
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">校园卡挂失 / 解挂</button>
+            <button class="opt" type="button" data-q="校园卡补卡要带什么">校园卡延期</button>
+          </div>
+        </div></article>`);
+      } else if (q === "我要开个证明") {
+        addEx(q, `<article class="card"><div class="card-in notice">
+          <h3>没查到「证明」这一条</h3>
+          <p>规则没对上具体事项。证明分几种，先选一个我再答，不硬凑。</p>
+          <div class="opts" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+            <button class="opt" type="button" data-q="成绩单怎么打">成绩单办理</button>
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">在读证明</button>
+            <button class="opt" type="button" data-q="成绩单怎么打">学历学位证明</button>
+          </div>
+        </div></article>`);
+      } else {
+        addEx(q, answerCard({
+          normalized: "校园卡补卡 / 整体流程", label: "整体流程",
+          steps: ITEM.steps.map((s) => s.what), stepWhere: [ITEM.steps[0].where, "", ""],
+          quotes: QUOTES, itemKey: "xyk", conf: .87
+        }));
+        setSheet({ title: ITEM.title, sub: ITEM.dept + " / 原文已核验", kind: "xyk" });
+      }
+      pending = false; $("#send").disabled = false;
+    }, 420);
+  }
+
+  function bind(root) {
+    root.querySelectorAll(".evtoggle").forEach((b) => b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") === "true";
+      b.setAttribute("aria-expanded", String(!open));
+      document.getElementById(b.getAttribute("aria-controls")).dataset.open = String(!open);
+    }));
+    root.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => { $("#q").value = b.dataset.q; ask(b.dataset.q); }));
+    root.querySelectorAll("[data-sheet]").forEach((b) => b.addEventListener("click", () => openSheet("overview")));
+    root.querySelectorAll("[data-map]").forEach((b) => b.addEventListener("click", () => openSheet("map")));
+    root.querySelectorAll("[data-copyans]").forEach((b) => b.addEventListener("click", async () => {
+      const txt = b.closest(".card").querySelector(".steps").innerText;
+      try { await navigator.clipboard.writeText(txt); } catch (e) {}
+      b.textContent = "已复制"; b.dataset.done = "1";
+      toast("已复制办理步骤");
+      setTimeout(() => { b.textContent = "复制"; b.dataset.done = "0"; }, 2500);
+    }));
+  }
+
+  /* ---------- sheet ---------- */
+  function setSheet(meta) {
+    cur = meta;
+    $("#sheettitle").textContent = meta.title;
+    $("#sheetsub").textContent = meta.sub;
+    renderSheet();
+  }
+  function renderSheet() {
+    const body = $("#sheetbody");
+    document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
+    if (!cur) { body.innerHTML = `<div class="sheetnote">还没有选中事项。先问一句要办的事。</div>`; return; }
+    if (tab === "overview") {
+      body.innerHTML = `
+        <div class="fields">
+          <div><span>部门</span><b>${esc(ITEM.dept)}</b></div>
+          <div><span>渠道</span><b>${esc(ITEM.channel.join(" / "))}</b></div>
+          <div><span>费用</span><b>${esc(ITEM.fee)}</b></div>
+          <div><span>用时</span><b>${esc(ITEM.duration)}</b></div>
+        </div>
+        <h3 style="font-size:10px;letter-spacing:.14em;color:var(--ink-3);margin:16px 0 6px">这几种情况会白跑</h3>
+        <div style="background:var(--red-soft);border-radius:10px;padding:10px 12px">
+          ${ITEM.pitfalls.map((p) => `<div style="font-size:12.5px;line-height:1.7;display:flex;gap:6px"><span style="color:var(--red)">—</span><span>${esc(p)}</span></div>`).join("")}
+        </div>
+        <p class="sheetnote">依据：${esc(ITEM.source.title)}，核验 ${esc(ITEM.source.checked)}。</p>`;
+    } else if (tab === "materials") {
+      body.innerHTML = `<ul class="checks">${ITEM.materials.map((m, i) => `<li role="checkbox" aria-checked="false" tabindex="0" data-m="${i}">
+          <span class="b2" aria-hidden="true"></span><span class="nm">${esc(m)}</span></li>`).join("")}</ul>
+        <p class="sheetnote">勾选只在本机生效，不联网。到窗口前再核一遍。</p>`;
+      body.querySelectorAll(".checks li").forEach((li) => {
+        const t = () => li.setAttribute("aria-checked", li.getAttribute("aria-checked") === "true" ? "false" : "true");
+        li.addEventListener("click", t);
+        li.addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); t(); } });
+      });
+    } else if (tab === "steps") {
+      body.innerHTML = `${ITEM.steps.map((s, i) => `<div style="display:grid;grid-template-columns:22px 1fr;gap:9px;padding:9px 0;border-bottom:1px solid var(--hair)">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--red);padding-top:4px">${String(i + 1).padStart(2, "0")}</span>
+          <span style="font-size:13px;line-height:1.65">${esc(s.what)}${s.where ? `<span style="display:block;font-size:11px;color:var(--ink-3)">${esc(s.where)}</span>` : ""}</span></div>`).join("")}
+        <p class="sheetnote">步骤来自官方页面，未增补经验性环节。</p>`;
+    } else if (tab === "quotes") {
+      body.innerHTML = `<div class="quotes" style="padding:0">${QUOTES.map((q) => `<div class="q"><div class="txt">${esc(q.quote)}</div>
+        <div class="met"><span class="b">${esc(q.kind)}</span><span>${esc(q.label)}</span>${q.date ? `<span>${esc(q.date)}</span>` : ""}
+        ${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}</div></div>`).join("")}</div>
+        <p class="sheetnote">逐字摘录，未润色。原文网页若已更新，以最新页面为准。</p>`;
+    } else {
+      body.innerHTML = `<div class="maplarge"><span class="maglabel">${esc(ITEM.location)}</span></div>
+        <p class="sheetnote">地图未接入，这里只是位置占位。出发前请以官方页面写的楼栋和房间为准。</p>
+        <button class="cf" type="button" style="margin-top:12px" data-copyaddr="1">复制地址</button>`;
+      body.querySelector("[data-copyaddr]")?.addEventListener("click", async (e) => {
+        try { await navigator.clipboard.writeText(ITEM.location); } catch (err) {}
+        e.currentTarget.textContent = "已复制"; toast("地址已复制");
+        setTimeout(() => { e.currentTarget.textContent = "复制地址"; }, 2500);
+      });
+    }
+  }
+  document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => { tab = b.dataset.tab; renderSheet(); }));
+
+  function openSheet(which) {
+    if (which) tab = which;
+    renderSheet();
+    $("#sheet").dataset.open = "true";
+    $("#scrim").dataset.open = "true";
+  }
+  function closeSheet() {
+    $("#sheet").dataset.open = "false";
+    $("#sheet").removeAttribute("data-drag");
+    $("#sheet").style.transform = "";
+    $("#scrim").dataset.open = "false";
+  }
+  $("#sheetclose").addEventListener("click", closeSheet);
+  $("#scrim").addEventListener("click", closeSheet);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+
+  /* drag to dismiss: 1:1 follow + velocity */
+  const sheet = $("#sheet"), grab = $("#grab");
+  let drag = null;
+  grab.addEventListener("pointerdown", (e) => {
+    drag = { y: e.clientY, t: performance.now(), dy: 0 };
+    sheet.dataset.drag = "1";
+    grab.setPointerCapture(e.pointerId);
+  });
+  grab.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dy = Math.max(0, e.clientY - drag.y);
+    drag.dy = dy;
+    sheet.style.transform = `translateY(${dy}px)`;
+  });
+  grab.addEventListener("pointerup", (e) => {
+    if (!drag) return;
+    const dt = Math.max(1, performance.now() - drag.t);
+    const v = drag.dy / dt;
+    sheet.removeAttribute("data-drag");
+    sheet.style.transform = "";
+    if (drag.dy > 120 || v > 0.5) closeSheet();
+    drag = null;
+    grab.releasePointerCapture(e.pointerId);
+  });
+
+  /* toast: 2.5s 自熄 */
+  let toastTimer;
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg; t.dataset.on = "1";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.dataset.on = "0"; }, 2500);
+  }
+
+  /* composer */
+  $("#askform").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = $("#q").value.trim();
+    if (q.length < 2) { $("#q").focus(); return; }
+    ask(q);
+  });
+  $("#q").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#askform").requestSubmit(); }
+  });
+  $("#q").addEventListener("input", () => {
+    const el = $("#q"); el.style.height = "auto"; el.style.height = Math.min(120, el.scrollHeight) + "px";
+  });
+  document.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => { $("#q").value = b.dataset.q; ask(b.dataset.q); }));
+
+  $("#ctbtn").addEventListener("click", () => {
+    $("#hero")?.remove();
+    addEx("常用联系方式", `<article class="card"><div class="card-in notice"><h3>公开联系方式</h3>
+      <p>摘自各部门官网，来电前先看办公时间。</p>
+      <ul class="checks" style="margin-top:10px">${CONTACTS.map((c) => `<li role="checkbox" aria-checked="false" tabindex="0">
+        <span class="b2" aria-hidden="true"></span><span class="nm"><b style="font-weight:500">${esc(c.value)}</b>
+        <span style="display:block;font-size:11px;color:var(--ink-3)">${esc(c.kind)} / ${esc(c.dept)} / ${esc(c.ctx)}</span></span></li>`).join("")}</ul>
+      </div></article>`);
+  });
+  $("#searchbtn").addEventListener("click", () => {
+    $("#hero")?.remove();
+    addEx("原文检索：校园卡补办", `<article class="card"><div class="card-in notice"><h3>原文库相近段落 2 段</h3>
+      <p>只是原文线索，不是办理结论。</p>
+      <div class="quotes"><div class="q"><div class="txt">校园卡丢失或损坏，请到艺术与传播大楼1层校园生活服务大厅自助补卡机补办</div>
+        <div class="met"><span class="b">官网</span><span>校园卡补卡</span><span>相关度 55%</span></div></div>
+        <div class="q"><div class="txt">信息化服务新生指南 / 实体校园卡 新生入学后在学院统一领取实体校园卡</div>
+        <div class="met"><span class="b">问道原文</span><span>新生指南</span><span>相关度 55%</span></div></div></div>
+      </div></article>`);
+  });
+  const pre = new URLSearchParams(location.search).get("q");
+  if (pre) { $("#q").value = pre; ask(pre); }
+})();
+</script>
+</body>
+</html>

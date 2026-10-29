@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>方案 B · 窗格 | 校园办事向导</title>
+<style>
+  :root{
+    --bg:#f4f4f0;
+    --surface:#fbfbf8;
+    --raised:#fffefa;
+    --sunken:#eeeee9;
+    --ink:#191a18;
+    --ink-2:#565852;
+    --ink-3:#8a8c84;
+    --line:rgba(25,26,24,.09);
+    --hair:rgba(25,26,24,.055);
+    --accent:#9c2f27;
+    --accent-soft:#f6e9e5;
+    --ok:#2c6a4d;
+    --amber:#95611c;
+    --ease-out:cubic-bezier(.23,1,.32,1);
+    --ease-in-out:cubic-bezier(.77,0,.175,1);
+    --ease-drawer:cubic-bezier(.32,.72,0,1);
+    --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;
+    --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",Georgia,serif;
+    --mono:"Cascadia Mono",ui-monospace,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13.5px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;overflow:hidden}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(156,47,39,.28)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .app{height:100dvh;display:grid;grid-template-columns:minmax(0,1fr) 380px}
+
+  /* ---------- rail ---------- */
+  .rail{display:flex;flex-direction:column;min-width:0;background:var(--bg);position:relative}
+  .topbar{display:flex;align-items:center;gap:14px;padding:12px 22px;border-bottom:1px solid var(--hair);
+    background:rgba(244,244,240,.72);backdrop-filter:blur(18px) saturate(160%);position:relative;z-index:5}
+  .wordmark{display:flex;align-items:baseline;gap:9px}
+  .wordmark b{font-size:15px;letter-spacing:-.01em;font-weight:600}
+  .wordmark span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3)}
+  .topstat{margin-left:auto;display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10.5px;
+    color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+  @media (max-width:1240px){.topstat span:nth-child(2){display:none}}
+  .topstat .ok{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2)}
+  .topstat .ok i{width:5px;height:5px;border-radius:50%;background:var(--ok)}
+  .topbtn{font-size:12px;color:var(--ink-2);padding:6px 10px;border-radius:5px;transition:background 140ms var(--ease-out)}
+  .topbtn:hover{background:rgba(25,26,24,.05)}
+
+  .scroller{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+  .thread{max-width:700px;margin:0 auto;padding:26px 30px 26px;display:flex;flex-direction:column;gap:26px}
+
+  /* empty */
+  .empty{padding-top:6px}
+  .empty .k{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--accent)}
+  .empty h1{font-size:clamp(23px,2.6vw,29px);letter-spacing:-.02em;line-height:1.25;margin-top:10px;font-weight:600}
+  .empty p{color:var(--ink-2);font-size:13.5px;margin-top:10px;max-width:46ch;line-height:1.75}
+  .quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .quick button{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);border-radius:6px;
+    padding:8px 12px;font-size:12.5px;color:var(--ink-2);transition:box-shadow 140ms var(--ease-out),color 140ms,transform 140ms var(--ease-out)}
+  .quick button:hover{box-shadow:inset 0 0 0 1px rgba(25,26,24,.28);color:var(--ink)}
+  .quick button:active{transform:scale(.98)}
+  .capabilities{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);
+    margin-top:26px;border-radius:6px;overflow:hidden}
+  .capabilities div{background:var(--surface);padding:13px 14px}
+  .capabilities b{display:block;font-size:12px;font-weight:600;margin-bottom:3px}
+  .capabilities span{font-size:11.5px;color:var(--ink-3);line-height:1.6}
+
+  /* exchange */
+  .ex{display:flex;flex-direction:column;gap:12px;animation:enter 220ms var(--ease-out) both}
+  @keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .askline{display:flex;justify-content:flex-end}
+  .askline .bubble{max-width:78%;background:rgba(25,26,24,.055);border-radius:12px 12px 4px 12px;padding:9px 14px;
+    font-size:13.5px;line-height:1.6}
+  .answer{background:var(--surface);border-radius:10px;box-shadow:0 1px 2px rgba(25,26,24,.04),0 10px 24px -22px rgba(25,26,24,.5);
+    overflow:hidden}
+  .answer-in{padding:18px 20px 16px}
+  .norm{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap}
+  .norm b{color:var(--ink-2);font-weight:500}
+  .pill{font-size:10px;letter-spacing:.08em;border-radius:3px;padding:1px 6px;background:var(--sunken);color:var(--ink-2)}
+  .alab{font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);margin:14px 0 8px}
+  .aval{font-size:16px;line-height:1.62;letter-spacing:-.005em;font-weight:500;text-wrap:pretty}
+  .aval.none{color:var(--accent);font-weight:500;font-size:13.5px}
+  .steps{list-style:none;counter-reset:s}
+  .steps li{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:8px 0;font-size:14px;line-height:1.65}
+  .steps li+li{border-top:1px solid var(--hair)}
+  .steps .sn{font-family:var(--mono);font-size:10.5px;color:var(--accent);padding-top:4px;font-variant-numeric:tabular-nums}
+  .steps .where{display:block;font-size:11.5px;color:var(--ink-3)}
+
+  .evrow{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .evbtn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--accent);
+    background:var(--accent-soft);border-radius:999px;padding:4px 10px;transition:transform 140ms var(--ease-out)}
+  .evbtn:active{transform:scale(.97)}
+  .evbtn .n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .jump{font-size:11.5px;color:var(--ink-3);padding:4px 2px}
+  .jump:hover{color:var(--ink)}
+  .fold{display:grid;grid-template-rows:0fr;transition:grid-template-rows 240ms var(--ease-out)}
+  .fold[data-open="true"]{grid-template-rows:1fr}
+  .fold>.in{min-height:0;overflow:hidden}
+  .evlist{display:flex;flex-direction:column;gap:11px;padding:12px 0 2px}
+  .ev{border-left:2px solid rgba(156,47,39,.22);padding-left:12px}
+  .quote{font-family:var(--serif);font-size:13px;line-height:1.85;color:#3b3a34}
+  .qmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin-top:3px;font-size:10.5px;color:var(--ink-3)}
+  .qmeta .badge{border:1px solid var(--line);border-radius:2px;padding:0 5px;color:var(--ink-2)}
+
+  .answer-foot{display:flex;align-items:center;gap:8px;padding:9px 20px;border-top:1px solid var(--hair);
+    background:rgba(25,26,24,.02);flex-wrap:wrap}
+  .answer-foot .stat{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+  .tiny{font-size:11.5px;color:var(--ink-2);border:1px solid var(--line);border-radius:5px;padding:4px 9px;background:var(--raised);
+    transition:border-color 140ms var(--ease-out),transform 140ms var(--ease-out)}
+  .tiny:hover{border-color:rgba(25,26,24,.3)}
+  .tiny:active{transform:scale(.97)}
+  .tiny[data-done="1"]{color:var(--ok);border-color:rgba(44,106,77,.35)}
+
+  /* followup */
+  .fu{background:var(--surface);border-radius:10px;box-shadow:inset 0 0 0 1px var(--line);padding:16px 18px 18px}
+  .fuhead{display:flex;gap:10px;align-items:flex-start}
+  .fnum{font-family:var(--mono);font-size:10px;color:var(--accent);padding-top:4px}
+  .fu h3{font-size:14.5px;font-weight:600;line-height:1.55}
+  .why{font-size:11.5px;color:var(--ink-3);margin:4px 0 0 20px}
+  .known{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);margin-top:10px}
+  .tag{background:rgba(25,26,24,.05);border-radius:3px;padding:1px 6px;color:var(--ink-2);font-size:11px}
+  .opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .opt{font-size:13px;padding:7px 13px;border-radius:6px;background:var(--raised);box-shadow:inset 0 0 0 1px var(--line);
+    transition:box-shadow 140ms var(--ease-out),transform 140ms var(--ease-out),background 140ms}
+  .opt:hover{box-shadow:inset 0 0 0 1px rgba(25,26,24,.3)}
+  .opt:active{transform:scale(.97)}
+  .fu[data-done="1"] .opt{opacity:.4;pointer-events:none}
+  .fu[data-done="1"] .opt[data-picked="1"]{opacity:1;background:var(--ink);color:var(--raised);box-shadow:none}
+
+  .notice{background:var(--surface);border-radius:10px;padding:16px 18px;box-shadow:inset 0 0 0 1px var(--line)}
+  .notice h3{font-size:14.5px;font-weight:600}
+  .notice p{font-size:12.5px;color:var(--ink-2);margin-top:5px;line-height:1.7}
+  .notice .opts{margin-top:12px}
+  .notice .opt{font-size:12.5px;padding:6px 11px}
+
+  /* composer */
+  .composer{padding:10px 22px max(16px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(244,244,240,0),var(--bg) 22%)}
+  .composer-in{max-width:700px;margin:0 auto}
+  .box{background:var(--raised);border-radius:10px;box-shadow:inset 0 0 0 1px var(--line),0 8px 24px -20px rgba(25,26,24,.6);
+    transition:box-shadow 160ms var(--ease-out)}
+  .box:focus-within{box-shadow:inset 0 0 0 1px rgba(25,26,24,.32),0 0 0 3px rgba(25,26,24,.055)}
+  textarea{width:100%;border:0;outline:0;background:transparent;resize:none;font:inherit;font-size:14.5px;line-height:1.6;
+    padding:12px 14px 4px;min-height:48px;max-height:160px;color:var(--ink)}
+  textarea::placeholder{color:var(--ink-3)}
+  .boxfoot{display:flex;align-items:center;gap:8px;padding:4px 8px 8px}
+  .boxfoot .grow{flex:1}
+  .send{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:var(--raised);font-size:12.5px;
+    font-weight:500;padding:7px 13px;border-radius:6px;transition:transform 140ms var(--ease-out),opacity 140ms}
+  .send:active{transform:scale(.97)}
+  .send[disabled]{opacity:.45}
+  .send kbd{font-family:var(--mono);font-size:9.5px;opacity:.6}
+  .ghost{font-size:11.5px;color:var(--ink-3);padding:6px 8px;border-radius:5px;transition:background 140ms,color 140ms}
+  .ghost:hover{background:rgba(25,26,24,.05);color:var(--ink)}
+  .switch{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-3);cursor:pointer;user-select:none}
+  .switch input{position:absolute;opacity:0}
+  .switch span{width:27px;height:16px;border-radius:16px;background:rgba(25,26,24,.16);position:relative;transition:background 150ms}
+  .switch span::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--raised);
+    box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform 150ms var(--ease-out)}
+  .switch input:checked+span{background:var(--accent)}
+  .switch input:checked+span::after{transform:translateX(11px)}
+  .under{display:flex;justify-content:space-between;gap:10px;margin-top:7px;font-size:10.5px;color:var(--ink-3);flex-wrap:wrap}
+  .under .presets{display:flex;gap:12px;flex-wrap:wrap}
+  .presets button{font-size:11px;color:var(--ink-3);border-bottom:1px solid var(--hair);padding:1px 0}
+  .presets button:hover{color:var(--accent);border-color:var(--accent)}
+
+  .loading{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3);padding:2px 2px}
+  .spin{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(25,26,24,.16);border-top-color:var(--accent);animation:spin 680ms linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- inspector ---------- */
+  .inspector{background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0;
+    position:relative;z-index:4;box-shadow:-1px 0 0 rgba(255,255,255,.6)}
+  .inshead{padding:12px 16px 0;border-bottom:1px solid var(--hair)}
+  .insrow{display:flex;align-items:flex-start;gap:10px}
+  .insrow h2{font-size:14px;font-weight:600;letter-spacing:-.01em;line-height:1.4}
+  .insrow .sub{font-size:11px;color:var(--ink-3);margin-top:2px}
+  .insrow .close{display:none;font-size:11.5px;color:var(--ink-3);margin-left:auto}
+  .tabs{display:flex;gap:2px;margin-top:12px;position:relative}
+  .tab{font-size:11.5px;color:var(--ink-3);padding:7px 9px 9px;border-radius:5px 5px 0 0;position:relative}
+  .tab[aria-selected="true"]{color:var(--ink)}
+  .tab::after{content:"";position:absolute;left:8px;right:8px;bottom:0;height:1.5px;background:var(--ink);
+    transform:scaleX(0);transform-origin:left;transition:transform 200ms var(--ease-out)}
+  .tab[aria-selected="true"]::after{transform:scaleX(1)}
+  .insbody{flex:1;overflow-y:auto;padding:16px;overscroll-behavior:contain}
+  .emptyins{height:100%;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 6px 40px;color:var(--ink-3)}
+  .emptyins b{font-size:13px;color:var(--ink-2);font-weight:500}
+  .emptyins p{font-size:11.5px;line-height:1.8}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border-radius:6px;overflow:hidden}
+  .meta-grid div{background:var(--raised);padding:9px 11px}
+  .meta-grid span{display:block;font-size:10px;letter-spacing:.1em;color:var(--ink-3)}
+  .meta-grid b{font-size:12px;font-weight:500;line-height:1.5;display:block;margin-top:2px}
+  .ib{margin-top:16px}
+  .ib h3{font-size:10px;letter-spacing:.16em;color:var(--ink-3);margin-bottom:7px;font-weight:500}
+  .checks{list-style:none;display:flex;flex-direction:column}
+  .checks li{display:flex;gap:9px;padding:6px 0;font-size:12.5px;cursor:pointer;align-items:flex-start;border-radius:4px}
+  .box2{width:14px;height:14px;flex:none;margin-top:3px;border:1.5px solid rgba(25,26,24,.3);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;transition:background 130ms,border-color 130ms}
+  .box2::after{content:"";width:7px;height:4px;border-left:1.8px solid var(--raised);border-bottom:1.8px solid var(--raised);
+    transform:rotate(-45deg) translateY(-1px) scale(.4);opacity:0;transition:transform 150ms var(--ease-out),opacity 110ms}
+  .checks li[aria-checked="true"] .box2{background:var(--ok);border-color:var(--ok)}
+  .checks li[aria-checked="true"] .box2::after{transform:rotate(-45deg) translateY(-1px) scale(1);opacity:1}
+  .checks li[aria-checked="true"] .mname{color:var(--ink-3);text-decoration:line-through}
+  .iline{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:7px 0;font-size:12.5px;line-height:1.65;border-top:1px solid var(--hair)}
+  .iline:first-child{border-top:0}
+  .iline .n{font-family:var(--mono);font-size:10px;color:var(--accent);padding-top:3px}
+  .iline .w{display:block;font-size:11px;color:var(--ink-3)}
+  .warnbox{background:var(--accent-soft);border-radius:5px;padding:9px 11px}
+  .warnbox li{font-size:12px;line-height:1.65;list-style:none;display:flex;gap:6px}
+  .warnbox li+li{margin-top:5px}
+  .warnbox li::before{content:"—";color:var(--accent)}
+  .quotes{display:flex;flex-direction:column;gap:12px}
+  .quotes .ev{border-left:2px solid rgba(156,47,39,.25);padding-left:10px}
+  .srcbox{font-size:11px;color:var(--ink-3);line-height:1.8;word-break:break-all}
+  .srcbox b{color:var(--ink-2);font-weight:500}
+  .insfoot{padding:10px 16px;border-top:1px solid var(--hair);display:flex;gap:6px;align-items:center;background:rgba(25,26,24,.015)}
+  .insfoot .stamp{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+  .draft{font-family:var(--mono);font-size:11px;line-height:1.8;white-space:pre-wrap;background:var(--sunken);
+    border-radius:5px;padding:10px;color:#3c3b35;margin-top:8px}
+
+  /* map */
+  #map-panel{position:fixed;right:398px;bottom:210px;width:290px;background:var(--raised);border-radius:9px;z-index:20;
+    box-shadow:0 1px 2px rgba(25,26,24,.06),0 24px 50px -28px rgba(25,26,24,.65);overflow:hidden;
+    transform-origin:bottom right;transition:transform 220ms var(--ease-out),opacity 160ms}
+  #map-panel[data-collapsed="true"]{width:auto}
+  #map-panel[data-collapsed="true"] .mapbody,#map-panel[data-collapsed="true"] .mapnote{display:none}
+  .maphandle{display:flex;align-items:center;gap:7px;padding:8px 9px 8px 11px;cursor:grab;touch-action:none}
+  .maphandle:active{cursor:grabbing}
+  .maphandle i{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .maphandle b{font-size:11px;font-weight:500;color:var(--ink-2);letter-spacing:.04em}
+  .maphandle .sp{flex:1}
+  .maphandle button{font-size:10.5px;color:var(--ink-3);padding:2px 4px}
+  .mapbody{height:120px;position:relative;border-top:1px solid var(--hair);background:
+    linear-gradient(0deg,rgba(25,26,24,.055) 1px,transparent 1px) 0 0/100% 20px,
+    linear-gradient(90deg,rgba(25,26,24,.055) 1px,transparent 1px) 0 0/20px 100%,#e8e8e2}
+  .mapbody::before{content:"";position:absolute;left:20%;top:-25%;width:22%;height:160%;background:rgba(255,255,255,.7);transform:rotate(12deg)}
+  .mapbody::after{content:"";position:absolute;left:46%;top:46%;width:8px;height:8px;border-radius:50% 50% 50% 0;
+    background:var(--accent);transform:rotate(-45deg);box-shadow:0 0 0 3px rgba(156,47,39,.16)}
+  .maplabel{position:absolute;left:8px;bottom:7px;font-size:10px;color:var(--ink-2);background:rgba(255,254,250,.92);
+    padding:2px 6px;border-radius:3px;box-shadow:0 0 0 1px var(--hair);max-width:220px}
+  .mapnote{font-size:10px;color:var(--ink-3);padding:6px 11px 8px;line-height:1.5}
+
+  /* scheme nav */
+  .scheme{position:fixed;left:20px;top:70px;z-index:50;display:flex;gap:2px;background:rgba(25,26,24,.9);padding:3px;border-radius:6px;font-size:11px}
+  .scheme a{color:rgba(255,255,255,.6);text-decoration:none;border:0;padding:4px 9px;border-radius:4px}
+  .scheme a[aria-current="true"]{background:rgba(255,255,255,.94);color:#191a18}
+  @media (max-width:1160px){.scheme{display:none}}
+
+  .sheetbar{display:none}
+  .scrim{display:none}
+
+  /* ---------- mobile ---------- */
+  @media (max-width:960px){
+    .app{grid-template-columns:1fr}
+    .scheme{display:none}
+    .inspector{position:fixed;left:0;right:0;bottom:0;top:auto;height:min(78dvh,640px);border-left:0;border-top:1px solid var(--line);
+      border-radius:14px 14px 0 0;transform:translateY(100%);transition:transform 300ms var(--ease-drawer);z-index:30;
+      box-shadow:0 -20px 50px -30px rgba(25,26,24,.6)}
+    .inspector[data-open="true"]{transform:translateY(0)}
+    .insrow .close{display:block}
+    .sheetbar{display:block;width:38px;height:4px;border-radius:4px;background:rgba(25,26,24,.16);margin:8px auto 0}
+    .scrim{display:block;position:fixed;inset:0;background:rgba(25,26,24,.22);z-index:29;opacity:0;pointer-events:none;
+      transition:opacity 220ms var(--ease-out);backdrop-filter:blur(2px)}
+    .scrim[data-open="true"]{opacity:1;pointer-events:auto}
+    .thread{padding:20px 16px}
+    .topbar{padding:10px 14px;gap:8px}
+    .topstat span:nth-child(2){display:none}
+    .composer{padding:8px 12px max(12px,env(safe-area-inset-bottom))}
+    #map-panel{right:10px;top:56px;bottom:auto;width:250px}
+    .scheme{display:none}
+  }
+  @media (max-width:480px){
+    .topstat{font-size:9.5px}
+    .wordmark span{display:none}
+    .empty h1{font-size:22px}
+    .answer-in{padding:15px 14px 13px}
+    .answer-foot{padding:8px 14px}
+    .aval{font-size:15px}
+    .askline .bubble{max-width:88%}
+    #map-panel{left:auto;right:10px;width:210px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ex{animation:none}
+    .inspector{transition:transform 200ms var(--ease-out)}
+    .fold{transition:none}
+    *{animation-duration:200ms!important;animation-iteration-count:1!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="rail">
+    <div class="topbar">
+      <div class="wordmark"><b>校园办事向导</b><span>SCHEME B / 窗格</span></div>
+      <div class="topstat">
+        <span class="ok"><i></i>本地规则作答</span>
+        <span>635 事项 / 604 已核验 / 688 原文</span>
+      </div>
+      <button class="topbtn" type="button" id="ctbtn">联系方式</button>
+      <button class="topbtn" type="button" id="searchbtn">搜原文</button>
+    </div>
+
+    <div class="scroller" id="scroller">
+      <div class="thread" id="thread" aria-live="polite">
+        <section class="empty" id="empty">
+          <div class="k">CAMPUS CONCIERGE</div>
+          <h1>问一句要办的事，<br>右栏留着你这次要用的全部凭据。</h1>
+          <p>答案只答你问的那一面。每条结论旁边是「原文 n 条」，点开是官方页面的逐字摘录；右栏是同一事项的完整清单，可以勾着带走。</p>
+          <div class="quick">
+            <button type="button" data-q="校园卡丢了怎么办">校园卡丢了怎么办</button>
+            <button type="button" data-q="成绩单怎么打">成绩单怎么打</button>
+            <button type="button" data-q="校园卡">校园卡（先反问）</button>
+            <button type="button" data-q="我要开个证明">我要开个证明（未命中）</button>
+          </div>
+          <div class="capabilities">
+            <div><b>对话负责澄清</b><span>只追问会改变答案的条件</span></div>
+            <div><b>右栏负责带走</b><span>材料清单、流程、原文、打印</span></div>
+            <div><b>底栏负责认错</b><span>未命中给替代项，不硬答</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="composer-in">
+        <form class="box" id="askform">
+          <label class="sr" for="q">你要办什么事</label>
+          <textarea id="q" rows="1" placeholder="你要办什么事？比如：校园卡丢了怎么办"></textarea>
+          <div class="boxfoot">
+            <button class="send" id="send" type="submit">发送 <kbd>↵</kbd></button>
+            <span class="grow"></span>
+            <label class="switch"><input type="checkbox" id="llm"><span></span>模型裁决</label>
+          </div>
+        </form>
+        <div class="under">
+          <div class="presets">
+            <button type="button" data-q="校园卡丢了怎么办">校园卡补卡</button>
+            <button type="button" data-q="成绩单怎么打">成绩单</button>
+            <button type="button" data-q="从新闻学转到电视学要什么条件">转专业计划</button>
+          </div>
+          <span>材料以官方窗口为准</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="inspector" id="inspector" aria-label="事项详情">
+    <div class="sheetbar"></div>
+    <div class="inshead">
+      <div class="insrow">
+        <div>
+          <h2 id="institle">事项详情</h2>
+          <div class="sub" id="jnsub">答案右侧会同步到这里</div>
+        </div>
+        <button class="close" type="button" id="insclose">关闭</button>
+      </div>
+      <div class="tabs" role="tablist" aria-label="事项分区">
+        <button class="tab" role="tab" aria-selected="true" data-tab="overview">概览</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="materials">材料</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="steps">流程</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="quotes">原文</button>
+      </div>
+    </div>
+    <div class="insbody" id="insbody">
+      <div class="emptyins">
+        <b>还没有选中事项。</b>
+        <p>问一句要办的事，这里会显示它的材料、流程、易错项和全部原文摘录。移动端从底部滑出，桌面端常驻。</p>
+      </div>
+    </div>
+    <div class="insfoot">
+      <button class="tiny" type="button" id="insprint">打印</button>
+      <button class="tiny" type="button" id="inscopy">复制清单</button>
+      <span class="stamp" id="insstamp">NO DATA</span>
+    </div>
+  </aside>
+</div>
+
+<aside id="map-panel" aria-label="校园位置">
+  <div class="maphandle" id="maphandle">
+    <i></i><b>校园位置</b><span class="sp"></span>
+    <button type="button" id="mapcollapse" aria-expanded="true" aria-label="收起地图面板">收起</button>
+  </div>
+  <div class="mapbody"><span class="maplabel" id="maploc">艺术与传播大楼 1 层</span></div>
+  <div class="mapnote">地图未接入，仅占位。位置取自事项条目。</div>
+</aside>
+
+<nav class="scheme" aria-label="方案切换">
+  <a href="prototype-a.html">A 凭据</a>
+  <a href="prototype-b.html" aria-current="true">B 窗格</a>
+  <a href="prototype-c.html">C 手卡</a>
+</nav>
+<div class="scrim" id="scrim"></div>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const ITEM = {
+    title: "校园卡补卡", dept: "信息化处", status: "verified", confidence: 0.87,
+    fee: "20 元（微信支付）", location: "艺术与传播大楼 1 层 校园生活服务大厅",
+    duration: "补卡机当场出卡", channel: ["自助机", "人工窗口"], window: null,
+    materials: ["本人（到自助补卡机现场办理）", "微信支付，工本费 20 元"],
+    steps: [
+      { when: "第 1 步", what: "到艺术与传播大楼 1 层 校园生活服务大厅", where: "自助补卡机" },
+      { when: "第 2 步", what: "在自助补卡机上按提示补办" },
+      { when: "第 3 步", what: "微信支付 20 元工本费，机器出卡" }
+    ],
+    pitfalls: ["付钱后不出卡、卡面信息打印错误、未写卡 → 到窗口人工补办", "校园卡及网络报修电话：65783878"],
+    source: { title: "校园卡补卡 · 信息化处", url: "https://its.cuc.edu.cn/xykbk/list.htm", checked: "2026-10-20" }
+  };
+  const QUOTES = [
+    { quote: "校园卡丢失或损坏，请到艺术与传播大楼1层校园生活服务大厅自助补卡机补办", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" },
+    { quote: "自助补卡机补办", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" },
+    { quote: "并微信支付交纳补卡工本费20元，补卡机出卡", kind: "官网", label: "校园卡补卡", date: "2026-10-20", url: "https://its.cuc.edu.cn/xykbk/list.htm" }
+  ];
+  const FOLLOW = {
+    normalized: "成绩单办理 · 整体流程",
+    question: "你是在读还是已毕业？哪一届？",
+    why: "2020 届以前毕业的不能走自助系统",
+    options: ["在读", "2020 届及以后毕业", "2020 届以前毕业"],
+    item: "成绩单办理"
+  };
+  const FOLLOW_STEPS = ["登录可信电子成绩单系统自助下载并打印", "如需密封章：周二、周四 14:00–16:30 现场核验并密封", "如需学校邮箱代发：编辑好邮件主题、正文与附件后发至本科生院邮箱"];
+  const FOLLOW_QUOTES = [
+    { quote: "在校生及2020届以后毕业的学生均可自助在线下载电子版成绩单及各类证明材料", kind: "官网", label: "成绩单办理", date: "2021-01-28", url: "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm" },
+    { quote: "每周二、周四14:00-16:30（节假日除外）到艺术传播大楼三等东侧办公室现场核验并密封", kind: "官网", label: "成绩单办理", date: "2021-01-28", url: "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm" }
+  ];
+  const CONTACTS = [
+    { kind: "邮箱", value: "jiaowuchu@cuc.edu.cn", dept: "成绩单办理", ctx: "出国留学需官方邮箱发送成绩单时使用" },
+    { kind: "电话", value: "65783878", dept: "校园卡及网络报修", ctx: "信息化处报修电话" },
+    { kind: "电话", value: "65783304", dept: "电视学院教务", ctx: "转专业接收计划联系人 王老师" }
+  ];
+
+  const thread = $("#thread");
+  const inspector = $("#inspector");
+  const insbody = $("#insbody");
+  let seq = 0, pending = false;
+  let current = null;           // 当前右栏事项
+  let tab = "overview";
+
+  /* ---------------- 右栏 ---------------- */
+  function setItem(item, opt) {
+    current = { item, quotes: (opt && opt.quotes) || QUOTES, normalized: opt && opt.normalized };
+    $("#institle").textContent = item.title;
+    $("#jnsub").textContent = `${item.dept} / ${item.status === "verified" ? "原文已核验" : "官方无正文"} / 置信度 ${Math.round((item.confidence || 0.8) * 100)}%`;
+    $("#insstamp").textContent = "NO. " + String(1000 + seq).slice(1);
+    $("#maploc").textContent = item.location || "位置未收录";
+    renderIns();
+  }
+
+  function renderIns() {
+    if (!current) return;
+    const it = current.item, qs = current.quotes;
+    document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === tab)));
+    if (tab === "overview") {
+      insbody.innerHTML = `
+        <div class="meta-grid">
+          <div><span>部门</span><b>${esc(it.dept)}</b></div>
+          <div><span>渠道</span><b>${esc((it.channel || []).join(" / "))}</b></div>
+          <div><span>费用</span><b>${esc(it.fee || "官方未写")}</b></div>
+          <div><span>用时</span><b>${esc(it.duration || "官方未写")}</b></div>
+          <div style="grid-column:1/-1"><span>地点</span><b>${esc(it.location || "官方未写")}</b></div>
+        </div>
+        <div class="ib"><h3>这几种情况会白跑</h3><div class="warnbox"><ul>${it.pitfalls.map((p) => `<li><span>${esc(p)}</span></li>`).join("")}</ul></div></div>
+        <div class="ib"><h3>依据</h3><div class="srcbox"><b>${esc(it.source.title)}</b><br>${esc(it.source.url)}<br>核验 ${esc(it.source.checked)}</div></div>`;
+    } else if (tab === "materials") {
+      insbody.innerHTML = `
+        <div class="ib" style="margin-top:0"><h3>带这些去</h3>
+          <ul class="checks">${it.materials.map((m, i) => `<li role="checkbox" aria-checked="false" tabindex="0" data-mat="${i}">
+            <span class="box2" aria-hidden="true"></span><span class="mname">${esc(m)}</span></li>`).join("")}</ul>
+        </div>
+        <div class="ib"><h3>文书草稿</h3>
+          <div class="draft">致：本科生院教学运行中心
+
+本人【姓名】，学号【学号】……因【情况说明】申请补（退）选。
+
+【请补充具体原因】</div>
+          <div style="margin-top:8px"><button class="tiny" type="button" id="copydraft">复制草稿</button></div>
+        </div>`;
+      bindChecks();
+      $("#copydraft")?.addEventListener("click", async (e) => {
+        try { await navigator.clipboard.writeText("致：本科生院教学运行中心"); } catch (err) {}
+        e.currentTarget.textContent = "已复制"; e.currentTarget.dataset.done = "1";
+        setTimeout(() => { e.currentTarget.textContent = "复制草稿"; e.currentTarget.dataset.done = "0"; }, 2500);
+      });
+    } else if (tab === "steps") {
+      insbody.innerHTML = `<div class="ib" style="margin-top:0"><h3>办理流程</h3>
+        ${it.steps.map((s, i) => `<div class="iline"><span class="n">${String(i + 1).padStart(2, "0")}</span>
+          <span>${esc(s.what)}${s.where ? `<span class="w">${esc(s.where)}</span>` : ""}</span></div>`).join("")}</div>`;
+    } else {
+      insbody.innerHTML = `<div class="quotes">${qs.map((q) => `<div class="ev">
+        <div class="quote">${esc(q.quote)}</div>
+        <div class="qmeta"><span class="badge">${esc(q.kind)}</span><span>${esc(q.label)}</span>
+        ${q.date ? `<span>${esc(q.date)}</span>` : ""}${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}</div></div>`).join("")}</div>
+        <div class="ib"><h3>完整出处</h3><div class="srcbox"><b>${esc(it.source.title)}</b><br>${esc(it.source.url)}</div></div>`;
+    }
+  }
+
+  function bindChecks() {
+    insbody.querySelectorAll(".checks li").forEach((li) => {
+      const t = () => li.setAttribute("aria-checked", li.getAttribute("aria-checked") === "true" ? "false" : "true");
+      li.addEventListener("click", t);
+      li.addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); t(); } });
+    });
+  }
+
+  document.querySelectorAll(".tab").forEach((t) => {
+    t.addEventListener("click", () => { tab = t.dataset.tab; renderIns(); });
+  });
+
+  function openSheet() {
+    inspector.dataset.open = "true";
+    $("#scrim").dataset.open = "true";
+  }
+  function closeSheet() {
+    inspector.dataset.open = "false";
+    $("#scrim").dataset.open = "false";
+    inspector.removeAttribute("data-open");
+  }
+  $("#insclose").addEventListener("click", closeSheet);
+  $("#scrim").addEventListener("click", closeSheet);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+
+  /* ---------------- 对话 ---------------- */
+  function evBlock(quotes, id) {
+    return `<button class="evbtn" type="button" aria-expanded="false" aria-controls="${id}">
+        原文 <span class="n">${quotes.length}</span> 条
+      </button>
+      <button class="jump" type="button" data-jump="quotes">在右栏核对全部</button>
+      <div class="fold" id="${id}" data-open="false"><div class="in"><div class="evlist">
+        ${quotes.slice(0, 2).map((q) => `<div class="ev"><div class="quote">${esc(q.quote)}</div>
+          <div class="qmeta"><span class="badge">${esc(q.kind)}</span><span>${esc(q.label)}</span>
+          ${q.date ? `<span>${esc(q.date)}</span>` : ""}${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}</div></div>`).join("")}
+        ${quotes.length > 2 ? `<div style="font-size:10.5px;color:var(--ink-3)">另有 ${quotes.length - 2} 条，在右栏「原文」里</div>` : ""}
+      </div></div></div>`;
+  }
+
+  function answerCard(opt) {
+    seq++;
+    const id = "ev" + seq;
+    const steps = opt.steps.map((s, i) => `<li><span class="sn">${String(i + 1).padStart(2, "0")}</span><span>${esc(s)}</span></li>`).join("");
+    return `
+      <div class="answer">
+        <div class="answer-in">
+          <div class="norm">理解成 <b>${esc(opt.normalized)}</b>${opt.band === "low" ? '<span class="pill">置信度偏低</span>' : ""}</div>
+          <div class="alab">${esc(opt.label)}</div>
+          <ol class="steps">${steps}</ol>
+          <div class="evrow">${evBlock(opt.quotes || QUOTES, id)}</div>
+        </div>
+        <div class="answer-foot">
+          <button class="tiny" type="button" data-copy2="1">复制答案</button>
+          <button class="tiny" type="button" data-jump="quotes">核对原文</button>
+          <span class="stat">原文 ${(opt.quotes || QUOTES).length} 条 / 条目 ${esc(opt.itemTitle)}</span>
+        </div>
+      </div>`;
+  }
+
+  function addEx(q, inner) {
+    const el = document.createElement("section");
+    el.className = "ex";
+    el.innerHTML = `<div class="askline"><div class="bubble">${esc(q)}</div></div>${inner}`;
+    thread.appendChild(el);
+    bind(el);
+    el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    return el;
+  }
+
+  function ask(q) {
+    if (pending) return;
+    pending = true; $("#send").disabled = true;
+    $("#empty")?.remove();
+    const load = document.createElement("section");
+    load.className = "ex";
+    load.innerHTML = `<div class="askline"><div class="bubble">${esc(q)}</div></div><div class="loading"><span class="spin"></span>正在对事项库和原文</div>`;
+    thread.appendChild(load);
+    load.scrollIntoView({ block: "nearest", behavior: "smooth" });
+
+    setTimeout(() => {
+      load.remove();
+      if (q.indexOf("成绩单") > -1) {
+        const el = addEx(q, `<div class="fu" data-done="0">
+          <div class="fuhead"><span class="fnum">01</span><h3>${esc(FOLLOW.question)}</h3></div>
+          <div class="why">为什么问：${esc(FOLLOW.why)}</div>
+          <div class="opts">${FOLLOW.options.map((o) => `<button class="opt" type="button" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
+        </div>`);
+        el.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", () => {
+          el.querySelector(".fu").dataset.done = "1";
+          b.dataset.picked = "1";
+          addEx(FOLLOW.item + " / " + b.dataset.opt, answerCard({
+            normalized: FOLLOW.normalized, label: "整体流程", steps: FOLLOW_STEPS, quotes: FOLLOW_QUOTES, itemTitle: "成绩单办理"
+          }));
+        }));
+      } else if (q === "校园卡") {
+        addEx(q, `<div class="notice"><h3>你是想问「校园卡补卡」还是「校园卡挂失 / 解挂」？</h3>
+          <p>这两个办起来不是一处。补卡去校园生活服务大厅自助机，挂失解挂在网上办。</p>
+          <div class="opts">
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">校园卡补卡</button>
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">校园卡挂失 / 解挂</button>
+            <button class="opt" type="button" data-q="校园卡补卡要带什么">校园卡延期</button>
+          </div></div>`);
+      } else if (q === "我要开个证明") {
+        addEx(q, `<div class="notice"><h3>没查到「证明」这一条</h3>
+          <p>规则没对上具体事项。证明分几种，先选一个我再答，不硬凑。</p>
+          <div class="opts">
+            <button class="opt" type="button" data-q="成绩单怎么打">成绩单办理</button>
+            <button class="opt" type="button" data-q="校园卡丢了怎么办">在读证明</button>
+            <button class="opt" type="button" data-q="成绩单怎么打">学历学位证明</button>
+          </div></div>`);
+      } else {
+        addEx(q, answerCard({ normalized: "校园卡补卡 / 整体流程", label: "整体流程", steps: ITEM.steps.map((s) => s.what), quotes: QUOTES, itemTitle: "校园卡补卡" }));
+        setItem(ITEM, { quotes: QUOTES, normalized: "校园卡补卡 / 整体流程" });
+      }
+      pending = false; $("#send").disabled = false;
+    }, 420);
+  }
+
+  function bind(root) {
+    root.querySelectorAll(".evbtn").forEach((b) => b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") === "true";
+      b.setAttribute("aria-expanded", String(!open));
+      document.getElementById(b.getAttribute("aria-controls")).dataset.open = String(!open);
+    }));
+    root.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => { $("#q").value = b.dataset.q; ask(b.dataset.q); }));
+    root.querySelectorAll("[data-jump]").forEach((b) => b.addEventListener("click", () => {
+      tab = b.dataset.jump; renderIns();
+      if (window.innerWidth <= 960) openSheet();
+    }));
+    root.querySelectorAll("[data-copy2]").forEach((b) => b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(b.closest(".answer").querySelector(".steps").innerText); } catch (e) {}
+      b.textContent = "已复制"; b.dataset.done = "1";
+      setTimeout(() => { b.textContent = "复制答案"; b.dataset.done = "0"; }, 2500);
+    }));
+  }
+
+  $("#askform").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = $("#q").value.trim();
+    if (q.length < 2) { $("#q").focus(); return; }
+    ask(q);
+  });
+  $("#q").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#askform").requestSubmit(); }
+  });
+  document.querySelectorAll(".quick [data-q], .presets [data-q]").forEach((b) => {
+    b.addEventListener("click", () => { $("#q").value = b.dataset.q; ask(b.dataset.q); });
+  });
+
+  $("#ctbtn").addEventListener("click", () => {
+    $("#empty")?.remove();
+    addEx("常用联系方式", `<div class="notice"><h3>公开联系方式</h3><p>摘自各部门官网，来电前先看办公时间。</p>
+      <ul class="checks" style="margin-top:10px">${CONTACTS.map((c) => `<li role="checkbox" aria-checked="false" tabindex="0">
+        <span class="box2" aria-hidden="true"></span><span class="mname"><b style="font-weight:500">${esc(c.value)}</b>
+        <span style="display:block;font-size:11px;color:var(--ink-3)">${esc(c.kind)} / ${esc(c.dept)} / ${esc(c.ctx)}</span></span></li>`).join("")}</ul></div>`);
+  });
+  $("#searchbtn").addEventListener("click", () => {
+    $("#empty")?.remove();
+    addEx("原文检索：校园卡补办", `<div class="notice"><h3>原文库相近段落 2 段</h3>
+      <p>只是原文线索，不是办理结论。</p>
+      <div class="quotes" style="margin-top:12px">
+        <div class="ev"><div class="quote">校园卡丢失或损坏，请到艺术与传播大楼1层校园生活服务大厅自助补卡机补办</div>
+          <div class="qmeta"><span class="badge">官网</span><span>校园卡补卡</span><span>相关度 55%</span></div></div>
+        <div class="ev"><div class="quote">信息化服务新生指南 / 实体校园卡 新生入学后在学院统一领取实体校园卡</div>
+          <div class="qmeta"><span class="badge">问道原文</span><span>新生指南</span><span>相关度 55%</span></div></div>
+      </div></div>`);
+  });
+
+  $("#insprint").addEventListener("click", () => window.print());
+  $("#inscopy").addEventListener("click", async (e) => {
+    if (!current) return;
+    try { await navigator.clipboard.writeText(current.item.materials.join("\n")); } catch (err) {}
+    e.currentTarget.textContent = "已复制"; e.currentTarget.dataset.done = "1";
+    setTimeout(() => { e.currentTarget.textContent = "复制清单"; e.currentTarget.dataset.done = "0"; }, 2500);
+  });
+
+  /* ---------------- 地图面板 ---------------- */
+  const panel = $("#map-panel"), handle = $("#maphandle");
+  let drag = null;
+  handle.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("button") || panel.dataset.collapsed === "true") return;
+    const r = panel.getBoundingClientRect();
+    drag = { x: e.clientX, y: e.clientY, left: r.left, top: r.top };
+    handle.setPointerCapture(e.pointerId);
+    panel.style.transition = "none";
+  });
+  handle.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const maxX = window.innerWidth - panel.offsetWidth - 8;
+    const maxY = window.innerHeight - panel.offsetHeight - 8;
+    panel.style.left = Math.min(Math.max(8, drag.left + e.clientX - drag.x), maxX) + "px";
+    panel.style.top = Math.min(Math.max(8, drag.top + e.clientY - drag.y), maxY) + "px";
+    panel.style.right = "auto"; panel.style.bottom = "auto";
+  });
+  handle.addEventListener("pointerup", (e) => {
+    if (!drag) return;
+    drag = null; panel.style.transition = ""; handle.releasePointerCapture(e.pointerId);
+  });
+  $("#mapcollapse").addEventListener("click", (e) => {
+    const collapsed = panel.dataset.collapsed === "true";
+    panel.dataset.collapsed = String(!collapsed);
+    e.currentTarget.textContent = collapsed ? "收起" : "展开";
+    e.currentTarget.setAttribute("aria-expanded", String(collapsed));
+  });
+
+  if (window.matchMedia("(max-width:960px)").matches) {
+    panel.dataset.collapsed = "true";
+    const c = $("#mapcollapse");
+    c.textContent = "展开";
+    c.setAttribute("aria-expanded", "false");
+  }
+  const pre = new URLSearchParams(location.search).get("q");
+  if (pre) { $("#q").value = pre; ask(pre); }
+})();
+</script>
+</body>
+</html>

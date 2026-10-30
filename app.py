@@ -261,9 +261,16 @@ def _merge_campus_coords(data: dict[str, Any]) -> dict[str, Any]:
 def campus_data() -> dict[str, Any]:
     global _CAMPUS, _CAMPUS_MTIME
     path = ROOT / "sources" / "campus-pois.json"
-    if not path.exists():
-        return {"pois": [], "center": None, "count": 0}
     extra = ROOT / "campus-map.json"
+    if not path.exists():
+        # 精简部署可能没带 sources/，用 campus-map.json 兜底，地点名仍然能链接化。
+        if not extra.exists():
+            return {"pois": [], "center": None, "count": 0}
+        mtime = extra.stat().st_mtime
+        if _CAMPUS is None or mtime != _CAMPUS_MTIME:
+            _CAMPUS = _merge_campus_coords({"pois": [], "center": None, "count": 0})
+            _CAMPUS_MTIME = mtime
+        return _CAMPUS
     mtime = path.stat().st_mtime + (extra.stat().st_mtime if extra.exists() else 0)
     if _CAMPUS is None or mtime != _CAMPUS_MTIME:
         _CAMPUS = _merge_campus_coords(json.loads(path.read_text(encoding="utf-8")))
@@ -561,7 +568,12 @@ GENERIC_KEYWORDS = {
     "办法", "规定", "通知", "管理", "实施", "细则", "制度", "方案", "条例", "意见",
     "工作", "学生", "学校", "学院", "本科", "研究生", "本科生", "在校生", "全校",
     "申请", "办理", "流程", "材料", "时间", "地点", "条件", "要求", "手续",
+    "报名",
 }
+
+# 只当范围词用的场所名：光凭它们命中，不足以确认“没有”这个结论
+# （否则「宿舍有电梯吗」会被「宿舍不提供被子」的段落条目当成否定答案）
+GENERIC_PLACE = {"宿舍", "校园", "食堂", "图书馆", "教学楼", "教室", "操场", "校医院", "超市"}
 
 
 TRAILING_PAREN = re.compile(r"[（(][^（()）]*[）)]\s*$")
@@ -677,9 +689,12 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
         short = len(item.get("answer") or "") <= 60
         if score_intent:
             return min(best, 99)
-        # 「本科生有补考吗」：短事实里明确回答“没有”的，一个关键词也够
+        # 「本科生有补考吗」：短事实里明确回答“没有”的，一个关键词也够。
+        # 只认成句的否定词——裸「无」会把「无线网覆盖…」当成“宿舍没有电梯”。
+        # 命中的只有「宿舍」这类场所范围词时也不够：它证明不了问的那个东西不存在。
         if (hits >= 1 and short and re.search(r"有没有|有吗|有.*吗|是否存在", q)
-                and re.search(r"没有|无|不存在", item.get("answer") or "")):
+                and any(k not in GENERIC_PLACE for k in matched)
+                and re.search(r"没有|不存在|不提供|不开设|不允许|不支持|不设|暂无", item.get("answer") or "")):
             return min(best, 99)
         return (min(best, 99) if (hits >= 3 and len(q) >= 8)
                 else min(best, 99) if (hits >= 2 and len(q) >= 5 and short) else 0)
@@ -807,6 +822,53 @@ def rank(q: str) -> list[tuple[dict[str, Any], int]]:
     # 同为自动条目时，问记分的先给写得出分值的条款。
     adjusted.sort(key=lambda x: (-x[1], bool(x[0].get("auto")), -_rule_affinity(qn, x[0])))
     return adjusted
+
+
+def _literal_hit(qn: str, item: dict[str, Any]) -> int:
+    """问句里字面出现的标题 / 别名长度；只给父子条目让位用，不参与打分。"""
+    best = 0
+    for raw in [item["title"], core_title(item["title"]), *(item.get("aliases") or [])]:
+        a = norm(raw)
+        if len(a) >= 2 and a in qn:
+            best = max(best, len(a))
+    return best
+
+
+def _yield_to_children(q: str,
+                       rows: list[tuple[dict[str, Any], int]]) -> list[tuple[dict[str, Any], int]]:
+    """合订本父条目和拆出来的子条目同时命中时，问句字面更像谁就留谁。
+
+    同一父条目下命中两个以上子条目（问的是两件事）时，保留父条目作答。
+    """
+    qn = norm(q)
+    by_id = {it["id"]: it for it, _ in rows}
+    kids: dict[str, list[str]] = {}
+    for iid, it in by_id.items():
+        pid = it.get("parent")
+        if pid:
+            kids.setdefault(pid, []).append(iid)
+    if not kids:
+        return rows
+    lit: dict[str, int] = {}
+
+    def lit_of(iid: str) -> int:
+        if iid not in lit:
+            lit[iid] = _literal_hit(qn, by_id[iid])
+        return lit[iid]
+
+    drop: set[str] = set()
+    for pid, children in kids.items():
+        if pid not in by_id:
+            continue
+        plit = lit_of(pid)
+        child_hits = [c for c in children if lit_of(c)]
+        if len(child_hits) == 1 and lit_of(child_hits[0]) >= plit:
+            drop.add(pid)
+        elif not child_hits and plit:
+            drop.update(children)
+    if not drop:
+        return rows
+    return [(it, sc) for it, sc in rows if it["id"] not in drop]
 
 
 def distinct_rows(rows: list[tuple[dict[str, Any], int]]) -> list[tuple[dict[str, Any], int]]:
@@ -1260,8 +1322,17 @@ def _narrow_steps(text: str, rows: list[dict[str, Any]]) -> list[dict[str, Any]]
     if not tagged:
         return rows
     qn = norm(text)
-    hits = [s for s in tagged if any(norm(str(t)) and norm(str(t)) in qn for t in s["tags"])]
-    return hits or rows
+    # 命中更长的 tag 说明问得更具体：「上床下桌」该压过泛泛的「床」，
+    # 但只差一个字的并列问法（「床和桌子多大」）仍然一起给。
+    scored = []
+    for s in tagged:
+        hit = max((len(norm(str(t))) for t in s["tags"] if norm(str(t)) and norm(str(t)) in qn), default=0)
+        if hit:
+            scored.append((hit, s))
+    if not scored:
+        return rows
+    top = max(n for n, _ in scored)
+    return [s for n, s in scored if n >= top - 1]
 
 
 def _answer_one(item: dict[str, Any], focus: str, known: dict[str, str] | None = None,
@@ -2493,6 +2564,69 @@ def _related_items(text: str, top: dict[str, Any],
     return out
 
 
+_TOPIC_MENUS: list[dict[str, Any]] | None = None
+
+
+def _topic_menus() -> list[dict[str, Any]]:
+    """topic-menus.json：用户勾选过的「单词 → 固定选项」清单。"""
+    global _TOPIC_MENUS
+    if _TOPIC_MENUS is None:
+        try:
+            raw = json.loads((ROOT / "topic-menus.json").read_text(encoding="utf-8"))
+            _TOPIC_MENUS = raw.get("menus") or []
+        except (OSError, ValueError):
+            _TOPIC_MENUS = []
+    return _TOPIC_MENUS
+
+
+def _curated_topic_menu(text: str) -> dict[str, Any] | None:
+    """人工勾选的选项菜单：单词命中就摊开固定选项，不再扫出上百条关键词噪声。"""
+    token = re.sub(r"[\s？?。.!！，,、]+$", "", (text or "").strip()).strip()
+    token = re.sub(r"(吗|呢|啊|吧|呀)$", "", token).strip()
+    tn = _mn(token)
+    if not tn:
+        return None
+    for menu in _topic_menus():
+        if tn not in {_mn(t) for t in (menu.get("triggers") or [])}:
+            continue
+        opts: list[dict[str, Any]] = []
+        first: dict[str, Any] | None = None
+        for row in menu.get("options") or []:
+            it = ITEM_BY_ID.get(row.get("item") or "")
+            if not it:
+                continue
+            first = first or it
+            opts.append({
+                "id": it["id"],
+                "title": row.get("ask") or it["title"],
+                "label": row.get("label") or _menu_label(it["title"]),
+                "dept": row.get("dept") or _menu_dept(it),
+            })
+        if len(opts) < 2 or first is None:
+            continue
+        return {
+            "matched": True,
+            "query": text,
+            "normalized": f"{menu.get('name') or token} · {len(opts)} 个选项",
+            "confidence": 0.55,
+            "band": "low",
+            "ambiguous": True,
+            "item": public(first),
+            "answers": [],
+            "hold": True,
+            "followups": [],
+            "disambiguate": opts,
+            "clarify": menu.get("clarify") or f"「{token}」相关问题，先点一个：",
+            "focus": [],
+            "quotes": [],
+            "map": None,
+            **sensitivity(text),
+            "router_llm": False,
+            "rule_unsure": False,
+        }
+    return None
+
+
 def _topic_menu(text: str) -> dict[str, Any] | None:
     """单个词输入：把相关的条目全摊成选项，先让用户挑，不硬猜一个答案。"""
     token = re.sub(r"[\s？?。.!！，,、]+$", "", (text or "").strip()).strip()
@@ -2501,6 +2635,10 @@ def _topic_menu(text: str) -> dict[str, Any] | None:
         return None
     if PLACE_ASK.search(token) or re.search(r"^[0-9]+(号楼|号|楼|教)?$", token):
         return None
+
+    curated = _curated_topic_menu(token)
+    if curated:
+        return curated
 
     if tn == "微专业":
         opts = _wzy_options()
@@ -2785,7 +2923,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
             **sensitivity(text), "router_llm": False, "rule_unsure": False,
         }
 
-    ranked = rank(text)
+    ranked = _yield_to_children(text, rank(text))
     # 「快递驿站在哪」这类地点问句容易被楼宇速查以泛词抢走，先落回带分支的地点条目
     if place_slot:
         idx = next((n for n, (it, _) in enumerate(ranked)
@@ -2802,7 +2940,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
 
     # 纯问地点的短句（「图书馆在哪」）优先给校园地点条目，别落到办这件事的条目上
     place_forced = False
-    if PLACE_ONLY.search(text) and not place_slot:
+    if PLACE_ONLY.search(text) and not place_slot and "在哪" not in top["title"]:
         for cand, cand_score in ranked[:4]:
             if cand["id"] in ("campus-louming", "campus-jiancheng") and cand_score >= 70:
                 top, score, second = cand, cand_score, 0

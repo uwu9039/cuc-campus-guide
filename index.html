@@ -662,7 +662,7 @@ function answerBlock(d) {
     const q = qs.length
       ? `<div class="aq">${qs.slice(0, 2).map((c) =>
           `<div class="qline"><span class="qsrc ${c.kind === "公众号" ? "wx" : ""}">${esc(c.kind)}${c.date ? " · " + esc(c.date) : ""}</span>
-           <span class="qt">“${esc(c.quote)}”</span>
+           <span class="qt">“${linkify(esc(c.quote))}”</span>
            <span class="qmeta">${esc((c.label || "").slice(0, 30))}</span></div>`).join("")}
           ${qs.length > 2 ? `<div class="qmore">另有 ${qs.length - 2} 条来源</div>` : ""}</div>`
       : (a.focus === "contact" && a.found ? `<div class="aq">（条目归属部门，官方页面未单列此句）</div>` : "");
@@ -862,7 +862,7 @@ function evidenceBlock(item) {
   const seen = new Set();
   const rows = ev
     .filter(([, v]) => (seen.has(v.quote) ? false : (seen.add(v.quote), true)))
-    .map(([k, v]) => `<li><span class="k">${label(k)}</span><span class="q">“${esc(v.quote)}”</span></li>`)
+    .map(([k, v]) => `<li><span class="k">${label(k)}</span><span class="q">“${linkify(esc(v.quote))}”</span></li>`)
     .join("");
   return `<details class="ev"><summary>原文摘录（${seen.size} 条，逐字来自官方页面）</summary><ul>${rows}</ul></details>`;
 }

@@ -366,7 +366,7 @@
     const short = opts.short && q.quote && q.quote.length > 120 ? q.quote.slice(0, 120) + "…" : q.quote;
     return `<div class="qline">
       <span class="qmeta">${esc(meta)}</span>
-      <div class="qtxt">“${esc(short)}”${whoHtml}</div>
+      <div class="qtxt">“${linkify(esc(short))}”${whoHtml}</div>
     </div>`;
   }
 
@@ -677,7 +677,7 @@
     const list = uniq.length
       ? `<div class="quotelist">${uniq.map((q) => `
           <div class="q">
-            <p class="t">“${esc(q.quote)}”</p>
+            <p class="t">“${linkify(esc(q.quote))}”</p>
             <div class="m"><span class="k">${esc(q.kind || "原文")}</span>
               <span>${esc(q.label || q.src || "")}</span>
               ${q.date ? `<span>${esc(q.date)}</span>` : ""}

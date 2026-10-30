@@ -1,0 +1,463 @@
+{
+  "version": "2026-10-30",
+  "updated": "2026-10-30",
+  "menus": [
+    {
+      "name": "辅修",
+      "triggers": [
+        "辅修",
+        "辅修专业"
+      ],
+      "clarify": "2026 年辅修招 3 个专业。先看报名流程，或直接点一个专业看简章要点。",
+      "options": [
+        {
+          "item": "fuxiu-baoming",
+          "label": "辅修报名（4/15–4/23，最多 2 个志愿）"
+        },
+        {
+          "item": "fuxiu-xinwen",
+          "label": "新闻学（招 150 人，130 元/学分）"
+        },
+        {
+          "item": "fuxiu-xingzheng",
+          "label": "行政管理（媒介与公共治理方向，招 30 人）"
+        },
+        {
+          "item": "fuxiu-chuanbo",
+          "label": "传播学（信息传播方向，招 20 人）"
+        }
+      ]
+    },
+    {
+      "name": "助学金",
+      "triggers": [
+        "助学金",
+        "家庭经济困难"
+      ],
+      "clarify": "助学金底下是三件不同的事：先看你是哪一种。",
+      "options": [
+        {
+          "item": "zxj-guojia-guo",
+          "label": "国家助学金（平均 3700 元/年，分 2—3 档）"
+        },
+        {
+          "item": "zxj-guojia-lvse",
+          "label": "绿色通道（新生先办入学）"
+        },
+        {
+          "item": "zxj-guojia-runding",
+          "label": "家庭经济困难认定（填认定申请表）"
+        }
+      ]
+    },
+    {
+      "name": "户籍科",
+      "triggers": [
+        "户籍科",
+        "户籍",
+        "户口",
+        "集体户口"
+      ],
+      "clarify": "户籍科办 5 类事，点一个看流程和材料。",
+      "options": [
+        {
+          "item": "huji-shenfenzheng",
+          "label": "身份证办理 / 补办（三间房派出所）"
+        },
+        {
+          "item": "huji-hujika",
+          "label": "户籍卡借用 / 复印 / 扫描"
+        },
+        {
+          "item": "huji-qianhu",
+          "label": "毕业迁回原籍 / 迁移证延期"
+        },
+        {
+          "item": "huji-wufanzui",
+          "label": "无犯罪记录证明（户籍在校）"
+        },
+        {
+          "item": "huji-juzhuzheng",
+          "label": "居住证明（户籍不在学校）"
+        }
+      ]
+    },
+    {
+      "name": "户口迁移",
+      "triggers": [
+        "迁户口",
+        "迁户口怎么办",
+        "户口怎么迁",
+        "户口迁移",
+        "户口迁移怎么办",
+        "户口迁移证",
+        "毕业生户口怎么迁"
+      ],
+      "clarify": "迁户口分新生迁入和毕业生迁出，先看你是哪种。",
+      "options": [
+        {
+          "item": "xinsheng-hukou",
+          "label": "新生迁入（户口迁移证、落户）"
+        },
+        {
+          "item": "huji-qianhu",
+          "label": "毕业生迁回原籍 / 迁移证延期"
+        },
+        {
+          "item": "biye-hukou-dangan",
+          "label": "毕业生户口与档案（报到证、户档暂留）"
+        }
+      ]
+    },
+    {
+      "name": "就业手续",
+      "triggers": [
+        "就业手续",
+        "就业"
+      ],
+      "clarify": "就业手续分 3 类，先点一个。",
+      "options": [
+        {
+          "item": "jy-tuijianbiao",
+          "label": "就业推荐表（遗失补办 / 换发）"
+        },
+        {
+          "item": "jy-xieyishu",
+          "label": "就业协议书 / 三方（遗失补办 / 换发）"
+        },
+        {
+          "item": "jy-baodaozheng",
+          "label": "报到证（遗失补办）"
+        }
+      ]
+    },
+    {
+      "name": "校医院",
+      "triggers": [
+        "校医院"
+      ],
+      "clarify": "校医院相关 6 类，点一个看具体流程。",
+      "options": [
+        {
+          "item": "xyy-jiuzhen",
+          "label": "就诊流程（挂号 → 科室 → 交费 → 取药）"
+        },
+        {
+          "item": "xyy-menzhen-shijian",
+          "label": "门急诊时间与医事服务费"
+        },
+        {
+          "item": "xyy-gongfei-menzhen",
+          "label": "公费医疗门诊报销（校内 90% / 合同医院 80%）"
+        },
+        {
+          "item": "xyy-gongfei-jizhen",
+          "label": "公费医疗急诊报销（非合同三级医院 70%）"
+        },
+        {
+          "item": "xyy-gongfei-zhuanzhen",
+          "label": "转诊（开转诊单）"
+        },
+        {
+          "item": "xyy-gongfei-zhuyuan",
+          "label": "住院报销"
+        }
+      ]
+    },
+    {
+      "name": "公费医疗",
+      "triggers": [
+        "公费医疗",
+        "公费医疗报销",
+        "医疗报销"
+      ],
+      "clarify": "公费医疗分 4 种情形，材料和报销比例不同。",
+      "options": [
+        {
+          "item": "xyy-gongfei-menzhen",
+          "label": "门诊报销（校内 90% / 合同医院 80%）"
+        },
+        {
+          "item": "xyy-gongfei-jizhen",
+          "label": "急诊报销（非合同三级医院 70%）"
+        },
+        {
+          "item": "xyy-gongfei-zhuanzhen",
+          "label": "转诊（开转诊单）"
+        },
+        {
+          "item": "xyy-gongfei-zhuyuan",
+          "label": "住院报销"
+        }
+      ]
+    },
+    {
+      "name": "校园卡",
+      "triggers": [
+        "校园卡",
+        "饭卡",
+        "一卡通"
+      ],
+      "clarify": "校园卡相关 5 件事，点一个。",
+      "options": [
+        {
+          "item": "xyk-buka",
+          "label": "补卡（20 元工本费，自助机出卡）"
+        },
+        {
+          "item": "xyk-guashi",
+          "label": "挂失 / 解挂"
+        },
+        {
+          "item": "xyk-chongzhi",
+          "label": "充值"
+        },
+        {
+          "item": "xyk-yanqi",
+          "label": "延期（毕业日期）"
+        },
+        {
+          "item": "xyk-yishi",
+          "label": "遗失卡查询 / 捡到卡登记"
+        }
+      ]
+    },
+    {
+      "name": "宿舍",
+      "triggers": [
+        "宿舍",
+        "寝室"
+      ],
+      "clarify": "宿舍相关 9 件事，点一个。",
+      "options": [
+        {
+          "item": "sushe-fangxing",
+          "label": "几人间 / 房型"
+        },
+        {
+          "item": "sushe-sheshi",
+          "label": "设施（空调 / 卫浴 / 阳台 / 直饮水 / 洗衣机）"
+        },
+        {
+          "item": "sushe-menjin",
+          "label": "门禁时间"
+        },
+        {
+          "item": "hq-baoxiu",
+          "label": "报修"
+        },
+        {
+          "item": "sushe-huansu",
+          "label": "换宿舍 / 调宿"
+        },
+        {
+          "item": "sushe-tuixiu",
+          "label": "退宿 / 走读"
+        },
+        {
+          "item": "hq-goudian",
+          "label": "购电"
+        },
+        {
+          "item": "sushe-xizao",
+          "label": "洗浴热水时间"
+        },
+        {
+          "item": "sushe-dianqi",
+          "label": "电器规则（吹风机 / 电煮锅）"
+        }
+      ]
+    },
+    {
+      "name": "图书馆",
+      "triggers": [
+        "图书馆"
+      ],
+      "clarify": "图书馆 7 类，点一个。",
+      "options": [
+        {
+          "item": "lib-jieyue",
+          "label": "借阅（借几本、借多久、续借、逾期）"
+        },
+        {
+          "item": "lib-kaifang-shijian",
+          "label": "开放时间"
+        },
+        {
+          "item": "lib-benguan-buju",
+          "label": "楼层布局"
+        },
+        {
+          "item": "lib-zuowei-yuyue",
+          "label": "座位预约"
+        },
+        {
+          "item": "lib-fangjian-yuyue",
+          "label": "研讨间 / 视听间 / 静音舱预约"
+        },
+        {
+          "item": "lib-tese-yuelan",
+          "label": "特色阅览区"
+        },
+        {
+          "item": "lib-hujie",
+          "label": "馆际互借（BALIS）"
+        }
+      ]
+    },
+    {
+      "name": "四六级",
+      "triggers": [
+        "四六级",
+        "四级",
+        "六级",
+        "CET",
+        "英语四级",
+        "英语六级"
+      ],
+      "clarify": "四六级分报名、准考证、成绩单三件事。",
+      "options": [
+        {
+          "item": "cet-baoming",
+          "label": "报名（时间、资格、缺考限制）"
+        },
+        {
+          "item": "cet-zhunkaozheng",
+          "label": "准考证打印与考试携带"
+        },
+        {
+          "item": "cet-chengji",
+          "label": "成绩报告单（纸质 / 电子）"
+        }
+      ]
+    },
+    {
+      "name": "体测",
+      "triggers": [
+        "体测",
+        "体质测试",
+        "体质健康测试"
+      ],
+      "clarify": "体测分时间安排和免测两类。",
+      "options": [
+        {
+          "item": "tizhi-shijian",
+          "label": "测试时间安排（测几次、什么时候测）"
+        },
+        {
+          "item": "tizhi-miance",
+          "label": "免测（申请条件与流程）"
+        }
+      ]
+    },
+    {
+      "name": "学籍变动审批表",
+      "triggers": [
+        "学籍变动审批表",
+        "学籍变动表",
+        "学籍变动"
+      ],
+      "clarify": "学籍变动有 7 种表，点一个下载对应表格。",
+      "options": [
+        {
+          "item": "attf-19ac291cab",
+          "label": "休学审批表"
+        },
+        {
+          "item": "attf-6c4928fdfa",
+          "label": "复学审批表"
+        },
+        {
+          "item": "attf-8669f42f68",
+          "label": "创业休学审批表"
+        },
+        {
+          "item": "attf-0d1701a05b",
+          "label": "保留学籍审批表"
+        },
+        {
+          "item": "attf-085a6ce490",
+          "label": "保留入学资格审批表"
+        },
+        {
+          "item": "attf-4b0a8c8d94",
+          "label": "学业留级审批表"
+        },
+        {
+          "item": "attf-dd710c2004",
+          "label": "退学审批表"
+        }
+      ]
+    },
+    {
+      "name": "表格下载",
+      "triggers": [
+        "表格下载",
+        "表格"
+      ],
+      "clarify": "常用表格按业务列在这儿，点一个看对应表格。",
+      "options": [
+        {
+          "item": "attf-8456fb4257",
+          "label": "课程补（退）选课申请表"
+        },
+        {
+          "item": "attf-2b40c253f0",
+          "label": "请假审批表"
+        },
+        {
+          "item": "attf-9d2775fc53",
+          "label": "课程自修申请表"
+        },
+        {
+          "item": "attf-4a16bb219e",
+          "label": "成绩复议申请单"
+        },
+        {
+          "item": "attf-cd20f76068",
+          "label": "本科生预毕业证明"
+        },
+        {
+          "item": "attf-7c658c64ba",
+          "label": "补办毕业证明书 / 学位证明书申请表"
+        },
+        {
+          "item": "attf-8a42b7dd9a",
+          "label": "本专科生退学证明"
+        },
+        {
+          "item": "attf-3c9a709905",
+          "label": "对外交流申请表及学习承诺书"
+        },
+        {
+          "item": "attf-19ac291cab",
+          "label": "学籍变动审批表（休学）"
+        },
+        {
+          "item": "attf-6c4928fdfa",
+          "label": "学籍变动审批表（复学）"
+        },
+        {
+          "item": "attf-dd710c2004",
+          "label": "学籍变动审批表（退学）"
+        },
+        {
+          "item": "attf-085a6ce490",
+          "label": "学籍变动审批表（保留入学资格）"
+        },
+        {
+          "item": "attf-0d1701a05b",
+          "label": "学籍变动审批表（保留学籍）"
+        },
+        {
+          "item": "attf-8669f42f68",
+          "label": "学籍变动审批表（创业休学）"
+        },
+        {
+          "item": "attf-4b0a8c8d94",
+          "label": "学籍变动审批表（学业留级）"
+        }
+      ]
+    }
+  ]
+}

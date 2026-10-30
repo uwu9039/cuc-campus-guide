@@ -29,7 +29,7 @@ SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json
               "_pipeline_out.txt", "_eval_out.txt", "_v04_body.md"}
 SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".pptx", ".npy", ".jsonl",
-               ".mp3", ".m4a", ".mov", ".webm"}
+               ".mp3", ".m4a", ".mov", ".webm", ".rar", ".7z", ".tar", ".tgz", ".gz"}
 SKIP_PREFIX = ("shot", "llm-", "aia")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
 BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text"}
@@ -91,20 +91,25 @@ def collect() -> list[tuple[str, Path]]:
     for p in ROOT.rglob("*"):
         if p.is_dir() or set(p.parts) & SKIP_DIRS:
             continue
+        rel = p.relative_to(ROOT)
+        if len(rel.parts) == 1 and p.name.startswith("_"):
+            continue  # 根目录下划线开头的是本机临时输出，不入库
+        if rel.as_posix().startswith("sources/attachments/files/"):
+            continue  # 附件二进制原样留本地，发布只带抽取文本
         if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX) or ".bak" in p.name:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
-            rel_pdf = p.relative_to(ROOT).as_posix()
-            keep = (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans) \
+            keep = p.name in {"items.json.gz", "sources-archive.tar.gz"}
+            rel_pdf = rel.as_posix()
+            keep = keep or (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans) \
                 or rel_pdf.startswith("web-next/qr/")   # 微专业报名 / 身份验证二维码要随包发布
             if not keep:
                 continue
-        rel = p.relative_to(ROOT)
         if len(rel.parts) >= 3 and rel.parts[0] == "sources" and rel.parts[1] in BULK_DIRS:
             continue
         if len(rel.parts) == 2 and rel.parts[0] == "sources" and rel.suffix == ".txt":
             continue
-        out.append((p.relative_to(ROOT).as_posix(), p))
+        out.append((rel.as_posix(), p))
     return sorted(out)
 
 

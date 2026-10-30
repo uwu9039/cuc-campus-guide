@@ -28,9 +28,11 @@ INDEXES = {
     "chsi": ("chsi-index.json", "chsi"),
     "local": ("local-index.json", "local"),
     "wechat": ("wechat-index.json", "wechat"),
+    "attachments": ("attachments-text-index.json", "attachments/text"),
 }
 TEXT_DIRS = ("wendao-text", "huibian", "extra", "cdp", "crawl", "national",
-             "moe", "chsi", "local", "wechat", "pdf", "wendao-extra")
+             "moe", "chsi", "local", "wechat", "pdf", "wendao-extra",
+             "attachments/text")
 
 CLAUSE = re.compile(r"第[一二三四五六七八九十百零〇\d]+条")
 PAGE_NO = re.compile(r"(?m)^\s*(?:[-—]\s*)?\d{1,3}(?:\s*[-—])?\s*$")
@@ -62,6 +64,9 @@ META_PREFIX = re.compile(r"^发布时间[:：].{0,30}?浏览次数[:：]\s*\d+\s
 META_LINE = re.compile(r"^(发布时间|浏览次数|来源|作者|编辑|字号|阅读次数|分享到)[:：]")
 CAPTION = re.compile(r"^(图|表)\s*\d+([.．、]\s*|\s+)")
 MENU = re.compile(r"菜单链接|平台使用手册|常用业务平台|推免专区|服务大厅|办事大厅|智慧校园门户")
+# 表格按行抽出来的单元格串（姓名|学号|签字…）不是句子，是空白表格
+TABLE_DUMP = re.compile(r"^\[[^\]]{1,24}\]|编号：姓名|姓名\|.*学号|签字：.*年月日|\|.*\|.*\|")
+BOILER_HEAD = re.compile(r"^本(规定|办法|细则|制度|通知|意见).{0,40}(负责解释|施行|解释|生效)|^完成(领导|上级|学院|学校).{0,12}交办")
 BAD_TITLE = re.compile(r"^(PDF|DOC|DOCX|XLS|附件\d*|文档|未知|无标题|下载|index|page|详情)$", re.I)
 # 新闻稿不是办事依据：事件报道里没有可执行的办理信息
 NEWS_TITLE = re.compile(r"新闻|动态|要闻|喜报|捷报|举行|召开|开幕|闭幕|表彰|获奖|大赛|论坛|讲座|预告|回顾|相册|风采|专访|报道|座谈会|交流会")
@@ -228,6 +233,8 @@ def quality_problem(s: str) -> str | None:
         return "too_short"
     if JUNK.search(s):
         return "junk"
+    if TABLE_DUMP.search(s):
+        return "table"
     if MENU.search(s):
         return "menu"
     if len(NAV_RUN.findall(s)) >= 3:
@@ -554,7 +561,7 @@ def main() -> None:
             for k in kws[:4]:
                 if k not in aliases:
                     aliases.append(k)
-        boiler = bool(BOILER.search(key)) and len(key) < 180
+        boiler = (bool(BOILER.search(key)) and len(key) < 180) or bool(BOILER_HEAD.match(text.strip()))
         # 每条官方原文都是条目；只有「本办法自发布之日起施行」这类
         # 纯手续套话不参与问答路由，但仍然保留在条目库里。
         archive = boiler

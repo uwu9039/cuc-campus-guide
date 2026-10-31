@@ -25,7 +25,7 @@ DEFAULT_ROOTS = [
     r"（本地路径已隐藏）",
     r"（本地路径已隐藏）",
     r"（本地路径已隐藏）",
-    r"D:\DSH",
+    r"（本地路径已隐藏）",
 ]
 
 NAME_HINTS = re.compile(

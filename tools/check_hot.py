@@ -44,7 +44,14 @@ CASES: list[tuple[str, str]] = [
     ("转专业什么时候能申请", "zhuanzhuanye"),
     ("成绩复核怎么申请", "jwc-chengji-fuhe"),
     ("成绩复议申请单", "jwc-kaoshi"),
-    ("四六级报名", "jwc-cet"),
+    ("四六级报名", "cet-baoming"),
+    # 补卡 / 断网 / 辅修：泛词与具体条目共存时，具体条目必须胜出
+    ("校园卡消磁了要补办吗", "xyk-buka"),
+    ("校园卡补卡", "xyk-buka"),
+    ("宿舍wifi连不上", "it-wangluo"),
+    ("宿舍wifi怎么连", "it-sushe-wangluo"),
+    ("新闻学辅修需要什么材料", "fuxiu-xinwen"),
+    ("行政管理辅修需要什么材料", "fuxiu-xingzheng"),
     ("在读证明", "jwc-zaidu"),
     ("宿舍报修找谁", "hq-baoxiu"),
     # 补办毕业/学位证明（"补办"曾把校园卡补卡顶上来）

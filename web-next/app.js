@@ -10,6 +10,21 @@
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const isMobile = () => window.matchMedia("(max-width: 900px)").matches;
 
+  // 首页精选问法：七条先反问再作答，三条直接查地点并打开地图。
+  // 改词后要逐条打 /api/ask 验证，确认仍命中同一条目、反问能走到答案、地点带 map。
+  const FEATURED_PRESETS = [
+    "出国用的成绩单怎么开",
+    "转专业要满足什么条件",
+    "一教在哪",
+    "助学贷款怎么申请",
+    "校医院在哪",
+    "想补选一门课怎么办",
+    "宿舍没电了怎么买电",
+    "图书馆在哪",
+    "考试去不了怎么缓考",
+    "奖学金怎么评",
+  ];
+
   const esc = (s) => String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -72,6 +87,7 @@
     drawerOpen: false,
     sheetOpen: false,
     presets: [],
+    history: [],
   };
 
   const el = {
@@ -91,7 +107,6 @@
     qcount: $("#qcount"),
     stamp: $("#insstamp"),
     inspector: $("#inspector"),
-    sheetbtn: $("#sheetbtn"),
     scrim: $("#scrim"),
     drawer: $("#drawer"),
     drawertitle: $("#drawertitle"),
@@ -114,7 +129,7 @@
         ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
         : {});
     } catch (e) {
-      throw new Error("连不上本地服务。请确认 app.py 已在当前端口运行。");
+      throw new Error("连不上本地服务，请确认 app.py 已在当前端口运行");
     }
     const data = await res.json().catch(() => null);
     if (!res.ok) throw new Error((data && (data.detail || data.message)) || `请求失败（${res.status}）`);
@@ -189,11 +204,8 @@
     } catch (e) {
       el.statline.textContent = "本地服务未连接";
     }
-    try {
-      const p = await api("/api/presets?limit=6");
-      state.presets = (p.groups || []).flatMap((g) => g.items || []);
-      renderPresets();
-    } catch (e) { /* 预置问法失败不影响主流程 */ }
+    state.presets = FEATURED_PRESETS;
+    renderPresets();
     try {
       const c = await api("/api/campus?limit=500");
       buildPlaces(c.pois);
@@ -202,8 +214,81 @@
 
   function renderPresets() {
     if (!state.presets.length) return;
-    el.presetRow.innerHTML = state.presets.slice(0, 8)
+    el.presetRow.innerHTML = state.presets
       .map((s) => `<button type="button" data-ask="${esc(s)}">${esc(s)}</button>`).join("");
+    syncPresetEdge();
+  }
+
+  function syncPresetEdge() {
+    const row = el.presetRow;
+    const max = row.scrollWidth - row.clientWidth;
+    if (max <= 1) {
+      row.dataset.overflow = "false";
+      row.dataset.edge = "none";
+      return;
+    }
+    row.dataset.overflow = "true";
+    const left = row.scrollLeft > 1;
+    const right = row.scrollLeft < max - 1;
+    row.dataset.edge = left && right ? "middle" : left ? "end" : right ? "start" : "none";
+  }
+
+  function wheelPresets(e) {
+    const row = el.presetRow;
+    const max = row.scrollWidth - row.clientWidth;
+    if (max <= 1 || e.ctrlKey || e.metaKey) return;
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    const delta = e.deltaMode === 1 ? e.deltaY * 16
+      : e.deltaMode === 2 ? e.deltaY * row.clientWidth : e.deltaY;
+    if (delta > 0 ? row.scrollLeft >= max - 1 : row.scrollLeft <= 1) return;
+    e.preventDefault();
+    row.scrollLeft += delta;
+  }
+
+  let presetDrag = null;
+  let presetSuppress = false;
+
+  function bindPresets() {
+    const row = el.presetRow;
+    row.addEventListener("wheel", wheelPresets, { passive: false });
+    row.addEventListener("scroll", syncPresetEdge, { passive: true });
+    row.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch" || e.button !== 0) return;
+      if (row.scrollWidth - row.clientWidth <= 1) return;
+      presetDrag = { id: e.pointerId, x: e.clientX, left: row.scrollLeft, moved: false };
+    });
+    row.addEventListener("pointermove", (e) => {
+      if (!presetDrag || e.pointerId !== presetDrag.id) return;
+      const dx = e.clientX - presetDrag.x;
+      if (!presetDrag.moved && Math.abs(dx) < 4) return;
+      if (!presetDrag.moved) {
+        presetDrag.moved = true;
+        row.setPointerCapture(e.pointerId);
+        row.dataset.dragging = "true";
+      }
+      row.scrollLeft = presetDrag.left - dx;
+      e.preventDefault();
+    });
+    const endDrag = (e) => {
+      if (!presetDrag || e.pointerId !== presetDrag.id) return;
+      const moved = presetDrag.moved;
+      presetDrag = null;
+      row.dataset.dragging = "false";
+      if (row.hasPointerCapture(e.pointerId)) row.releasePointerCapture(e.pointerId);
+      if (moved) {
+        presetSuppress = true;
+        setTimeout(() => { presetSuppress = false; }, 300);
+      }
+    };
+    row.addEventListener("pointerup", endDrag);
+    row.addEventListener("pointercancel", endDrag);
+    row.addEventListener("click", (e) => {
+      if (!presetSuppress) return;
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+    window.addEventListener("resize", syncPresetEdge);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncPresetEdge);
   }
 
   function renderEmpty() {
@@ -213,7 +298,7 @@
       <h1>说得清，<em>带得对</em>。</h1>
       <p>每句结论旁边都压着原文。查得到，抄得走，错了知道该找谁。问一句，右边同时打开这件事的档案。</p>
       <div class="chips">${samples.map((s) => `<button type="button" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div>
-      <p class="eexit"><b>全库 1 万多条原文事项</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，它说“没写”，不替学校补。</p>
+      <p class="eexit"><b>全库 8,500 多条原文事项</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，它说“没写”，不替学校补。</p>
     </div>`;
   }
 
@@ -242,6 +327,21 @@
     });
   }
 
+  function extractAnswerText(d) {
+    if (d.llm_answer && d.llm_answer.text) return d.llm_answer.text.slice(0, 500);
+    const parts = d.answers || [];
+    const bits = [];
+    for (const p of parts) {
+      if (p.text) bits.push(p.text);
+      else if (p.steps && p.steps.length) bits.push(p.steps.map(s => typeof s === "string" ? s : (s.what || "")).join("；"));
+      else if (p.lines && p.lines.length) bits.push(p.lines.join("；"));
+    }
+    const joined = bits.join("\n").slice(0, 500);
+    if (joined) return joined;
+    if (d.normalized) return d.normalized;
+    return d.search_note || "（未匹配到事项）";
+  }
+
   async function ask(text, opts = {}) {
     text = (text || "").trim();
     if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { toast("请再说得具体一点"); return; }
@@ -252,12 +352,23 @@
     const ex = addExchange(text);
     const ans = $("[data-ans]", ex);
     try {
-      const d = await api("/api/ask", { text, slots: state.slots, router_llm: el.llm.checked });
+      const d = await api("/api/ask", {
+        text,
+        slots: state.slots,
+        router_llm: el.llm.checked,
+        context_item: state.item ? state.item.id : null,
+        context_slots: (state.last && state.last.known) || {},
+        messages: state.history.slice(-12),
+      });
       state.last = d;
       state.lastQuery = text;
       ex.__data = d;
       ans.innerHTML = renderAnswer(d, ex);
       afterAnswer(d);
+      const assistantText = extractAnswerText(d);
+      state.history.push({ role: "user", content: text });
+      state.history.push({ role: "assistant", content: assistantText });
+      if (state.history.length > 24) state.history = state.history.slice(-24);
     } catch (e) {
       ans.innerHTML = renderError(e.message, text);
     } finally {
@@ -290,7 +401,7 @@
     const qs = a.quotes || [];
     let val;
     if (!a.found) {
-      val = `<p class="aval none">官方页面没有写这一项。</p>`;
+      val = `<p class="aval none">官方页面没有写这一项</p>`;
     } else if (Array.isArray(a.steps) && a.steps.length) {
       val = `<ol class="asteps">${a.steps.map((s, i) => {
         const what = typeof s === "string" ? s : (s.what || "");
@@ -301,11 +412,11 @@
       val = `<ul class="alines">${a.lines.map((s) => `<li>${linkify(esc(s))}</li>`).join("")}</ul>`;
     } else {
       const t = a.text == null ? "" : String(a.text);
-      val = `<p class="aval${t.length > 40 ? " long" : ""}">${linkify(esc(t || "官方页面没有写这一项。"))}</p>`;
+      val = `<p class="aval${t.length > 40 ? " long" : ""}">${linkify(esc(t || "官方页面没有写这一项"))}</p>`;
     }
     const q = qs[0] ? quoteLine(qs[0]) : (a.focus === "contact" && a.found
-      ? `<div class="qmore">联系人取自条目归属部门，官方页面没有单列这句话。</div>` : "");
-    const more = qs.length > 1 ? `<div class="qmore">这一面另有 ${qs.length - 1} 条原文，点“核对原文”查看。</div>` : "";
+      ? `<div class="qmore">联系人取自条目归属部门，官方页面没有单列这句话</div>` : "");
+    const more = qs.length > 1 ? `<div class="qmore">这一面另有 ${qs.length - 1} 条原文，点核对原文查看</div>` : "";
     return `<div class="aone"><div class="alab">${esc(a.label || "答复")}</div>${val}${q}${more}</div>`;
   }
 
@@ -337,7 +448,7 @@
 
     const noteBits = [];
     if (d.note) noteBits.push(linkify(esc(d.note)));
-    else if (d.missing && d.missing.length) noteBits.push(`官方页面没有写「${esc(d.missing.join("、"))}」，不替它补。`);
+    else if (d.missing && d.missing.length) noteBits.push(`官方页面没有写 ${esc(d.missing.join("、"))}，不替它补`);
 
     return `<div class="card">
       <div class="cardhead">
@@ -366,7 +477,7 @@
     const short = opts.short && q.quote && q.quote.length > 120 ? q.quote.slice(0, 120) + "…" : q.quote;
     return `<div class="qline">
       <span class="qmeta">${esc(meta)}</span>
-      <div class="qtxt">“${linkify(esc(short))}”${whoHtml}</div>
+      <div class="qtxt">${linkify(esc(short))}${whoHtml}</div>
     </div>`;
   }
 
@@ -374,8 +485,8 @@
   function ambiguousCard(d) {
     const n = (d.disambiguate || []).length;
     const reason = d.reason || (n === 2
-      ? "这两件事办起来不是一处。选一个，我按那件事的原文回答，不猜。"
-      : "选一个，我按那件事的原文回答，不猜。");
+      ? "这两件事办起来不是一处，选一个，我按那件事的原文回答，不猜"
+      : "选一个，我按那件事的原文回答，不猜");
     const opts = (d.disambiguate || []).map((b) =>
       `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
     return `<div class="notice">
@@ -406,8 +517,8 @@
 
     const hints = (d.hints || []).map((h) => `
       <div class="hintrow">
-        <div class="hintdept"><b>${esc(h.name)}</b> 可能管这件事。
-          ${h.basis ? `<span class="why">依据：${esc(h.basis)}</span>` : ""}</div>
+        <div class="hintdept"><b>${esc(h.name)}</b> 可能管这件事
+          ${h.basis ? `<span class="why">依据 ${esc(h.basis)}</span>` : ""}</div>
         <div class="hm">${(h.matched || []).map((m) => `<span class="ktag">${esc(m)}</span>`).join("")}</div>
         ${h.url ? `<a class="lnk" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开部门网站 ↗</a>` : ""}
       </div>`).join("");
@@ -430,17 +541,17 @@
     const gen = d.llm_answer ? `<div class="genbox">
       <div class="genhead"><span class="gentag">模型生成</span><span>没有官方条目，以下由大模型直接回答</span></div>
       <p class="gentext">${esc(d.llm_answer.text || "")}</p>
-      <p class="gencaveat">${esc(d.llm_answer.disclaimer || "内容由大模型生成，可能不准确。")}${d.llm_answer.caveat ? ` ${esc(d.llm_answer.caveat)}` : ""}</p>
+      <p class="gencaveat">${esc(d.llm_answer.disclaimer || "内容由大模型生成，可能不准确")}${d.llm_answer.caveat ? ` ${esc(d.llm_answer.caveat)}` : ""}</p>
     </div>` : "";
 
     return `<div class="notice">
-      <h3>没对上事项。我不硬猜。</h3>
-      <p>${d.topic ? `你问的是「${esc(d.topic)}」。` : ""}${esc(d.search_note || "换个更具体的说法，比如“校园卡补卡”“开成绩单”。下面是我能从原文里找到的线索。")}</p>
+      <h3>没对上事项，我不硬猜</h3>
+      <p>${d.topic ? `你问的是 ${esc(d.topic)}，` : ""}${esc(d.search_note || "换个更具体的说法，比如 校园卡补卡 或 开成绩单，下面是我能从原文里找到的线索")}</p>
       ${gen}
       ${hitRows ? `<div class="hintlist">${hitRows}</div>` : ""}
-      ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "也许你要办的是下面某一类：")}</p><div class="opts">${dis}</div>` : ""}
-      ${related ? `<p style="margin-top:14px">这些事项可能是你要的：</p><div class="opts">${related}</div>` : ""}
-      ${alts ? `<p style="margin-top:14px">相近的事项：</p><div class="opts">${alts}</div>` : ""}
+      ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "也许你要办的是下面某一类")}</p><div class="opts">${dis}</div>` : ""}
+      ${related ? `<p style="margin-top:14px">这些事项可能是你要的</p><div class="opts">${related}</div>` : ""}
+      ${alts ? `<p style="margin-top:14px">相近的事项</p><div class="opts">${alts}</div>` : ""}
       ${hints ? `<div class="sec"><h3>归口线索（非官方流程）</h3>${hints}</div>` : ""}
       ${contacts ? `<div class="sec"><h3>公开联系方式（按你问的事匹配，非办事流程）</h3>${contacts}</div>` : ""}
       ${next ? `<div class="sec"><h3>接下来可以这样办</h3><ul class="alines">${next}</ul></div>` : ""}
@@ -456,12 +567,12 @@
   function followupCard(d, ex) {
     const known = Object.entries(d.known || {});
     const knownHtml = known.length
-      ? `<div class="known">已记下：${known.map(([, v]) => `<span class="ktag">${esc(v)}</span>`).join("")}</div>`
+      ? `<div class="known">已记下 ${known.map(([, v]) => `<span class="ktag">${esc(v)}</span>`).join("")}</div>`
       : "";
     const fqs = (d.followups || []).map((f, i) => `
       <div class="fq">
         <p class="fqq">${String(i + 1).padStart(2, "0")}　${esc(f.question)}</p>
-        <p class="fqw">为什么问：${esc(f.why || "这一项会改变答案")}</p>
+        <p class="fqw">为什么问 ${esc(f.why || "这一项会改变答案")}</p>
         <div class="opts">${(f.options || []).map((o) =>
           `<button class="opt" type="button" data-key="${esc(f.key)}" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
       </div>`).join("");
@@ -487,8 +598,8 @@
     const majors = ((d.plan && d.plan.majors) || []).slice(0, 10).map((m) =>
       `<button class="major" type="button" data-ask="${esc("转专业到" + ((d.plan && d.plan.college_label) || "") + m.name)}">${esc(m.name)}</button>`).join("");
     const scope = [];
-    if (focus.major) scope.push(`按「${focus.major}」单列`);
-    else if (d.plan && d.plan.college_label) scope.push(`按「${d.plan.college_label}」整体列出`);
+    if (focus.major) scope.push(`按 ${focus.major} 单列`);
+    else if (d.plan && d.plan.college_label) scope.push(`按 ${d.plan.college_label} 整体列出`);
 
     return `<div class="card">
       <div class="cardhead">
@@ -497,8 +608,8 @@
         <span class="conf">${pct(d.confidence)}</span>
       </div>
       <div class="cardbody">
-        ${scope.length ? `<p class="insempty2">${esc(scope.join("；"))}，以下按接收计划原表逐条保留。</p>` : ""}
-        ${parts || `<p class="aval none">这份接收计划没有可展开的条目。</p>`}
+        ${scope.length ? `<p class="insempty2">${esc(scope.join("；"))}，以下按接收计划原表逐条保留</p>` : ""}
+        ${parts || `<p class="aval none">这份接收计划没有可展开的条目</p>`}
         ${majors ? `<div class="sec"><h3>这份计划覆盖的专业</h3><div class="majors">${majors}</div></div>` : ""}
         ${d.plan_file ? `<a class="planfile" href="${esc(d.plan_file)}" target="_blank" rel="noreferrer">打开学院接收计划 PDF ↗</a>` : ""}
         ${d.note ? `<p class="plannote">${esc(d.note)}</p>` : ""}
@@ -528,7 +639,7 @@
         + (on ? "（已开启）" : `<button type="button" data-llmfix="1">开启并重答</button>`);
     } else if (d && d.rule_unsure && !on) {
       el.llmhint.className = "llmhint";
-      el.llmhint.textContent = "规则对这句话没把握。开启模型裁决后：先把问题翻译成多种校园说法重新检索，再在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考。";
+      el.llmhint.textContent = "规则对这句话没把握，开启模型裁决后，先把问题翻译成多种校园说法重新检索，再在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考";
     } else {
       el.llmhint.className = "llmhint";
       el.llmhint.textContent = "";
@@ -677,7 +788,7 @@
     const list = uniq.length
       ? `<div class="quotelist">${uniq.map((q) => `
           <div class="q">
-            <p class="t">“${linkify(esc(q.quote))}”</p>
+            <p class="t">${linkify(esc(q.quote))}</p>
             <div class="m"><span class="k">${esc(q.kind || "原文")}</span>
               <span>${esc(q.label || q.src || "")}</span>
               ${q.date ? `<span>${esc(q.date)}</span>` : ""}
@@ -706,12 +817,12 @@
     const quotes = ((state.last && state.last.quotes) || []).slice(0, 3);
     return [
       `${item.title}（${item.dept || ""}）`,
-      item.location ? `地点：${item.location}` : "",
-      item.fee ? `费用：${item.fee}` : "",
-      mats.length ? `要带：\n${mats.map((m) => `□ ${m}`).join("\n")}` : "",
-      steps.length ? `步骤：\n${steps.join("\n")}` : "",
-      `原文：\n${quotes.map((q) => `- ${q.quote}\n  ${q.label || q.src || ""}${q.url ? " " + q.url : ""}`).join("\n")}`,
-      `来源：${(item.source || []).map((s) => s.url).filter(Boolean).join("\n")}`,
+      item.location ? `地点\n${item.location}` : "",
+      item.fee ? `费用\n${item.fee}` : "",
+      mats.length ? `要带\n${mats.map((m) => `□ ${m}`).join("\n")}` : "",
+      steps.length ? `步骤\n${steps.join("\n")}` : "",
+      `原文\n${quotes.map((q) => `- ${q.quote}\n  ${q.label || q.src || ""}${q.url ? " " + q.url : ""}`).join("\n")}`,
+      `来源\n${(item.source || []).map((s) => s.url).filter(Boolean).join("\n")}`,
       "以上事实来自官方原文，由校园办事向导整理；原文没写的未补写。",
     ].filter(Boolean).join("\n\n");
   }
@@ -730,7 +841,7 @@
       <h2>办理步骤</h2>
       <ol>${steps.length ? steps.map((s) => `<li>${esc(s)}</li>`).join("") : "<li>官方页面没有给出步骤</li>"}</ol>
       <h2>原文依据</h2>
-      ${quotes.length ? quotes.map((q) => `<p>“${esc(q.quote)}”</p><p class="psrc">${esc([q.label || q.src, q.date, q.url].filter(Boolean).join(" / "))}</p>`).join("") : "<p>本次回答未引用原文段落。</p>"}
+      ${quotes.length ? quotes.map((q) => `<p>${esc(q.quote)}</p><p class="psrc">${esc([q.label || q.src, q.date, q.url].filter(Boolean).join(" / "))}</p>`).join("") : "<p>本次回答未引用原文段落。</p>"}
       <p class="psrc">打印时间 ${new Date().toLocaleString("zh-CN")}。事实以官方原文为准。</p>`;
     window.print();
   }
@@ -740,7 +851,6 @@
     if (kind === "drawer") state.drawerOpen = true;
     if (kind === "sheet") state.sheetOpen = true;
     el.inspector.dataset.open = String(state.sheetOpen);
-    el.sheetbtn.setAttribute("aria-expanded", String(state.sheetOpen));
     el.drawer.dataset.open = String(state.drawerOpen);
     el.drawer.hidden = !state.drawerOpen;
     el.scrim.hidden = !(state.drawerOpen || state.sheetOpen);
@@ -751,7 +861,6 @@
     if (!which || which === "drawer") state.drawerOpen = false;
     if (!which || which === "sheet") state.sheetOpen = false;
     el.inspector.dataset.open = String(state.sheetOpen);
-    el.sheetbtn.setAttribute("aria-expanded", String(state.sheetOpen));
     el.drawer.dataset.open = String(state.drawerOpen);
     const any = state.drawerOpen || state.sheetOpen;
     el.scrim.dataset.open = "false";
@@ -761,7 +870,6 @@
         el.drawer.hidden = true;
       }
     }, 320);
-    if (!state.sheetOpen && isMobile()) el.sheetbtn.focus({ preventScroll: true });
   }
 
   async function openContacts(purpose) {
@@ -942,6 +1050,7 @@
 
   /* ---------------- 事件 ---------------- */
   function bind() {
+    bindPresets();
     el.composer.addEventListener("submit", (e) => {
       e.preventDefault();
       ask(el.q.value);
@@ -1067,7 +1176,6 @@
       if (b) openTab(b.dataset.tab);
     });
 
-    $("#sheetbtn").addEventListener("click", () => openOverlay("sheet"));
     $("#insclose").addEventListener("click", () => closeOverlays("sheet"));
     $("#ctbtn").addEventListener("click", () => openContacts());
     $("#searchbtn").addEventListener("click", () => openSearch(el.q.value.trim()));
@@ -1120,17 +1228,17 @@
         const note = stepNote(s, i);
         return s.what + (note ? `（${note}）` : "");
       });
-      return `【${a.label}】${a.text || steps.join(" → ")}`;
+      return `【${a.label}】${a.text || steps.join("；")}`;
     });
-    const quotes = (d.quotes || []).slice(0, 5).map((q) => `- “${q.quote}”（${[q.label, q.date].filter(Boolean).join(" / ")}${q.url ? " " + q.url : ""}）`);
+    const quotes = (d.quotes || []).slice(0, 5).map((q) => `- ${q.quote}（${[q.label, q.date].filter(Boolean).join(" / ")}${q.url ? " " + q.url : ""}）`);
     const src = (item.source || []).map((s) => s.url).filter(Boolean);
     copyText([
-      `问：${d.query}`,
-      `理解成：${d.normalized}`,
+      `问\n${d.query}`,
+      `理解成\n${d.normalized}`,
       ...parts,
-      d.note ? `说明：${d.note}` : "",
-      quotes.length ? `原文：\n${quotes.join("\n")}` : "",
-      src.length ? `来源：\n${src.join("\n")}` : "",
+      d.note ? `说明\n${d.note}` : "",
+      quotes.length ? `原文\n${quotes.join("\n")}` : "",
+      src.length ? `来源\n${src.join("\n")}` : "",
       "由校园办事向导整理，事实以官方原文为准。",
     ].filter(Boolean).join("\n\n"), "答案已复制");
   }

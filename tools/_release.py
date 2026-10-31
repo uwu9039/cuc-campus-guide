@@ -20,9 +20,11 @@ ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.github.com"
 OWNER, REPO = "uwu9039", "cuc-campus-guide"
 SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
-             "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder"}
+             "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder",
+             "_review_items", "_modelscope_bundle", "_api_dig", "_ilib_js", "extension"}
 SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json.bak",
-              "items-old.json", "ask-req.json", ".cdp_tab", "app-server.log",
+              "items-old.json", "ask-req.json", "aia-api.json", ".cdp_tab", "app-server.log",
+              "18-个人数据接口调研.md", "api-inventory.json",
               "_qout.txt", "_check_tmp.py", "_diag_coll.py", "_diag_docs.py",
               "_diag_failgroups.py", "_diag_quotes.py", "_remote_tree.json",
               "_clause-items.tmp.json", "huibian-2025.txt",
@@ -30,9 +32,10 @@ SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json
 SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".pptx", ".npy", ".jsonl",
                ".mp3", ".m4a", ".mov", ".webm", ".rar", ".7z", ".tar", ".tgz", ".gz"}
-SKIP_PREFIX = ("shot", "llm-", "aia")
+SKIP_PREFIX = ("shot", "llm-", "aia", "items_before_")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
-BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text"}
+BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text",
+             "ilib", "ilib-text", "ilib-list", "ilib-list-text"}
 PLAN_DIR = "sources/local/_files"
 
 

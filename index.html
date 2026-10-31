@@ -387,7 +387,7 @@
 <script>
 const $ = (s) => document.querySelector(s);
 const EXAMPLES = ["校园卡丢了怎么办", "我要开个证明", "成绩单怎么打", "选课没选上", "校园网连不上"];
-let state = { item: null, slots: {} };
+let state = { item: null, last: null, slots: {} };
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -562,7 +562,10 @@ async function run(keepSlots) {
   if (!keepSlots) state.slots = {};
   $("#go").disabled = true;
   try {
-    const d = await api("/api/ask", { text, slots: state.slots, router_llm: $("#llmsw").checked });
+    const d = await api("/api/ask", { text, slots: state.slots, router_llm: $("#llmsw").checked,
+      context_item: state.item ? state.item.id : null,
+      context_slots: (state.last && state.last.known) || {} });
+    state.last = d;
     showLlmHint(d);
     if (!d.matched) {
       $("#out").innerHTML = notFound(d);
@@ -617,7 +620,7 @@ function followupBlock(d) {
     ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
         `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
     : "";
-  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+  return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
     <div class="fbox">
       <div class="fboxh">这件事分几种情况，答之前我得先确认 ${d.followups.length} 件事</div>
       ${knownLine}${qs}${rel}
@@ -637,7 +640,7 @@ function bindFollowups() {
 function choiceBlock(d) {
   const opts = (d.disambiguate || []).map((b) =>
     `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
-  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ ${esc(d.normalized || "")}</span></div>
+  return `<div class="qnorm">你问 ${esc(d.query)}<span>→ ${esc(d.normalized || "")}</span></div>
     <div class="fbox">
       <div class="fboxh">${esc(d.clarify || "选一个，我按那件事的原文回答")}</div>
       <div class="fqo">${opts}</div>
@@ -662,7 +665,7 @@ function answerBlock(d) {
     const q = qs.length
       ? `<div class="aq">${qs.slice(0, 2).map((c) =>
           `<div class="qline"><span class="qsrc ${c.kind === "公众号" ? "wx" : ""}">${esc(c.kind)}${c.date ? " · " + esc(c.date) : ""}</span>
-           <span class="qt">“${linkify(esc(c.quote))}”</span>
+           <span class="qt">${linkify(esc(c.quote))}</span>
            <span class="qmeta">${esc((c.label || "").slice(0, 30))}</span></div>`).join("")}
           ${qs.length > 2 ? `<div class="qmore">另有 ${qs.length - 2} 条来源</div>` : ""}</div>`
       : (a.focus === "contact" && a.found ? `<div class="aq">（条目归属部门，官方页面未单列此句）</div>` : "");
@@ -688,7 +691,7 @@ function answerBlock(d) {
     ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
         `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
     : "";
-  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+  return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
   <div class="ablock">${rows}${planFile}${mapLink}${attach}${related}${d.note ? `<div class="anote">${linkify(esc(d.note))}</div>` : ""}</div>`;
 }
 
@@ -783,7 +786,7 @@ function planBlock(d) {
     ? `<div class="pnote">「${esc(p.college_label)}」是 2026 年版简称表的学院名；2025 年接收计划列在「${esc(p.college)}」名下，下面照录该计划原文。</div>` : "";
   const focusCard = planFocusCard(focus, noPlan);
   if (noPlan) {
-    return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+    return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
       <div class="pfull">${head}${focusCard}${renameNote}
         <div class="pnote">${esc(p.note || d.note || "")}</div></div>`;
   }
@@ -791,7 +794,7 @@ function planBlock(d) {
     && majors.some((m) => planNorm(m.name) === planNorm(focus.plan_major));
   const list = majors.map((m, i) => planMajor(m, i,
     anyHit ? focus : null, !anyHit)).join("");
-  return `<div class="qnorm">你问：「${esc(d.query)}」<span>→ 我理解成：${esc(d.normalized)}</span></div>
+  return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
     <div class="pfull">${head}${focusCard}${renameNote}
       <div class="pnote">${esc(p.note || d.note || "")}</div>
       ${list || `<div class="pnote">这份计划没有可抽取的专业行，请打开 PDF 核对。</div>`}
@@ -862,7 +865,7 @@ function evidenceBlock(item) {
   const seen = new Set();
   const rows = ev
     .filter(([, v]) => (seen.has(v.quote) ? false : (seen.add(v.quote), true)))
-    .map(([k, v]) => `<li><span class="k">${label(k)}</span><span class="q">“${linkify(esc(v.quote))}”</span></li>`)
+    .map(([k, v]) => `<li><span class="k">${label(k)}</span><span class="q">${linkify(esc(v.quote))}</span></li>`)
     .join("");
   return `<details class="ev"><summary>原文摘录（${seen.size} 条，逐字来自官方页面）</summary><ul>${rows}</ul></details>`;
 }

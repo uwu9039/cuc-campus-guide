@@ -3,14 +3,14 @@
 - 用例数：33
 - 规则识别准确率：**100.0%**（33/33）
 - 拒答正确率：3/3
-- 事项库：18949 条，其中已核验 18917 条
+- 事项库：8573 条，其中已核验 8538 条
 
 | 问题 | 期望 | 实际 | 分数 | 类型 | 结果 |
 |---|---|---|---|---|---|
-| 校园卡丢了怎么办 | xyk-buka | xyk-buka | 89 | normal | OK |
+| 校园卡丢了怎么办 | xyk-buka | xyk-buka | 97 | normal | OK |
 | 饭卡坏了刷不出来 | xyk-buka | xyk-buka | 86 | normal | OK |
-| 校园卡消磁了要补办吗 | xyk-buka | xyk-buka | 93 | normal | OK |
-| 我要开成绩单 | jwc-chengjidan | jwc-chengjidan | 87 | normal | OK |
+| 校园卡消磁了要补办吗 | xyk-buka | xyk-buka | 89 | normal | OK |
+| 我要开成绩单 | jwc-chengjidan | jwc-chengjidan | 97 | normal | OK |
 | 出国用的成绩单怎么弄 | jwc-chengjidan | jwc-chengjidan | 87 | normal | OK |
 | 成绩单要密封盖章 | jwc-chengjidan | jwc-chengjidan | 87 | normal | OK |
 | 开个在读证明 | jwc-zaidu | jwc-zaidu | 88 | normal | OK |
@@ -21,11 +21,11 @@
 | 想申请自修 | jwc-zixiu | jwc-zixiu | 86 | normal | OK |
 | 体育课能免修吗 | jwc-tiyu | jwc-tiyu | 94 | normal | OK |
 | 交换的学分怎么认定 | jwc-zhuanhuan | jwc-zhuanhuan | 89 | normal | OK |
-| 六级怎么报名 | jwc-cet | jwc-cet | 86 | normal | OK |
+| 六级怎么报名 | jwc-cet | jwc-cet | 97 | normal | OK |
 | 校外怎么上知网 | it-vpn | it-vpn | 100 | normal | OK |
 | 校园网密码忘了 | it-mima | it-mima | 100 | normal | OK |
 | 数字校园登不上 | it-mima | it-mima | 58 | normal | OK |
-| 宿舍wifi连不上 | it-wangluo | it-wangluo | 95 | normal | OK |
+| 宿舍wifi连不上 | it-wangluo | it-wangluo | 100 | normal | OK |
 | 饭卡没了刷不了饭 | xyk-buka | xyk-buka | 88 | vague | OK |
 | 想补个卡 | xyk-buka | xyk-buka | 85 | vague | OK |
 | 四六级成绩单在哪打印 | jwc-cet | jwc-cet | 90 | vague | OK |
@@ -37,6 +37,6 @@
 | 宿舍能不能换 | sushe-huansu | sushe-huansu | 100 | normal | OK |
 | 奖学金怎么申请 | jiangxuejin | jiangxuejin | 87 | normal | OK |
 | 图书馆能续借吗 | lib-jieyue | lib-jieyue | 86 | normal | OK |
-| 研究生能换导师吗 | 拒绝 | 拒绝 | 52 | absent | OK |
+| 研究生能换导师吗 | 拒绝 | 拒绝 | 50 | absent | OK |
 | 学历证书电子注册备案表怎么申请 | chsi-baogao | chsi-baogao | 94 | normal | OK |
 | 想转学去别的学校 | moe-zhuanxue | moe-zhuanxue | 86 | normal | OK |

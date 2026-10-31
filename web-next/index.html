@@ -23,8 +23,7 @@
       <div class="topacts">
         <button class="ghostbtn" type="button" id="ctbtn">联系方式</button>
         <button class="ghostbtn" type="button" id="searchbtn">搜原文</button>
-        <button class="ghostbtn" type="button" id="sheetbtn" aria-controls="inspector" aria-expanded="false">条目档案</button>
-        <a class="ghostbtn" href="/classic" title="切到旧版界面">旧版</a>
+        <a class="ghostbtn" href="/classic.html" title="切到旧版界面">旧版</a>
       </div>
     </header>
 
@@ -34,16 +33,16 @@
 
     <form class="composer" id="composer" autocomplete="off">
       <div class="composer-in">
-        <div class="presets" id="presets" aria-label="常用问法"></div>
+        <div class="presets" id="presets" aria-label="常用问法" data-overflow="false" data-edge="none"></div>
         <div class="box">
           <label class="sr" for="q">你的问题</label>
-          <textarea id="q" rows="1" placeholder="比如：校园卡丢了怎么办 / 转专业到新闻学院要什么条件"></textarea>
+          <textarea id="q" rows="1" placeholder="小提示：一次一个问题，正确率更高哦！"></textarea>
           <div class="boxfoot">
             <button class="hintbtn" type="button" id="clearbtn" title="清空条件，重新问">重新问</button>
             <label class="llm" title="规则拿不准时让模型在候选里挑；事项库一条都没收录时，由模型直接生成回答。生成内容可能不准确，请自行核对。">
               <input type="checkbox" id="llmsw">
               <span class="track" aria-hidden="true"><i></i></span>
-              模型裁决<span class="risk">含模型生成</span>
+              模型裁决<span class="risk">含模型生成</span><span class="ctxcap">有上下文能力</span>
             </label>
             <span class="footnote">材料以官方原文为准</span>
             <button class="send" type="submit" id="send" aria-label="发送问题">
@@ -129,5 +128,6 @@
 
 <script src="vendor/leaflet/leaflet.js"></script>
 <script src="app.js" defer></script>
+<script src="personal-data.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,266 @@
+{
+ "BALIS原文传递-97826a3610977111f00abf854d3f4b3249e6": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/97826a3610977111f00abf854d3f4b3249e6/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·BALIS原文传递",
+  "chars": 427,
+  "sha256": "3868dcb3d64856e4",
+  "kind": "ilib",
+  "skip": false
+ },
+ "BALIS馆际互借-f99185d570976111f00abf81f90e792e0380": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/f99185d570976111f00abf81f90e792e0380/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·BALIS馆际互借",
+  "chars": 390,
+  "sha256": "00956c68d5ab6c29",
+  "kind": "ilib",
+  "skip": false
+ },
+ "一卡通寄存柜使用-5e4936dd80977111f00abf81114a3256c195": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/5e4936dd80977111f00abf81114a3256c195/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·一卡通寄存柜使用",
+  "chars": 578,
+  "sha256": "b365ef642cc0d253",
+  "kind": "ilib",
+  "skip": false
+ },
+ "中传学者文库章程-d24e8d01077e3111f00a2ef5a9473e832f23": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/d24e8d01077e3111f00a2ef5a9473e832f23/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·中传学者文库章程",
+  "chars": 2000,
+  "sha256": "3c242ccfcc882225",
+  "kind": "ilib",
+  "skip": false
+ },
+ "中图分类法-0e5ffbce7946e111f00b09a48195c5ce8077": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/0e5ffbce7946e111f00b09a48195c5ce8077/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·中图分类法",
+  "chars": 2963,
+  "sha256": "a9f2ae253f03870b",
+  "kind": "ilib",
+  "skip": false
+ },
+ "借阅服务部-7d116a0f477e3111f00a2ef655e422b78d7e": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/7d116a0f477e3111f00a2ef655e422b78d7e/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·借阅服务部",
+  "chars": 199,
+  "sha256": "2069f72c9bf829d3",
+  "kind": "ilib",
+  "skip": true
+ },
+ "借阅规则-72cbaa468ac91311ef183b81afd598fe130d": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/72cbaa468ac91311ef183b81afd598fe130d/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·借阅规则",
+  "chars": 1062,
+  "sha256": "bec12fe50f079108",
+  "kind": "ilib",
+  "skip": false
+ },
+ "历史沿革-a0bb968600974111f00abf84af2cace3e401": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/a0bb968600974111f00abf84af2cace3e401/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·历史沿革",
+  "chars": 651,
+  "sha256": "4687816d26ed76e5",
+  "kind": "ilib",
+  "skip": false
+ },
+ "学科服务部-1475a446877e7111f00a2ef0638fab97049d": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/1475a446877e7111f00a2ef0638fab97049d/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·学科服务部",
+  "chars": 298,
+  "sha256": "52d4d3bb9e43bcf9",
+  "kind": "ilib",
+  "skip": true
+ },
+ "座位预约-72db13bf1ac91311ef183b819b8679fc1664": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/72db13bf1ac91311ef183b819b8679fc1664/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·座位预约",
+  "chars": 5767,
+  "sha256": "ef6f55441ffa9499",
+  "kind": "ilib",
+  "skip": false
+ },
+ "开馆时间-b24de10970974111f00abf816b725ed8d2a1": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/b24de10970974111f00abf816b725ed8d2a1/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·开馆时间",
+  "chars": 800,
+  "sha256": "b59572c8ab70bfef",
+  "kind": "ilib",
+  "skip": false
+ },
+ "教材建设中心-59af4ee68b63c111f10a8b807b8dca487066": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/59af4ee68b63c111f10a8b807b8dca487066/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·教材建设中心",
+  "chars": 268,
+  "sha256": "0f611e53c197f433",
+  "kind": "ilib",
+  "skip": true
+ },
+ "文献借阅规定-08a53d0d277e8111f00a2ef8c5f10dfffea9": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/08a53d0d277e8111f00a2ef8c5f10dfffea9/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·文献借阅规定",
+  "chars": 1335,
+  "sha256": "1a9e960ad84f8d58",
+  "kind": "ilib",
+  "skip": false
+ },
+ "本馆简介-931fda9580974111f00abf80bd487ac80ce7": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/931fda9580974111f00abf80bd487ac80ce7/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·本馆简介",
+  "chars": 2027,
+  "sha256": "13e7c060582882ad",
+  "kind": "ilib",
+  "skip": false
+ },
+ "校友入馆阅览管理办法-c9a87ffb492be111f00b09a02b44b67c0509": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/c9a87ffb492be111f00b09a02b44b67c0509/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·校友入馆阅览管理办法",
+  "chars": 2084,
+  "sha256": "4a63b2b104e45c43",
+  "kind": "ilib",
+  "skip": false
+ },
+ "校园_一卡通_管理办法-2d947fee077e8111f00a2ef079a93ababa1f": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/2d947fee077e8111f00a2ef079a93ababa1f/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·校园“一卡通”管理办法",
+  "chars": 1248,
+  "sha256": "6d831e0c1331098b",
+  "kind": "ilib",
+  "skip": false
+ },
+ "特藏建设部-4b7bcaf7577e7111f00a2ef4d9013b69cc31": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/4b7bcaf7577e7111f00a2ef4d9013b69cc31/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·特藏建设部",
+  "chars": 245,
+  "sha256": "2ed708e97163e084",
+  "kind": "ilib",
+  "skip": true
+ },
+ "研讨间使用守则-72df4cc0477e8111f00a2ef71d47bc00d957": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/72df4cc0477e8111f00a2ef71d47bc00d957/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·研讨间使用守则",
+  "chars": 499,
+  "sha256": "1373b3183e777e4a",
+  "kind": "ilib",
+  "skip": false
+ },
+ "空间与技术服务部-5fe7c258777e7111f00a2ef5d7d50547ec8b": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/5fe7c258777e7111f00a2ef5d7d50547ec8b/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·空间与技术服务部",
+  "chars": 275,
+  "sha256": "6654cb6ac77774c3",
+  "kind": "ilib",
+  "skip": true
+ },
+ "空间布局-72d98d1e8ac91311ef183b81613073d59981": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/72d98d1e8ac91311ef183b81613073d59981/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·空间布局",
+  "chars": 113,
+  "sha256": "03eaaf3539184616",
+  "kind": "ilib",
+  "skip": true
+ },
+ "空间预约-3b19302910977111f00abf84015d51f9d2ee": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/3b19302910977111f00abf84015d51f9d2ee/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·空间预约",
+  "chars": 3493,
+  "sha256": "563894f23e482cfb",
+  "kind": "ilib",
+  "skip": false
+ },
+ "综合办公室-950a91bd477e1111f00a2ef48f23e75d0499": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/950a91bd477e1111f00a2ef48f23e75d0499/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·综合办公室",
+  "chars": 306,
+  "sha256": "faef3f84ea74e844",
+  "kind": "ilib",
+  "skip": true
+ },
+ "自助打印_扫描-55c1394c20977111f00abf8195629d202143": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/55c1394c20977111f00abf8195629d202143/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·自助打印/扫描",
+  "chars": 948,
+  "sha256": "1bd6624028c693f9",
+  "kind": "ilib",
+  "skip": false
+ },
+ "芸悦读使用规则-87e9f521077e8111f00a2ef5b9929a06685e": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/87e9f521077e8111f00a2ef5b9929a06685e/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·芸悦读使用规则",
+  "chars": 663,
+  "sha256": "c9380856e83372c8",
+  "kind": "ilib",
+  "skip": false
+ },
+ "读者留言-d3c6457c30977111f00abf854f0fa1916568": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/d3c6457c30977111f00abf854f0fa1916568/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·读者留言",
+  "chars": 338,
+  "sha256": "e0158da2a9ee7c70",
+  "kind": "ilib",
+  "skip": false
+ },
+ "读者行为守则-a5e0a640077e3111f00a2ef1132dbb808ea3": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/a5e0a640077e3111f00a2ef1132dbb808ea3/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·读者行为守则",
+  "chars": 1181,
+  "sha256": "777e1bc1bf557e4c",
+  "kind": "ilib",
+  "skip": false
+ },
+ "资源建设部-62e4d27e377e3111f00a2ef5f99959795c4b": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/62e4d27e377e3111f00a2ef5f99959795c4b/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·资源建设部",
+  "chars": 227,
+  "sha256": "4a519e6c949c87da",
+  "kind": "ilib",
+  "skip": true
+ },
+ "资源荐购-7c14e38870976111f00abf87df2c0fd265e2": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/7c14e38870976111f00abf87df2c0fd265e2/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·资源荐购",
+  "chars": 1728,
+  "sha256": "6bdd7b7d3615128a",
+  "kind": "ilib",
+  "skip": false
+ },
+ "通识课教育-8fedf46520977111f00abf83997809513020": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/8fedf46520977111f00abf83997809513020/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·通识课教育",
+  "chars": 349,
+  "sha256": "c3f6206be548e4ec",
+  "kind": "ilib",
+  "skip": false
+ },
+ "预约讲座-88eb856420977111f00abf815f22485edafa": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/88eb856420977111f00abf815f22485edafa/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·预约讲座",
+  "chars": 652,
+  "sha256": "b06fc5d72643b068",
+  "kind": "ilib",
+  "skip": false
+ },
+ "馆藏分布-72c827d37ac91311ef183b8753d72f260ae4": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/72c827d37ac91311ef183b8753d72f260ae4/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·馆藏分布",
+  "chars": 860,
+  "sha256": "5db46ff5283dfee3",
+  "kind": "ilib",
+  "skip": false
+ },
+ "馆长信箱-dfaa8d6e50977111f00abf8295fd73e1b424": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/dfaa8d6e50977111f00abf8295fd73e1b424/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·馆长信箱",
+  "chars": 188,
+  "sha256": "180f5784f338e0dd",
+  "kind": "ilib",
+  "skip": false
+ },
+ "馆领导-4aba4aec6777f111f00a2ef2d94e077e5b93": {
+  "url": "https://ilib.cuc.edu.cn/engine2/data/api-v2/4aba4aec6777f111f00a2ef2d94e077e5b93/get-classify?ac=true",
+  "title": "中国传媒大学图书馆·馆领导",
+  "chars": 263,
+  "sha256": "80dcc416f0f7ab1a",
+  "kind": "ilib",
+  "skip": true
+ }
+}

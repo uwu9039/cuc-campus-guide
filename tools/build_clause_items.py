@@ -29,10 +29,11 @@ INDEXES = {
     "local": ("local-index.json", "local"),
     "wechat": ("wechat-index.json", "wechat"),
     "attachments": ("attachments-text-index.json", "attachments/text"),
+    "ilib": ("ilib-index.json", "ilib-text"),
 }
 TEXT_DIRS = ("wendao-text", "huibian", "extra", "cdp", "crawl", "national",
              "moe", "chsi", "local", "wechat", "pdf", "wendao-extra",
-             "attachments/text")
+             "attachments/text", "ilib-text")
 
 CLAUSE = re.compile(r"第[一二三四五六七八九十百零〇\d]+条")
 PAGE_NO = re.compile(r"(?m)^\s*(?:[-—]\s*)?\d{1,3}(?:\s*[-—])?\s*$")
@@ -122,6 +123,8 @@ def load_indexes() -> dict[str, dict]:
             continue
         for slug, meta in data.items():
             if not isinstance(meta, dict):
+                continue
+            if meta.get("skip"):
                 continue
             title = meta.get("title") or ""
             if not title:
@@ -495,6 +498,9 @@ def main() -> None:
             continue
         if len(text) < 200:
             continue
+        if "ilib" in (doc.get("collections") or ()):
+            # 归档文件头四行是标题/来源/接口/发布时间，不属于正文
+            text = text.split("\n\n", 1)[-1]
         if NEWS_TITLE.search(doc.get("title") or "") and not args.include_news:
             stat["news_skip"] += 1
             continue
@@ -571,7 +577,7 @@ def main() -> None:
         source = {
             "title": doc_title(u["doc"], text),
             "url": u["doc"].get("url") or "",
-            "checked": "2026-10-29",
+            "checked": "2026-10-30",
         }
         if u["doc"].get("page"):
             source["page"] = u["doc"]["page"]
@@ -633,7 +639,7 @@ def main() -> None:
         print("-", it["title"], "|", it["keywords"][:4], "|", it["answer"][:60].replace("\n", " "))
 
     report = {
-        "updated": "2026-10-29",
+        "updated": "2026-10-30",
         **{k: v for k, v in stat.items()},
         "by_doc_top": doc_units.most_common(30),
     }
@@ -646,7 +652,7 @@ def main() -> None:
         print("written", args.out, len(new_items))
     if args.apply:
         data["items"].extend(new_items)
-        data["updated"] = "2026-10-29"
+        data["updated"] = "2026-10-30"
         (ROOT / "items.json").write_text(
             json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print("written items.json, total", len(data["items"]))

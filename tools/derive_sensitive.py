@@ -16,6 +16,7 @@ import argparse
 import json
 import sys
 from collections import Counter, defaultdict
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -23,9 +24,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
 import app as core  # noqa: E402
-from audit_routing import variants  # noqa: E402
+from audit_routing import run_cases, variants  # noqa: E402
 
 OUT = ROOT / "sensitive.json"
+TZ = timezone(timedelta(hours=8))
 MIN_N, MAX_N = 2, 4          # 只在 2–4 字范围内找词
 MIN_OCCUR = 5                # 至少出现这么多次才考虑
 MIN_RATE = 0.18              # 出现该词时风险率 ≥18% 才算危险
@@ -47,6 +49,7 @@ def ngrams(text: str) -> set[str]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--workers", type=int, default=1)
     args = ap.parse_args()
 
     items = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
@@ -67,12 +70,12 @@ def main() -> None:
 
     total = len(cases)
     # 风险 = 跳错 或 规则自己都拿不准（触发反问）。两种都由"某个词"引起就算
+    print(f"问法 {total}，并行进程 {args.workers}")
+    results = run_cases([q for q, _ in cases], args.workers)
     fails: list[tuple[str, str, str]] = []      # (query, want, got)
     risky_q: list[str] = []
-    for q, want in cases:
-        d = core.answer_question(q)
-        got = (d.get("item") or {}).get("id")
-        if got != want or d.get("ambiguous"):
+    for (q, want), (got, _dis, amb) in zip(cases, results):
+        if got != want or amb:
             fails.append((q, want, got or "反问"))
             risky_q.append(q)
 
@@ -114,7 +117,7 @@ def main() -> None:
         return
 
     payload = {
-        "generated": "2026-10-26",
+        "generated": datetime.now(TZ).date().isoformat(),
         "method": "routing audit: words whose presence raises misroute rate above baseline",
         "baseline_fail_rate": round(base_rate, 4),
         "total_queries": total,

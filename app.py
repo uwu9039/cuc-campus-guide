@@ -291,7 +291,8 @@ _TRANSFER_CONSULT = re.compile(
 # 问的是转专业的某个具体面（时间/条件/考试…），不该反问学院
 _TRANSFER_FACET = re.compile(
     r"时间|什么时候|何时|截止|几月|流程|步骤|材料|条件|要求|考试|面试|名额|比例|"
-    r"资格|成绩|绩点|学费|费用|政策|规定|办法|细则|文件|方案|难|双学位|辅修|保研|推免|交换|出国"
+    r"资格|成绩|绩点|学费|费用|政策|规定|办法|细则|文件|方案|难|双学位|辅修|保研|推免|交换|出国|"
+    r"跨学院|跨专业|志愿|课程|学分|再申请|申请|研究生|硕士|博士|导师"
 )
 
 # 只问地址的短句：直接给那一处的位置，不再端出整张对照表
@@ -567,9 +568,13 @@ FRAME_CHARS = set("能不能怎么么吗呢吧啊呀哪里什么时侯需要可�
 GENERIC_KEYWORDS = {
     "办法", "规定", "通知", "管理", "实施", "细则", "制度", "方案", "条例", "意见",
     "工作", "学生", "学校", "学院", "本科", "研究生", "本科生", "在校生", "全校",
-    "申请", "办理", "流程", "材料", "时间", "地点", "条件", "要求", "手续",
+    "申请", "办理", "补办", "流程", "材料", "时间", "地点", "条件", "要求", "手续",
     "报名",
 }
+
+# 问句里的语气与套话：拆掉之后「校园卡怎么延期」才能和「校园卡延期」对上。
+# 「怎么办」要放在「怎么」前面，否则会剩下一个孤零零的「办」。
+_ASK_FILLER = re.compile(r"怎么办|怎么弄|怎样|怎么|如何|咋办|咋整|请问|想问|一下|我要|我想|应该|具体|[呢吗啊呀吧]+$")
 
 # 只当范围词用的场所名：光凭它们命中，不足以确认“没有”这个结论
 # （否则「宿舍有电梯吗」会被「宿舍不提供被子」的段落条目当成否定答案）
@@ -620,8 +625,15 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
     for bad in item.get("exclude_exact", []):
         if q == norm(bad):
             return 0
+    # 条目只在一个语境里有意义时，先要求问句里出现这个语境词：
+    # 「体测与评奖」不能把泛泛的「评奖评优有哪些」「毕业离校怎么办」都吸过来
+    req = item.get("require")
+    if isinstance(req, list) and req:
+        if not any((r := norm(str(x))) and r in q for x in req):
+            return 0
     blocked = blocked or set()
     best = 0
+    qp = _ASK_FILLER.sub("", q)
     is_text = bool(item.get("clause") or item.get("para"))
     keys = [item["title"], core_title(item["title"]), *item.get("aliases", [])]
     for raw in keys:
@@ -630,6 +642,9 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
             continue
         if a == q:
             return 100
+        if a == qp and len(a) >= 3:
+            best = max(best, 97)
+            continue
         if is_text:
             # 原文条目是整句摘录，标题长、关键词也是自动抽的：
             # 只认「整句标题出现在问句里」或「问句覆盖了标题大半」，避免泛词误配
@@ -643,6 +658,13 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
                 # 不该被排在后面的「微专业」总览同分抢走。
                 sc += 2
                 head_hit = True
+            best = max(best, sc)
+        elif a in qp and len(a) >= 3:
+            # 去掉「怎么」「请问」之后仍原样出现，按整词命中算：
+            # 「校园卡怎么延期」里的「校园卡延期」就是条目本名。
+            sc = 84 + min(8, len(a))
+            if qp.startswith(a) and len(a) >= 4:
+                sc += 2
             best = max(best, sc)
         elif q in a:
             best = max(best, 70 + min(8, len(q)))
@@ -781,7 +803,12 @@ def _rule_affinity(qn: str, item: dict[str, Any]) -> int:
         return 0
     # 只认「60 分 / 按 N 分」这类定分规则；
     # 「记为零分」是作弊处理，不是补考记分办法。
-    a = item.get("answer") or ""
+    # 人工条目的正文写在 steps/pitfalls 里，不能只看 answer。
+    texts = [item.get("answer") or ""]
+    texts += [_step_text(s) if isinstance(s, dict) else str(s)
+              for s in item.get("steps") or []]
+    texts += [str(p) for p in item.get("pitfalls") or []]
+    a = "；".join(t for t in texts if t)
     if not re.search(r"六十分|60分|按\d+分", a):
         return 0
     # 标题本身就在讲记分的，比正文顺带提一句更贴题
@@ -808,14 +835,17 @@ def rank(q: str) -> list[tuple[dict[str, Any], int]]:
         qn))
     adjusted = []
     for it, sc in scored:
-        if action_q and it["id"] in ("campus-louming", "campus-jiancheng"):
-            sc = min(sc, MATCH_THRESHOLD - 1)
+        if action_q and it["id"] in ("campus-louming", "campus-jiancheng") and "校园地图" not in qn:
+            # 问句把条目本名说全了（「校园楼宇名称与位置速查怎么办」）就照问的那条答，
+            # 只有拿地名当由头问别的事（「游泳馆怎么预约」）才降权。
+            if _literal_hit(qn, it) < 6:
+                sc = min(sc, MATCH_THRESHOLD - 1)
         if it.get("clause") or it.get("para"):
             # 问句就是这条原文的标题时，别压到结构化条目下面：
             # 「…微专业招生对象及条件」点进来就该答那一面。
             if sc < 100 and core_best >= MATCH_THRESHOLD:
                 sc = min(sc, MATCH_THRESHOLD - 1)
-        elif it.get("auto") and hand_best >= sc - 12:
+        elif it.get("auto") and it.get("kind") != "qa" and hand_best >= sc - 12:
             sc = max(0, sc - 12)
         adjusted.append((it, sc))
     # 同分时人工条目优先，避免同年份的制度卡片把服务条目挤下去；
@@ -884,8 +914,346 @@ def distinct_rows(rows: list[tuple[dict[str, Any], int]]) -> list[tuple[dict[str
     return out
 
 
+def _names_subject(qn: str, item: dict[str, Any]) -> bool:
+    """问句里点了这一条自己的名字，才算和另一条咬得紧的候选。
+
+    只有「预约」「补办」「电话」这类通用词重合时，分数往往是关键词层凑出来的；
+    拿它反问用户，等于把两条不相干的事摆在一起让人选。
+    """
+    for raw in (core_title(item.get("title") or ""), *(item.get("aliases") or [])):
+        a = norm(raw)
+        if len(a) < 3 or a in GENERIC_KEYWORDS or a in GENERIC_PLACE:
+            continue
+        if a in qn:
+            return True
+    return False
+
+
+# ---------------------------------------------------------------- 显示文字
+# 回答正文的写法：不用引号、破折号、冒号、句号、星号、井号，不端着模型腔，
+# 也不堆比喻。括号里的内容、《》文件名、网址、邮箱、时间、小数、电话原样保留。
+
+_KEEP_RE = re.compile(
+    r"（来源[：:][^）]{1,24}）"
+    r"|https?:/{0,2}[^\s，。；、）)】》]+"
+    r"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+    r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[^\s，。；、）)】》]*)?"
+    r"|\d{1,2}[:：]\d{2}(?::\d{2})?"
+    r"|\d{3,4}[-—–]\d{7,8}"
+    r"|\d+(?:\.\d+)+(?:%|％)?"
+    r"|\.[A-Za-z]{2,5}(?![A-Za-z])"
+    r"|[A-Za-z]+['’][A-Za-z]+"
+)
+_RATIO_RE = re.compile(r"(?<![A-Za-z0-9_.：:])(\d{1,4})[:：](\d{1,4})(?![A-Za-z0-9_:：])")
+_RATIO_PAIRS = {("16", "9"), ("16", "10"), ("21", "9"), ("32", "9"),
+                ("4", "3"), ("3", "2"), ("18", "9")}
+_AI_STRICT = r"首先|其次|再次|最后|此外|另外|综上(?:所述)?|总而言之|总的来说"
+_AI_LOOSE = (
+    r"值得注意的是|需要注意的是|需要说明的是|值得一提的是|"
+    r"简单来说|简而言之|换句话说|说到底|说白了|表面看是|归根结底|"
+    r"往深了说|说到这|你发现没|说来有趣|这条我认|这流程我熟|"
+    r"我理解你的(?:痛苦|焦虑|难处|处境)|你不是一个人|"
+    r"按照这个方案|马上去行动|话不多说|不多废话"
+)
+_AI_BAD_SENTENCE = (
+    "你这是把", "凑齐了", "活脱脱", "无异于", "好比", "简直是", "就像是",
+    "像极了", "如同一场", "仿佛在", "惊天动地", "排山倒海", "无与伦比",
+    "史无前例", "完美解决", "一劳永逸", "天壤之别", "脱胎换骨", "立竿见影",
+    "叹为观止", "不可估量",
+)
+
+
+def _drop_bad_sentences(s: str) -> str:
+    out = []
+    for one in re.split(r"(?<=[。；！？\n])", s):
+        if any(k in one for k in _AI_BAD_SENTENCE):
+            continue
+        out.append(one)
+    return "".join(out)
+
+
+def _strip_ai_tone(s: str) -> str:
+    s = re.sub(rf"(^|[。；！？\n])\s*(?:{_AI_STRICT})\s*[，,：:；;]\s*", r"\1", s)
+    s = re.sub(rf"(?:{_AI_STRICT})\s*[，,：:；;]\s*", "", s)
+    s = re.sub(rf"(^|[。；！？\n])\s*(?:{_AI_LOOSE})\s*[，,：:；;。！？]?\s*", r"\1", s)
+    s = re.sub(rf"(?:{_AI_LOOSE})\s*[，,：:；;]\s*", "", s)
+    # 「不是A，而是B」只把「而是」改成「，是」，A、B 两边都留着，不能只留 B
+    s = re.sub(r"并非([^。；\n]{1,40}?)[，,]?\s*而是", r"并非\1，是", s)
+    s = re.sub(r"不是([^。；\n]{1,40}?)[，,]?\s*而是", r"不是\1，是", s)
+    return s
+
+
+def _display_model_text(s: str) -> str:
+    """模型直答保留正常标点；只清 Markdown 记号和模型腔。"""
+    s = _drop_bad_sentences(str(s))
+    s = _strip_ai_tone(s)
+    s = re.sub(r"(?m)^\s{0,3}#{1,6}\s+", "", s)
+    s = re.sub(r"\*\*|__|`", "", s)
+    s = re.sub(r"(?m)^\s*[-*•]\s+", "", s)
+    s = re.sub(r"\n{3,}", "\n\n", s)
+    s = re.sub(r"[ \t]+\n", "\n", s)
+    return s.strip()
+
+
+def _display_text(s: str, model: bool = False) -> str:
+    """把一句话改成回答该有的写法；model=True 时保留标点，只清模型腔。"""
+    s = str(s)
+    if not s.strip():
+        return s
+    if model:
+        return _display_model_text(s)
+    s = _strip_ai_tone(s)
+    # PDF 转出来的域代码和页码不是正文；横线字符先统一成破折号再按区间处理
+    s = s.replace("―", "—")
+    s = re.sub(r"(?:MM)?PAGE\s*\\?\*+[A-Z]*", "", s, flags=re.I)
+    s = re.sub(r"(?:MM)?PAGE\s*\\?\*?\s*(?:M)?ERGE[A-Z]*\s*\d*", "", s, flags=re.I)
+    s = re.sub(r"(?:(?<=^)|(?<=\n)|\s)[—–]\s*\d{1,3}\s*[—–](?=\s|$|\n)", " ", s)
+    # 省略号也是标点，直接去掉，标题里的「400报…」变回「400报」
+    s = s.replace("…", "")
+    # 引号里的星号是官方标记符号，写成“星号”才不丢意思
+    s = re.sub(r"[“”「」『』\"']\s*[*＊]\s*[“”「」『』\"']", "星号", s)
+    # 星号当通配符或必填标记时也写成“星号”，别直接删掉
+    s = re.sub(r"(?<=[名为作写带])\s*[*＊](?=\.)", "星号", s)
+    s = re.sub(r"[*＊]\s*(?=为(?![上下]))", "星号", s)
+    s = re.sub(r"(?<=带)\s*[*＊]", "星号", s)
+    s = re.sub(r"以下简称\s*[：:]", "以下简称", s)
+    # 乘号别有别的写法
+    s = re.sub(r"(?<=[A-Za-z0-9）)])\s*[*＊]\s*(?=[\u4e00-\u9fffA-Za-z0-9（(])", "×", s)
+    # 时间里的全角冒号写成半角，别和正文冒号混在一起
+    s = re.sub(r"(?<=\d)：(?=\d{2})", ":", s)
+    # 显示比例和师生比不是时间；只在比例语境里把冒号写成「比」
+    def _ratio(m: re.Match[str]) -> str:
+        left, right = m.group(1), m.group(2)
+        near = m.string[max(0, m.start() - 8):m.start()] + m.string[m.end():m.end() + 8]
+        strong = ("比例", "宽高", "画幅", "分辨率", "英寸", "师生比")
+        weak = ("显示器", "超宽", "屏")
+        if any(w in near for w in strong) or (
+                any(w in near for w in weak) and (left, right) in _RATIO_PAIRS):
+            tail = m.string[m.end():m.end() + 1]
+            gap = " " if tail and re.match(r"[\u4e00-\u9fffA-Za-z]", tail) else ""
+            return f"{left} 比 {right}{gap}"
+        return m.group(0)
+
+    s = _RATIO_RE.sub(_ratio, s)
+    # 日期区间先连成一个整体，免得连字符被当成破折号；
+    # 「2026年9月2日10:00-9月10日20:00」的连字符两边不都是时刻，时间区间规则接不住
+    s = re.sub(
+        r"((?:\d{1,4}\s*年\s*)?\d{1,2}\s*月\s*\d{1,2}\s*日(?:\s*\d{1,2}:\d{2})?)"
+        r"\s*[-—–~～]+\s*"
+        r"((?:次年\s*|翌年\s*)?(?:\d{1,4}\s*年\s*)?\d{1,2}\s*月\s*\d{1,2}\s*日(?:\s*\d{1,2}:\d{2})?)",
+        r"\1至\2", s)
+    # 跨年区间「9 月 7 日至 2027 年」补一个空格，和「9 月 5 日至 6 日」一致
+    s = re.sub(r"(?<=日)至(?=\d)", "至 ", s)
+    # 只有月份的区间（9 月—次年 8 月）也写「至」
+    s = re.sub(r"(\d\s*月)\s*[-—–~～]+\s*(?=(?:次年|翌年)?\s*\d{1,2}\s*月)", r"\1至", s)
+    # 时间区间先连成一个整体，免得破折号被当成标点
+    s = re.sub(
+        r"(\d{1,2}:\d{2}(?::\d{2})?)\s*[-—–~～]+\s*(\d{1,2}:\d{2}(?::\d{2})?)",
+        r"\1至\2", s)
+    # 带单位的区间先写「至」；小数马上要被保护起来，之后就连不上了
+    s = re.sub(
+        r"(?<=\d)\s*[-—–~～]+\s*(?=\d+\s*个?\s*(?:周|天|日|月|年|届|元|档|次|人|间|门|个|分|小时|公里|km|GB|cm|mm|米|位))",
+        "至", s)
+    keep: list[str] = []
+
+    def stash(m: re.Match[str]) -> str:
+        keep.append(m.group(0))
+        return f"\x00{len(keep) - 1}\x01"
+
+    s = _KEEP_RE.sub(stash, s)
+    # 剩下的波浪线都是区间（周一～周日），统一写成「至」
+    s = re.sub(r"[~～]", "至", s)
+    # 尺寸里的乘号写成 ×，别当星号删掉
+    s = re.sub(r"(?<=\d)[`\s]*\*[`\s]*(?=\d)", "×", s)
+    s = re.sub(r"[*#]+", "", s)
+    s = re.sub(r"[“”‘’「」『』\"']", "", s)
+    # 英文名里的短横是名字的一部分（Wireless CUC–Guest），别当破折号换成逗号；
+    # 两边都是数字时留给下面的日期区间规则
+    s = re.sub(r"(?<=[A-Za-z])[—–](?=[A-Za-z0-9])|(?<=[A-Za-z0-9])[—–](?=[A-Za-z])", "-", s)
+    # 日期区间写成「至」，右侧是数字时留一个空格（9 月 5 日至 6 日）
+    s = re.sub(r"(?<=[年月日])\s*[-—–]+\s*(?=\d)", "至 ", s)
+    # 纯数字区间也写「至」；带单位的连字符才算区间，完整日期 2026-08-18 不动
+    s = re.sub(r"(?<=\d)\s*[—–]+\s*(?=\d)", "至", s)
+    s = re.sub(
+        r"(\d+(?:\.\d+)?)\s*元\s*[-—–~～]+\s*(\d+(?:\.\d+)?)\s*元",
+        r"\1 元至 \2 元", s)
+    s = re.sub(
+        r"(?<=\d)\s*[-—–]+\s*(?=\d+\s*个?\s*(?:周|天|日|月|年|届|元|档|次|人|间|门|个|分|小时|公里|km|GB|cm|mm|米|位))",
+        "至", s)
+    # 剩下的双破折号是 prose 里的断句，不是区间
+    s = s.replace("——", "，")
+    s = re.sub(r"[—–]", "，", s)
+    s = re.sub(r"[：:]", "，", s)
+    s = s.replace("。", "；")
+    s = re.sub(r"(?<=[\u4e00-\u9fff])\.(?=[\u4e00-\u9fff]|$)", "；", s)
+    s = s.replace(".", "")
+    s = re.sub(r"[，；、]{2,}", lambda m: m.group(0)[0], s)
+    s = re.sub(r"(?<=[，；、])\s+|\s+(?=[，；、])", "", s)
+
+    def restore(m: re.Match[str]) -> str:
+        return keep[int(m.group(1))]
+
+    s = re.sub(r"\x00(\d+)\x01", restore, s)
+    return s.strip(" ，；、")
+
+
+def _step_what(s: dict[str, Any]) -> str:
+    """步骤标签已经显示 when，正文用分隔符重复同一个词时去掉。"""
+    what = str(s.get("what") or "")
+    when = str(s.get("when") or "").strip()
+    if when and what.strip().startswith(when):
+        tail = what.strip()[len(when):]
+        if tail[:1] in " ：:，,；;、":
+            rest = tail.lstrip(" ：:，,；;、")
+            if rest:
+                return rest
+    return what
+
+
+_STEP_NUM_RE = re.compile(r"^第\s*[一二三四五六七八九十百\d]+\s*步$")
+
+
+def _step_label(s: dict[str, Any]) -> str:
+    """能当小标题用的 when；「第 N 步」只是序号，不当标签。"""
+    when = str(s.get("when") or "").strip()
+    if not when or _STEP_NUM_RE.match(when):
+        return ""
+    return when
+
+
+def _step_text(s: dict[str, Any]) -> str:
+    """摘要里的一步：标签加正文，正文里已经带着这个词时不重复。"""
+    what = _step_what(s)
+    label = _step_label(s)
+    if not label or label in what:
+        return what
+    head = re.split(r"[，；。]", what, maxsplit=1)[0]
+    label_chars = set(re.findall(r"[\u4e00-\u9fff]", label))
+    if len(label_chars & set(re.findall(r"[\u4e00-\u9fff]", head))) >= 3:
+        return what
+    return f"{label}，{what}"
+
+
+def _join_steps(rows: list[Any]) -> str:
+    """一步一句地连起来；步骤自带句末标点时不再叠一个分号。"""
+    out = []
+    for s in rows:
+        t = (_step_text(s) if isinstance(s, dict) else str(s)).strip()
+        t = t.rstrip("。；;")
+        if t:
+            out.append(t)
+    return "；".join(out)
+
+
+def _clean_part(part: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(part, dict):
+        return part
+    if isinstance(part.get("text"), str):
+        part["text"] = _display_text(part["text"])
+    steps = part.get("steps")
+    if isinstance(steps, list):
+        fixed = []
+        for s in steps:
+            if isinstance(s, dict) and isinstance(s.get("what"), str):
+                s = {**s, "what": _display_text(_step_what(s)),
+                     **{k: _display_text(s[k]) for k in ("where", "when")
+                        if isinstance(s.get(k), str)}}
+            elif isinstance(s, str):
+                s = _display_text(s)
+            fixed.append(s)
+        part["steps"] = fixed
+    if isinstance(part.get("lines"), list):
+        part["lines"] = [_display_text(x) if isinstance(x, str) else x
+                         for x in part["lines"]]
+    return part
+
+
+def _clean_text_item(item: dict[str, Any]) -> dict[str, Any]:
+    out = dict(item)
+    for key in ("title", "answer", "fee", "location", "hours", "duration", "window", "note"):
+        if isinstance(out.get(key), str):
+            out[key] = _display_text(out[key])
+    if isinstance(out.get("steps"), list):
+        out["steps"] = [
+            {**s, "what": _display_text(_step_what(s)),
+             **{k: _display_text(s[k]) for k in ("where", "when")
+                if isinstance(s.get(k), str)}}
+            if isinstance(s, dict) else s
+            for s in out["steps"]
+        ]
+    if isinstance(out.get("materials"), list):
+        out["materials"] = [
+            {**m, "name": _display_text(m["name"])}
+            if isinstance(m, dict) and isinstance(m.get("name"), str) else m
+            for m in out["materials"]
+        ]
+    if isinstance(out.get("pitfalls"), list):
+        out["pitfalls"] = [_display_text(x) if isinstance(x, str) else x
+                           for x in out["pitfalls"]]
+    if isinstance(out.get("advisory"), list):
+        out["advisory"] = [_display_text(x) if isinstance(x, str) else x
+                           for x in out["advisory"]]
+    if isinstance(out.get("experience"), list):
+        out["experience"] = [
+            {**e, "text": _display_text(e["text"])}
+            if isinstance(e, dict) and isinstance(e.get("text"), str) else e
+            for e in out["experience"]
+        ]
+    if isinstance(out.get("slots"), list):
+        out["slots"] = [
+            {**s, **{k: _display_text(s[k]) for k in ("ask", "why")
+                     if isinstance(s.get(k), str)}}
+            if isinstance(s, dict) else s
+            for s in out["slots"]
+        ]
+    return out
+
+
+def scope_note(item: dict[str, Any], text: str = "") -> str | None:
+    """条目的适用范围提示：问法够泛、条目只覆盖其中一类人时，随回答一起说清楚。
+
+    scope_note 可以是一句话，也可以是若干条 [{text, if}]，按问句命中的关键词各自生效。
+    """
+    raw = item.get("scope_note")
+    if isinstance(raw, str):
+        entries = [{"text": raw, "if": item.get("scope_note_if")}]
+    elif isinstance(raw, list):
+        entries = [e for e in raw if isinstance(e, dict) and isinstance(e.get("text"), str)]
+    else:
+        return None
+    out: list[str] = []
+    for entry in entries:
+        only = entry.get("if")
+        if isinstance(only, list) and only and not any(k in text for k in only):
+            continue
+        one = entry["text"].strip().rstrip("。；;，,")
+        if one:
+            out.append(one)
+    return "；".join(out) or None
+
+
+def experience_note(item: dict[str, Any], text: str = "") -> str | None:
+    """用户补充的现场经验：明确标成非官方，不跟官方原文混在一起。"""
+    raw = item.get("experience")
+    if not isinstance(raw, list):
+        return None
+    out: list[str] = []
+    for entry in raw:
+        if not isinstance(entry, dict) or not isinstance(entry.get("text"), str):
+            continue
+        only = entry.get("if")
+        if isinstance(only, list) and only and not any(k in text for k in only):
+            continue
+        src = entry.get("from")
+        head = f"非官方补充（来源：{src.strip()}）" if isinstance(src, str) and src.strip() else "非官方补充"
+        one = entry["text"].strip().rstrip("。；;，,")
+        if one:
+            out.append(f"{head}：{one}")
+    return "；".join(out) or None
+
+
 def public(item: dict[str, Any]) -> dict[str, Any]:
-    return {
+    return _clean_text_item({
         "id": item["id"],
         "title": item["title"],
         "dept": item["dept"],
@@ -905,13 +1273,55 @@ def public(item: dict[str, Any]) -> dict[str, Any]:
         "answer": item.get("answer"),
         "note": item.get("note"),
         "advisory": item.get("advisory", []),
+        "experience": item.get("experience", []),
         "evidence": item.get("evidence", {}),
         "qr": item.get("qr") or [],
         "pdf": item.get("pdf") or [],
-    }
+    })
 
 
 # ---------------------------------------------------------------- deepseek
+
+
+def _with_history(
+    system_prompt: str,
+    user_text: str,
+    history: list[dict[str, str]] | None,
+    max_turns: int = 6,
+    max_chars: int = 3000,
+) -> list[dict[str, Any]]:
+    """把对话历史塞进 messages 数组，供 ds_chat 消费。
+
+    history 格式：[{"role": "user"|"assistant", "content": "..."}]。
+    只取最近 max_turns 轮（每轮 = 1 user + 1 assistant），总字符不超过 max_chars。
+    """
+    msgs: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
+    if not history:
+        msgs.append({"role": "user", "content": user_text})
+        return msgs
+    pairs = []
+    i = 0
+    while i < len(history):
+        u = history[i]
+        a = history[i + 1] if i + 1 < len(history) else None
+        if u.get("role") == "user" and a and a.get("role") == "assistant":
+            pairs.append((u["content"], a["content"]))
+            i += 2
+        else:
+            i += 1
+    kept: list[tuple[str, str]] = []
+    total = 0
+    for u, a in reversed(pairs[-max_turns:]):
+        cost = len(u) + len(a)
+        if total + cost > max_chars:
+            break
+        kept.append((u, a))
+        total += cost
+    for u, a in reversed(kept):
+        msgs.append({"role": "user", "content": u})
+        msgs.append({"role": "assistant", "content": a})
+    msgs.append({"role": "user", "content": user_text})
+    return msgs
 
 
 def ds_chat(
@@ -1167,7 +1577,7 @@ def list_items() -> dict[str, Any]:
 
 FOCUS_RULES: list[tuple[str, str, str]] = [
     ("contact", "该找哪个部门", r"哪个部门|找谁|联系谁|归口|找哪个|问谁|哪个处|谁能管"),
-    ("fee", "费用", r"多少钱|多少钱啊|收费|费用|工本费|免费|贵"),
+    ("fee", "费用", r"多少钱|收费|费用|工本费|免费|贵|网费|水费|电费|学费(?!减免)|住宿费(?!减免)|杂费|书费"),
     ("window", "办理时限", r"截止|什么时候前|过期|来得及|有效期|多久内"),
     ("hours", "办理时间", r"几点|什么时间|什么时候能办|周几|哪个时段|工作日|周末|上班|开放时间|开馆|闭馆|营业时间|开门|关门|到几点|办公时间|办理时间|服务时间|工作时间|就诊时间"),
     ("location", "办理地点", r"在哪|哪里|哪个楼|去哪儿|地点|几层"),
@@ -1175,7 +1585,7 @@ FOCUS_RULES: list[tuple[str, str, str]] = [
     ("amount", "数量", r"几本|多少本|多少册|借多少|几张|几份|几个名额"),
     ("duration", "多久出结果", r"多久|几天|多长时间|当场|立等"),
     ("pitfalls", "容易白跑的情况", r"白跑|坑|失败|出错|被拒|注意|办不成"),
-    ("steps", "办理流程", r"怎么办|流程|步骤|怎么弄|如何|怎么操作|预约|办卡|报名|怎么申请|报销|怎么报|如何报|缴费|交费|缴纳|怎么交|放假|寒假|暑假|开学|校历"),
+    ("steps", "办理流程", r"怎么办|流程|步骤|怎么弄|如何|怎么操作|怎么用|怎么使用|预约|办卡|报名|怎么申请|报销|怎么报|如何报|缴费|交费|缴纳|怎么交|放假|寒假|暑假|开学|校历"),
 ]
 
 FOCUS_LABEL = {k: label for k, label, _ in FOCUS_RULES}
@@ -1227,6 +1637,10 @@ def detect_focus(text: str, item: dict[str, Any]) -> list[str]:
     if "material" in hits and "steps" in hits and not re.search(
             r"怎么办|流程|步骤|如何|怎么|预约|放假", text):
         hits.remove("steps")
+    # 问「怎么交钱」时先答流程，再答多少钱；只截两点时不能把流程挤掉
+    if "steps" in hits and re.search(
+            r"怎么交|怎么缴|如何交|如何缴|怎么缴费|如何缴费|缴费流程|交费流程", text):
+        hits = ["steps"] + [h for h in hits if h != "steps"]
     # 太泛的问法（只问"怎么办"）就回到整体
     if not hits or hits == ["steps"]:
         return ["overview"]
@@ -1296,27 +1710,24 @@ def _best_quote(ev: dict, text: str, min_overlap: int = 4) -> dict[str, str] | N
 
 
 def _applicable_step_rows(item: dict[str, Any], known: dict[str, str]) -> list[dict[str, Any]]:
-    """按已知条件筛掉不适用分支；一个条件都没给时把各分支原样列出，别交白卷。"""
+    """按已知条件筛掉不适用分支；条件还没问清时保留该分支，别把答案删成一行。"""
     rows = item.get("steps") or []
     out = []
     for s in rows:
         cond = s.get("if")
-        if cond and not all(known.get(k) == v for k, v in cond.items()):
+        if cond and any(k in known and known[k] != v for k, v in cond.items()):
             continue
         out.append(s)
     return out or rows
 
 
 def _applicable_steps(item: dict[str, Any], known: dict[str, str]) -> list[str]:
-    return [s["what"] for s in _applicable_step_rows(item, known)]
+    return [_step_what(s) for s in _applicable_step_rows(item, known)]
 
 
 def _narrow_steps(text: str, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """只按步骤显式标注的 tags 收窄，别拿字面重合去猜——猜错就漏掉另一支。"""
     if len(rows) <= 2 or not (text or "").strip():
-        return rows
-    # 带 if 的是并列分支，不是先后步骤，按关键词砍掉一支会把另一种情况答错
-    if any(isinstance(s, dict) and s.get("if") for s in rows):
         return rows
     tagged = [s for s in rows if isinstance(s, dict) and s.get("tags")]
     if not tagged:
@@ -1332,14 +1743,121 @@ def _narrow_steps(text: str, rows: list[dict[str, Any]]) -> list[dict[str, Any]]
     if not scored:
         return rows
     top = max(n for n, _ in scored)
-    return [s for n, s in scored if n >= top - 1]
+    hits = [s for n, s in scored if n >= top - 1]
+    # 带 if 的是并列分支，不是先后步骤，砍掉一支会把另一种情况答错；
+    # 但问句命中的都是不带分支的通用步骤时（如「快递地址怎么写」），可以只留那一步
+    if any(isinstance(s, dict) and s.get("if") for s in rows) and any(
+            isinstance(s, dict) and s.get("if") for s in hits):
+        return rows
+    return hits
+
+
+def _flow_rows(item: dict[str, Any], known: dict[str, str], text: str) -> list[dict[str, Any]]:
+    """先按条件筛分支，再按问句收窄；用户已经选过的分支不能再被 tags 收窄掉。"""
+    rows = _applicable_step_rows(item, known or {})
+    narrowed = _narrow_steps(text, rows)
+    forced = [
+        s for s in rows
+        if isinstance(s, dict) and isinstance(s.get("if"), dict) and s["if"]
+        and all(known.get(k) == v for k, v in s["if"].items())
+    ]
+    if not forced:
+        return narrowed
+    keep = {id(s) for s in narrowed} | {id(s) for s in forced}
+    return [s for s in rows if id(s) in keep]
+
+
+_PHONE_ALL = re.compile(
+    r"全部|所有|一页|清单|完整|每个部门|哪里查|在哪查|哪儿查|怎么查|哪里看|在哪看")
+_PHONE_ITEM_ID = "bumen-dianhua"
+
+
+def _phone_menu(text: str, top: dict[str, Any]) -> dict[str, Any] | None:
+    """一页速查别一口气甩九个号码：问得笼统时先让用户选部门。"""
+    if top.get("id") != _PHONE_ITEM_ID or _PHONE_ALL.search(text):
+        return None
+    rows = [s for s in (top.get("steps") or []) if isinstance(s, dict)]
+    if len(rows) < 3 or len(_narrow_steps(text, rows)) < len(rows):
+        return None
+    opts = []
+    for s in rows:
+        label = _step_label(s)
+        num = re.search(r"\d{4,}(?:\s*[、，,]\s*\d{4,})*", _step_what(s))
+        opts.append({
+            "id": top["id"],
+            "title": f"{label}咨询电话",
+            "label": label,
+            "dept": num.group(0) if num else "",
+        })
+    opts.append({"id": top["id"], "title": "所有部门电话", "label": "全部部门", "dept": "一页看完"})
+    return {
+        "matched": True,
+        "query": text,
+        "normalized": "各部门电话 · 请选择部门",
+        "confidence": 0.6,
+        "band": "low",
+        "ambiguous": True,
+        "item": public(top),
+        "answers": [],
+        "hold": True,
+        "followups": [],
+        "disambiguate": opts,
+        "clarify": "要查哪个部门的电话？选一个，我把号码给你。",
+        "focus": [],
+        "quotes": [],
+        "map": None,
+        "rule_unsure": False,
+    }
+
+
+_FACET_COVER = {
+    "办理时间": re.compile(
+        r"\d{1,2}:\d{2}|[0-9]+\s*点|开门|关门|开放时间|营业|供应|值班|服务时间|工作时间"),
+    "费用": re.compile(
+        r"\d+\s*元|免费|收费|自理|自费|付费|价格|工本费|缴费|购电|交费"),
+    "要带什么": re.compile(
+        r"携带|带上?|材料|证件|服装|帽子|上衣|裤子|鞋|物品|自备|准备|"
+        r"申请表|证明|准考证|身份证"),
+    "办理地点": re.compile(
+        r"位于|位置|地点|地址|楼内|区内|馆内|厅内|层|室|楼|门|侧|"
+        r"平台|网站|网址|线上|网上|APP|app|系统|公众号|微信|邮箱|邮寄"),
+    "办理时限": re.compile(
+        r"\d+\s*(?:天|日|个工作日|周|月|年)内|截止|之前|以前|有效期|过期"),
+    "多久出结果": re.compile(
+        r"\d+\s*(?:天|日|个工作日|周|月|年)|"
+        r"[一二三四五六七八九十两]+(?:天|日|周|个月|月|年)|当场|立等|即时"),
+    "数量": re.compile(r"\d+\s*(?:本|册|个|张|份|间|条|次|门|人)"),
+}
+
+
+def _facet_covered(label: str, parts: list[dict[str, Any]]) -> bool:
+    """答复正文里已经写到这一面时，别再补一句「官方页面没有写」。"""
+    pat = _FACET_COVER.get(label)
+    if not pat:
+        return False
+    for p in parts:
+        if not p.get("found"):
+            continue
+        chunks = [p.get("text") or ""]
+        for s in p.get("steps") or []:
+            if isinstance(s, dict):
+                chunks.extend(str(s.get(k) or "") for k in ("what", "where", "when"))
+            else:
+                chunks.append(str(s))
+        for ln in p.get("lines") or []:
+            if isinstance(ln, dict):
+                chunks.extend(str(ln.get(k) or "") for k in ("text", "what", "label"))
+            else:
+                chunks.append(str(ln))
+        if pat.search(" ".join(chunks)):
+            return True
+    return False
 
 
 def _answer_one(item: dict[str, Any], focus: str, known: dict[str, str] | None = None,
                 text: str = "") -> dict[str, Any]:
     """从结构化数据 + 原文引文里拼出这一面的答案。"""
     ev = item.get("evidence") or {}
-    sources = {s["url"] for s in item.get("source", [])}
 
     def quotes_for(*prefixes: str) -> list[dict[str, str]]:
         out: list[dict[str, str]] = []
@@ -1357,13 +1875,18 @@ def _answer_one(item: dict[str, Any], focus: str, known: dict[str, str] | None =
         return out
 
     if focus == "overview":
-        rows = _narrow_steps(text, _applicable_step_rows(item, known or {}))
-        steps = [s["what"] for s in rows]
+        rows = _flow_rows(item, known or {}, text)
+        steps = [
+            {"when": _step_label(s), "what": _step_what(s)}
+            if isinstance(s, dict) else {"what": str(s)}
+            for s in rows
+        ]
         answer = item.get("answer")
         return {
             "focus": "overview",
             "label": "官方答复" if answer else "整体流程",
-            "text": answer or (" → ".join(steps) if steps else "官方页面没有给出可执行步骤。"),
+            "text": answer or (_join_steps(rows) if rows
+                              else "官方页面没有给出可执行步骤。"),
             "steps": steps,
             "quotes": quotes_for("answer") if answer else quotes_for("steps."),
             "found": bool(answer or steps),
@@ -1380,11 +1903,11 @@ def _answer_one(item: dict[str, Any], focus: str, known: dict[str, str] | None =
         }
 
     if focus == "steps":
-        rows = _narrow_steps(text, _applicable_step_rows(item, known or {}))
+        rows = _flow_rows(item, known or {}, text)
         return {
             "focus": focus,
             "label": FOCUS_LABEL[focus],
-            "text": " → ".join(s.get("what", "") for s in rows) if rows else None,
+            "text": _join_steps(rows) if rows else None,
             "steps": rows,
             "quotes": quotes_for("steps."),
             "found": bool(rows),
@@ -1545,11 +2068,14 @@ def _known_slots(text: str, item: dict[str, Any]) -> dict[str, str]:
     known: dict[str, str] = {}
     for s in item.get("slots", []):
         hints = s.get("hints") or {}
-        for opt in s.get("options", []):
-            cands = [opt, *(hints.get(opt) or [])]
-            if any(norm(c) and norm(c) in q for c in cands):
-                known[s["key"]] = opt
-                break
+        hits = [
+            opt for opt in s.get("options", [])
+            if any(norm(c) and norm(c) in q for c in [opt, *(hints.get(opt) or [])])
+        ]
+        # 一句里同时点了两个选项（「生源地和校园地有什么区别」）时不预判，
+        # 两边都列出来，别拿第一个选项把另一个分支筛掉。
+        if len(hits) == 1:
+            known[s["key"]] = hits[0]
     return known
 
 
@@ -1581,7 +2107,8 @@ def _followups(
 
 
 def llm_route(
-    text: str, candidates: list[tuple[dict[str, Any], int]]
+    text: str, candidates: list[tuple[dict[str, Any], int]],
+    history: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     """规则拿不准时，让模型先把问题翻译成多种校园说法，再在候选里挑。
 
@@ -1608,8 +2135,9 @@ def llm_route(
         '只输出 JSON：{"rewrites": ["…"], "id": "候选id或null"}'
     )
     try:
+        msgs = _with_history(prompt, text, history)
         raw = ds_chat(
-            [{"role": "system", "content": prompt}, {"role": "user", "content": text}],
+            msgs,
             max_tokens=220,
             json_mode=True,
         )
@@ -1667,7 +2195,7 @@ def assoc_pick(rewrites: list[str]) -> tuple[dict[str, Any], int] | None:
     return best
 
 
-def llm_free_answer(text: str) -> dict[str, Any] | None:
+def llm_free_answer(text: str, history: list[dict[str, str]] | None = None) -> dict[str, Any] | None:
     """事项库一条都没对上时，才让模型直接回答。
 
     只由 miss 分支调用；命中了任何条目的问答路径不经过这里，
@@ -1677,14 +2205,19 @@ def llm_free_answer(text: str) -> dict[str, Any] | None:
         "你在帮中国传媒大学的同学回答校园办事问题。事项库里没有收录这个问题，"
         "请直接给出可执行的回答：先给结论，再给要准备的东西和该去哪个部门办。\n"
         "要求：\n"
-        "- 不确定的细节（电话、金额、截止日期、文件条款号）一律不要编，写「以学校最新通知为准」。\n"
+        "- 不确定的细节（电话、金额、截止日期、文件条款号）一律不要编，写以学校最新通知为准。\n"
         "- 不要声称这是学校原文，不要伪造文件名、链接或文号。\n"
         "- 确实不知道就直说，并指出大概该问哪个部门。\n"
+        "- 用正常的中文标点：逗号、句号、问号、冒号、引号都照常写，不要写成没有句号的流水句。\n"
+        "- 不要用 Markdown 的星号、井号、反引号。\n"
+        "- 不用首先、其次、最后、此外、值得注意的是、总而言之这类开场词。\n"
+        "- 不用不是A而是B、与其说A不如说B、然而A不过B这类转折套话，不用比喻和排比。\n"
         '只输出 JSON：{"answer": "…", "confidence": "low|medium|high", "caveat": "…"}'
     )
     try:
+        msgs = _with_history(prompt, text, history)
         raw = ds_chat(
-            [{"role": "system", "content": prompt}, {"role": "user", "content": text}],
+            msgs,
             max_tokens=700,
             json_mode=True,
         )
@@ -1704,9 +2237,10 @@ def llm_free_answer(text: str) -> dict[str, Any] | None:
     }
 
 
-def with_free_answer(resp: dict[str, Any], text: str, llm_on: bool) -> dict[str, Any]:
+def with_free_answer(resp: dict[str, Any], text: str, llm_on: bool,
+                     history: list[dict[str, str]] | None = None) -> dict[str, Any]:
     if llm_on:
-        gen = llm_free_answer(text)
+        gen = llm_free_answer(text, history)
         if gen:
             resp["llm_answer"] = gen
     return resp
@@ -1969,11 +2503,15 @@ def _find_entities(text: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]
 
 def transfer_plan(text: str) -> dict[str, Any] | None:
     """问「转去 XX 学院 / 转 XX 专业要什么条件」时，直接给完整接收计划。"""
+    strong = bool(re.search(r"转专业|转入|转到|转去|转进|换专业|接收计划|接收条件", text))
     # 微专业名里常带「数智」「传播」这类学院/专业词，且「招生对象及条件」
     # 会命中 plan_words；不能让微专业的问法落到转专业接收计划上。
     if "微专业" in text:
         return None
-    strong = bool(re.search(r"转专业|转入|转到|转去|转进|换专业|接收计划|接收条件", text))
+    # 辅修、双学位是独立招生项目，带专业名问材料 / 条件时同样不该落到转专业计划；
+    # 只有问句本身明确在说转专业，才继续看接收计划。
+    if ("辅修" in text or "双学位" in text) and not strong:
+        return None
     if PLACE_ASK.search(text) and not strong:
         return None
     soft = bool(re.search(r"转|换", text))
@@ -2238,7 +2776,8 @@ def _rerank_hint(item: dict[str, Any]) -> str:
 
 
 def llm_rerank(
-    text: str, pool: list[tuple[dict[str, Any], int]]
+    text: str, pool: list[tuple[dict[str, Any], int]],
+    history: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     """让 DeepSeek Flash 判断候选里哪条真的回答了问题，并给出校园说法改写。
 
@@ -2264,8 +2803,9 @@ def llm_rerank(
         '"why": "一句话理由", "rewrites": ["…"]}'
     )
     try:
+        msgs = _with_history(prompt, text, history)
         raw = ds_chat(
-            [{"role": "system", "content": prompt}, {"role": "user", "content": text}],
+            msgs,
             max_tokens=480,
             json_mode=True,
         )
@@ -2421,8 +2961,12 @@ def _menu_dept(item: dict[str, Any]) -> str:
     if d and d != "中国传媒大学":
         return d
     srcs = item.get("source") or []
+    if isinstance(srcs, (str, dict)):
+        srcs = [srcs]
     if srcs:
-        t = re.split(r"\s*·\s*", str(srcs[0].get("title") or ""))[0].strip()
+        first = srcs[0]
+        raw = first.get("title") if isinstance(first, dict) else src_label(str(first)).get("label")
+        t = re.split(r"\s*·\s*", str(raw or ""))[0].strip()
         return t[:24] + ("…" if len(t) > 24 else "")
     return d
 
@@ -2789,8 +3333,65 @@ def _transfer_clarify(text: str, tp: dict[str, Any] | None,
     }
 
 
-def answer_question(text: str, given: dict[str, str] | None = None,
-                    router_llm: bool | None = None) -> dict[str, Any]:
+_FOLLOW_RE = re.compile(
+    r"^(?:那|那么|这个|那个|它|然后|还有|另外|再|如果)|"
+    r"还要|需要带|带什么|要带什么|准备什么|哪些材料|什么材料|"
+    r"多长时间|多久|什么时候|几点|在哪|哪里|哪儿|去哪儿|去哪里|怎么|如何|多少|"
+    r"多少钱|费用|流程|时间|地点|电话|材料|证件|条件|要求|"
+    r"可以吗|能不能|行不行|要不要|用不用|需要|预约|然后呢"
+)
+
+_GENERIC_TERMS = {
+    "要带什么", "带什么", "带什么东西", "准备什么", "要准备什么",
+    "多久", "多长时间", "在哪", "在哪里", "哪儿", "怎么办", "怎么弄",
+    "费用", "多少钱", "流程", "材料", "条件", "电话", "时间", "地点",
+    "可以吗", "能不能", "然后呢", "预约",
+}
+
+
+def _is_followup(text: str) -> bool:
+    """像「那要带什么」「多久」「然后呢」这种接着上一问说的短句。"""
+    t = norm(text)
+    return len(t) <= 24 and bool(_FOLLOW_RE.search(t))
+
+
+def _mentions_other_item(text: str, ctx_id: str) -> bool:
+    """句子里点了别的事项或地点（「那转专业呢」「图书馆要预约吗」），就别套上一条。"""
+    q = norm(text)
+    ctx = ITEM_BY_ID.get(ctx_id) or {}
+    ctx_text = norm(ctx.get("title", "") + "".join(ctx.get("aliases") or []))
+    for name in _place_names():
+        if len(name) >= 2 and name in q and name not in ctx_text:
+            return True
+    for it, sc in rank(text)[:8]:
+        if it["id"] == ctx_id or sc < MATCH_THRESHOLD:
+            continue
+        names = [it.get("title", ""), *(it.get("aliases") or [])]
+        kws = it.get("keywords") or []
+        for name in [*names, *kws]:
+            nn = norm(name)
+            if len(nn) < 2 or nn in _GENERIC_TERMS:
+                continue
+            if len(nn) >= 3 and nn in q:
+                return True
+            if len(nn) == 2 and nn in q and sc >= 70 and name in kws:
+                return True
+    return False
+
+
+def _contextual_text(text: str, context_item: str | None) -> tuple[str, str | None]:
+    """续问时把上一条事项带到句子里；句子里已经点了别的事项就不带。"""
+    ctx = ITEM_BY_ID.get(context_item or "")
+    if not ctx or not _is_followup(text):
+        return text, None
+    if _mentions_other_item(text, ctx["id"]):
+        return text, None
+    return f"{ctx['title']}，{text}", ctx["id"]
+
+
+def _answer_core(text: str, given: dict[str, str] | None = None,
+                 router_llm: bool | None = None,
+                 history: list[dict[str, str]] | None = None) -> dict[str, Any]:
     llm_on = (os.getenv("ROUTER_LLM") == "1") if router_llm is None else router_llm
     num = NUM_ONLY.match(text or "")
     if num:
@@ -2964,7 +3565,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
         rewrites: list[str] = []
         rr = None
         if len(pool) >= 2:
-            rr, rewrites = llm_rerank(text, pool)
+            rr, rewrites = llm_rerank(text, pool, history)
         if rr is not None:
             best = rr["item"]
             bsc = rr["score"]
@@ -2989,7 +3590,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
             }
         elif risky:
             # rerank 不可用时退回旧路：先让模型翻译，再拿改写回规则检索
-            picked, rewrites = llm_route(text, ranked[:8])
+            picked, rewrites = llm_route(text, ranked[:8], history)
             if picked is not None:
                 top = picked
                 score = max(score, MATCH_THRESHOLD + 1)
@@ -3008,7 +3609,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     # 自动抽取的制度卡片不参与选择题：两个同名文件让用户选，等于没答
     alt_rows = distinct_rows([(i, sc) for i, sc in ranked[:6]
                               if sc >= 38 and not i.get("auto")])
-    near = alt_rows[:3]
+    near = [(i, sc) for i, sc in alt_rows[:3] if _names_subject(norm(text), i)]
     if (not resolved_by_llm) and score < MATCH_THRESHOLD and len(near) >= 2 and (near[0][1] - near[1][1]) < 14:
         return {
             "matched": True,
@@ -3101,7 +3702,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
                 "router_llm": llm_on,
                 "rule_unsure": risky,
             })
-            return with_free_answer(base, text, llm_on)
+            return with_free_answer(base, text, llm_on, history)
         if CAMPUS_HINT.search(text):
             near_opts = [
                 {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
@@ -3119,12 +3720,17 @@ def answer_question(text: str, given: dict[str, str] | None = None,
             "router_llm": llm_on,
             "rule_unsure": risky,
         })
-        return with_free_answer(base, text, llm_on)
+        return with_free_answer(base, text, llm_on, history)
 
-    # 同一族事项分数咬得很紧时先问清是哪一类，别硬猜；
+    # 同一族事项分数咬得很紧时，先答最像的那一条，把另一条放进「相关事项」；
+    # 不拿「你是想问 A 还是 B」把回答整个拦住——点进来是要办事的。
     # 但如果句子里同时点了地点，地点只是背景，选办这件事的条目（别拿楼宇速查去反问答不上）
-    rivals = distinct_rows([(i, sc) for i, sc in ranked[:5]
-                            if sc >= MATCH_THRESHOLD and not i.get("auto")])
+    rivals_all = distinct_rows([(i, sc) for i, sc in ranked[:5]
+                                if sc >= MATCH_THRESHOLD and not i.get("auto")])
+    rivals = ([rivals_all[0]] if rivals_all else []) + [
+        (i, sc) for i, sc in rivals_all[1:] if _names_subject(norm(text), i)
+    ]
+    compound: list[dict[str, Any]] = []
     if (not resolved_by_llm) and not place_forced and len(rivals) >= 2 and (score - rivals[1][1]) < 8:
         if map_hit:
             concrete = [r for r in rivals if not str(r[0].get("id", "")).startswith("campus-")]
@@ -3149,32 +3755,13 @@ def answer_question(text: str, given: dict[str, str] | None = None,
                 top, score = rivals[0]
                 rivals = []
         if rivals:
-            return {
-                "matched": True,
-                "query": text,
-                "normalized": "待确认是哪一类",
-                "confidence": round(min(score, 100) / 100, 2),
-                "band": "low",
-                "ambiguous": True,
-                "item": public(top),
-                "answers": [],
-                "hold": True,
-                "followups": [],
-                "disambiguate": [
-                    {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
-                     "hint": (i.get("aliases") or [""])[0]}
-                    for i, _ in rivals[:3]
-                ],
-                "clarify": f"你是想问「{rivals[0][0]['title']}」还是「{rivals[1][0]['title']}」？这两个办起来不是一处。",
-                **sensitivity(text),
-                "router_llm": llm_on,
-                "rule_unsure": risky,
-                "rerank": rerank_info,
-                "focus": [],
-                "quotes": [],
-                "related": _related_items(text, top),
-                "map": map_hit,
-            }
+            top, score = rivals[0]
+            compound = [i for i, _ in rivals[1:3]]
+
+    menu = _phone_menu(text, top)
+    if menu:
+        menu.update(**sensitivity(text), router_llm=llm_on)
+        return menu
 
     focus = detect_focus(text, top)
     known0 = {**_known_slots(text, top), **(given or {})}
@@ -3182,24 +3769,35 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     found = [p for p in parts if p["found"]]
     missing = [p["label"] for p in parts if not p["found"]]
 
+    # 问「在哪」顺带问了怎么办时，别只甩一个地址
+    if (not PLACE_ONLY.search(text)
+            and any(p["found"] for p in parts)
+            and all(p["focus"] == "location" for p in parts if p["found"])):
+        ov = _answer_one(top, "overview", known0, text)
+        if ov["found"]:
+            parts.append(ov)
+            missing = [m for m in missing if m != "整体流程"]
+
     known = {**_known_slots(text, top), **(given or {})}
     focus_keys = [p["focus"] for p in parts]
     followups = _followups(top, focus_keys, known)
     blocked = [f for f in followups if f["blocks"]]
 
-    # 反问不能让用户一无所获：把不依赖分支的通用答复先端出来，
-    # 具体分支等用户回答后再补（如成绩单先给线上自助下载，再问要不要密封）。
+    # 反问不能让用户一无所获，也不能把「要带什么」「在哪」换成流程：
+    # 材料、地点、费用这类事实面照常给，分支流程等用户回答后再补。
     if blocked:
         base_part = _answer_one(top, "overview", known, text)
-        if base_part["found"]:
+        fact_focus = {"material", "location", "fee", "hours", "window",
+                      "duration", "contact", "amount", "pitfalls"}
+        keep = [p for p in parts if p["found"] and p["focus"] in fact_focus]
+        if keep:
+            parts = keep + ([base_part] if base_part["found"] else [])
+        elif base_part["found"]:
             parts = [base_part]
-            focus_keys = ["overview"]
-            missing = []
         else:
-            decided = {k for f in blocked for k in f.get("decides") or []}
-            parts = [p for p in parts if p["found"] and p["focus"] not in decided]
-            focus_keys = [p["focus"] for p in parts]
-            missing = [m for m in missing if m not in ("官方答复", "整体流程")]
+            parts = [p for p in parts if p["found"]]
+        focus_keys = [p["focus"] for p in parts]
+        missing = [m for m in missing if m not in ("官方答复", "整体流程")]
 
     # 聚焦项一个都没命中时退回整体答复，别交白卷
     if not any(p["found"] for p in parts):
@@ -3245,6 +3843,16 @@ def answer_question(text: str, given: dict[str, str] | None = None,
             parts = place_parts([map_hit]) + rest
             missing = [m for m in missing if m not in ("官方答复", "办理地点")]
 
+    # 已经有内容可看时，不再单开一面写「没有收录」，缺的部分交给 note 逐项说清
+    if any(p["found"] for p in parts):
+        parts = [p for p in parts if p["found"]]
+    # 问的是「不能带什么」，禁携清单就是答案，别再补「官方页面没有写要带什么」
+    if missing and re.search(r"不能带|不能携带|禁带|禁携|不准带|不可以带|不让带", text):
+        missing = [m for m in missing if m != "要带什么"]
+    # 正文里已经写到这一面，就别再补「官方页面没有写」
+    if missing:
+        missing = [m for m in missing if not _facet_covered(m, parts)]
+
     normalized = f"{top['title']} · " + "、".join(p["label"] for p in parts)
     quotes: list[dict[str, str]] = []
     seen_q: set[str] = set()
@@ -3258,6 +3866,15 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     second_clean = 0 if resolved_by_llm else next((sc for _, sc in distinct_rows(ranked[:3])[1:2]), 0)
     # 还在反问、或问的是另一个园区时，别把地图定到校内那个点
     show_map = None if blocked or (map_hit and known.get("campus") not in (None, "", "校内")) else map_hit
+    related = _related_items(text, top)
+    compound_note = None
+    if compound:
+        have = {r.get("id") for r in related}
+        extra = [{"id": i["id"], "title": i["title"], "dept": i.get("dept", "")}
+                 for i in compound if i["id"] != top["id"] and i["id"] not in have]
+        if extra:
+            related = extra + related
+            compound_note = f"问句里还点到「{extra[0]['title']}」，相关内容一并列在相关事项里。"
     return {
         "matched": True,
         "query": text,
@@ -3280,16 +3897,64 @@ def answer_question(text: str, given: dict[str, str] | None = None,
         "known": known,
         "quotes": quotes,
         "missing": missing,
-        "note": (f"官方页面没有写「{'、'.join(missing)}」，我不替它编。" if missing else None),
-        "related": _related_items(text, top),
+        "note": "；".join(
+            b.strip().rstrip("。；;，,") for b in (
+                scope_note(top, text),
+                experience_note(top, text),
+                compound_note,
+                f"官方页面没有写「{'、'.join(missing)}」，我不替它编。" if missing else None,
+            ) if b
+        ) or None,
+        "related": related,
         "map": show_map,
     }
+
+
+def answer_question(text: str, given: dict[str, str] | None = None,
+                    router_llm: bool | None = None,
+                    context_item: str | None = None,
+                    context_slots: dict[str, str] | None = None,
+                    history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+    """续问接住上一件事；独立的新问题照样按原样路由。"""
+    orig = text
+    search, ctx_id = _contextual_text(text, context_item)
+    if ctx_id:
+        given = {**(context_slots or {}), **(given or {})}
+    resp = _answer_core(search, given, router_llm, history)
+    if search != orig:
+        resp["query"] = orig
+        resp["context_item"] = ctx_id
+    return resp
 
 
 class AskReq(BaseModel):
     text: str
     slots: dict[str, str] = {}
     router_llm: bool | None = None   # None=按环境变量；界面开关传 true/false
+    context_item: str | None = None
+    context_slots: dict[str, str] = {}
+    messages: list[dict[str, str]] = []
+
+
+def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
+    """把回答正文统一成规定写法；原文引文与文书草稿不动。"""
+    for p in resp.get("answers") or []:
+        _clean_part(p)
+    for key in ("clarify", "note", "normalized"):
+        if isinstance(resp.get(key), str):
+            resp[key] = _display_text(resp[key])
+    for f in resp.get("followups") or []:
+        if not isinstance(f, dict):
+            continue
+        for key in ("question", "why"):
+            if isinstance(f.get(key), str):
+                f[key] = _display_text(f[key])
+    gen = resp.get("llm_answer")
+    if isinstance(gen, dict):
+        for key in ("text", "caveat"):
+            if isinstance(gen.get(key), str):
+                gen[key] = _display_text(gen[key], model=True)
+    return resp
 
 
 @app.post("/api/ask")
@@ -3298,7 +3963,11 @@ def ask(req: AskReq) -> dict[str, Any]:
     text = (req.text or "").strip()
     if len(text) < 2 and not NUM_ONLY.match(text):
         raise HTTPException(400, "请再说得具体一点")
-    return answer_question(text, req.slots, router_llm=req.router_llm)
+    return clean_response(answer_question(
+        text, req.slots, router_llm=req.router_llm,
+        context_item=req.context_item, context_slots=req.context_slots,
+        history=req.messages or None,
+    ))
 
 
 @app.post("/api/intake")
@@ -3421,7 +4090,7 @@ def index() -> FileResponse:
 @app.get("/classic")
 def classic() -> FileResponse:
     return FileResponse(
-        ROOT / "index.html",
+        ROOT / "web-next" / "classic.html",
         media_type="text/html; charset=utf-8",
         headers={"Cache-Control": "no-store, must-revalidate"},
     )

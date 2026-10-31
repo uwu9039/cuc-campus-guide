@@ -58,40 +58,70 @@ def variants(item: dict) -> list[str]:
     return list(dict.fromkeys(outs))
 
 
+def _run_chunk(queries: list[str]) -> list[tuple[str | None, bool, bool]]:
+    import app as core  # 子进程各自加载一遍条目，避免跨进程共享可变状态
+
+    rows: list[tuple[str | None, bool, bool]] = []
+    for q in queries:
+        d = core.answer_question(q)
+        rows.append(((d.get("item") or {}).get("id"),
+                     bool(d.get("disambiguate")), bool(d.get("ambiguous"))))
+    return rows
+
+
+def run_cases(queries: list[str], workers: int = 1) -> list[tuple[str | None, bool, bool]]:
+    """按原顺序返回 (命中条目, 是否反问, 是否歧义)；并行与串行结果一致。"""
+    if workers <= 1 or len(queries) < 50:
+        return _run_chunk(queries)
+    from concurrent.futures import ProcessPoolExecutor
+
+    size = max(20, len(queries) // (workers * 6))
+    chunks = [queries[i:i + size] for i in range(0, len(queries), size)]
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        parts = list(ex.map(_run_chunk, chunks))
+    return [row for part in parts for row in part]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--top", type=int, default=15)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--workers", type=int, default=1)
     args = ap.parse_args()
 
     data = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
     hand = [i for i in data if not i.get("auto")]
     print(f"参与审计的事项：{len(hand)} 条（人工条目）")
 
-    total = ok = 0
+    cases: list[tuple[str, str]] = []
+    case_total: dict[str, int] = {}
+    for item in hand:
+        qs = variants(item)
+        if args.limit:
+            qs = qs[: args.limit]
+        case_total[item["id"]] = len(qs)
+        cases += [(q, item["id"]) for q in qs]
+    total = len(cases)
+    print(f"总问法 {total}，并行进程 {args.workers}")
+    results = run_cases([q for q, _ in cases], args.workers)
+
+    ok = 0
     miss_by_item: Counter = Counter()
     confusions: Counter = Counter()      # (期望, 实际) -> 次数
     examples: dict[tuple[str, str], list[str]] = defaultdict(list)
     ambiguous = 0
 
-    for item in hand:
-        qs = variants(item)
-        if args.limit:
-            qs = qs[: args.limit]
-        for q in qs:
-            total += 1
-            d = core.answer_question(q)
-            got = (d.get("item") or {}).get("id")
-            if d.get("disambiguate"):
-                ambiguous += 1
-            if got == item["id"]:
-                ok += 1
-            else:
-                miss_by_item[item["id"]] += 1
-                key = (item["id"], got or "拒答")
-                confusions[key] += 1
-                if len(examples[key]) < 2:
-                    examples[key].append(q)
+    for (q, want), (got, dis, _amb) in zip(cases, results):
+        if dis:
+            ambiguous += 1
+        if got == want:
+            ok += 1
+        else:
+            miss_by_item[want] += 1
+            key = (want, got or "拒答")
+            confusions[key] += 1
+            if len(examples[key]) < 2:
+                examples[key].append(q)
 
     print(f"\n总问法 {total}，命中 {ok} = {ok/total:.1%}")
     print(f"触发反问（gap<8）：{ambiguous} 条 = {ambiguous/total:.1%}")
@@ -105,8 +135,7 @@ def main() -> None:
 
     print("\n命中率最低的事项：")
     for iid, n in miss_by_item.most_common(8):
-        total_i = len(variants(next(i for i in hand if i["id"] == iid)))
-        print(f"  {title.get(iid, iid)[:26]:<28} 失手 {n}/{total_i}")
+        print(f"  {title.get(iid, iid)[:26]:<28} 失手 {n}/{case_total.get(iid, 0)}")
 
     out = ROOT / "routing-audit.md"
     lines = ["# 路由审计报告", "",

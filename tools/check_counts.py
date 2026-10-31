@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 
 import app  # noqa: E402
 
-OK_STATUS = {"verified", "source-thin"}
+OK_STATUS = {"verified", "source-thin", "partial"}
 
 
 def load(name: str) -> dict:
@@ -32,10 +32,19 @@ def main() -> None:
     if not status <= OK_STATUS:
         fails.append(f"items.json 出现未知 status: {sorted(status - OK_STATUS)}")
 
+    bad_source = [
+        i["id"] for i in items
+        if not isinstance(i.get("source"), list)
+        or any(not isinstance(s, dict) for s in i["source"])
+    ]
+    if bad_source:
+        fails.append(f"条目 source 必须是来源对象数组: {bad_source[:8]}")
+
     verified = sum(1 for i in items if i.get("status") == "verified")
     thin = sum(1 for i in items if i.get("status") == "source-thin")
-    if verified + thin != len(items):
-        fails.append(f"条目状态未覆盖全部：{verified}+{thin} != {len(items)}")
+    partial = sum(1 for i in items if i.get("status") == "partial")
+    if verified + thin + partial != len(items):
+        fails.append(f"条目状态未覆盖全部：{verified}+{thin}+{partial} != {len(items)}")
 
     h = app.health()
     if h["items"] != len(items):
@@ -98,7 +107,7 @@ def main() -> None:
             fails.append("health vector_chunks 与 manifest 不一致")
 
     print("口径核对")
-    print(f"  事项        {len(items)}（verified {verified} / source-thin {thin}）")
+    print(f"  事项        {len(items)}（verified {verified} / source-thin {thin} / partial {partial}）")
     print(f"  事实        {h.get('facts')}")
     cov = f"{len(pids)}/{len(hand_ids)} 个人工条目" if pids else "未记录（需重新生成）"
     print(f"  预置问法    {pz.get('total')} 条 / 覆盖 {cov}")

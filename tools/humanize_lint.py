@@ -8,7 +8,15 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TARGETS = [ROOT / "index.html", ROOT / "app.py"]
+# 线上由 FastAPI 托管 web-next/，根目录 index.html 是旧版，两边都扫
+TARGETS = [
+    ROOT / "index.html",
+    ROOT / "app.py",
+    ROOT / "web-next" / "index.html",
+    ROOT / "web-next" / "classic.html",
+    ROOT / "web-next" / "app.js",
+    ROOT / "web-next" / "personal-data.js",
+]
 
 PATTERNS: list[tuple[str, re.Pattern, str]] = [
     ("假对比", re.compile(r"不是.{1,12}而是"), "只抬语气就删，真纠错才留"),

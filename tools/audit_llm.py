@@ -44,7 +44,8 @@ def main() -> None:
     print(f"样本 {len(cases)} 条（{len(hand)} 个事项）")
 
     # ---- 第一轮：纯规则 ----
-    os.environ.pop("ROUTER_LLM", None)
+    # 后端默认已经开着模型裁决，这里要显式关掉才是「纯规则」那一轮
+    os.environ["ROUTER_LLM"] = "0"
     t0 = time.time()
     rule_hits = 0
     sure: list[tuple[str, str]] = []      # 规则能稳稳命中的

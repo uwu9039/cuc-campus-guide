@@ -5,11 +5,16 @@
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+# 后端默认已经开着模型裁决，这个脚本要的是确定性规则，得显式关掉，
+# 不然模型每次挑的条目可能不一样，回归就没法钉死
+os.environ["ROUTER_LLM"] = "0"
 
 import app  # noqa: E402
 
@@ -63,7 +68,7 @@ CASES: list[tuple[str, str]] = [
 def main() -> None:
     fails = 0
     for q, want in CASES:
-        d = app.answer_question(q)
+        d = app.answer_question(q, {}, router_llm=False)
         got = (d.get("item") or {}).get("id")
         ok = bool(d.get("matched")) and got == want and not d.get("disambiguate")
         if not ok:

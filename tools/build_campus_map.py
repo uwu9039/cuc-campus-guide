@@ -2,8 +2,9 @@
 """生成 campus-map.json（中国传媒大学校园地图 POI）。
 
 坐标来源与处理：
-- amap：高德地图网页版 POI 搜索（www.amap.com/service/poiInfo）取到的 GCJ-02 原始坐标，
+- amap：高德地图网页版 POI 搜索（www.amap.com/service/poiInfo / poiTips）取到的 GCJ-02 原始坐标，
   本次拿到 4 个楼宇点位（立德楼 / 博学楼 / 艺术与传播大楼 / 图书馆）。
+  2026-11-02 用 poiTips 复核并更正校医院点位到高德「中国传媒大学20号楼」（poiInfo 会触发滑块验证，poiTips 不会）。
 - osm：OpenStreetMap 原生 WGS84 坐标（经 Photon 反查/检索得到 osm_type/osm_id），
   由本脚本用标准 WGS84→GCJ-02 算法转换，楼体中心而非门点。
 - null：公开渠道查不到，不猜坐标，confidence 记 low。
@@ -196,11 +197,12 @@ POIS: list[dict] = [
     # ---------------- 医疗
     dict(
         id="xiaoyiyuan", name="校医院", aliases=["学校医院", "20号楼（原幼儿园）", "中传校医院"],
-        category="medical", src=(OSM, 39.914185, 116.548511), confidence="high",
+        category="medical", src=(AMAP, 39.913089, 116.558813), confidence="high",
         address="校内 20 号楼（原幼儿园），近北苑餐厅与定福庄东街",
-        source="OpenStreetMap N7321277718（amenity=hospital）+ W781983689 楼体",
-        url="https://www.openstreetmap.org/node/7321277718",
-        note="OSM 同时有楼体与 POI 节点，二者相距约 20 m。",
+        source="高德地图 POI「中国传媒大学20号楼」B0FFF7RE6W；「中国传媒大学校医院」B000A9Q6CA 地址同为定福庄东街1号20号楼，两点相距约 5 m",
+        url="https://www.amap.com/place/B0FFF7RE6W",
+        note="2026-11-02 更正：原坐标取 OpenStreetMap N7321277718（amenity=hospital）+ W781983689 楼体，"
+             "换算成 GCJ-02 后落点经高德逆地理核对位于「中国传媒大学附属中学」一带，离 20 号楼约 451 m，用户实测指认为错，故改用高德 POI 点位。",
     ),
     # ---------------- 场馆
     dict(
@@ -404,6 +406,7 @@ NOTES = [
     "高德点位与 OSM 楼体中心存在 50–150 m 差异（POI 点 vs 楼体中心），同一点位请优先用 confidence 高者。",
     "南门、西门、21号楼、44号楼、中传学术中心、中传音乐厅、基本伙食堂、快递驿站、白杨大集未能取到可核实坐标，lat/lng 为 null，未做估算。",
     "2026-10-29 采集：高德网页版 poiInfo 接口在连续请求后触发滑块验证，仅完成 4 个楼宇查询；未使用任何 API Key / 付费接口。",
+    "2026-11-02 更正：高德网页版的 poiTips 接口不触发滑块验证，可用「中国传媒大学20号楼」查到 POI 编号与 GCJ-02 坐标；据此把校医院点位从 OSM 节点改到高德 20 号楼点位（原点位经高德逆地理落在附属中学一带，偏集约 451 m）。",
     "建议现场核对：21/44 号楼位置、中传音乐厅所在楼栋、演播馆与学术中心、快递驿站与快递柜。",
 ]
 
@@ -456,7 +459,7 @@ def build() -> dict:
         "note": "取全部有坐标 POI 的算术平均，非校区多边形重心",
     }
     return {
-        "updated": "2026-10-29",
+        "updated": "2026-11-02",
         "center": center,
         "amap_key_env": "AMAP_KEY",
         "pois": pois,

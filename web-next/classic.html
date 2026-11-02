@@ -344,8 +344,8 @@
       <h1>说得清，<em>带得对</em></h1>
     </div>
     <div class="status">
-      <label class="llmsw" title="规则拿不准时让模型在候选里挑；事项库一条都没收录时，由模型直接生成回答。生成内容可能不准确，请自行核对。">
-        <input type="checkbox" id="llmsw"><span></span>模型裁决<em class="risk">含模型生成</em><em class="ctxcap">有上下文能力</em>
+      <label class="llmsw" title="系统拿不准时，让模型在候选事项里挑一条；事项库一条都没收录时，由模型直接生成回答。生成的内容可能不准确，请自行核对。">
+        <input type="checkbox" id="llmsw" checked><span></span>模型裁决<em class="risk">含模型生成</em><em class="ctxcap">有上下文能力</em>
       </label>
       <span class="pill"><i class="dot" id="dot"></i><span id="stat">检测中</span></span>
       <span id="meta">数据核验 —</span>
@@ -363,7 +363,7 @@
     </div>
     <div class="chips" id="chips"></div>
     <details class="presets" id="presets"><summary>常用问法</summary><div id="pbody"></div></details>
-    <div class="hint">认得出就答，认不出就说没有。每条答案下面压着原文。</div>
+    <div class="hint">对得上事项就答，对不上就说没有，每条答案下面都附官方原文。</div>
     <div class="err" id="err"></div>
   <div class="llmhint" id="llmhint"></div>
   <section class="ctpanel" id="ctpanel" hidden>
@@ -382,7 +382,7 @@
   <div id="out"></div>
 
   <footer>
-    <span>校园办事向导 v0.6 · 管理类</span>
+    <span>校园办事向导 v0.7 · 管理类</span>
     <span id="foot">材料以官方窗口为准</span>
   </footer>
 </div>
@@ -442,13 +442,18 @@ async function api(path, body) {
   try {
     const h = await api("/api/health");
     $("#dot").className = "dot " + (h.key_configured ? "on" : "off");
-    $("#stat").textContent = h.key_configured ? "在线 · 模型已接入" : "本地模式 · 未配 Key";
+    $("#stat").textContent = h.key_configured ? "在线 · 模型已接入" : "本地模式 · 没接入模型";
+    if (!h.key_configured) {
+      // 开关默认开着，没配密钥时拨回去，别把 router_llm=true 发给后端
+      $("#llmsw").checked = false;
+      $("#llmsw").disabled = true;
+    }
     $("#meta").textContent = `事项 ${h.items} 条（${h.verified} 可核验）· 原文 ${h.sources_official} 份`
-      + (h.vector_chunks ? ` · 向量库 ${h.vector_sources} 份 / ${h.vector_chunks} 段` : "")
+      + (h.vector_chunks ? ` · 可检索原文 ${h.vector_sources} 份 / ${h.vector_chunks} 段` : "")
       + ` · 核验 ${h.data_updated}`;
     $("#foot").textContent = `材料以官方窗口为准 · 数据核验 ${h.data_updated}`;
   } catch {
-    $("#stat").textContent = "后端未启动";
+    $("#stat").textContent = "服务没启动";
     $("#dot").className = "dot off";
   }
   try {
@@ -522,7 +527,7 @@ function renderContacts(items) {
   $("#ctcount").textContent = `${items.length} 条`;
   $("#ctlist").innerHTML = items.length
     ? items.map(ctRow).join("")
-    : `<div class="ctempty">这个用途下暂时没有收录到公开联系方式。换个用途，或直接问我。</div>`;
+    : `<div class="ctempty">按这个用途暂时没找到公开联系方式。换个用途试试，或者回到对话里问我。</div>`;
   $("#ctlist").querySelectorAll("[data-copy]").forEach((b) => {
     b.onclick = async () => {
       try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已复制"; }
@@ -539,18 +544,19 @@ async function filterContacts() {
   renderContacts(d.items);
 }
 
-/* 敏感词 → 建议开启模型裁决；普通词 → 建议关闭 */
+/* 敏感词 → 提示模型裁决的状态；普通词 → 不提示 */
 function showLlmHint(d) {
   const el = $("#llmhint");
   if (!el) return;
   const on = $("#llmsw").checked;
   if (d.sensitive) {
     el.className = "llmhint warn";
-    el.innerHTML = `这类问题（${esc((d.hits || []).join("、"))}）答错代价大，建议<b>开启模型裁决</b>`
-      + (on ? "（已开启）" : `　<button class="mini" onclick="document.querySelector('#llmsw').click();run(true)">开启并重答</button>`);
+    el.innerHTML = `这类问题（${esc((d.hits || []).join("、"))}）答错代价大，`
+      + (on ? "模型裁决已经开着，这条答案经模型核过一遍。"
+            : `建议开<b>模型裁决</b>。　<button class="mini" onclick="document.querySelector('#llmsw').click();run(true)">开启并重答</button>`);
   } else if (d.rule_unsure && !on) {
     el.className = "llmhint soft";
-    el.textContent = "规则对这句没把握。开启模型裁决后：先在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考。";
+    el.textContent = "系统对这句话没把握。开启模型裁决后，会先从候选事项里挑一条；事项库一条都没收录时，由模型直接生成回答，这部分内容要你自己核对。";
   } else {
     el.className = "llmhint";
     el.textContent = "";
@@ -576,7 +582,7 @@ function extractAnswerText(d) {
 async function run(keepSlots) {
   const text = $("#q").value.trim();
   $("#err").textContent = "";
-  if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { $("#err").textContent = "请再说得具体一点"; return; }
+  if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { $("#err").textContent = "问得太短了，把要办的事说全一点"; return; }
   if (!keepSlots) state.slots = {};
   $("#go").disabled = true;
   try {
@@ -840,12 +846,12 @@ function hitList(hits) {
 
 function notFound(r) {
   const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
-  const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+  const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.label || a.title)}</span>`).join("");
   const hits = r.original_search || [];
   const gen = r.llm_answer ? `<section class="blk genblk">
-      <div><span class="gentag">模型生成</span><span class="h">没有官方条目，以下由大模型直接回答</span></div>
+      <div><span class="gentag">模型生成</span><span class="h">没有官方条目，这段回答由模型直接生成</span></div>
       <p class="gentext">${linkify(esc(r.llm_answer.text || ""))}</p>
-      <p class="gencaveat">${esc(r.llm_answer.disclaimer || "内容由大模型生成，可能不准确。")}${r.llm_answer.caveat ? ` ${esc(r.llm_answer.caveat)}` : ""}</p>
+      <p class="gencaveat">${esc(r.llm_answer.disclaimer || "这段内容由模型生成，可能不准确。")}${r.llm_answer.caveat ? ` ${esc(r.llm_answer.caveat)}` : ""}</p>
     </section>` : "";
   const contacts = (r.contacts || []).map((c) => {
     const val = c.value || "";
@@ -858,7 +864,7 @@ function notFound(r) {
   const next = (r.next_actions || []).map((s) => `<li>${linkify(esc(s))}</li>`).join("");
   return `<div class="sheet">
     <div class="sheet-top"><div><div class="t">没查到这条</div>
-      <div class="s">${r.topic ? `你问的是「${esc(r.topic)}」。` : ""}${esc(r.reason || "规则没有对上具体事项")}。下面是我能确认的事项，或者换个说法再试一次。</div></div></div>
+      <div class="s">${r.topic ? `你问的是「${esc(r.topic)}」。` : ""}${esc(r.reason || "没对上具体事项")}。下面是我能确认的事项，你也可以换个说法再问一次。</div></div></div>
     ${gen}
     ${alts ? `<section class="blk"><div class="bh"><span class="i">相近</span><span class="h">这些事项名称接近</span></div>
       <div class="chips" id="alts">${alts}</div></section>` : ""}
@@ -954,7 +960,7 @@ function buildSheet(item, intake) {
         <button class="ghost" id="vbtn" disabled>核对</button>
         <button class="ghost" id="pbtn">打印</button>
       </div>
-      <div class="hint">把材料摊在桌上拍一张，逐项核对缺什么。看不清会写「看不清」，不猜。</div>
+      <div class="hint">把材料摊在桌上拍一张，逐项核对缺什么。哪一项看不清，它会直接标「看不清」，不会自己编内容。</div>
       <div id="vout"></div>
     </section>
   </div>`;
@@ -975,7 +981,7 @@ function bindSheet() {
 async function runSearch() {
   const text = $("#q").value.trim();
   $("#err").textContent = "";
-  if (text.length < 2) { $("#err").textContent = "请再说得具体一点"; return; }
+  if (text.length < 2) { $("#err").textContent = "问得太短了，把要找的内容说全一点"; return; }
   $("#searchbtn").disabled = true;
   $("#out").innerHTML = `<div class="hint">在官方原文里检索…</div>`;
   try {
@@ -983,7 +989,7 @@ async function runSearch() {
     const hits = d.hits || [];
     $("#out").innerHTML = `<div class="sheet">
       <div class="sheet-top"><div><div class="t">原文检索</div>
-        <div class="s">「${esc(text)}」· 命中 ${hits.length} 段 · 库内 ${d.vector_sources || 0} 份 / ${d.vector_chunks || 0} 段</div></div></div>
+        <div class="s">「${esc(text)}」· 找到 ${hits.length} 段 · 原文库共 ${d.vector_sources || 0} 份、${d.vector_chunks || 0} 段</div></div></div>
       <section class="blk">${hits.length
         ? hitList(hits)
         : '<div class="hint">原文库里没有相近段落。换个说法，或者直接问要办的事项。</div>'}</section>

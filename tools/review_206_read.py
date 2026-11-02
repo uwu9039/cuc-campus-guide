@@ -7,12 +7,17 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+# 后端默认开着模型裁决，这里要的是能逐条对照的规则回答，默认关掉；
+# 真要看模型那一版，自己设 ROUTER_LLM=1 再跑
+os.environ.setdefault("ROUTER_LLM", "0")
 
 import app  # noqa: E402
 

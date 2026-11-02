@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>校园办事向导 · 三十二种视觉风格</title>
+<style>
+:root { --ink: #18231d; --muted: #68736b; --paper: #f3f1e9; --accent: #df5b3f; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+a { color: inherit; }
+header { width: min(1240px, calc(100% - 48px)); margin: 0 auto; padding: 72px 0 48px; display: grid; grid-template-columns: 1.3fr .7fr; gap: 48px; align-items: end; border-bottom: 2px solid var(--ink); }
+.eyebrow { margin: 0 0 18px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .18em; }
+h1 { margin: 0; max-width: 800px; font-family: Georgia, "Songti SC", serif; font-size: clamp(48px, 7vw, 92px); line-height: .98; letter-spacing: -.055em; font-weight: 500; }
+.header-note { margin: 0; color: var(--muted); font-size: 15px; }
+.header-note strong { display: block; margin-bottom: 12px; color: var(--ink); font-size: 32px; font-weight: 500; }
+main { width: min(1240px, calc(100% - 48px)); margin: 0 auto; padding: 42px 0 70px; }
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.style-card { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 300px; padding: 18px; border: 1px solid #c9c7bc; background: rgba(255,255,255,.38); text-decoration: none; transition: transform .18s ease, box-shadow .18s ease; }
+.style-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px rgba(30,40,30,.1); }
+.style-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.card-number { font-family: Georgia, serif; font-size: 14px; }
+.card-arrow { font-size: 20px; }
+.preview { position: relative; height: 120px; margin: 18px 0 22px; overflow: hidden; background: var(--c1); border: 1px solid rgba(0,0,0,.1); }
+.preview::before { content: ""; position: absolute; width: 58%; height: 58%; left: 10%; top: 20%; background: var(--c2); border-radius: var(--shape, 0); transform: rotate(var(--turn, -5deg)); }
+.preview::after { content: ""; position: absolute; width: 42%; height: 28%; right: 7%; bottom: 12%; background: var(--c3); border-radius: var(--shape2, 50%); }
+.style-card h2 { margin: 0; font-size: 21px; line-height: 1.2; }
+.style-card p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.card-english { margin-top: auto; padding-top: 18px; color: var(--muted); font-size: 10px; letter-spacing: .14em; }
+footer { width: min(1240px, calc(100% - 48px)); margin: 0 auto; padding: 24px 0 34px; border-top: 1px solid #c9c7bc; color: var(--muted); font-size: 12px; }
+@media (max-width: 1000px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px) { header { grid-template-columns: 1fr; gap: 24px; padding-top: 46px; } .gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { header, main, footer { width: calc(100% - 28px); } .gallery { grid-template-columns: 1fr; } .style-card { min-height: 260px; } }
+@media (prefers-reduced-motion: reduce) { .style-card { transition: none; } .style-card:hover { transform: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div><p class="eyebrow">CAMPUS GUIDE / VISUAL STUDIES</p><h1>同一内容，<br>三十二种表情。</h1></div>
+  <p class="header-note"><strong>32 个方向</strong>不做功能堆叠，只比较色彩、字体、布局、质感与信息节奏。点击任意卡片打开完整示例。</p>
+</header>
+<main><div class="gallery"><a class="style-card" href="clear-campus.html" style="--c1:#f4f6ef;--c2:#175c4c;--c3:#d5e7dc;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">01 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>清透校园</h2><p>暖白、墨绿与清晰卡片</p><span class="card-english">CLEAR CAMPUS</span></a>
+<a class="style-card" href="paper-archive.html" style="--c1:#f2ebdc;--c2:#a43228;--c3:#26221d;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">02 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>纸张档案</h2><p>米白纸张、黑红编辑网格</p><span class="card-english">PAPER ARCHIVE</span></a>
+<a class="style-card" href="dark-command.html" style="--c1:#151a17;--c2:#b8f35a;--c3:#34443a;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">03 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>深色智能中枢</h2><p>炭黑界面与荧光状态</p><span class="card-english">DARK COMMAND</span></a>
+<a class="style-card" href="swiss-grid.html" style="--c1:#f5f5f2;--c2:#e32b20;--c3:#111111;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">04 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>瑞士网格</h2><p>强调严格分栏、非对称留白和高效率阅读</p><span class="card-english">SWISS GRID</span></a>
+<a class="style-card" href="minimal-mono.html" style="--c1:#fafafa;--c2:#111111;--c3:#d8d8d8;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">05 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>极简黑白</h2><p>用大量留白、细线和黑白灰建立安静秩序</p><span class="card-english">QUIET MONO</span></a>
+<a class="style-card" href="brutalist.html" style="--c1:#fff200;--c2:#ff5c8a;--c3:#111111;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">06 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>粗野主义</h2><p>用粗边框、硬阴影和高饱和色直接撞击视线</p><span class="card-english">NEO BRUTALISM</span></a>
+<a class="style-card" href="bauhaus.html" style="--c1:#f1e7d0;--c2:#dc3828;--c3:#2058a8;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">07 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>包豪斯</h2><p>把圆形、三角和原色转化为明确的功能分区</p><span class="card-english">BAUHAUS</span></a>
+<a class="style-card" href="memphis.html" style="--c1:#dcd4ff;--c2:#ff6b9d;--c3:#26c6b8;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">08 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>孟菲斯</h2><p>用波浪、彩点和 playful 几何制造轻快节奏</p><span class="card-english">MEMPHIS POP</span></a>
+<a class="style-card" href="art-deco.html" style="--c1:#111714;--c2:#c7a65a;--c3:#ece1c5;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">09 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>装饰艺术</h2><p>以金色细线、对称框架和华丽比例营造仪式感</p><span class="card-english">ART DECO</span></a>
+<a class="style-card" href="glassmorphism.html" style="--c1:#8b7cf6;--c2:#e7e4ff;--c3:#62d8ff;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">10 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>玻璃拟态</h2><p>让半透明层级漂浮在柔光和渐变背景之上</p><span class="card-english">GLASSMORPHISM</span></a>
+<a class="style-card" href="neumorphism.html" style="--c1:#e3e9f0;--c2:#7b8da6;--c3:#f8fbff;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">11 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>新拟态</h2><p>用同色系凹凸和柔软阴影模拟可触摸控件</p><span class="card-english">SOFT UI</span></a>
+<a class="style-card" href="retro-terminal.html" style="--c1:#07110b;--c2:#6cff8f;--c3:#1c4128;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">12 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>复古终端</h2><p>模拟 CRT 屏幕、命令行和绿色磷光字符</p><span class="card-english">RETRO TERMINAL</span></a>
+<a class="style-card" href="pixel-arcade.html" style="--c1:#24245a;--c2:#ffcf3f;--c3:#4de68a;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">13 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>像素游戏</h2><p>把办理流程变成带血条、像素按钮的关卡界面</p><span class="card-english">PIXEL ARCADE</span></a>
+<a class="style-card" href="y2k-chrome.html" style="--c1:#dce5ff;--c2:#6c78ff;--c3:#ffffff;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">14 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>Y2K 金属</h2><p>混合银色渐变、泡泡形状和千禧年数字光泽</p><span class="card-english">Y2K CHROME</span></a>
+<a class="style-card" href="cyber-neon.html" style="--c1:#0a0920;--c2:#00f0ff;--c3:#ff2ca8;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">15 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>赛博霓虹</h2><p>用暗色城市感、青紫辉光和切角组件强化未来感</p><span class="card-english">CYBER NEON</span></a>
+<a class="style-card" href="blueprint.html" style="--c1:#14538c;--c2:#ecf7ff;--c3:#81c8ef;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">16 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>工程蓝图</h2><p>把内容绘制成带坐标、标注和技术网格的图纸</p><span class="card-english">BLUEPRINT</span></a>
+<a class="style-card" href="handwritten.html" style="--c1:#fffdf2;--c2:#e96767;--c3:#5279b9;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">17 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>手绘笔记</h2><p>用横线纸、手写感和随手圈画降低办事距离感</p><span class="card-english">DOODLE NOTES</span></a>
+<a class="style-card" href="collage.html" style="--c1:#e9e2d5;--c2:#ef5a3c;--c3:#272727;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">18 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>杂志拼贴</h2><p>把错位纸片、撕边和混合字体拼成编辑式版面</p><span class="card-english">CUT & PASTE</span></a>
+<a class="style-card" href="soft-clay.html" style="--c1:#f9e8dd;--c2:#e8977d;--c3:#a6c8b5;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">19 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>柔彩黏土</h2><p>用奶油色、膨胀圆角和柔软立体阴影模拟手作质感</p><span class="card-english">SOFT CLAY</span></a>
+<a class="style-card" href="organic.html" style="--c1:#eef0e4;--c2:#496b54;--c3:#c9b894;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">20 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>自然有机</h2><p>用植物色、流动曲线和自然纸张感形成舒缓体验</p><span class="card-english">ORGANIC EARTH</span></a>
+<a class="style-card" href="aurora-glass.html" style="--c1:#eef4ff;--c2:#8ea7ff;--c3:#d9f4ef;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">21 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>极光玻璃</h2><p>用缓慢极光、透亮玻璃与分层浮现营造轻盈智能感</p><span class="card-english">AURORA GLASS</span></a>
+<a class="style-card" href="graphite-halo.html" style="--c1:#080a0e;--c2:#c4d2ff;--c3:#303542;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">22 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>石墨光晕</h2><p>以石墨玻璃、金属轮廓和跟随指针的柔光建立空间感</p><span class="card-english">GRAPHITE HALO</span></a>
+<a class="style-card" href="silver-studio.html" style="--c1:#edf0f4;--c2:#1d1d1f;--c3:#b9c8e2;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">23 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>银白序章</h2><p>借银灰材质、巨幅排版和轻微视差接近产品发布现场</p><span class="card-english">SILVER STUDIO</span></a>
+<a class="style-card" href="deep-blue-focus.html" style="--c1:#030b16;--c2:#7dd3fc;--c3:#102c46;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">24 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>深海聚焦</h2><p>用深海蓝光和输入聚焦时的环境降噪突出人机对话</p><span class="card-english">DEEP BLUE FOCUS</span></a>
+<a class="style-card" href="spectrum-prism.html" style="--c1:#f2f1f3;--c2:#7266df;--c3:#e6b9d2;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">25 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>光谱折射</h2><p>让透明棱镜与局部光谱随操作错位呈现克制的智能感</p><span class="card-english">SPECTRUM PRISM</span></a>
+<a class="style-card" href="acid-field.html" style="--c1:#ffffff;--c2:#ffde00;--c3:#111111;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">26 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>酸黄场</h2><p>用同色实心圆、均衡器与巨型字标搭一版扁平、无玻璃的能量场</p><span class="card-english">ACID FIELD</span></a>
+<a class="style-card" href="signal-orange.html" style="--c1:#ffffff;--c2:#ff6a00;--c3:#111111;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">27 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>信号橙场</h2><p>同一套能量场换成信号橙，看强调色在字标和按钮上的分量</p><span class="card-english">SIGNAL FIELD</span></a>
+<a class="style-card" href="alarm-red.html" style="--c1:#ffffff;--c2:#ff3b30;--c3:#111111;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">28 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>正红场</h2><p>同一套能量场换成正红，红块压黑字最像告示</p><span class="card-english">RED FIELD</span></a>
+<a class="style-card" href="volt-lime.html" style="--c1:#ffffff;--c2:#b6ff2e;--c3:#111111;--shape:0;--shape2:50%;--turn:-5deg"><div class="card-top"><span class="card-number">29 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>荧光绿场</h2><p>同一套能量场换成荧光绿，整页最亮但字还是读得出</p><span class="card-english">LIME FIELD</span></a>
+<a class="style-card" href="electric-cyan.html" style="--c1:#ffffff;--c2:#00d5ff;--c3:#111111;--shape:50%;--shape2:0;--turn:8deg"><div class="card-top"><span class="card-number">30 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>电光青场</h2><p>同一套能量场换成电光青，冷色版更靠近数码产品官网</p><span class="card-english">CYAN FIELD</span></a>
+<a class="style-card" href="cobalt-blue.html" style="--c1:#ffffff;--c2:#2b5bff;--c3:#111111;--shape:12px;--shape2:18px;--turn:-12deg"><div class="card-top"><span class="card-number">31 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>钴蓝场</h2><p>同一套能量场换成钴蓝，深色强调只能配白字</p><span class="card-english">COBALT FIELD</span></a>
+<a class="style-card" href="hot-magenta.html" style="--c1:#ffffff;--c2:#ff2e93;--c3:#111111;--shape:50% 0 50% 0;--shape2:50% 50% 0 0;--turn:0deg"><div class="card-top"><span class="card-number">32 / 32</span><span class="card-arrow">↗</span></div><div class="preview" aria-hidden="true"></div><h2>品红场</h2><p>同一套能量场换成品红，最跳的一版，适合活动页</p><span class="card-english">MAGENTA FIELD</span></a></div></main>
+<footer>校园办事向导 · 独立视觉稿 · 正式前端未改动</footer>
+</body>
+</html>

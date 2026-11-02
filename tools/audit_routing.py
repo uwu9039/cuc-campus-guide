@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import re
 import sys
@@ -25,6 +26,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+# 这个脚本要跑上千条变体问法，后端默认开的模型裁决会让它又慢又不可复现，
+# 默认关掉；真要看模型那一版，自己设 ROUTER_LLM=1 再跑
+os.environ.setdefault("ROUTER_LLM", "0")
+
 import app as core  # noqa: E402
 
 TEMPLATES = [

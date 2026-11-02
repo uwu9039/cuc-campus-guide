@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>26 酸黄场 · 校园办事向导</title>
+<style>
+
+:root {
+  --bg: #f4f4f0;
+  --surface: #ffffff;
+  --ink: #171918;
+  --muted: #626762;
+  --accent: #175c4c;
+  --accent-ink: #ffffff;
+  --line: #d9ddd7;
+  --radius: 18px;
+  --shadow: 0 16px 45px rgba(20, 30, 24, .08);
+  --display: inherit;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
+}
+button, input { font: inherit; }
+button, a, input, summary { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+button { cursor: pointer; }
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--bg);
+}
+.skip-link:focus { top: 16px; }
+.ambient { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.topbar {
+  position: relative;
+  z-index: 5;
+  width: min(1240px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 26px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 750; text-decoration: none; }
+.brand-mark { width: 28px; height: 28px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); border-radius: 50%; }
+.back-link { font-size: 14px; text-decoration: none; border-bottom: 1px solid currentColor; }
+.page {
+  position: relative;
+  z-index: 2;
+  width: min(1180px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 58px 0 76px;
+}
+.intro { max-width: 790px; margin-bottom: 48px; }
+.kicker, .answer-kicker {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0;
+  max-width: 850px;
+  font-family: var(--display);
+  font-size: clamp(48px, 7vw, 94px);
+  line-height: 1.02;
+  letter-spacing: -.055em;
+}
+h1 em { color: var(--accent); font-style: normal; }
+.lede { max-width: 620px; margin: 26px 0 0; color: var(--muted); font-size: 17px; }
+.style-tag { display: inline-flex; margin-top: 24px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+.demo { display: grid; gap: 24px; }
+.query-panel, .answer { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.query-panel { padding: 26px; }
+.query-panel > label { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 750; }
+.field-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+.field-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) * .65);
+  background: var(--bg);
+  color: var(--ink);
+  outline: none;
+}
+.primary-button {
+  min-height: 52px;
+  padding: 0 24px;
+  border: 1px solid var(--accent);
+  border-radius: calc(var(--radius) * .65);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 750;
+}
+.sample-row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 14px; color: var(--muted); font-size: 12px; }
+.sample-row button { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: inherit; }
+.answer { padding: clamp(24px, 4vw, 44px); }
+.answer-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.answer h2 { margin: 0; font-family: var(--display); font-size: clamp(30px, 4vw, 48px); line-height: 1.15; letter-spacing: -.035em; }
+.status { flex: 0 0 auto; padding: 6px 11px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 800; }
+.answer-summary { max-width: 760px; margin: 20px 0 28px; color: var(--muted); }
+.answer-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.answer-grid section { padding: 24px 22px; }
+.answer-grid section + section { border-left: 1px solid var(--line); }
+.answer-grid span { display: block; margin-bottom: 9px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.answer-grid strong { display: block; font-size: 16px; }
+.answer-grid p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.details-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 36px; margin-top: 30px; }
+.details-grid h3 { margin: 0 0 14px; font-size: 14px; }
+.steps ol { margin: 0; padding-left: 22px; color: var(--muted); }
+.steps li + li { margin-top: 9px; }
+.material-list { display: grid; gap: 10px; }
+.material-list label { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+.material-list input { width: 17px; height: 17px; accent-color: var(--accent); }
+.source { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+.source summary { color: var(--ink); cursor: pointer; font-weight: 700; }
+.source p { margin-bottom: 0; }
+.page-footer { position: relative; z-index: 2; width: min(1180px, calc(100% - 64px)); margin: 0 auto; padding: 22px 0 30px; display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 720px) {
+  .topbar, .page, .page-footer { width: min(100% - 32px, 1180px); }
+  .topbar { padding: 18px 0; }
+  .brand { font-size: 14px; }
+  .page { padding: 34px 0 48px; }
+  .intro { margin-bottom: 30px; }
+  h1 { font-size: clamp(42px, 14vw, 62px); }
+  .lede { font-size: 15px; }
+  .query-panel, .answer { padding: 20px; }
+  .field-row { grid-template-columns: 1fr; }
+  .primary-button { width: 100%; }
+  .answer-head { gap: 12px; }
+  .answer-grid { grid-template-columns: 1fr; }
+  .answer-grid section { padding: 18px 0; }
+  .answer-grid section + section { border-left: 0; border-top: 1px solid var(--line); }
+  .details-grid { grid-template-columns: 1fr; gap: 24px; }
+  .page-footer { flex-direction: column; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+
+:root { --bg: #ffffff; --surface: #f9f9f9; --ink: #111111; --muted: #6d6d6d; --accent: #ffde00; --accent-ink: #111111; --line: #e3e3de; --radius: 24px; --shadow: none; --display: "Arial Narrow", "Helvetica Neue", Impact, "Microsoft YaHei", sans-serif; }
+body { background: #ffffff; }
+.ambient { z-index: 1; }
+.ambient i { position: absolute; left: -4%; top: 3%; width: clamp(240px, 33vw, 520px); aspect-ratio: 1; animation: field-drift-a 19s ease-in-out infinite alternate; }
+.ambient b { position: absolute; right: -7%; top: 29%; width: clamp(200px, 25vw, 400px); aspect-ratio: 1; animation: field-drift-b 15s ease-in-out infinite alternate-reverse; }
+.ambient span { position: absolute; left: 27%; bottom: -9%; width: clamp(150px, 17vw, 280px); aspect-ratio: 1; animation: field-drift-a 23s ease-in-out infinite alternate-reverse; }
+.fx { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; height: min(30vh, 300px); display: flex; align-items: flex-end; gap: 1.4%; padding: 0 3%; opacity: .5; }
+.fx i { flex: 1 1 0; height: var(--h); transform-origin: bottom; border-radius: 999px 999px 0 0; background: var(--accent); animation: field-eq 1.7s ease-in-out infinite alternate; animation-delay: var(--d); }
+.page { width: min(1240px, calc(100% - 56px)); }
+.intro { max-width: none; margin-bottom: 42px; }
+.kicker { font-size: 11px; }
+.lede { max-width: 540px; font-size: 18px; }
+.demo { grid-template-columns: .92fr 1.08fr; align-items: start; gap: 26px; }
+.query-panel { position: sticky; top: 96px; padding: 30px; }
+.query-panel > label { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.field-row input { border-radius: 999px; padding: 16px 22px; font-size: 17px; }
+.answer { padding: clamp(26px, 3.4vw, 46px); }
+.answer h2 { font-size: clamp(34px, 4.6vw, 62px); }
+.answer-grid { margin: 0 -7px; }
+.answer-grid section { padding: 26px 22px; }
+.answer-grid span { font-size: 10px; }
+.details-grid { gap: 42px; }
+.status { letter-spacing: .1em; font-size: 11px; }
+@keyframes field-drift-a { from { transform: scale(.9) translate3d(-3%,-2%,0); } to { transform: scale(1.14) translate3d(6%,7%,0); } }
+@keyframes field-drift-b { from { transform: scale(1.08) translate3d(4%,-5%,0); } to { transform: scale(.86) translate3d(-7%,6%,0); } }
+@keyframes field-eq { from { transform: scaleY(.26); } to { transform: scaleY(1.55); } }
+
+
+
+.field { --scroll-shift: 0px; --scroll-progress: 0; }
+.field .ambient { opacity: .26; }
+.field .ambient i { translate: 0 calc(var(--scroll-shift) * -.45); rotate: calc(var(--scroll-progress) * 7deg); background: var(--accent); border-radius: 50%; }
+.field .ambient i::before { content: ""; position: absolute; left: 58%; top: 62%; width: 46%; height: 46%; background: var(--accent); border-radius: 50%; }
+.field .ambient b { translate: 0 calc(var(--scroll-shift) * .95); rotate: calc(var(--scroll-progress) * -9deg); background: var(--accent); border-radius: 50%; }
+.field .ambient b::after { content: ""; position: absolute; left: -34%; top: 52%; width: 58%; height: 58%; background: var(--accent); border-radius: 50%; }
+.field .ambient span { translate: 0 calc(var(--scroll-shift) * 1.2); background: var(--accent); border-radius: 50%; }
+.field .fx { translate: 0 calc(var(--scroll-shift) * 1.55); }
+.field .page { padding-top: 108px; }
+.field .page-footer { padding-bottom: 96px; }
+.field .topbar { position: fixed; left: 22px; top: 22px; width: auto; margin: 0; z-index: 6; padding: 12px 20px; background: #111111; color: #ffffff; border-radius: 999px; }
+.field .back-link { border: 0; }
+.field .query-panel, .field .answer { border: 0; box-shadow: none; }
+.field h1 { max-width: none; margin-left: clamp(-46px, -3.4vw, -10px); font-size: clamp(58px, 11.5vw, 152px); line-height: 1.05; font-weight: 800; text-transform: uppercase; }
+.field h1 em { display: inline-block; line-height: 1; padding: 0 .06em .05em; background: var(--accent); color: var(--accent-ink); }
+.field .rotate { overflow: hidden; height: clamp(56px, 8.6vw, 124px); margin: 4px 0 0 clamp(-46px, -3.4vw, -10px); }
+.field .rotate-inner { display: grid; animation: field-reel 25s cubic-bezier(.76,0,.24,1) infinite; }
+.field .rotate span { display: grid; align-items: center; height: clamp(56px, 8.6vw, 124px); font-family: var(--display); font-size: clamp(46px, 7.2vw, 106px); font-weight: 800; line-height: 1; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; color: var(--ink); }
+.field .rotate span:nth-child(even) { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+.field .kicker, .field .answer-kicker { color: var(--ink); letter-spacing: .26em; }
+.field .style-tag { background: var(--accent); color: var(--accent-ink); border: 0; font-weight: 700; }
+.field .field-row input { background: #ffffff; border-color: #e3e3de; }
+.field .primary-button { border: 0; background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 32px; font-weight: 800; }
+.field .sample-row button { border: 0; background: #efefec; color: var(--ink); }
+.field .status { background: var(--accent); color: var(--accent-ink); }
+.field .answer-grid { border: 0; gap: 14px; }
+.field .answer-grid section { border-radius: 18px; background: #ffffff; }
+.field .answer-grid section + section { border-left: 0; }
+.field .answer-grid span { color: var(--ink); letter-spacing: .18em; }
+.field .source, .field .page-footer { border-color: #e3e3de; }
+.field .answer.is-revealed { animation: field-land .48s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes field-reel {
+  0.00%, 6.40% { transform: translateY(0) }
+  10.00%, 16.40% { transform: translateY(-9.09%) }
+  20.00%, 26.40% { transform: translateY(-18.18%) }
+  30.00%, 36.40% { transform: translateY(-27.27%) }
+  40.00%, 46.40% { transform: translateY(-36.36%) }
+  50.00%, 56.40% { transform: translateY(-45.45%) }
+  60.00%, 66.40% { transform: translateY(-54.55%) }
+  70.00%, 76.40% { transform: translateY(-63.64%) }
+  80.00%, 86.40% { transform: translateY(-72.73%) }
+  90.00%, 96.40% { transform: translateY(-81.82%) }
+  100% { transform: translateY(-90.91%) }
+}
+@keyframes field-land { from { opacity: .3; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .field .demo { grid-template-columns: 1fr; }
+  .field .query-panel { position: static; }
+}
+@media (max-width: 720px) {
+  .field h1 { margin-left: 0; font-size: clamp(40px, 13vw, 64px); }
+  .field .rotate { margin-left: 0; height: 44px; }
+  .field .rotate span { height: 44px; font-size: 38px; }
+  .field .page { padding-top: 88px; }
+  .field .topbar { left: 14px; top: 14px; padding: 10px 16px; }
+}
+
+</style>
+</head>
+<body class="acid-field field">
+<a class="skip-link" href="#content">跳到主要内容</a>
+<div class="ambient" aria-hidden="true"><i></i><b></b><span></span></div><div class="fx" aria-hidden="true"><i style="--h: 26%; --d: 0s"></i><i style="--h: 48%; --d: -.14s"></i><i style="--h: 34%; --d: -.28s"></i><i style="--h: 62%; --d: -.42s"></i><i style="--h: 40%; --d: -.56s"></i><i style="--h: 72%; --d: -.7s"></i><i style="--h: 52%; --d: -.84s"></i><i style="--h: 86%; --d: -.98s"></i><i style="--h: 44%; --d: -1.12s"></i><i style="--h: 66%; --d: -1.26s"></i><i style="--h: 30%; --d: -1.4s"></i><i style="--h: 58%; --d: -1.54s"></i><i style="--h: 38%; --d: -1.68s"></i><i style="--h: 74%; --d: -1.82s"></i></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">26</span><span>校园办事向导</span></a>
+  <a class="back-link" href="index.html">三十二种风格目录</a>
+</header>
+<main class="page" id="content">
+  <section class="intro">
+    <p class="kicker">STYLE 26 / ACID FIELD</p>
+    <h1>把校园办事，<br><em>说得清楚。</em></h1>
+<div class="rotate" aria-hidden="true"><div class="rotate-inner"><span>CUC</span><span>CARD REISSUE</span><span>ONE ASK</span><span>CUC</span><span>LOCATION</span><span>CARD KIOSK</span><span>CUC</span><span>ONE VISIT</span><span>WECHAT PAY</span><span>VERIFIED</span><span>CUC</span></div></div>
+    <p class="lede">同一组办事内容，换一种界面气质。本页用<strong>酸黄场</strong>组织信息，用同色实心圆、均衡器与巨型字标搭一版扁平、无玻璃的能量场。</p>
+    <span class="style-tag">酸黄场 · ACID FIELD</span>
+  </section>
+  <section class="demo" aria-label="校园卡补卡示例">
+    <form class="query-panel" id="question-form">
+      <label for="question">今天想办什么？</label>
+      <div class="field-row">
+        <input id="question" name="question" value="校园卡丢了怎么办" autocomplete="off">
+        <button class="primary-button" type="submit">查看指引</button>
+      </div>
+      <div class="sample-row"><span>示例</span><button type="button" data-question="校园卡丢了怎么办">校园卡丢了怎么办</button><button type="button" data-question="校园网怎么报修">校园网怎么报修</button></div>
+    </form>
+    <article class="answer" id="answer" tabindex="-1">
+      <div class="answer-head">
+        <div><p class="answer-kicker">推荐办理方式</p><h2>校园卡补卡</h2></div>
+        <span class="status">已核验</span>
+      </div>
+      <p class="answer-summary">到校园生活服务大厅的自助补卡机现场办理，按设备提示操作并支付工本费。</p>
+      <div class="answer-grid">
+        <section><span>01 / 地点</span><strong>艺术与传播大楼 1 层</strong><p>校园生活服务大厅</p></section>
+        <section><span>02 / 费用</span><strong>20 元</strong><p>微信支付</p></section>
+        <section><span>03 / 方式</span><strong>自助补卡机</strong><p>本人到场办理</p></section>
+      </div>
+      <div class="details-grid">
+        <section class="steps"><h3>办理步骤</h3><ol><li>到校园生活服务大厅找到自助补卡机。</li><li>按设备提示确认个人信息。</li><li>微信支付工本费，等待补卡机出卡。</li></ol></section>
+        <section class="materials"><h3>现场确认</h3><div class="material-list"><label><input type="checkbox">本人到场</label><label><input type="checkbox">在自助补卡机办理</label><label><input type="checkbox">准备微信支付</label></div></section>
+      </div>
+      <details class="source"><summary>查看官方依据</summary><p>校园卡补卡 · 信息化处　｜　核验日期：2026-10-20</p></details>
+    </article>
+  </section>
+</main>
+<footer class="page-footer"><span>校园办事向导 · 风格试验 26 / 32</span><span>仅用于视觉选型</span></footer>
+
+<script>
+(function () {
+  const form = document.getElementById("question-form");
+  const question = document.getElementById("question");
+  const answer = document.getElementById("answer");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let ticking = false;
+  let pointerX = window.innerWidth / 2;
+  let pointerY = window.innerHeight * 0.18;
+  let scrollProgress = 0;
+
+  function update() {
+    document.body.style.setProperty("--pointer-x", pointerX + "px");
+    document.body.style.setProperty("--pointer-y", pointerY + "px");
+    document.body.style.setProperty("--scroll-shift", (scrollProgress * 100).toFixed(2) + "px");
+    document.body.style.setProperty("--scroll-progress", scrollProgress.toFixed(4));
+    ticking = false;
+  }
+
+  function schedule() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    answer.classList.remove("is-revealed");
+    void answer.offsetWidth;
+    answer.classList.add("is-revealed");
+    answer.focus({ preventScroll: true });
+  });
+
+  document.querySelectorAll("[data-question]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      question.value = button.dataset.question;
+      question.focus();
+    });
+  });
+
+  window.addEventListener("pointermove", function (event) {
+    if (reducedMotion.matches) return;
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    schedule();
+  }, { passive: true });
+
+  window.addEventListener("scroll", function () {
+    if (reducedMotion.matches) return;
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+    schedule();
+  }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

@@ -16,6 +16,14 @@ aia-runs/
 sources/_quarantine/
 sources/vector/
 
+# 本机工作产物：会话脚本、浏览器 profile、回退副本、视频工程
+.superpowers/
+_backups/
+video-remotion/
+_modelscope_bundle/
+_review_items/
+/served.html
+
 # 临时与截图
 *.bak
 urls.txt

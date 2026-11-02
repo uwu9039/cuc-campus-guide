@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <meta name="description" content="校园办事向导的纸张档案视觉方向交互演示。">
+  <title>纸张档案 · 校园办事向导</title>
+  <style>
+:root {
+  --bg: #eee9df;
+  --surface: #fbf8f0;
+  --ink: #211f1a;
+  --muted: #746d60;
+  --line: #cfc5b4;
+  --accent: #a43228;
+  --accent-soft: #f1dfd7;
+  --warm: #a43228;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+h1, h2, blockquote { font-family: Georgia, "Songti SC", "SimSun", serif; }
+button, input { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+[hidden] { display: none !important; }
+.demo-nav a[aria-current="page"] { color: var(--accent); text-decoration: underline; text-underline-offset: 5px; }
+.answer-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .85fr); border-top: 3px solid var(--ink); }
+.sheet-section { border-bottom: 1px solid var(--line); padding: 22px 0; }
+@media (max-width: 760px) {
+  .answer-grid { grid-template-columns: 1fr; }
+  .demo-nav { overflow-x: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+
+html { scroll-behavior: smooth; }
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  line-height: 1.65;
+  background-image: repeating-linear-gradient(0deg, transparent 0, transparent 31px, rgba(116, 109, 96, .025) 32px);
+  -webkit-font-smoothing: antialiased;
+}
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button { touch-action: manipulation; }
+button, input { border-radius: 0; }
+svg { display: block; }
+
+.site-header {
+  border-top: 5px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: var(--surface);
+}
+.header-inner {
+  width: min(1220px, calc(100% - 64px));
+  min-height: 74px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 28px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: Georgia, "Songti SC", "SimSun", serif;
+  font-size: 19px;
+  line-height: 1;
+}
+.brand-name {
+  font-family: Georgia, "Songti SC", "SimSun", serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.demo-nav {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 28px;
+}
+.demo-nav a {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.demo-nav a:hover { color: var(--accent); }
+.evidence-status {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+.evidence-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+}
+
+.page-shell {
+  width: min(1220px, calc(100% - 64px));
+  margin: 26px auto 64px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 7px 7px 0 rgba(116, 109, 96, .09);
+}
+.archive-meta {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+  min-height: 42px;
+  padding: 0 30px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.archive-meta span:nth-child(2) { color: var(--ink); text-align: center; }
+.archive-meta span:last-child { text-align: right; }
+.demo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 30px;
+  border-bottom: 1px solid var(--line);
+}
+.demo-tag {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+.view-switcher {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+}
+.view-switcher button {
+  min-width: 82px;
+  padding: 6px 15px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.view-switcher button + button { border-left: 1px solid var(--ink); }
+.view-switcher button:hover { color: var(--accent); background: var(--accent-soft); }
+.view-switcher button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+
+.question-sheet {
+  display: grid;
+  grid-template-columns: minmax(230px, .72fr) minmax(0, 1.28fr);
+  border-bottom: 3px solid var(--ink);
+}
+.question-intro {
+  padding: 32px 30px 30px;
+  border-right: 1px solid var(--ink);
+}
+.section-index {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .15em;
+}
+.section-index::after {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--accent);
+}
+.empty-view h1 {
+  margin: 0;
+  font-size: clamp(32px, 3.2vw, 46px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.22;
+}
+.intro-copy {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.85;
+}
+.question-form { padding: 32px 30px 28px; }
+.input-label {
+  display: block;
+  margin-bottom: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+.question-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+#question {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  caret-color: var(--accent);
+}
+#question::placeholder { color: var(--muted); opacity: .85; }
+#question:hover { background: #f6f1e7; }
+#question:focus { background: #fffdf8; }
+.submit-button {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 0 19px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fffaf2;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.submit-button:hover { background: #86271f; }
+.submit-button:active { background: var(--ink); border-color: var(--ink); }
+.sample-area {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 17px;
+}
+.sample-label {
+  margin-right: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+.sample-button {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  cursor: pointer;
+}
+.sample-button:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+.answer-view { padding: 0 30px; }
+.answer-heading {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 28px;
+  padding: 28px 0 24px;
+}
+.answer-kicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.verified-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 2px solid var(--accent);
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 50%;
+  color: var(--accent);
+  font-family: Georgia, "Songti SC", "SimSun", serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  transform: rotate(-8deg);
+}
+.system-understanding {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+.answer-heading h1 {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.confidence {
+  min-width: 118px;
+  padding: 0 0 4px 22px;
+  border-left: 1px solid var(--line);
+  text-align: right;
+}
+.confidence span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.confidence strong {
+  display: block;
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 35px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.answer-main { padding-right: 30px; border-right: 1px solid var(--ink); }
+.answer-side { padding-left: 30px; }
+.sheet-section:first-child { padding-top: 24px; }
+.sheet-section:last-child { border-bottom: 0; }
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.35;
+}
+.section-no {
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: .08em;
+}
+.source-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+.source-label::before { content: "["; margin-right: 5px; color: var(--accent); }
+.source-label::after { content: "]"; margin-left: 5px; color: var(--accent); }
+.conclusion-text {
+  margin: 0;
+  font-family: Georgia, "Songti SC", "SimSun", serif;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.85;
+}
+.location-box {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.location-label { color: var(--muted); font-size: 11px; letter-spacing: .08em; }
+.location-value { font-weight: 700; }
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.step {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+}
+.step::before {
+  content: counter(step, decimal-leading-zero);
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.step p { margin: 0; font-size: 14px; line-height: 1.8; }
+.step-count { color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+.material-card .section-heading { align-items: center; }
+.material-card .section-title { font-size: 21px; }
+.progress-pill {
+  flex: none;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.material-intro {
+  margin: -6px 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.material-list { border-top: 1px solid var(--ink); }
+.material-item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 11px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  cursor: pointer;
+}
+.material-item:hover { color: var(--accent); }
+.material-item:has(input:checked) { color: var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent 80%); }
+.material-item input {
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.material-item input:checked + span { text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: var(--line); }
+.evidence-top { margin-bottom: 18px; }
+.evidence-top .section-title { margin: 0; font-size: 24px; }
+.evidence-subtitle {
+  margin: 7px 0 0 29px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.source-list { margin: 0; border-top: 1px solid var(--ink); }
+.source-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.source-row dt { color: var(--muted); }
+.source-row dd { margin: 0; font-weight: 650; overflow-wrap: anywhere; }
+.quote-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.quote-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.quote-toggle::after { content: "+"; color: var(--accent); font-family: Georgia, serif; font-size: 19px; font-weight: 400; line-height: 1; }
+.quote-toggle[aria-expanded="true"]::after { content: "−"; }
+.quotes { margin-top: 16px; }
+.quotes blockquote {
+  position: relative;
+  margin: 0;
+  padding: 3px 0 3px 23px;
+  border-left: 2px solid var(--accent);
+  color: #454037;
+  font-size: 16px;
+  line-height: 1.9;
+}
+.quotes blockquote + blockquote { margin-top: 12px; }
+.quotes blockquote::before {
+  content: "“";
+  position: absolute;
+  top: -10px;
+  left: 5px;
+  color: var(--line);
+  font-family: Georgia, serif;
+  font-size: 42px;
+  line-height: 1;
+  pointer-events: none;
+}
+.evidence-note {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+.evidence-note::before { content: "※ "; color: var(--accent); }
+.auxiliary-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 3px solid var(--ink);
+}
+.auxiliary-contact { min-width: 0; }
+.auxiliary-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.auxiliary-contact p {
+  margin: 0;
+  font-family: Georgia, "Songti SC", "SimSun", serif;
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.auxiliary-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.auxiliary-actions button {
+  padding: 9px 14px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.auxiliary-actions button:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 30px;
+  border-top: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+
+@media (max-width: 980px) {
+  .header-inner { grid-template-columns: 1fr auto; gap: 16px 24px; padding: 15px 0 0; }
+  .demo-nav { grid-column: 1 / -1; grid-row: 2; justify-content: center; min-height: 38px; border-top: 1px solid var(--line); }
+  .question-sheet { grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr); }
+  .question-intro, .question-form { padding-inline: 24px; }
+  .answer-view { padding-inline: 24px; }
+  .answer-main { padding-right: 24px; }
+  .answer-side { padding-left: 24px; }
+  .conclusion-text { font-size: 19px; }
+}
+
+@media (max-width: 760px) {
+  .header-inner, .page-shell { width: calc(100% - 32px); }
+  .page-shell { margin-top: 16px; margin-bottom: 36px; }
+  .demo-nav { justify-content: flex-start; gap: 24px; scrollbar-width: thin; }
+  .archive-meta { grid-template-columns: 1fr auto; padding-inline: 20px; }
+  .archive-meta span:nth-child(2) { display: none; }
+  .demo-toolbar { padding-inline: 20px; }
+  .question-sheet { grid-template-columns: 1fr; }
+  .question-intro { padding: 26px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .section-index { margin-bottom: 13px; }
+  .empty-view h1 { font-size: 36px; }
+  .intro-copy { max-width: 560px; margin-top: 10px; }
+  .question-form { padding: 24px 20px; }
+  .answer-view { padding-inline: 20px; }
+  .answer-main { padding-right: 0; border-right: 0; }
+  .answer-side { padding-left: 0; border-top: 3px solid var(--ink); }
+  .answer-heading { padding-block: 25px 22px; }
+  .answer-heading h1 { font-size: 42px; }
+  .page-footer { padding-inline: 20px; }
+}
+
+@media (max-width: 520px) {
+  .header-inner { width: calc(100% - 28px); }
+  .brand-name { font-size: 16px; }
+  .brand-mark { width: 31px; height: 31px; }
+  .evidence-status { font-size: 11px; letter-spacing: .06em; }
+  .archive-meta { font-size: 9px; letter-spacing: .1em; }
+  .demo-toolbar { align-items: flex-start; gap: 12px; }
+  .demo-tag { max-width: 92px; line-height: 1.7; }
+  .view-switcher button { min-width: 0; padding-inline: 11px; }
+  .question-row { grid-template-columns: 1fr; }
+  .submit-button { width: 100%; }
+  .sample-label { width: 100%; }
+  .answer-heading { grid-template-columns: 1fr; gap: 18px; }
+  .answer-heading h1 { font-size: 38px; }
+  .confidence { display: flex; align-items: baseline; gap: 12px; padding: 0; border-left: 0; text-align: left; }
+  .confidence strong { font-size: 28px; }
+  .section-title { font-size: 22px; }
+  .conclusion-text { font-size: 18px; }
+  .location-box { grid-template-columns: 1fr; gap: 3px; }
+  .section-heading { gap: 10px; }
+  .material-card .section-heading { align-items: flex-start; flex-direction: column; }
+  .page-footer { flex-direction: column; gap: 2px; }
+}
+
+@media (max-width: 360px) {
+  .brand { gap: 8px; }
+  .brand-name { font-size: 14px; letter-spacing: .03em; }
+  .demo-toolbar { flex-direction: column; }
+  .demo-tag { max-width: none; }
+  .view-switcher { width: 100%; }
+  .view-switcher button { flex: 1; }
+  .answer-kicker { align-items: flex-start; flex-direction: column; }
+}
+
+@media print {
+  body { background: #fff; }
+  .site-header, .demo-toolbar, .sample-area, .submit-button { display: none; }
+  .page-shell { width: 100%; margin: 0; border: 0; box-shadow: none; }
+  .answer-grid { grid-template-columns: minmax(0, 1.35fr) minmax(250px, .85fr); }
+  .quotes[hidden] { display: block !important; }
+  .quote-toggle { display: none; }
+}
+  </style>
+</head>
+<body data-page="paper">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand" aria-label="校园办事向导">
+        <span class="brand-mark" aria-hidden="true">校</span>
+        <span class="brand-name">校园办事向导</span>
+      </div>
+
+      <nav class="demo-nav" aria-label="视觉方向导航">
+        <a href="clear-campus.html">清透校园</a>
+        <a href="paper-archive.html" aria-current="page">纸上档案</a>
+        <a href="dark-command.html">暗夜指挥</a>
+      </nav>
+
+      <span class="evidence-status">证据可查</span>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="archive-meta" aria-label="档案刊头">
+      <span>Campus Service Archive</span>
+      <span>问题 · 结论 · 证据</span>
+      <span>证据可查 / 办事指南</span>
+    </div>
+
+    <div class="demo-toolbar">
+      <span class="demo-tag">交互演示 · 固定示例</span>
+      <div class="view-switcher" role="group" aria-label="页面状态">
+        <button type="button" data-set-view="empty" aria-pressed="true" onclick="setView('empty')">空状态</button>
+        <button type="button" data-set-view="answer" aria-pressed="false" onclick="setView('answer')">答案状态</button>
+      </div>
+    </div>
+
+    <section class="question-sheet" aria-label="事项提问">
+      <div class="question-intro">
+        <p class="section-index">01 / 问题</p>
+        <div id="view-empty" class="empty-view">
+          <h1>今天要办什么事？</h1>
+          <p class="intro-copy">把想办的事告诉我们，从结论、步骤到官方依据，一次看清下一步。</p>
+        </div>
+      </div>
+
+      <form class="question-form" onsubmit="submitDemo(event)">
+        <label class="input-label" for="question">描述你要办理的事项</label>
+        <div class="question-row">
+          <input id="question" name="question" type="text" placeholder="例如：校园卡丢了怎么办" autocomplete="off">
+          <button class="submit-button" type="submit">
+            查看示例答案
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M3 10h13M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sample-area" aria-label="示例问题">
+          <span class="sample-label">试试示例</span>
+          <button class="sample-button" type="button" onclick="fillQuestion('校园卡丢了怎么办')">校园卡</button>
+          <button class="sample-button" type="button" onclick="fillQuestion('开成绩单要带什么')">成绩单</button>
+          <button class="sample-button" type="button" onclick="fillQuestion('转专业到新闻学院要什么条件')">转专业</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="view-answer" class="answer-view" aria-labelledby="answer-title" hidden>
+      <div class="answer-heading">
+        <div>
+          <div class="answer-kicker">
+            <span class="verified-badge">已核验</span>
+            <span class="system-understanding">校园卡补卡 · 整体流程</span>
+          </div>
+          <h1 id="answer-title" tabindex="-1">校园卡补卡</h1>
+        </div>
+        <div class="confidence">
+          <span>答案置信度</span>
+          <strong>97%</strong>
+        </div>
+      </div>
+
+      <div class="answer-grid">
+        <div class="answer-main">
+          <section class="conclusion-card sheet-section" aria-labelledby="conclusion-heading">
+            <div class="section-heading">
+              <h2 class="section-title" id="conclusion-heading"><span class="section-no">02</span>核心结论</h2>
+              <span class="source-label">结论</span>
+            </div>
+            <p class="conclusion-text">到艺术与传播大楼 1 层 校园生活服务大厅；在自助补卡机上按提示补办；微信支付 20 元工本费，机器出卡</p>
+            <div class="location-box">
+              <span class="location-label">办理地点</span>
+              <span class="location-value">艺术与传播大楼 1 层 校园生活服务大厅</span>
+            </div>
+          </section>
+
+          <section class="steps-card sheet-section" aria-labelledby="steps-heading">
+            <div class="section-heading">
+              <h2 class="section-title" id="steps-heading">办理步骤</h2>
+              <span class="step-count">共 3 步</span>
+            </div>
+            <ol class="steps">
+              <li class="step"><p>到艺术与传播大楼 1 层 校园生活服务大厅（自助补卡机）</p></li>
+              <li class="step"><p>在自助补卡机上按提示补办</p></li>
+              <li class="step"><p>微信支付 20 元工本费，机器出卡</p></li>
+            </ol>
+          </section>
+        </div>
+
+        <aside class="answer-side" aria-label="办理准备与官方依据">
+          <section class="material-card sheet-section" aria-labelledby="material-heading">
+            <div class="section-heading">
+              <h2 class="section-title" id="material-heading">办理前确认</h2>
+              <span id="material-progress" class="progress-pill" aria-live="polite">0 / 3 已备齐</span>
+            </div>
+            <p class="material-intro">逐项勾选，确认现场办理所需事项。</p>
+            <div class="material-list">
+              <label class="material-item" for="material-present">
+                <input id="material-present" type="checkbox" data-material>
+                <span>本人到场</span>
+              </label>
+              <label class="material-item" for="material-machine">
+                <input id="material-machine" type="checkbox" data-material>
+                <span>在自助补卡机现场办理</span>
+              </label>
+              <label class="material-item" for="material-payment">
+                <input id="material-payment" type="checkbox" data-material>
+                <span>微信支付，工本费 20 元</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="evidence-card sheet-section" aria-labelledby="evidence-heading">
+            <div class="evidence-top">
+              <h2 class="section-title" id="evidence-heading"><span class="section-no">03</span>官方依据</h2>
+              <p class="evidence-subtitle">结论可追溯，原文可查看</p>
+            </div>
+            <span class="source-label">证据</span>
+            <dl class="source-list">
+              <div class="source-row">
+                <dt>官方来源</dt>
+                <dd>校园卡补卡 · 信息化处</dd>
+              </div>
+              <div class="source-row">
+                <dt>核验日期</dt>
+                <dd><time datetime="2026-10-20">2026-10-20</time></dd>
+              </div>
+            </dl>
+            <button id="quotes-toggle" class="quote-toggle" type="button" aria-expanded="false" aria-controls="quotes">
+              <span>查看官方原文</span>
+            </button>
+            <div id="quotes" class="quotes" tabindex="-1" hidden>
+              <blockquote>校园卡丢失或损坏，请到艺术与传播大楼1层校园生活服务大厅自助补卡机补办</blockquote>
+              <blockquote>并微信支付交纳补卡工本费20元，补卡机出卡</blockquote>
+            </div>
+            <p class="evidence-note">材料以官方原文为准</p>
+          </section>
+        </aside>
+      </div>
+
+      <section class="auxiliary-entry" aria-label="辅助入口">
+        <div class="auxiliary-contact">
+          <span class="auxiliary-label">联系方式</span>
+          <p>校园卡及网络报修：65783878</p>
+        </div>
+        <div class="auxiliary-actions">
+          <button id="source-search" type="button">搜原文</button>
+          <button id="print-checklist" type="button">打印清单</button>
+        </div>
+      </section>
+    </section>
+
+    <footer class="page-footer">
+      <span>校园办事向导 · 证据可查</span>
+      <span>材料以官方原文为准</span>
+    </footer>
+  </main>
+
+<script>
+(function () {
+  const empty = document.getElementById("view-empty");
+  const answer = document.getElementById("view-answer");
+  const question = document.getElementById("question");
+  const progress = document.getElementById("material-progress");
+  const quotes = document.getElementById("quotes");
+  const quoteToggle = document.getElementById("quotes-toggle");
+
+  window.setView = function (view) {
+    const showAnswer = view === "answer";
+    empty.hidden = showAnswer;
+    answer.hidden = !showAnswer;
+    document.querySelectorAll("[data-set-view]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.setView === view));
+    });
+  };
+
+  window.fillQuestion = function (text) {
+    question.value = text;
+    question.focus();
+  };
+
+  window.submitDemo = function (event) {
+    event.preventDefault();
+    if (!question.value.trim()) question.value = "校园卡丢了怎么办";
+    setView("answer");
+    document.getElementById("answer-title").focus();
+  };
+
+  window.toggleMaterial = function () {
+    const materials = Array.from(document.querySelectorAll("[data-material]"));
+    const checked = materials.filter((input) => input.checked).length;
+    progress.textContent = checked + " / " + materials.length + " 已备齐";
+  };
+
+  window.toggleQuotes = function () {
+    const expanded = quoteToggle.getAttribute("aria-expanded") === "true";
+    quoteToggle.setAttribute("aria-expanded", String(!expanded));
+    quotes.hidden = expanded;
+  };
+
+  window.findOriginal = function () {
+    quoteToggle.setAttribute("aria-expanded", "true");
+    quotes.hidden = false;
+    quotes.focus();
+  };
+
+  window.printChecklist = function () {
+    window.print();
+  };
+
+  document.querySelectorAll("[data-material]").forEach((input) => {
+    input.addEventListener("change", () => toggleMaterial(input));
+  });
+  quoteToggle.addEventListener("click", toggleQuotes);
+  document.getElementById("source-search").addEventListener("click", findOriginal);
+  document.getElementById("print-checklist").addEventListener("click", printChecklist);
+  setView("empty");
+  toggleMaterial();
+})();
+</script>
+</body>
+</html>

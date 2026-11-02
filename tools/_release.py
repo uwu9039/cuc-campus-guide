@@ -10,6 +10,7 @@ import argparse
 import base64
 import hashlib
 import json
+import re
 import subprocess
 import time
 import urllib.error
@@ -21,10 +22,12 @@ API = "https://api.github.com"
 OWNER, REPO = "uwu9039", "cuc-campus-guide"
 SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
              "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder",
-             "_review_items", "_modelscope_bundle", "_api_dig", "_ilib_js", "extension"}
+             "_review_items", "_modelscope_bundle", "_api_dig", "_ilib_js", "extension",
+             # 本机浏览器 profile（含 Login Data / History / Wallet）、回退副本与视频工程
+             ".superpowers", "_backups", "video-remotion"}
 SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json.bak",
               "items-old.json", "ask-req.json", "aia-api.json", ".cdp_tab", "app-server.log",
-              "18-个人数据接口调研.md", "api-inventory.json",
+              "18-个人数据接口调研.md", "api-inventory.json", "served.html",
               "_qout.txt", "_check_tmp.py", "_diag_coll.py", "_diag_docs.py",
               "_diag_failgroups.py", "_diag_quotes.py", "_remote_tree.json",
               "_clause-items.tmp.json", "huibian-2025.txt",
@@ -116,6 +119,30 @@ def collect() -> list[tuple[str, Path]]:
     return sorted(out)
 
 
+# 发布前的泄漏守卫：本机绝对路径、浏览器 profile 目录名、API key 一律拦住
+LEAK_PATTERNS = (
+    re.compile(rb"[A-Za-z]:[\\/]{1,2}(?:Users|DSH)"),
+    re.compile(rb"gh[pousr]_[A-Za-z0-9]{20,}"),
+    re.compile(rb"sk-[A-Za-z0-9]{16,}"),
+    re.compile(rb"edge-(?:final-aux-)?profile"),
+)
+TEXT_SUFFIX = {".py", ".js", ".mjs", ".cjs", ".html", ".css", ".json", ".md",
+               ".txt", ".bat", ".sh", ".yaml", ".yml", ".toml", ".cfg", ".ini"}
+
+
+def leak_scan(files: list[tuple[str, Path]]) -> list[tuple[str, str]]:
+    bad = []
+    for path, p in files:
+        if p.suffix.lower() not in TEXT_SUFFIX:
+            continue
+        data = p.read_bytes()
+        for rx in LEAK_PATTERNS:
+            m = rx.search(data)
+            if m:
+                bad.append((path, m.group(0).decode("utf-8", "ignore")[:48]))
+    return bad
+
+
 def build_items_gz() -> None:
     """items.json 31MB，GitHub 大请求体会超时；每次发布自动同步压缩副本。"""
     import gzip
@@ -157,7 +184,7 @@ def build_archive() -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tag", required=True)
+    ap.add_argument("--tag", required=False, default="", help="打 tag 与建 release 时必填")
     ap.add_argument("--notes", default="")
     ap.add_argument("--message", default="", help="提交信息，默认按 tag 生成")
     ap.add_argument("--max", type=int, default=0, help="本批最多上传多少个文件")
@@ -165,7 +192,11 @@ def main() -> None:
     ap.add_argument("--match", default="", help="只处理路径包含该子串的文件")
     ap.add_argument("--no-tag", action="store_true", help="只提交，不打 tag、不发 release")
     ap.add_argument("--rebuild-archive", action="store_true", help="重新打包 sources-archive.tar.gz")
+    ap.add_argument("--allow-leak", action="store_true",
+                    help="跳过本机路径/凭证守卫（默认不允许）")
     args = ap.parse_args()
+    if not args.dry_run and not args.tag:
+        raise SystemExit("正式提交必须带 --tag")
     tok = token()
     build_items_gz()
 
@@ -173,6 +204,13 @@ def main() -> None:
         build_archive()
 
     files = collect()
+    leaks = leak_scan(files)
+    if leaks and not args.allow_leak:
+        print(f"✗ 发布清单里有 {len(leaks)} 处疑似本机路径或凭证，先清理再发布")
+        for path, hit in leaks[:40]:
+            print(f"  {path}  ←  {hit}")
+        raise SystemExit(2)
+
     if args.dry_run:
         import collections
         size = sum(p.stat().st_size for _, p in files)
@@ -180,9 +218,7 @@ def main() -> None:
         print(f"待发布 {len(files)} 个文件，{size/1048576:.1f} MB")
         for name, count in tops.most_common(20):
             print(f"  {name}: {count}")
-        for path, p in files:
-            if p.name in SKIP_FILES or "quarantine" in path:
-                print("  !! 敏感项", path)
+        print("泄漏守卫：通过" if not leaks else f"泄漏守卫：放行 {len(leaks)} 处（--allow-leak）")
         return
 
     st, ref = call("GET", f"{API}/repos/{OWNER}/{REPO}/git/ref/heads/main", tok)

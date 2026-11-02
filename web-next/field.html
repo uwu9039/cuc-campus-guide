@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="cobalt-field">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b5bff">
+<link rel="icon" href="data:,">
+<title>广院通 · 校园办事向导</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="field.css">
+</head>
+<body class="field" data-mode="hero">
+<a class="skip-link" href="#q">跳到提问</a>
+
+<!-- 场域背景：三颗同色实心圆在一个组里靠得足够近就融成一片，不靠滤镜 -->
+<div class="field-layer" aria-hidden="true">
+  <div class="ambient"><i></i><b></b><span></span></div>
+  <div class="fx"><i style="--h:26%;--d:0s"></i><i style="--h:48%;--d:-.14s"></i><i style="--h:34%;--d:-.28s"></i><i style="--h:62%;--d:-.42s"></i><i style="--h:40%;--d:-.56s"></i><i style="--h:72%;--d:-.7s"></i><i style="--h:52%;--d:-.84s"></i><i style="--h:86%;--d:-.98s"></i><i style="--h:44%;--d:-1.12s"></i><i style="--h:66%;--d:-1.26s"></i><i style="--h:30%;--d:-1.4s"></i><i style="--h:58%;--d:-1.54s"></i><i style="--h:38%;--d:-1.68s"></i><i style="--h:74%;--d:-1.82s"></i></div>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="/field" title="回广院通首页">
+    <span class="brand-mark"><img class="brand-emblem" src="assets/cuc-emblem.svg" alt="中国传媒大学校徽" width="34" height="34"></span>
+    <span class="brand-text"><b class="brand-name">广院通</b><span class="brand-sub">校园办事向导</span></span>
+  </a>
+  <span class="topline" id="topline" hidden></span>
+  <span class="statline" id="statline" aria-live="polite">正在连接本地事项库…</span>
+  <nav class="topacts" aria-label="附加功能">
+    <button class="ghostbtn" type="button" id="mapbtn" data-panel="map">地图</button>
+    <button class="ghostbtn" type="button" id="searchbtn" data-panel="search">原文检索</button>
+    <button class="ghostbtn" type="button" id="contactbtn" data-panel="contacts">联系方式</button>
+    <button class="ghostbtn" type="button" id="databtn" data-panel="personal" title="这里不读取任何数据：只给校园卡和畅课两个官方入口，查余额、流水、课表都要在官方系统里由本人登录完成。">个人数据</button>
+    <button class="ghostbtn backbtn" type="button" id="backbtn">返回</button>
+    <a class="ghostbtn" href="/">经典版</a>
+  </nav>
+</header>
+
+<main class="stage" id="stage">
+  <section class="hero" id="hero">
+    <p class="kicker">CAMPUS SERVICE / VERIFIED SOURCES</p>
+    <h1>校园事务，<br><em>有求必应。</em></h1>
+    <div class="rotate" id="rotate" aria-hidden="true"></div>
+  </section>
+
+  <div class="workspace">
+    <section class="rail" aria-label="提问与答复">
+      <div class="thread" id="thread" role="log" aria-live="polite" aria-relevant="additions text"></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <div class="presets" id="presets" aria-label="常用问法"></div>
+        <div class="box">
+          <label class="sr" for="q">你要办什么</label>
+          <textarea id="q" rows="1" placeholder="一次问一件事，答得更准"></textarea>
+          <div class="boxfoot">
+            <button class="plainbtn" type="button" id="clearbtn">重新问</button>
+            <label class="llmsw" id="llmwrap" title="系统拿不准时让模型在候选事项里挑一条。生成的内容可能不准确，请自行核对。">
+              <input type="checkbox" id="llmsw" checked>
+              <span class="track" aria-hidden="true"><i></i></span>
+              模型裁决<span class="risk" id="llmrisk"></span>
+            </label>
+            <span class="footnote">材料以官方原文为准</span>
+            <button class="send" type="submit" id="send" aria-label="发送问题">问</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <aside class="inspector" id="inspector" aria-label="条目档案">
+      <div class="inshead">
+        <h2 id="institle">条目档案</h2>
+        <p id="insub">问一件事，这里出现它的官方依据、材料与流程。</p>
+      </div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="档案分区">
+        <button role="tab" type="button" data-tab="overview" aria-selected="true">概览</button>
+        <button role="tab" type="button" data-tab="material" aria-selected="false">材料</button>
+        <button role="tab" type="button" data-tab="steps" aria-selected="false">流程</button>
+        <button role="tab" type="button" data-tab="quotes" aria-selected="false">原文 <span id="qcount">0</span></button>
+      </div>
+      <div class="insbody" id="insbody" role="tabpanel" tabindex="0"></div>
+      <div class="insfoot">
+        <button class="plainbtn" type="button" id="copybtn">复制清单</button>
+        <button class="plainbtn" type="button" id="printbtn">打印</button>
+        <span class="stamp" id="stamp">NO. —</span>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <span>广院通——由记忆队制作</span>
+  <span>事实来自 /api/*，界面不生成内容</span>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pantitle" hidden>
+  <div class="panelhead">
+    <h2 id="pantitle">面板</h2>
+    <button class="plainbtn" type="button" id="panclose">关闭</button>
+  </div>
+  <div class="panelbody" id="panelbody"></div>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="vendor/leaflet/leaflet.js" defer></script>
+<script src="field.js" defer></script>
+</body>
+</html>

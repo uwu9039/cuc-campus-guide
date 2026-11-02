@@ -208,7 +208,7 @@
     if (state.mode === "embed") mountFrame();
     else renderOfficial();
     render();
-    flash("已开启，查询由你手动发起");
+    flash("已开启，查询要你自己点");
     const first = panel.querySelector(".pd-mini");
     if (first) first.focus();
   }
@@ -323,7 +323,7 @@
 
   function turnOff() {
     resetAll();
-    flash("已关闭，本次数据已丢弃");
+    flash("已关闭，本次数据已清掉");
     if (openBtn) openBtn.focus();
   }
 

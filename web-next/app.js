@@ -198,6 +198,8 @@
       el.statline.title = `事项库更新于 ${h.data_updated || "未知"}；原文库 ${num(h.vector_chunks)} 段`;
       if (!h.key_configured) {
         el.llm.disabled = true;
+        // 开关默认是开的，没配密钥时必须拨回去，否则还是会把 router_llm=true 发给后端
+        el.llm.checked = false;
         el.llm.closest(".llm").title = "未配置模型密钥，模型裁决不可用";
         el.llm.closest(".llm").style.opacity = ".5";
       }
@@ -296,9 +298,9 @@
     el.thread.innerHTML = `<div class="empty" id="empty">
       <p class="ek">校园办事向导</p>
       <h1>说得清，<em>带得对</em>。</h1>
-      <p>每句结论旁边都压着原文。查得到，抄得走，错了知道该找谁。问一句，右边同时打开这件事的档案。</p>
+      <p>每句结论都对着原文。你能查到出处，也能复制带走；哪里不对，页面上有对应部门的电话。问一句，右边同时打开这件事的档案。</p>
       <div class="chips">${samples.map((s) => `<button type="button" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div>
-      <p class="eexit"><b>全库 8,500 多条原文事项</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，它说“没写”，不替学校补。</p>
+      <p class="eexit"><b>全库 8,500 多条原文事项</b>来自学校官网、公众号与制度汇编，逐条对过原文。<br>原文没写的字段，页面直接显示“官方页面没有写”，不能替学校补全。</p>
     </div>`;
   }
 
@@ -344,7 +346,7 @@
 
   async function ask(text, opts = {}) {
     text = (text || "").trim();
-    if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { toast("请再说得具体一点"); return; }
+    if (text.length < 2 && !/^\s*\d{1,3}\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$/.test(text)) { toast("问得太短了，把要办的事说全一点"); return; }
     if (state.busy) return;
     if (!opts.keepSlots) state.slots = {};
     state.busy = true;
@@ -415,8 +417,8 @@
       val = `<p class="aval${t.length > 40 ? " long" : ""}">${linkify(esc(t || "官方页面没有写这一项"))}</p>`;
     }
     const q = qs[0] ? quoteLine(qs[0]) : (a.focus === "contact" && a.found
-      ? `<div class="qmore">联系人取自条目归属部门，官方页面没有单列这句话</div>` : "");
-    const more = qs.length > 1 ? `<div class="qmore">这一面另有 ${qs.length - 1} 条原文，点核对原文查看</div>` : "";
+      ? `<div class="qmore">联系人取自这条事项的归属部门，官方页面里没有单列这一句。</div>` : "");
+    const more = qs.length > 1 ? `<div class="qmore">这一项另有 ${qs.length - 1} 段原文，点「核对原文」查看。</div>` : "";
     return `<div class="aone"><div class="alab">${esc(a.label || "答复")}</div>${val}${q}${more}</div>`;
   }
 
@@ -448,13 +450,13 @@
 
     const noteBits = [];
     if (d.note) noteBits.push(linkify(esc(d.note)));
-    else if (d.missing && d.missing.length) noteBits.push(`官方页面没有写 ${esc(d.missing.join("、"))}，不替它补`);
+    else if (d.missing && d.missing.length) noteBits.push(`官方页面没有写 ${esc(d.missing.join("、"))}，我不能替学校补`);
 
     return `<div class="card">
       <div class="cardhead">
         <span class="tag${item.status === "verified" ? "" : " warn"}">${esc(statusText(item))}</span>
         <span class="norm" title="${esc(d.normalized || "")}">理解成 ${esc(d.normalized || "")}</span>
-        <span class="conf" title="规则匹配分数">${pct(d.confidence)}</span>
+        <span class="conf" title="系统和这句话的匹配程度">${pct(d.confidence)}</span>
       </div>
       <div class="cardbody">${body}${noteBits.length ? `<p class="plannote">${noteBits.join("<br>")}</p>` : ""}${attachBlock(item)}${relatedBlock(d.related)}</div>
       <div class="cardfoot">
@@ -485,8 +487,8 @@
   function ambiguousCard(d) {
     const n = (d.disambiguate || []).length;
     const reason = d.reason || (n === 2
-      ? "这两件事办起来不是一处，选一个，我按那件事的原文回答，不猜"
-      : "选一个，我按那件事的原文回答，不猜");
+      ? "这两件事不在同一个地方办。选一个，我按那件事的原文回答。"
+      : "选一个，我按那件事的原文回答。");
     const opts = (d.disambiguate || []).map((b) =>
       `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
     return `<div class="notice">
@@ -513,7 +515,7 @@
       `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
 
     const related = (d.related_items || []).map((a) =>
-      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.title)}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.label || a.title)}</button>`).join("");
 
     const hints = (d.hints || []).map((h) => `
       <div class="hintrow">
@@ -539,17 +541,17 @@
     const next = (d.next_actions || []).map((s) => `<li>${esc(s)}</li>`).join("");
 
     const gen = d.llm_answer ? `<div class="genbox">
-      <div class="genhead"><span class="gentag">模型生成</span><span>没有官方条目，以下由大模型直接回答</span></div>
+      <div class="genhead"><span class="gentag">模型生成</span><span>没有官方条目，这段回答由模型直接生成</span></div>
       <p class="gentext">${esc(d.llm_answer.text || "")}</p>
-      <p class="gencaveat">${esc(d.llm_answer.disclaimer || "内容由大模型生成，可能不准确")}${d.llm_answer.caveat ? ` ${esc(d.llm_answer.caveat)}` : ""}</p>
+      <p class="gencaveat">${esc(d.llm_answer.disclaimer || "这段内容由模型生成，可能不准确")}${d.llm_answer.caveat ? ` ${esc(d.llm_answer.caveat)}` : ""}</p>
     </div>` : "";
 
     return `<div class="notice">
-      <h3>没对上事项，我不硬猜</h3>
-      <p>${d.topic ? `你问的是 ${esc(d.topic)}，` : ""}${esc(d.search_note || "换个更具体的说法，比如 校园卡补卡 或 开成绩单，下面是我能从原文里找到的线索")}</p>
+      <h3>没找到对应的事项</h3>
+      <p>${d.topic ? `你问的是 ${esc(d.topic)}，` : ""}${esc(d.search_note || "下面是我从原文里找到的线索。你可以换个更具体的说法再问，比如「校园卡补卡」或「开成绩单」。")}</p>
       ${gen}
       ${hitRows ? `<div class="hintlist">${hitRows}</div>` : ""}
-      ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "也许你要办的是下面某一类")}</p><div class="opts">${dis}</div>` : ""}
+      ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "你要办的是下面哪一类？")}</p><div class="opts">${dis}</div>` : ""}
       ${related ? `<p style="margin-top:14px">这些事项可能是你要的</p><div class="opts">${related}</div>` : ""}
       ${alts ? `<p style="margin-top:14px">相近的事项</p><div class="opts">${alts}</div>` : ""}
       ${hints ? `<div class="sec"><h3>归口线索（非官方流程）</h3>${hints}</div>` : ""}
@@ -635,11 +637,12 @@
     const on = el.llm.checked;
     if (d && d.sensitive) {
       el.llmhint.className = "llmhint warn";
-      el.llmhint.innerHTML = `这类问题（${esc((d.hits || []).join("、"))}）答错代价大，建议开启模型裁决`
-        + (on ? "（已开启）" : `<button type="button" data-llmfix="1">开启并重答</button>`);
+      el.llmhint.innerHTML = `这类问题（${esc((d.hits || []).join("、"))}）答错代价大，`
+        + (on ? "模型裁决已经开着，这条答案经模型核过一遍。"
+              : `建议开模型裁决。<button type="button" data-llmfix="1">开启并重答</button>`);
     } else if (d && d.rule_unsure && !on) {
       el.llmhint.className = "llmhint";
-      el.llmhint.textContent = "规则对这句话没把握，开启模型裁决后，先把问题翻译成多种校园说法重新检索，再在候选条目里挑；一条都没收录时由模型直接生成，内容仅供参考";
+      el.llmhint.textContent = "系统对这句话没把握。开启模型裁决后，会先把你的问法换成几种校园常用说法重新找一遍，再从候选事项里挑一条。事项库一条都没收录时，由模型直接生成回答，这部分内容要你自己核对。";
     } else {
       el.llmhint.className = "llmhint";
       el.llmhint.textContent = "";
@@ -694,10 +697,10 @@
     el.qcount.textContent = "0";
     el.insbody.innerHTML = `<div class="insempty">
       <p class="ek">条目档案</p>
-      <h3>右边不是附件，是答案的出处</h3>
-      <p>问一句，这里固定显示四项：办理信息、要带的材料、可执行步骤、原文引文。任何一条结论都能落到原文上。</p>
+      <h3>这一栏放的是答案的出处</h3>
+      <p>问一句，这里固定显示四项：办理信息、要带的材料、可执行步骤、原文引文。每条结论都注明出自哪一段原文。</p>
       <ul>
-        <li>原文没写的字段，显示“官方页面没有写”，不补全。</li>
+        <li>原文没写的字段，显示“官方页面没有写”，不能替学校补。</li>
         <li>转专业会直接展开学院接收计划，按专业列出条件与考核。</li>
         <li>清单可以打印，也可以复制成纯文本带走。</li>
       </ul>
@@ -823,7 +826,7 @@
       steps.length ? `步骤\n${steps.join("\n")}` : "",
       `原文\n${quotes.map((q) => `- ${q.quote}\n  ${q.label || q.src || ""}${q.url ? " " + q.url : ""}`).join("\n")}`,
       `来源\n${(item.source || []).map((s) => s.url).filter(Boolean).join("\n")}`,
-      "以上事实来自官方原文，由校园办事向导整理；原文没写的未补写。",
+      "以上事实来自官方原文，由校园办事向导整理；原文没写的没有补。",
     ].filter(Boolean).join("\n\n");
   }
 
@@ -923,7 +926,7 @@
         <div class="ctacts"><button type="button" data-copy="${esc(val)}">复制</button>
           ${i.source_url ? `<a href="${esc(i.source_url)}" target="_blank" rel="noreferrer">来源原文 ↗</a>` : ""}</div>
       </div>`;
-    }).join("") : `<p class="insempty2">这个筛选下没有收录到公开联系方式。换个用途，或直接问我。</p>`;
+    }).join("") : `<p class="insempty2">按这个条件没找到公开联系方式。换个用途试试，或者回到对话里问我。</p>`;
   }
 
   async function openSearch(q) {
@@ -943,13 +946,13 @@
   }
 
   async function runSearch(q) {
-    if (q.length < 2) { toast("请再说得具体一点"); return; }
+    if (q.length < 2) { toast("问得太短了，把要找的内容说全一点"); return; }
     $("#smeta").textContent = "在官方原文里检索…";
     $("#slist").innerHTML = "";
     try {
       const d = await api(`/api/search?q=${encodeURIComponent(q)}&k=8`);
       const hits = d.hits || [];
-      $("#smeta").textContent = `「${q}」命中 ${hits.length} 段 / 库内 ${num(d.vector_sources)} 份、${num(d.vector_chunks)} 段原文`;
+      $("#smeta").textContent = `「${q}」找到 ${hits.length} 段；原文库共 ${num(d.vector_sources)} 份、${num(d.vector_chunks)} 段`;
       $("#slist").innerHTML = hits.length ? hits.map((h) => `
         <div class="shit">
           <h3>${esc(h.title || "原文段落")}</h3>
@@ -1070,7 +1073,7 @@
       el.q.value = "";
       el.q.style.height = "auto";
       el.q.focus();
-      toast("条件已清空，可以重新问");
+      toast("已清空刚才的条件，可以重新问");
     });
     el.llm.addEventListener("change", () => {
       if (state.lastQuery) ask(state.lastQuery, { keepSlots: true });

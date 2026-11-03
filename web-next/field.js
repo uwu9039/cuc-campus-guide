@@ -377,12 +377,26 @@
     return `<div class="card">${cardHead(data, item.title || "")}
       ${item.summary ? `<p class="aval">${esc(item.summary)}</p>` : ""}
       ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}
+      ${sourceBlock(item)}
       <div class="cardfoot">
         <button class="plainbtn" type="button" data-act="quotes">核对原文 <span>${quotes.length}</span></button>
         <button class="plainbtn" type="button" data-act="material">清单与流程</button>
         <button class="plainbtn" type="button" data-act="copy">复制答案</button>
         <span class="stampnote">NO.${String(state.count).padStart(3, "0")} · ${esc(item.title || "")}</span>
       </div></div>`;
+  }
+
+  // 条目登记的官方网址：回答卡底部给前两条，点开就是学校页面上的原文。
+  // 一条网址都没有就整块不出现，不留一个空标题。
+  // 语料里少数来源记的是系统接口（点开是一段 JSON，人看不了），这类不当官方来源展示。
+  const isReadableSource = (url) => !/\/engine2\/|api-v2|\.json(\?|#|$)/i.test(String(url || ""));
+  function sourceLinks(item) {
+    return (item.source || []).filter((s) => s && s.url && isReadableSource(s.url)).slice(0, 2);
+  }
+  function sourceBlock(item) {
+    const list = sourceLinks(item);
+    if (!list.length) return "";
+    return `<div class="srcs"><h3>官方来源</h3>${list.map((s) => `<a class="srclink" href="${esc(s.url)}" target="_blank" rel="noreferrer">${esc(s.title || s.url)}</a>`).join("")}</div>`;
   }
 
   function partHtml(a) {
@@ -1005,6 +1019,8 @@
     if (d.note) lines.push("", `说明：${d.note}`);
     const quotes = (d.quotes || []).filter((q) => q && q.quote).slice(0, 5);
     if (quotes.length) lines.push("", "官方原文：", ...quotes.map((q) => `- ${q.quote}（${q.label || q.src || "原文"}）`));
+    const srcs = sourceLinks(item);
+    if (srcs.length) lines.push("", "官方来源：", ...srcs.map((s) => `- ${s.title || s.url}：${s.url}`));
     return lines.join("\n");
   }
 

@@ -64,22 +64,64 @@ def strip_root_blocks(css):
 
 
 class RouteTest(unittest.TestCase):
+    def routes(self, path):
+        sys.path.insert(0, str(ROOT))
+        import app as backend
+
+        return [r for r in backend.app.routes if getattr(r, "path", None) == path]
+
     def test_field_route_is_registered_before_static_mount(self):
         source = (ROOT / "app.py").read_text(encoding="utf-8")
         self.assertIn('@app.get("/field")', source, "app.py 没有 /field 路由")
         mount = source.index('app.mount("/", StaticFiles')
         self.assertLess(source.index('@app.get("/field")'), mount, "/field 必须注册在静态挂载之前")
+        # / 与 /desk 同样要抢在挂载之前，否则 / 会被静态目录里的 index.html 吃掉
+        for deco in ('@app.get("/")', '@app.get("/desk")'):
+            self.assertIn(deco, source, f"app.py 没有 {deco} 路由")
+            self.assertLess(source.index(deco), mount, f"{deco} 必须注册在静态挂载之前")
 
     def test_field_route_serves_field_html_without_cache(self):
-        sys.path.insert(0, str(ROOT))
-        import app as backend
-
-        routes = [route for route in backend.app.routes if getattr(route, "path", None) == "/field"]
+        routes = self.routes("/field")
         self.assertEqual(len(routes), 1, f"/field 路由应恰好一条，实际 {len(routes)}")
         methods = set(routes[0].methods or set())
         self.assertEqual(methods - {"HEAD"}, {"GET"}, "/field 只应接受 GET")
         response = routes[0].endpoint()
         self.assertEqual(Path(str(response.path)).name, "field.html")
+        self.assertTrue(str(response.media_type or "").startswith("text/html"))
+        self.assertIn("no-store", str(response.headers.get("cache-control", "")))
+
+    def test_root_redirects_to_field(self):
+        # 首次进入要落在向导页：/ 不再发文件，改成 302。用 302 不用 301/308，
+        # 免得浏览器把跳转缓存死，之后想改入口改不动。
+        routes = self.routes("/")
+        self.assertEqual(len(routes), 1, f"/ 路由应恰好一条，实际 {len(routes)}")
+        response = routes[0].endpoint(self.request(""))
+        self.assertEqual(type(response).__name__, "RedirectResponse", "/ 必须重定向，不能再直接发页面文件")
+        self.assertEqual(response.status_code, 302, "/ 应返回 302 而不是永久重定向")
+        self.assertEqual(response.headers.get("location"), "/field", "/ 要跳到向导页")
+
+    def test_root_redirect_keeps_query_string(self):
+        # README 里的演示链接是 /?q=我要开个证明；跳转丢掉查询串，
+        # /field 的 presetQuery 就取不到问题，等于把分享链接废了。
+        response = self.routes("/")[0].endpoint(self.request("q=%E6%A0%A1%E5%9C%92%E5%8D%A1"))
+        self.assertEqual(response.headers.get("location"), "/field?q=%E6%A0%A1%E5%9C%92%E5%8D%A1",
+                          "跳转必须原样带上查询串")
+
+    def request(self, query_string):
+        from starlette.requests import Request
+
+        return Request({
+            "type": "http", "http_version": "1.1", "method": "GET", "scheme": "http",
+            "path": "/", "raw_path": b"/", "query_string": query_string.encode("ascii"),
+            "root_path": "", "server": ("testserver", 80), "headers": [],
+        })
+
+    def test_desk_serves_two_column_page_without_cache(self):
+        # 双栏界面挪到 /desk：文件还是原来那份 index.html，只是换了地址
+        routes = self.routes("/desk")
+        self.assertEqual(len(routes), 1, f"/desk 路由应恰好一条，实际 {len(routes)}")
+        response = routes[0].endpoint()
+        self.assertEqual(Path(str(response.path)).name, "index.html")
         self.assertTrue(str(response.media_type or "").startswith("text/html"))
         self.assertIn("no-store", str(response.headers.get("cache-control", "")))
 
@@ -426,6 +468,113 @@ class FeedbackTest(unittest.TestCase):
         self.assertRegex(source, r'FIELD_WORDS\s*=\s*\[\s*"CUC"')
 
 
+class EntryLinkTest(unittest.TestCase):
+    """v0.8：双栏从 / 挪到 /desk 之后，界面里的入口链接要跟到新地址。"""
+
+    def test_field_page_entry_link_points_to_desk(self):
+        # 双栏挪到 /desk 之后，这个入口再指 / 就是被 302 弹回 /field，点了等于没点
+        html = read("field.html")
+        link = re.search(r'<a class="ghostbtn" href="([^"]*)">经典版</a>', html)
+        self.assertTrue(link, "/field 顶栏没有「经典版」入口")
+        self.assertEqual(link.group(1), "/desk", "入口要指向双栏的新地址 /desk")
+
+    def test_no_page_links_to_the_redirecting_root(self):
+        # 除经典版（受发布守卫逐字节锁定）以外，任何界面都不许再直连 /：
+        # / 现在只负责把人弹到 /field，指着它等于原地打转
+        for name in ("field.html", "index.html"):
+            html = read(name)
+            self.assertNotIn('href="/"', html, f"{name} 里还有指向 / 的入口")
+
+    def test_source_block_limits_and_guards(self):
+        # 需求 2：问题对应的条目带官方网址时，回答里要能直接点开
+        js = read("field.js")
+        self.assertIn("function sourceBlock(", js, "field.js 里还没有 sourceBlock()")
+        self.assertIn("function sourceLinks(", js, "field.js 里还没有 sourceLinks()")
+        block = js_region(js, "function sourceLinks(", "function partHtml(")
+        self.assertIn(".filter(", block, "要先滤掉没有网址的来源")
+        self.assertIn("s.url", block, "过滤条件是来源自带 url")
+        self.assertIn("slice(0, 2)", block, "回答卡只给前两条来源，别把卡片变成链接堆")
+        self.assertIn('if (!list.length) return "";', block, "一条网址都没有就整块不出现")
+        self.assertIn('target="_blank"', block, "外链新窗口打开")
+        self.assertIn('rel="noreferrer"', block, "外链不带 referrer")
+        self.assertIn("esc(", block, "网址与标题都要转义")
+        self.assertIn("官方来源", block, "小标题写明是官方来源")
+
+    def test_answer_card_renders_sources_above_the_footer(self):
+        js = read("field.js")
+        card = js_region(js, "function answerCard(", "function partHtml(")
+        self.assertIn("${sourceBlock(item)}", card, "回答卡要渲染官方来源块")
+        self.assertLess(card.index("${sourceBlock(item)}"), card.index('<div class="cardfoot">'),
+                         "来源要在按钮行之前，别掉到卡片底下")
+
+    def test_plain_answer_carries_the_source_urls(self):
+        # 「复制答案」带走的纯文本也要有网址，否则截图转发时来源就丢了
+        js = read("field.js")
+        self.assertIn("function sourceLinks(", js, "筛选来源的规则要收在一个函数里，两处共用")
+        copy = js_region(js, "function plainAnswer(", "function copyAnswer(")
+        self.assertIn("sourceLinks(item)", copy, "复制文本要走同一套来源筛选")
+        self.assertIn("官方来源", copy, "复制出去的文本要标明这是官方来源")
+
+    def test_machine_endpoints_are_not_shown_as_sources(self):
+        # 语料里有少数来源记的是接口地址（图书馆引擎返回 JSON，人打不开），
+        # 这类不能当「官方来源」摆给用户
+        js = read("field.js")
+        gate = re.search(r"isReadableSource = \(url\)[\s\S]*?\n", js)
+        self.assertTrue(gate, "没有 isReadableSource()，接口地址会混进官方来源")
+        for pattern in ("engine2", "api-v2", r"\.json"):
+            self.assertRegex(gate.group(0), pattern, f"筛选规则漏了 {pattern}")
+
+    def test_source_block_is_styled(self):
+        # 只要求「有这条规则」是空转：把规则掏空照样过，所以盯住具体的排版属性
+        css = read("field.css")
+        srcs = re.search(r"\.srcs \{([^}]*)\}", css)
+        link = re.search(r"\.srclink \{([^}]*)\}", css)
+        self.assertTrue(srcs, "官方来源块没有排版规则")
+        self.assertTrue(link, "来源链接没有排版规则")
+        self.assertIn("margin-top", srcs.group(1), "来源块要和上面的正文拉开距离")
+        self.assertIn("color: var(", link.group(1), "来源链接用界面色值，不写死颜色")
+        self.assertIn("text-decoration: none", link.group(1), "来源链接不带下划线，靠边线区分")
+
+    def test_source_block_behavior(self):
+        # 真跑一遍：空来源不渲染、缺 url 的来源跳过、最多两条
+        import subprocess
+        import tempfile
+
+        js = read("field.js")
+        esc = re.search(r"  const esc = \(value\) =>[\s\S]*?;\n", js)
+        fn = re.search(r"  const isReadableSource[\s\S]*?function sourceBlock\(item\)[\s\S]*?\n  \}\n", js)
+        self.assertTrue(esc and fn, "取不到 esc 或 sourceLinks/sourceBlock，没法跑行为检查")
+        script = (
+            esc.group(0) + fn.group(0) +
+            "const cases=["
+            "{},"
+            "{source:[]},"
+            '{source:[{title:"无网址的"},{title:"甲",url:"https://a.cuc.edu.cn/x"},'
+            '{title:"乙",url:"https://b.cuc.edu.cn/y"},{title:"丙",url:"https://c.cuc.edu.cn/z"}]},'
+            '{source:[{title:"接口",url:"https://ilib.cuc.edu.cn/engine2/data/api-v2/abc/get-classify?ac=true"},'
+            '{title:"真页",url:"https://ilib.cuc.edu.cn/xygd.htm"}]}];'
+            "process.stdout.write(JSON.stringify(cases.map(sourceBlock)));"
+        )
+        handle = tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8")
+        handle.write(script)
+        handle.close()
+        try:
+            result = subprocess.run(["node", handle.name], capture_output=True, text=True, timeout=60)
+            self.assertEqual(result.returncode, 0, f"node 跑不起来：{result.stderr[:400]}")
+            empty, no_url, three, machine = json.loads(result.stdout)
+            self.assertEqual(empty, "", "条目没有 source 时不该出现来源块")
+            self.assertEqual(no_url, "", "来源全都没有网址时不该出现来源块")
+            self.assertIn("https://a.cuc.edu.cn/x", three)
+            self.assertIn("https://b.cuc.edu.cn/y", three)
+            self.assertNotIn("https://c.cuc.edu.cn/z", three, "只给前两条")
+            self.assertNotIn("无网址的", three, "没有网址的来源不该出现在链接里")
+            self.assertEqual(three.count("<a "), 2, f"应恰好两条链接：{three}")
+            self.assertNotIn("接口", machine, "返回 JSON 的接口地址不该当官方来源")
+            self.assertIn("https://ilib.cuc.edu.cn/xygd.htm", machine, "接口被滤掉后真页面要补上来")
+        finally:
+            Path(handle.name).unlink(missing_ok=True)
+
+
 class PhaseTwoTest(unittest.TestCase):
     def test_four_entries_all_work(self):
         # 2026-11-02 用户改口：个人数据不再留禁用，但只做「跳官方系统」，页内不读数据
@@ -714,11 +863,11 @@ class ProductionUntouchedTest(unittest.TestCase):
         self.assertEqual(len(added), 1, f"经典版只允许新增一行入口，实际新增 {len(added)} 行：{added}")
         self.assertIn('href="/field"', added[0], "经典版那唯一一处改动必须是 /field 入口")
 
-    # 发布要求页脚版本号跟着版本走：v0.6 → v0.7 是 classic.html 唯一允许的改动，
-    # 其余内容仍必须与动手前的备份逐字节一致。
+    # 发布要求页脚版本号跟着版本走：备份里是 v0.6，本次发布到 v0.8；
+    # 这一行是 classic.html 唯一允许的改动，其余内容仍必须与动手前的备份逐字节一致。
     RELEASE_LINE_DIFF = [
         "-    <span>校园办事向导 v0.6 · 管理类</span>",
-        "+    <span>校园办事向导 v0.7 · 管理类</span>",
+        "+    <span>校园办事向导 v0.8 · 管理类</span>",
     ]
 
     def test_classic_page_diff_is_only_the_release_version(self):

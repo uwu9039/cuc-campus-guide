@@ -19,8 +19,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -4490,7 +4490,16 @@ def verify(req: VerifyReq) -> dict[str, Any]:
 
 
 @app.get("/")
-def index() -> FileResponse:
+def index(request: Request) -> RedirectResponse:
+    # 首次进入直接落到手机端向导页；双栏工作台挪到 /desk。
+    # 用 302 而不是永久重定向，入口以后想改不会被浏览器缓存住。
+    # 查询串原样带过去：/?q=我要开个证明 这类演示与分享链接要照常能提问。
+    query = request.url.query
+    return RedirectResponse(url=f"/field?{query}" if query else "/field", status_code=302)
+
+
+@app.get("/desk")
+def desk() -> FileResponse:
     return FileResponse(
         ROOT / "web-next" / "index.html",
         media_type="text/html; charset=utf-8",

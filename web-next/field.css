@@ -239,6 +239,14 @@ body[data-mode="hero"] .card { background: var(--surface); }
 .plainbtn[disabled] { opacity: .55; cursor: not-allowed; }
 .cardfoot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
 .cardfoot .stampnote { margin-left: auto; color: var(--muted); font-size: 11px; }
+/* 回答卡底部的官方来源：宁少勿滥，只挂两条，点开就是学校页面上的原文 */
+.srcs { margin-top: 14px; }
+.srcs h3 { margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.srclink {
+  display: block; margin-top: 6px; color: var(--ink); font-size: 13px; text-decoration: none;
+  border-bottom: 1px solid var(--line); overflow-wrap: anywhere;
+}
+.srclink:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .opts button, .opts .opt { padding: 8px 13px; border-radius: var(--radius-pill); background: var(--bg); border: 1px solid var(--line); font-size: 13px; }
 .opts .opt { display: inline-block; color: var(--ink); text-decoration: none; }
@@ -385,6 +393,8 @@ body[data-panel-open] { overflow: hidden; }
   .topbar { width: calc(100% - 28px); padding: 12px 0; gap: 10px; }
   .stage, .page-footer { width: calc(100% - 28px); }
   .topacts { margin-left: 0; }
+  /* 手机端去掉这五个按钮的实心底色，改为透明，让背后内容透出来 */
+  .ghostbtn { background: transparent; }
   .brand { font-size: 13px; }
   .brand-sub { display: none; }
   .boxfoot .send { margin-left: 0; width: 100%; }

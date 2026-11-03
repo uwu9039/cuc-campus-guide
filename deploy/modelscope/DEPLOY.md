@@ -36,7 +36,7 @@ git clone https://www.modelscope.cn/studios/<用户名>/<空间名>.git
 # 把 _modelscope_bundle/ 里的全部内容复制到克隆目录根部（Dockerfile 和 README.md 要在根目录）
 cd <空间名>
 git add -A
-git commit -m "v0.7 校园办事向导"
+git commit -m "v0.8 校园办事向导"
 git push origin master
 ```
 
@@ -57,6 +57,6 @@ curl https://www.modelscope.cn/studios/<用户名>/<空间名>/api/health
 ## 注意
 
 - 不要上传 `.env`、`download.devtools`、`aia-api.json`、`web-next/campus-guide-personal-data.zip`；`build_modelscope.py` 已经把它们排除在外。
-- 三个界面（`/field`、`/`、`/classic`）都在包里，共用同一个后端与同一份数据。手机端与微信内嵌浏览器可直接用 `/field`。
+- 三个界面（`/field`、`/desk`、`/classic`）都在包里，共用同一个后端与同一份数据。打开站点根路径会自动跳到 `/field`（302，带 `?q=` 也照跳）。手机端与微信内嵌浏览器可直接用 `/field`。
 - 个人数据（校园卡余额、课表）在公开站点上只给两个官方网址入口，页面本身不读取、不接收、不转发任何个人数据；实时查询要学生本人在官方系统登录完成。
 - 创空间仓库和 GitHub 是两套仓库，互不影响；改完数据要重新跑一次 `build_modelscope.py` 再推。

@@ -12,6 +12,6 @@ if not exist ".venv\Scripts\uvicorn.exe" (
   ".venv\Scripts\python.exe" -m pip install -q --disable-pip-version-check -r requirements.txt
 )
 
-echo [3/3] Starting http://127.0.0.1:8000  (/field wizard, / new UI, /classic old UI; hot reload)
+echo [3/3] Starting http://127.0.0.1:8000  (opens /field wizard; /desk two-column, /classic old UI; hot reload)
 start "" "http://127.0.0.1:8000"
 ".venv\Scripts\python.exe" -m uvicorn app:app --host 127.0.0.1 --port 8000 --reload

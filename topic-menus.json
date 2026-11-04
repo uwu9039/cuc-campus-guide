@@ -458,6 +458,45 @@
           "label": "学籍变动审批表（学业留级）"
         }
       ]
+    },
+    {
+      "name": "绩点",
+      "triggers": [
+        "绩点",
+        "GPA",
+        "平均绩点",
+        "学分绩点",
+        "绩点计算",
+        "绩点算法"
+      ],
+      "default": "jwc-gpa",
+      "clarify": "「绩点」有下面几项，先点一个：",
+      "options": [
+        {
+          "item": "jwc-gpa",
+          "label": "学分绩点（GPA）怎么算"
+        },
+        {
+          "item": "jwc-chongxiu",
+          "label": "重修（通过后按 60 分计入 GPA）"
+        },
+        {
+          "item": "jwc-chengjidan",
+          "label": "成绩单办理"
+        },
+        {
+          "item": "jwc-chengji-fuhe",
+          "label": "成绩复核（对成绩有异议）"
+        },
+        {
+          "item": "jiangxuejin",
+          "label": "奖学金评定"
+        },
+        {
+          "item": "tuimian-tiaojian",
+          "label": "推免（保研）资格条件"
+        }
+      ]
     }
   ]
 }

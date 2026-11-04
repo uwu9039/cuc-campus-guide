@@ -16,9 +16,8 @@
   const REEL_SECONDS_PER_ROW = 2.5;
   const REEL_DWELL = 0.64;          // 每格里的停留比例，剩余时间用于换行
   const PRESETS = [
-    "出国用的成绩单怎么开", "转专业要满足什么条件", "一教在哪",
-    "助学贷款怎么申请", "校医院在哪", "想补选一门课怎么办",
-    "宿舍没电了怎么买电", "图书馆在哪", "考试去不了怎么缓考", "奖学金怎么评",
+    "48教在哪", "校医院在哪", "校卡怎么补办", "转专业",
+    "出国用的成绩单怎么开", "奖学金", "保研", "宿舍购电",
   ];
 
   function reelRows() {
@@ -58,8 +57,15 @@
   const esc = (value) => String(value == null ? "" : value)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  // 反问菜单的选项带条目 id：点下去按 id 打开那一条，别再拿标题重新路由一遍
+  const pickAttr = (choice) => (choice && choice.id
+    ? ` data-pick="${esc(choice.id)}"` : "");
   const num = (value) => Number(value || 0).toLocaleString("zh-CN");
   const pct = (value) => Math.round((Number(value) || 0) * 100) + "%";
+  // 「· 图书馆手册.docx」这种来源后缀是给条目自己用的，不该出现在给用户看的话里。
+  // 只处理显示：data-ask 仍然原样发出去，免得动到路由。
+  const docName = (value) => String(value == null ? "" : value)
+    .replace(/\.(docx|xlsx|pptx|pdf|doc|xls|ppt|txt|md|wps)\b/gi, "");
   const statusText = (item) => !item ? ""
     : item.status === "verified" ? "原文已核验"
     : item.status === "partial" ? "官方无正文"
@@ -242,14 +248,65 @@
     return answerCard(data);
   }
 
+  function modelStat(data) {
+    // 模型这一层到底有没有参与：没问、问了、报错，用户要能一眼分开看
+    const m = data.model_route;
+    if (!m) return "";
+    const bits = [];
+    let bad = false;
+    if (m.error) {
+      const err = String(m.error);
+      if (err.includes("限流")) bits.push("模型接口被限流，这条只按规则答");
+      else if (err.includes("连不通")) bits.push("模型接口连不通，这条只按规则答");
+      else if (err.includes("Key")) bits.push("模型 Key 可能失效，这条只按规则答");
+      else bits.push("模型接口失败，这条只按规则答");
+      bad = true;
+    }
+    else if (m.gate === "no_key") { bits.push("没配模型 Key，这条只按规则答"); bad = true; }
+    else if (m.gate === "router_off") { bits.push("模型裁决没开，这条只按规则答"); bad = true; }
+    else if (m.gate === "user_pick") { bits.push("按你点的那一条答"); }
+    else if (m.gate === "menu_default") { bits.push("这个词先答主项，其余问法在下面"); }
+    else if (m.gate === "menu_declined") {
+      bits.push(`模型看过 ${m.pool} 个选项，认不出你要哪一件，先列给你挑`);
+    }
+    else if (m.gate === "menu_low") {
+      bits.push(`模型对选项最高只有 ${m.score}% 把握，还是列给你挑`); bad = true;
+    }
+    else if (m.rescue === "menu_pick") {
+      bits.push("模型从选项里选定这一条");
+      if (data.soft_match) { bits.push(`只有 ${m.score}% 把握`); bad = true; }
+    }
+    else if (m.rescue === "rewrite_pool") {
+      bits.push("模型换了说法重新检索后指定");
+      if (data.soft_match) { bits.push(`只有 ${m.score}% 把握`); bad = true; }
+    }
+    else if (m.rescue === "keyword_fallback") {
+      bits.push("模型接口不可用，这条按改写关键词命中"); bad = true;
+    }
+    else if (m.gate === "llm_declined") {
+      bits.push(m.pool2
+        ? `模型换过 ${m.rewrites ? m.rewrites.length : 0} 种说法重新检索，也没认出来`
+        : `模型看过 ${m.pool} 条候选，认为都没答上`);
+    }
+    else {
+      if (data.soft_match) { bits.push(`模型只有 ${m.score}% 把握`); bad = true; }
+      if (m.changed) bits.push("模型改判");
+      if (data.focus_by_llm) bits.push("问的是哪一面由模型判断");
+    }
+    if (!bits.length) return "";
+    const why = m.why || m.error || "";
+    return `<span class="mstat${bad ? " bad" : ""}"${why ? ` title="${esc(why)}"` : ""}>${esc(bits.join(" · "))}</span>`;
+  }
+
   function cardHead(data, title) {
     const item = data.item || {};
     const verified = item.status === "verified";
     return `<div class="cardhead">
       <span class="tag${verified ? "" : " warn"}">${esc(statusText(item) || "未匹配到事项")}</span>
-      <span class="norm" title="${esc(data.normalized || "")}">理解成 ${esc(data.normalized || data.query || "")}</span>
+      ${modelStat(data)}
+      <span class="norm" title="${esc(data.normalized || "")}">理解成 ${esc(docName(data.normalized || data.query || ""))}</span>
       <span class="conf" title="系统和这句话的匹配程度">${pct(data.confidence)}</span>
-      ${title ? `<h2>${esc(title)}</h2>` : ""}
+      ${title ? `<h2>${esc(docName(title))}</h2>` : ""}
     </div>`;
   }
 
@@ -289,17 +346,17 @@
       <p class="qmore">${esc(data.llm_answer.disclaimer || "这段内容由模型生成，可能不准确")}${data.llm_answer.caveat ? ` ${esc(data.llm_answer.caveat)}` : ""}</p>
     </div>` : "";
     const clues = (data.original_search || []).map((h) => `<div class="hitrow">
-      <div class="ht">${esc(h.title || "原文段落")}</div>
+      <div class="ht">${esc(docName(h.title) || "原文段落")}</div>
       <p class="norm">${[h.kind || "原文", h.score != null ? `相关度 ${pct(h.score)}` : "", h.page ? `p.${esc(h.page)}` : ""].filter(Boolean).join(" · ")}</p>
       <p class="aval">${esc(h.snippet || "")}</p>
       ${h.url ? `<a class="opt" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}
     </div>`).join("");
     const choices = (data.disambiguate || []).map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(b.title)}"${pickAttr(b)}>${esc(docName(b.title))}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
     const related = (data.related_items || []).map((a) =>
-      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.label || a.title)}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(docName(a.label || a.title))}</button>`).join("");
     const alts = (data.alternatives || []).map((a) =>
-      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.title)}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(docName(a.title))}</button>`).join("");
     const hints = (data.hints || []).map((h) => `<div class="hitrow">
       <div class="ht"><b>${esc(h.name)}</b> 可能管这件事${h.basis ? `<span class="norm">依据 ${esc(h.basis)}</span>` : ""}</div>
       ${(h.matched || []).length ? `<p class="norm">${(h.matched || []).map((m) => esc(m)).join(" · ")}</p>` : ""}
@@ -342,7 +399,7 @@
       ? "这两件事不在同一个地方办。选一个，我按那件事的原文回答。"
       : "选一个，我按那件事的原文回答。");
     const opts = (data.disambiguate || []).map((choice) =>
-      `<button class="opt" type="button" data-ask="${esc(choice.title || choice.label || choice)}">${esc(choice.label || choice.title || choice)}
+      `<button class="opt" type="button" data-ask="${esc(choice.title || choice.label || choice)}"${pickAttr(choice)}>${esc(docName(choice.label || choice.title || choice))}
         ${choice.dept ? `<span class="odept">${esc(choice.dept)}</span>` : ""}</button>`).join("");
     return `<div class="card">${cardHead(data, "想问哪一个")}
       <p class="aval">${esc(data.clarify || "没太确定你问的是哪一件")}</p>
@@ -382,7 +439,7 @@
         <button class="plainbtn" type="button" data-act="quotes">核对原文 <span>${quotes.length}</span></button>
         <button class="plainbtn" type="button" data-act="material">清单与流程</button>
         <button class="plainbtn" type="button" data-act="copy">复制答案</button>
-        <span class="stampnote">NO.${String(state.count).padStart(3, "0")} · ${esc(item.title || "")}</span>
+        <span class="stampnote">NO.${String(state.count).padStart(3, "0")} · ${esc(docName(item.title || ""))}</span>
       </div></div>`;
   }
 
@@ -454,7 +511,7 @@
   function relatedBlock(list) {
     if (!Array.isArray(list) || !list.length) return "";
     return `<div class="sec"><h3>相关事项（点一下直接问）</h3><div class="opts">${list.slice(0, 8).map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title || b.hint)}">${esc(b.label || b.title)}
+      `<button class="opt" type="button" data-ask="${esc(b.title || b.hint)}"${pickAttr(b)}>${esc(docName(b.label || b.title))}
         ${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`;
   }
 
@@ -481,7 +538,19 @@
     return slot;
   }
 
-  async function ask(text) {
+  function jumpToStart(anchor) {
+    // 答案是从槽往下长的，视口却停在旧位置：把这一轮的开头顶到顶栏下沿。
+    // 滚动的一直是文档（.thread 没有 overflow）；卡片入场动画会让它的
+    // scrollHeight 短暂大于 clientHeight，所以不能拿「谁可滚滚谁」当判据。
+    const shift = window.scrollY || document.documentElement.scrollTop || 0;
+    // --topbar-keep 是页面给 sticky 顶栏留的净高，面板也用同一个值
+    const keep = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topbar-keep"));
+    const offset = (Number.isFinite(keep) ? keep : 0) + 12;
+    const top = Math.max(0, anchor.getBoundingClientRect().top + shift - offset);
+    window.scrollTo({ top, behavior: reduced.matches ? "instant" : "smooth" });
+  }
+
+  async function ask(text, pick, fromOption) {
     text = String(text || "").trim();
     if (text.length < 2) { toast("问得太短了，把要办的事说全一点"); return; }
     if (state.busy) return;
@@ -496,6 +565,8 @@
         context_item: state.item ? state.item.id : null,
         context_slots: (state.last && state.last.known) || {},
         messages: state.history.slice(-12),
+        // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
+        pick_item: pick || null,
       });
       state.last = response;
       state.count += 1;
@@ -509,6 +580,7 @@
     } finally {
       state.busy = false;
       el.send.disabled = false;
+      if (fromOption) jumpToStart(slot.previousElementSibling || slot);
     }
   }
 
@@ -517,15 +589,17 @@
       && !(response.disambiguate && response.disambiguate.length);
     if (matched) {
       state.item = response.item;
-      el.topline.textContent = `当前事项 · ${response.item.title || ""}`;
-      el.topline.hidden = false;
       loadDeliver();
-    } else {
-      state.item = null;
-      state.deliver = null;
-      el.topline.textContent = "还没定位到具体事项";
-      el.topline.hidden = false;
     }
+    // 这一问没答上、或正在反问，不等于用户换了话题：上一件事留着，
+    // 下一句「几天能办好」才有得接续。一没答上就清空，就是「问两句就失忆」的根因。
+    if (state.item) {
+      el.topline.textContent = `当前事项 · ${docName(state.item.title) || ""}`;
+    } else {
+      el.topline.textContent = "还没定位到具体事项";
+      state.deliver = null;
+    }
+    el.topline.hidden = false;
     setMode("work");
     renderIns();
     updateStamp();
@@ -556,18 +630,46 @@
     el.stamp.textContent = `NO.${String(state.count).padStart(3, "0")} · ${state.item ? state.item.id : "—"}`;
   }
 
+  // 概览、材料、流程三节各按自己的字段判有没有内容；一节空着就连标签一起收起来，
+  // 不再让人点进去只看到一句「官方页面没有写」。原文标签是核对出处用的，始终留着。
+  const OVERVIEW_KEYS = ["location", "fee", "hours", "duration", "window", "channel"];
+  const MATERIAL_KEYS = ["materials", "draft"];
+  const STEPS_KEYS = ["steps"];
+
+  function hasContent(item, kind) {
+    if (!item) return false;
+    const keys = kind === "overview" ? OVERVIEW_KEYS : kind === "material" ? MATERIAL_KEYS : STEPS_KEYS;
+    return keys.some((key) => {
+      const value = item[key];
+      return Array.isArray(value) ? value.length > 0 : String(value == null ? "" : value).trim().length > 0;
+    });
+  }
+
+  function visibleTabs(item) {
+    $$("[data-tab]", el.tabs).forEach((btn) => {
+      btn.hidden = item ? !hasContent(item, btn.dataset.tab) && btn.dataset.tab !== "quotes" : false;
+    });
+    if (item && !hasContent(item, state.tab) && state.tab !== "quotes") {
+      const first = $$("[data-tab]", el.tabs).find((btn) => !btn.hidden);
+      if (first) state.tab = first.dataset.tab;
+    }
+    syncTabs();
+  }
+
   function renderIns() {
     const item = state.item;
-    el.title.textContent = item ? item.title : "条目档案";
+    el.title.textContent = item ? docName(item.title) : "条目档案";
     el.sub.textContent = item
       ? [item.dept, statusText(item), item.confidence === "high" ? "核对程度高" : item.confidence === "low" ? "核对程度低" : "核对程度中"].filter(Boolean).join(" / ")
       : "问一件事，这里出现它的官方依据、材料与流程。";
     if (!item) {
+      visibleTabs(null);
       el.qcount.textContent = "0";
       el.body2.innerHTML = `<div class="insempty"><p>这一栏放的是答案的出处。问一句，这里固定显示四项：办理信息、要带的材料、可执行步骤、原文引文。每条结论都注明出自哪一段原文。</p>
         <ul><li>原文没写的字段，显示「官方页面没有写这一项」，不替学校补。</li><li>勾选只存在当前页面，不上传。</li></ul></div>`;
       return;
     }
+    visibleTabs(item);
     if (state.tab === "material") return renderMaterial(item);
     if (state.tab === "steps") return renderSteps(item);
     if (state.tab === "quotes") return renderQuotes(item);
@@ -590,7 +692,7 @@
     el.body2.innerHTML = (shown.length
       ? `<dl class="field-list">${shown.map(([label, value]) =>
         `<dt>${esc(label)}</dt><dd>${esc(value)}</dd>`).join("")}</dl>`
-      : `<p class="insempty">这条事项在官方页面里没有登记地点、费用、时间这类信息。材料与流程两个标签页里有原文依据。</p>`)
+      : "")
       + (item.pitfalls && item.pitfalls.length
         ? `<div class="sec"><h3>容易出错</h3><ul class="alines">${item.pitfalls.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>`
         : "");
@@ -606,11 +708,11 @@
             <span class="cbox" aria-hidden="true"></span>
             <span class="mname">${esc(m.name)}${m.note ? `<span class="mnote">${esc(m.note)}</span>` : ""}</span>
           </li>`).join("")}</ul></div>`
-      : `<p class="insempty">官方页面没有列出材料清单。这不等于不用带，原文里可能写在步骤中。</p>`;
+      : "";
     const draft = source && source.draft ? `<div class="sec"><h3>${esc(source.draft.title || "文书草稿")}</h3>
       <pre class="qtxt">${esc(source.draft.text)}</pre></div>` : "";
     el.body2.innerHTML = list + draft
-      + `<p class="insempty" style="margin-top:14px">勾选只存在当前页面，不上传。带材料以官方原文与窗口要求为准。</p>`;
+      + (mats.length ? `<p class="insempty" style="margin-top:14px">勾选只存在当前页面，不上传。带材料以官方原文与窗口要求为准。</p>` : "");
   }
 
   function renderSteps(item) {
@@ -621,7 +723,7 @@
           const where = stepNote(step, index);
           return `<li><span>${esc(what)}${where ? ` <span class="norm">${esc(where)}</span>` : ""}</span></li>`;
         }).join("")}</ol>`
-      : `<p class="insempty">官方页面没有写分步流程。</p>`;
+      : "";
   }
 
   function renderQuotes(item) {
@@ -675,6 +777,14 @@
       panelReturn = document.activeElement;
     }
     el.pantitle.textContent = panel.title;
+    // 顶栏若正收着，先无动画拉回来再量底边：面板要落在顶栏下面，那一排入口才点得到
+    if (el.bar && el.bar.classList.contains("is-up")) {
+      el.bar.classList.add("no-anim");
+      el.bar.classList.remove("is-up");
+      void el.bar.offsetHeight;
+      el.bar.classList.remove("no-anim");
+      barUp = false;
+    }
     syncPanelTop();
     el.scrim.hidden = false;
     el.panel.hidden = false;
@@ -687,11 +797,16 @@
     }
   }
 
+  let barBottom = 0;
   function syncPanelTop() {
     // 顶栏答完题会多出「当前事项」一行，窄屏还会换行——高度是动态的，写死的档位必然压住顶栏。
     // 实测底边下发成 --panel-top，面板和遮罩都从这条线下面开始，右侧三个入口才一直点得到。
+    // 顶栏收起中量到的是位移里的中间值，不作数：沿用上一次没收起时量到的底边。
     const bottom = el.bar ? Math.round(el.bar.getBoundingClientRect().bottom) : 0;
-    if (bottom > 0) document.documentElement.style.setProperty("--panel-top", `${bottom}px`);
+    const collapsed = el.bar && el.bar.classList.contains("is-up");
+    if (bottom > 0 && !collapsed) barBottom = bottom;
+    const keep = bottom > 0 && !collapsed ? bottom : barBottom;
+    if (keep > 0) document.documentElement.style.setProperty("--panel-top", `${keep}px`);
   }
 
   // 顶栏高度变化（换面板标题、窗口缩放、字体重排）都会重新对齐一次
@@ -715,7 +830,7 @@
     const data = await api("/api/search?q=" + encodeURIComponent(q) + "&k=12").catch((error) => ({ fail: error.message }));
     if (data.fail) { out.innerHTML = `<p class="insempty">${esc(data.fail)}</p>`; return; }
     const hits = data.hits || [];
-    const rows = hits.map((h) => `<div class="hitrow"><div class="ht">${esc(h.title || "原文段落")}</div><p class="norm">${[h.kind || "原文", h.page ? "第 " + esc(String(h.page)) + " 页" : "", h.score != null ? "相关度 " + pct(h.score) : ""].filter(Boolean).join(" · ")}</p><p class="aval">${esc(h.snippet || "")}</p>${h.url ? `<a class="opt" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}</div>`).join("");
+    const rows = hits.map((h) => `<div class="hitrow"><div class="ht">${esc(docName(h.title) || "原文段落")}</div><p class="norm">${[h.kind || "原文", h.page ? "第 " + esc(String(h.page)) + " 页" : "", h.score != null ? "相关度 " + pct(h.score) : ""].filter(Boolean).join(" · ")}</p><p class="aval">${esc(h.snippet || "")}</p>${h.url ? `<a class="opt" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}</div>`).join("");
     out.innerHTML = `<p class="norm">原文里共命中 ${num(data.total)} 段，下面是最接近的 ${hits.length} 段。</p>`
       + (rows || `<p class="insempty">原文里没有相近的段落，换一个更具体的说法再试。</p>`);
   }
@@ -871,6 +986,29 @@
     if (!ticking) { ticking = true; requestAnimationFrame(paintMotion); }
   }
 
+  /* ---------- 顶栏：下滑收起、上划拉出 ---------- */
+  const BAR_KEEP = 160;   // 首屏这一段里永不收起，否则刚进页面手一抖顶栏就没了
+  const BAR_DELTA = 12;   // 位移小于它不当作方向变化，避免来回开关
+  let lastY = window.scrollY;
+  let barUp = false;
+  function syncBarHide() {
+    const y = window.scrollY;
+    if (!el.panel.hidden) {
+      // 面板开着时不收：顶栏一位移，面板顶边跟着跳一整栏
+      lastY = y;
+      if (barUp) { barUp = false; el.bar.classList.toggle("is-up", barUp); }
+      return;
+    }
+    const delta = y - lastY;
+    if (Math.abs(delta) < BAR_DELTA) return;
+    const wantUp = delta > 0 && y > BAR_KEEP;
+    if (wantUp !== barUp) {
+      barUp = wantUp;
+      el.bar.classList.toggle("is-up", barUp);
+    }
+    lastY = y;
+  }
+
   /* ---------- 事件 ---------- */
   function bind() {
     el.presets.innerHTML = PRESETS.map((text) => `<button type="button" data-ask="${esc(text)}">${esc(text)}</button>`).join("");
@@ -884,7 +1022,13 @@
 
     document.addEventListener("click", (event) => {
       const askBtn = event.target.closest("[data-ask]");
-      if (askBtn) { event.preventDefault(); el.q.value = askBtn.dataset.ask; ask(askBtn.dataset.ask); return; }
+      if (askBtn) {
+        event.preventDefault();
+        // 点选项不把选项文字留在输入框：这一问已经回声在对话流里了
+        el.q.value = "";
+        ask(askBtn.dataset.ask, askBtn.dataset.pick, true);
+        return;
+      }
       const slotBtn = event.target.closest("[data-key]");
       if (slotBtn) {
         // 「先确认」卡里的选项：记下这个条件，用原话再问一次，和经典版 data-key 流程一致
@@ -987,6 +1131,7 @@
     });
 
     window.addEventListener("scroll", scheduleMotion, { passive: true });
+    window.addEventListener("scroll", () => syncBarHide(), { passive: true });
     window.addEventListener("resize", scheduleMotion);
   }
 
@@ -1004,7 +1149,7 @@
     const d = state.last || {};
     const item = d.item || {};
     const lines = [];
-    lines.push(`校园办事向导 · ${item.title || d.normalized || ""}`);
+    lines.push(`校园办事向导 · ${docName(item.title) || d.normalized || ""}`);
     if (item.location) lines.push(`地点：${item.location}`);
     if (item.fee) lines.push(`费用：${item.fee}`);
     for (const part of d.answers || []) {

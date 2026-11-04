@@ -28,9 +28,15 @@
   const esc = (s) => String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  // 反问菜单的选项带条目 id：点下去按 id 打开那一条，别再拿标题重新路由一遍
+  const pickAttr = (b) => (b && b.id ? ` data-pick="${esc(b.id)}"` : "");
 
   const num = (n) => Number(n || 0).toLocaleString("zh-CN");
   const pct = (v) => Math.round((Number(v) || 0) * 100) + "%";
+  // 条目名里的「· 图书馆手册.docx」这类来源后缀只给检索用，不进给用户看的话。
+  // 只改显示，data-ask 原样发，免得动到路由。
+  const docName = (s) => String(s == null ? "" : s)
+    .replace(/\.(docx|xlsx|pptx|pdf|doc|xls|ppt|txt|md|wps)\b/gi, "");
 
   // 校园地点链接化：答案里出现的地点名点一下，就等于问「X 在哪」。
   // 只收有辨识度的名字：纯数字、太泛的两字词不进链接表。
@@ -361,6 +367,8 @@
         context_item: state.item ? state.item.id : null,
         context_slots: (state.last && state.last.known) || {},
         messages: state.history.slice(-12),
+        // 点选项时带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
+        pick_item: opts.pick || null,
       });
       state.last = d;
       state.lastQuery = text;
@@ -438,7 +446,7 @@
   function relatedBlock(list) {
     if (!Array.isArray(list) || !list.length) return "";
     const opts = list.map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(b.title)}"${pickAttr(b)}>${esc(docName(b.label || b.title))}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
     return `<div class="sec related"><h3>相关事项（点一下直接问）</h3><div class="opts">${opts}</div></div>`;
   }
 
@@ -464,7 +472,7 @@
         <button class="cf" type="button" data-act="mat">清单与流程</button>
         <button class="cf" type="button" data-act="copy">复制答案</button>
         <button class="cf" type="button" data-act="loc">位置</button>
-        <span class="cfstamp">NO.${String(state.exCount).padStart(3, "0")} / 条目 ${esc(item.title || "")}</span>
+        <span class="cfstamp">NO.${String(state.exCount).padStart(3, "0")} / 条目 ${esc(docName(item.title))}</span>
       </div>
     </div>`;
   }
@@ -490,7 +498,7 @@
       ? "这两件事不在同一个地方办。选一个，我按那件事的原文回答。"
       : "选一个，我按那件事的原文回答。");
     const opts = (d.disambiguate || []).map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.label || b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(b.title)}"${pickAttr(b)}>${esc(docName(b.label || b.title))}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
     return `<div class="notice">
       <h3>${esc(d.clarify || "没太确定你问的是哪一件")}</h3>
       <p>${esc(reason)}</p>
@@ -502,20 +510,20 @@
   function notFoundCard(d) {
     const hitRows = (d.original_search || []).map((h) => `
       <div class="hitrow">
-        <div class="ht">${esc(h.title || "原文段落")}</div>
+        <div class="ht">${esc(docName(h.title) || "原文段落")}</div>
         <div class="hm"><span>${esc(h.kind || "原文")}</span><span>相关度 ${pct(h.score)}</span>${h.page ? `<span>p.${esc(h.page)}</span>` : ""}</div>
         <div class="hs">${esc(h.snippet || "")}</div>
         ${h.url ? `<a class="lnk" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}
       </div>`).join("");
 
     const alts = (d.alternatives || []).map((a) =>
-      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.title)}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(docName(a.title))}</button>`).join("");
 
     const dis = (d.disambiguate || []).map((b) =>
-      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(b.title)}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(b.title)}"${pickAttr(b)}>${esc(docName(b.title))}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
 
     const related = (d.related_items || []).map((a) =>
-      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(a.label || a.title)}</button>`).join("");
+      `<button class="opt" type="button" data-ask="${esc(a.title)}">${esc(docName(a.label || a.title))}</button>`).join("");
 
     const hints = (d.hints || []).map((h) => `
       <div class="hintrow">
@@ -658,7 +666,7 @@
   /* ---------------- 档案 ---------------- */
   function setItem(item) {
     state.item = item;
-    el.title.textContent = item.title;
+    el.title.textContent = docName(item.title);
     const band = item.confidence === "high" ? "核对程度高" : item.confidence === "low" ? "核对程度低" : "核对程度中";
     el.sub.textContent = [item.dept, statusText(item), band].filter(Boolean).join(" / ");
     renderIns();
@@ -819,7 +827,7 @@
     const steps = (item.steps || []).map((s, i) => `${i + 1}. ${typeof s === "string" ? s : s.what}`).filter(Boolean);
     const quotes = ((state.last && state.last.quotes) || []).slice(0, 3);
     return [
-      `${item.title}（${item.dept || ""}）`,
+      `${docName(item.title)}（${item.dept || ""}）`,
       item.location ? `地点\n${item.location}` : "",
       item.fee ? `费用\n${item.fee}` : "",
       mats.length ? `要带\n${mats.map((m) => `□ ${m}`).join("\n")}` : "",
@@ -837,7 +845,7 @@
     const mats = ((d.materials) || []).map((m) => (typeof m === "string" ? m : m.name)).filter(Boolean);
     const steps = (item.steps || []).map((s) => (typeof s === "string" ? s : s.what)).filter(Boolean);
     const quotes = ((state.last && state.last.quotes) || []).slice(0, 4);
-    el.printsheet.innerHTML = `<h1>${esc(item.title)}</h1>
+    el.printsheet.innerHTML = `<h1>${esc(docName(item.title))}</h1>
       <p class="pmeta">${esc([item.dept, item.location, item.fee].filter(Boolean).join(" / "))}</p>
       <h2>要带的材料</h2>
       <ul>${mats.length ? mats.map((m) => `<li>□ ${esc(m)}</li>`).join("") : "<li>官方页面没有列出材料清单</li>"}</ul>
@@ -955,7 +963,7 @@
       $("#smeta").textContent = `「${q}」找到 ${hits.length} 段；原文库共 ${num(d.vector_sources)} 份、${num(d.vector_chunks)} 段`;
       $("#slist").innerHTML = hits.length ? hits.map((h) => `
         <div class="shit">
-          <h3>${esc(h.title || "原文段落")}</h3>
+          <h3>${esc(docName(h.title) || "原文段落")}</h3>
           <div class="sm"><span>${esc(h.kind || "原文")}</span><span>相关度 ${pct(h.score)}</span>${h.page ? `<span>p.${esc(h.page)}</span>` : ""}</div>
           <p>${esc(h.snippet || "")}</p>
           ${h.url ? `<a class="lnk" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}
@@ -1082,7 +1090,7 @@
     el.thread.addEventListener("click", async (e) => {
       const t = e.target.closest("[data-ask],[data-key],[data-retry],[data-act]");
       if (!t) return;
-      if (t.dataset.ask) { e.preventDefault(); el.q.value = t.dataset.ask; ask(t.dataset.ask); return; }
+      if (t.dataset.ask) { e.preventDefault(); el.q.value = t.dataset.ask; ask(t.dataset.ask, { pick: t.dataset.pick }); return; }
       if (t.dataset.retry) { el.q.value = t.dataset.retry; ask(t.dataset.retry); return; }
       if (t.dataset.key) {
         state.slots[t.dataset.key] = t.dataset.opt;
@@ -1117,7 +1125,7 @@
       if (askBtn && !el.thread.contains(askBtn)) {
         e.preventDefault();
         el.q.value = askBtn.dataset.ask;
-        ask(askBtn.dataset.ask);
+        ask(askBtn.dataset.ask, { pick: askBtn.dataset.pick });
         if (state.drawerOpen) closeOverlays("drawer");
         return;
       }
@@ -1146,7 +1154,7 @@
         const item = state.item;
         if (!item) return;
         const mats = ((state.deliver || item).materials || []).map((m) => (typeof m === "string" ? m : m.name));
-        copyText(`${item.title}\n${mats.map((m) => "□ " + m).join("\n")}`, "材料清单已复制");
+        copyText(`${docName(item.title)}\n${mats.map((m) => "□ " + m).join("\n")}`, "材料清单已复制");
         return;
       }
       const draftCopy = e.target.closest('[data-act="draftcopy"]');

@@ -382,7 +382,7 @@
   <div id="out"></div>
 
   <footer>
-    <span>校园办事向导 v0.8 · 管理类</span>
+    <span>校园办事向导 v0.8.2 · 管理类</span>
     <span id="foot">材料以官方窗口为准</span>
   </footer>
 </div>
@@ -393,6 +393,8 @@ const EXAMPLES = ["校园卡丢了怎么办", "我要开个证明", "成绩单�
 let state = { item: null, last: null, slots: {}, history: [] };
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// 条目名里的来源后缀（· 图书馆手册.docx）只给检索用，不进给用户看的话；data-alt 仍原样发。
+const docName = (s) => String(s ?? "").replace(/\.(docx|xlsx|pptx|pdf|doc|xls|ppt|txt|md|wps)\b/gi, "");
 
 let PLACE_RE = null;
 const PLACE_SKIP = new Set(["快递", "大集", "教务", "国重", "活动中心"]);
@@ -647,7 +649,7 @@ function followupBlock(d) {
     </div>`).join("");
   const rel = (Array.isArray(d.related) ? d.related : []).length
     ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
-        `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
+        `<button class="opt" data-alt="${esc(b.title)}">${esc(docName(b.label || b.title))}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
     : "";
   return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
     <div class="fbox">
@@ -668,7 +670,7 @@ function bindFollowups() {
 /* 反问选择题：点一个，按那个说法重新问 */
 function choiceBlock(d) {
   const opts = (d.disambiguate || []).map((b) =>
-    `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
+    `<button class="opt" data-alt="${esc(b.title)}">${esc(docName(b.label || b.title))}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("");
   return `<div class="qnorm">你问 ${esc(d.query)}<span>→ ${esc(d.normalized || "")}</span></div>
     <div class="fbox">
       <div class="fboxh">${esc(d.clarify || "选一个，我按那件事的原文回答")}</div>
@@ -718,7 +720,7 @@ function answerBlock(d) {
   </div>` : "";
   const related = (Array.isArray(d.related) ? d.related : []).length
     ? `<div class="relbox"><div class="relh">相关事项（点一下直接问）</div><div class="fqo">${d.related.map((b) =>
-        `<button class="opt" data-alt="${esc(b.title)}">${esc(b.label || b.title)}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
+        `<button class="opt" data-alt="${esc(b.title)}">${esc(docName(b.label || b.title))}${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`
     : "";
   return `<div class="qnorm">你问 ${esc(d.query)}<span>→ 我理解成 ${esc(d.normalized)}</span></div>
   <div class="ablock">${rows}${planFile}${mapLink}${attach}${related}${d.note ? `<div class="anote">${linkify(esc(d.note))}</div>` : ""}</div>`;
@@ -835,7 +837,7 @@ function planBlock(d) {
 
 function hitList(hits) {
   const rows = hits.map((h) => `<li class="hit">
-    <div class="ht"><span>${esc(h.title)}</span><span class="hk">${esc(h.kind)}${h.page ? " · " + esc(h.page) : ""}</span></div>
+    <div class="ht"><span>${esc(docName(h.title))}</span><span class="hk">${esc(h.kind)}${h.page ? " · " + esc(h.page) : ""}</span></div>
     <div class="hs">${linkify(esc(h.snippet))}</div>
     <div class="hm">${h.url ? `<a href="${esc(h.url)}" target="_blank" rel="noreferrer">看原文</a>` : ""}
       <span>相关度 ${Math.round((h.score || 0) * 100)}</span>
@@ -845,8 +847,8 @@ function hitList(hits) {
 }
 
 function notFound(r) {
-  const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
-  const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.label || a.title)}</span>`).join("");
+  const alts = (r.alternatives || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(docName(a.title))}</span>`).join("");
+  const related = (r.related_items || []).map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(docName(a.label || a.title))}</span>`).join("");
   const hits = r.original_search || [];
   const gen = r.llm_answer ? `<section class="blk genblk">
       <div><span class="gentag">模型生成</span><span class="h">没有官方条目，这段回答由模型直接生成</span></div>
@@ -901,7 +903,7 @@ function evidenceBlock(item) {
 
 function lowBar(r) {
   const alts = (r.alternatives || []).filter((a) => a.score > 0).slice(0, 3)
-    .map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(a.title)}</span>`).join("");
+    .map((a) => `<span class="chip" data-alt="${esc(a.title)}">${esc(docName(a.title))}</span>`).join("");
   return `<div class="lowbar"><span>置信度不高，你是指这个吗？</span><div class="chips">${alts}</div></div>`;
 }
 
@@ -925,7 +927,7 @@ function buildSheet(item, intake) {
 
   return `<div class="sheet">
     <div class="sheet-top">
-      <div><div class="t">${esc(item.title)} ${badge}</div>
+      <div><div class="t">${esc(docName(item.title))} ${badge}</div>
         <div class="s">${esc(item.dept)} · ${esc((item.channel || []).join(" / "))}</div></div>
       <div class="seal">置信度<br>${Math.round((intake?.confidence ?? 1) * 100)}%</div>
     </div>

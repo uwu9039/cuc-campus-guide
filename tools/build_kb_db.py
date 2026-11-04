@@ -1,0 +1,219 @@
+"""把 items.json + 流水线产物建成派生检索库 kb.sqlite（可反复重建，唯一真相仍是 items.json）。
+
+用法：
+    ./.venv/Scripts/python.exe tools/build_kb_db.py            # 重建
+    ./.venv/Scripts/python.exe tools/build_kb_db.py --verify    # 只核对不重建
+
+表：
+    doc        每份进过流水线的正文文件一行（条目数/行数/位图缺口）
+    item       条目本体（含 archive_only，入库不等于抢路由）
+    quote      逐字引文，一条一个区间，覆盖率按这张表算
+    table_row  表格/阅读报告的可检索数据行
+    registry   sources/ 下每一个文件的处置结论（含二进制与名单），「每个文件都有交代」的台账
+    search     FTS5 虚表：中文按二元 gram 展开 + unicode61（2 字查询也能命中，trigram 不行）
+
+前置：_review_items/ 里要有 v2_report.json、v2_table_rows.json、coverage_20261104.json，
+      由 tools/build_items_v2.py --apply 与 tools/build_coverage.py 产出（都是可重跑的派生物）。
+"""
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import re
+import sqlite3
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "sources"
+REV = ROOT / "_review_items"
+DB = ROOT / "kb.sqlite"
+
+CJK = re.compile(r"[一-鿿]")
+
+
+def norm(s: str) -> str:
+    return re.sub(r"\s+", "", s or "")
+
+
+def bigrams(t: str) -> str:
+    """中文串按相邻 2 字展开，非中文整段小写保留；单字补一个全角空格占位，保证它也可查。"""
+    out: list[str] = []
+    for run in re.findall(r"[一-鿿]+|[^\s一-鿿]+", t or ""):
+        if CJK.match(run):
+            if len(run) == 1:
+                out.append(run + "　")
+            out.extend(run[i:i + 2] for i in range(len(run) - 1))
+        else:
+            out.append(run.lower())
+    return " ".join(out)
+
+
+def one_src(item: dict) -> dict:
+    s = item.get("source")
+    if isinstance(s, list):
+        s = next((x for x in s if isinstance(x, dict)), {})
+    return s if isinstance(s, dict) else {}
+
+
+def bucket_of(rel: str) -> str:
+    parts = Path(rel).parts
+    return parts[0] if len(parts) > 1 else "(根)"
+
+
+def load_rows() -> list[dict]:
+    """数据表行：本机在 _review_items/，仓库与云端只带 table-rows.json.gz。"""
+    p = REV / "v2_table_rows.json"
+    if p.exists():
+        return json.loads(p.read_text(encoding="utf-8"))
+    gz = ROOT / "table-rows.json.gz"
+    if gz.exists():
+        return json.loads(gzip.decompress(gz.read_bytes()).decode("utf-8"))
+    sys.exit("缺数据表行产物（_review_items/v2_table_rows.json 或 table-rows.json.gz）")
+
+
+def build() -> None:
+    need = ["v2_report.json", "coverage_20261104.json"]
+    lack = [n for n in need if not (REV / n).exists()]
+    if lack:
+        sys.exit("缺流水线产物 " + "、".join(lack) +
+                 "\n先跑：python tools/build_items_v2.py --apply && python tools/build_coverage.py")
+    if DB.exists():
+        DB.unlink()
+    items = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
+    report = json.loads((REV / "v2_report.json").read_text(encoding="utf-8"))
+    rows = load_rows()
+    reg = json.loads((REV / "coverage_20261104.json").read_text(encoding="utf-8"))
+    reg = reg["rows"] if isinstance(reg, dict) and "rows" in reg else reg
+
+    con = sqlite3.connect(DB)
+    con.executescript(
+        """
+        pragma journal_mode = off;
+        create table doc(file text primary key, key text, bucket text, title text,
+                         chars int, kind text, items int, rows int, missing int, overlap int, note text);
+        create table item(id text primary key, doc text, kind text, title text, answer text,
+                          archive_only int, status text, confidence text, dept text,
+                          url text, published text, author text, column text,
+                          keywords text, aliases text, also_from text);
+        create table quote(item_id text, field text, src text, a int, b int, text text,
+                           primary key(item_id, field));
+        create table table_row(rowid integer primary key, doc text, bucket text, row_no int,
+                               col int, header text, value text, title text);
+        create table registry(file text primary key, bytes int, status text, chars int,
+                              items int, rows int, kind text, slug text, note text);
+        create virtual table search using fts5(gram, ref unindexed, kind unindexed, text,
+                                               tokenize='unicode61');
+        create index idx_item_doc on item(doc);
+        create index idx_item_arch on item(archive_only);
+        create index idx_quote_src on quote(src);
+        create index idx_row_doc on table_row(doc);
+        create view coverage as select file, key, chars, chars - missing as covered_chars,
+               round(100.0 * (chars - missing) / max(chars, 1), 2) as pct, missing, overlap
+               from doc;
+        """)
+
+    t0 = time.perf_counter()
+    con.executemany(
+        "insert into doc values(?,?,?,?,?,?,?,?,?,?,?)",
+        [(r["file"], Path(r["file"]).stem, bucket_of(r["file"]), r.get("title", ""), r.get("chars", 0),
+          r.get("kind", ""), r.get("items", 0), r.get("rows", 0), r.get("missing", 0),
+          r.get("overlap", 0), r.get("note") or "")
+         for r in report])
+
+    ins_item, ins_quote = [], []
+    for it in items:
+        s = one_src(it)
+        ins_item.append((it["id"], s.get("slug") or "", it.get("auto_kind") or ("curated" if not it.get("auto") else "auto"),
+                         it.get("title", ""), it.get("answer") or "",
+                         1 if it.get("archive_only") else 0, it.get("status") or "", it.get("confidence") or "",
+                         it.get("dept") or "", s.get("url") or "", s.get("published") or "", s.get("author") or "",
+                         s.get("column") or "",
+                         json.dumps(it.get("keywords") or [], ensure_ascii=False),
+                         json.dumps(it.get("aliases") or [], ensure_ascii=False),
+                         json.dumps(it.get("also_from") or [], ensure_ascii=False)))
+        for field, ev in (it.get("evidence") or {}).items():
+            if isinstance(ev, dict):
+                span = ev.get("span") or [None, None]
+                ins_quote.append((it["id"], field, ev.get("src") or s.get("slug") or "",
+                                  span[0], span[1], ev.get("quote") or ""))
+    con.executemany("insert into item values(" + ",".join("?" * 16) + ")", ins_item)
+    con.executemany("insert into quote values(?,?,?,?,?,?)", ins_quote)
+
+    con.executemany("insert into table_row values(null,?,?,?,?,?,?,?)",
+                    [(r["doc"], r.get("bucket", ""), r.get("row_no", 0), r.get("col", 0),
+                      r.get("header", ""), r["value"], r.get("title", "")) for r in rows])
+
+    con.executemany("insert into registry values(?,?,?,?,?,?,?,?,?)",
+                    [(x["file"], x.get("bytes", 0), x.get("status", ""), x.get("chars", 0),
+                      x.get("items", 0), x.get("rows", 0), x.get("kind", "") or "", x.get("slug", "") or "",
+                      x.get("note", "") or "") for x in reg])
+
+    # 检索索引：条目答案 + 数据行 + 逐字引文，三类都进 gram 虚表，kind 用来分路
+    trip = [("item", it["id"], it.get("answer") or "") for it in items]
+    trip += [("title", it["id"], it.get("title") or "") for it in items]
+    trip += [("row", f"{r['doc']}#{r.get('row_no', 0)}#{r.get('col', 0)}", r["value"]) for r in rows]
+    trip += [(f"{q[0]}~{q[1]}", q[2], q[5]) for q in ins_quote if len(q[5]) <= 1200]
+    con.executemany("insert into search(gram, ref, kind, text) values(?,?,?,?)",
+                    [(bigrams(t), ref, k, t) for k, ref, t in trip])
+    con.commit()
+    print(f"建库 {time.perf_counter() - t0:.1f}s")
+    con.close()
+    print(f"{DB.name} {DB.stat().st_size / 1e6:.1f} MB")
+
+
+def verify() -> int:
+    items = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
+    con = sqlite3.connect(DB)
+    n_item = con.execute("select count(*) from item").fetchone()[0]
+    n_quote = con.execute("select count(*) from quote").fetchone()[0]
+    n_ev = sum(len(it.get("evidence") or {}) for it in items)
+    n_row = con.execute("select count(*) from table_row").fetchone()[0]
+    n_src_row = len(load_rows())
+    n_reg = con.execute("select count(*) from registry").fetchone()[0]
+    files = [p for p in SRC.rglob("*") if p.is_file() and "_quarantine" not in p.parts]
+    miss = con.execute("select count(*) from doc where missing > 0").fetchone()[0]
+    over = con.execute("select coalesce(sum(overlap),0) from doc").fetchone()[0]
+    arch = con.execute("select count(*) from item where archive_only = 1").fetchone()[0]
+
+    def hit(q: str) -> int:
+        toks = [q[i:i + 2] for i in range(len(q) - 1)] if CJK.search(q) else [q.lower()]
+        expr = " AND ".join('"' + t.replace('"', "") + '"' for t in toks)
+        return con.execute("select count(*) from search where search match ?", (expr,)).fetchone()[0]
+
+    probes = {p: hit(p) for p in ("户口", "补考", "挂失", "绩点", "ps", "校园卡", "公费医疗", "家属区")}
+    bad = []
+    if n_item != len(items):
+        bad.append(f"item 行数 {n_item} != items.json {len(items)}")
+    if n_quote != n_ev:
+        bad.append(f"quote 行数 {n_quote} != 证据字段 {n_ev}")
+    if n_row != n_src_row:
+        bad.append(f"table_row 行数 {n_row} != 产物 {n_src_row}")
+    if n_reg != len(files):
+        bad.append(f"registry 行数 {n_reg} != sources 文件数 {len(files)}")
+    if miss or over:
+        bad.append(f"位图缺口 {miss} 份 / 重复认领 {over} 字")
+    if not any(v > 0 for v in probes.values()):
+        bad.append("FTS 探针全 0 命中，索引没建对")
+
+    print(f"item {n_item}（archive_only {arch}）/ quote {n_quote} / table_row {n_row} / registry {n_reg}")
+    print("2 字探针命中：", " ".join(f"{k}:{v}" for k, v in probes.items()))
+    for b in bad:
+        print("  ✗", b)
+    print("✅ 库与 items.json、流水线产物、sources/ 逐一对上" if not bad else "❌ 有对不上的项")
+    con.close()
+    return 1 if bad else 0
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--verify", action="store_true")
+    a = ap.parse_args()
+    if not a.verify:
+        build()
+    if not DB.exists():
+        print("库不存在，先跑不带 --verify 的建库")
+        sys.exit(2)
+    sys.exit(verify())

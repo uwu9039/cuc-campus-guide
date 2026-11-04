@@ -3,7 +3,7 @@
 覆盖：路由注册与位置、新文件存在且自包含、主题 token 集中、结果分支顺序与
 数据契约、第一期用户反馈的落地（经典版入口 / 概览缺失即隐藏 / 可读性 / 返回键 /
 页脚署名 / 主标题 / 校徽）、第二期三块（原文检索 / 联系方式 / 地图）与个人数据留禁用、
-生产文件除经典版那一条入口外未被改动。
+生产文件除经典版那一条入口外未被改动（显示层改动按逐行白名单放行，见 DISPLAY_DIFF_OK）。
 运行： .venv/Scripts/python.exe -m unittest discover -s tools -p "test_field*.py"
 """
 import difflib
@@ -30,6 +30,82 @@ PERSONAL_SOURCES = ("CARD_URL", "COURSES_URL")
 
 def read(name):
     return (WEB / name).read_text(encoding="utf-8")
+
+
+def diff_lines(old_path, new_path):
+    """改前/改后之间的 ± 行，排序后比。同一行改两处要算两条，不靠出现顺序。"""
+    old = old_path.read_text(encoding="utf-8").splitlines()
+    new = new_path.read_text(encoding="utf-8").splitlines()
+    return sorted(line for line in difflib.unified_diff(old, new, lineterm="", n=0)
+                  if line[:1] in "+-" and not line.startswith(("+++", "---")))
+
+
+# 显示层白名单（2026-11-03 用户点名的一类改动，逐行核过之后写死在这里）：
+#   甲 大字里不出现 .docx/.pdf 这类来源后缀：渲染处套一层 docName(...)，
+#     data-ask / data-alt 仍原样发，路由一个字都没动；
+#   乙 选项点击带上条目 id：加 pickAttr 与 { pick: … }，治好「点完选项又摊回同一份菜单」。
+# 放行的是这几行差异，不是这两个文件：清单里多不出来、也少不了一条，
+# 想在白名单外改任何东西，照样红。要新增放行必须本人复看后逐行加进来。
+CLASSIC_DISPLAY_DIFF = [
+    "+// 条目名里的来源后缀（· 图书馆手册.docx）只给检索用，不进给用户看的话；data-alt 仍原样发。",
+    "+const docName = (s) => String(s ?? \"\").replace(/\\.(docx|xlsx|pptx|pdf|doc|xls|ppt|txt|md|wps)\\b/gi, \"\");",
+    "-        `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(b.label || b.title)}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\")}</div></div>`",
+    "+        `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(docName(b.label || b.title))}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\")}</div></div>`",
+    "-    `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(b.label || b.title)}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\");",
+    "+    `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(docName(b.label || b.title))}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\");",
+    "-        `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(b.label || b.title)}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\")}</div></div>`",
+    "+        `<button class=\"opt\" data-alt=\"${esc(b.title)}\">${esc(docName(b.label || b.title))}${b.dept ? `<span class=\"odept\">${esc(b.dept)}</span>` : \"\"}</button>`).join(\"\")}</div></div>`",
+    "-    <div class=\"ht\"><span>${esc(h.title)}</span><span class=\"hk\">${esc(h.kind)}${h.page ? \" · \" + esc(h.page) : \"\"}</span></div>",
+    "+    <div class=\"ht\"><span>${esc(docName(h.title))}</span><span class=\"hk\">${esc(h.kind)}${h.page ? \" · \" + esc(h.page) : \"\"}</span></div>",
+    "-  const alts = (r.alternatives || []).map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(a.title)}</span>`).join(\"\");",
+    "-  const related = (r.related_items || []).map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(a.label || a.title)}</span>`).join(\"\");",
+    "+  const alts = (r.alternatives || []).map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(docName(a.title))}</span>`).join(\"\");",
+    "+  const related = (r.related_items || []).map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(docName(a.label || a.title))}</span>`).join(\"\");",
+    "-    .map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(a.title)}</span>`).join(\"\");",
+    "+    .map((a) => `<span class=\"chip\" data-alt=\"${esc(a.title)}\">${esc(docName(a.title))}</span>`).join(\"\");",
+    "-      <div><div class=\"t\">${esc(item.title)} ${badge}</div>",
+    "+      <div><div class=\"t\">${esc(docName(item.title))} ${badge}</div>",
+]
+APPJS_DISPLAY_DIFF = [
+    "+  // 反问菜单的选项带条目 id：点下去按 id 打开那一条，别再拿标题重新路由一遍",
+    "+  const pickAttr = (b) => (b && b.id ? ` data-pick=\"${esc(b.id)}\"` : \"\");",
+    "+  // 条目名里的「· 图书馆手册.docx」这类来源后缀只给检索用，不进给用户看的话。",
+    "+  // 只改显示，data-ask 原样发，免得动到路由。",
+    "+  const docName = (s) => String(s == null ? \"\" : s)",
+    "+    .replace(/\\.(docx|xlsx|pptx|pdf|doc|xls|ppt|txt|md|wps)\\b/gi, \"\");",
+    "+        // 点选项时带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单",
+    "+        pick_item: opts.pick || null,",
+    "-      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\">${esc(b.label || b.title)}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "+      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\"${pickAttr(b)}>${esc(docName(b.label || b.title))}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "-        <span class=\"cfstamp\">NO.${String(state.exCount).padStart(3, \"0\")} / 条目 ${esc(item.title || \"\")}</span>",
+    "+        <span class=\"cfstamp\">NO.${String(state.exCount).padStart(3, \"0\")} / 条目 ${esc(docName(item.title))}</span>",
+    "-      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\">${esc(b.label || b.title)}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "+      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\"${pickAttr(b)}>${esc(docName(b.label || b.title))}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "-        <div class=\"ht\">${esc(h.title || \"原文段落\")}</div>",
+    "+        <div class=\"ht\">${esc(docName(h.title) || \"原文段落\")}</div>",
+    "-      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(a.title)}\">${esc(a.title)}</button>`).join(\"\");",
+    "+      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(a.title)}\">${esc(docName(a.title))}</button>`).join(\"\");",
+    "-      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\">${esc(b.title)}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "+      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(b.title)}\"${pickAttr(b)}>${esc(docName(b.title))}<span class=\"odept\">${esc(b.dept || \"\")}</span></button>`).join(\"\");",
+    "-      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(a.title)}\">${esc(a.label || a.title)}</button>`).join(\"\");",
+    "+      `<button class=\"opt\" type=\"button\" data-ask=\"${esc(a.title)}\">${esc(docName(a.label || a.title))}</button>`).join(\"\");",
+    "-    el.title.textContent = item.title;",
+    "+    el.title.textContent = docName(item.title);",
+    "-      `${item.title}（${item.dept || \"\"}）`,",
+    "+      `${docName(item.title)}（${item.dept || \"\"}）`,",
+    "-    el.printsheet.innerHTML = `<h1>${esc(item.title)}</h1>",
+    "+    el.printsheet.innerHTML = `<h1>${esc(docName(item.title))}</h1>",
+    "-          <h3>${esc(h.title || \"原文段落\")}</h3>",
+    "+          <h3>${esc(docName(h.title) || \"原文段落\")}</h3>",
+    "-      if (t.dataset.ask) { e.preventDefault(); el.q.value = t.dataset.ask; ask(t.dataset.ask); return; }",
+    "+      if (t.dataset.ask) { e.preventDefault(); el.q.value = t.dataset.ask; ask(t.dataset.ask, { pick: t.dataset.pick }); return; }",
+    "-        ask(askBtn.dataset.ask);",
+    "+        ask(askBtn.dataset.ask, { pick: askBtn.dataset.pick });",
+    "-        copyText(`${item.title}\\n${mats.map((m) => \"□ \" + m).join(\"\\n\")}`, \"材料清单已复制\");",
+    "+        copyText(`${docName(item.title)}\\n${mats.map((m) => \"□ \" + m).join(\"\\n\")}`, \"材料清单已复制\");",
+]
+# 文件名 → 放行的差异行；classic.html 那份还要叠上页脚版本号那一处
+DISPLAY_DIFF_OK = {"app.js": APPJS_DISPLAY_DIFF}
 
 
 def js_region(source, start, end):
@@ -363,7 +439,7 @@ class FeedbackTest(unittest.TestCase):
         self.assertRegex(code, r"\.filter\(", "缺失字段要先过滤掉，不留空行")
         self.assertNotIn("none-tag", code, "概览不再给缺失项挂「官方页面没有写这一项」标签")
         self.assertNotIn("官方页面没有写", code, "概览里不出现这条披露文案")
-        self.assertIn("insempty", code, "六行全空时要给一句话，不能留白板")
+        self.assertNotIn("insempty", code, "六行全空时概览标签已经整块收起，不该再留占位话")
         # 聚合披露仍然保留在后端给出的 note / missing 上，只是不再逐行刷屏
         note = re.search(r"function noteBlock\(data\)\s*\{([\s\S]*?)\n  \}", read("field.js"))
         self.assertTrue(note, "找不到 noteBlock()")
@@ -867,16 +943,25 @@ class ProductionUntouchedTest(unittest.TestCase):
     # 这一行是 classic.html 唯一允许的改动，其余内容仍必须与动手前的备份逐字节一致。
     RELEASE_LINE_DIFF = [
         "-    <span>校园办事向导 v0.6 · 管理类</span>",
-        "+    <span>校园办事向导 v0.8 · 管理类</span>",
+        "+    <span>校园办事向导 v0.8.2 · 管理类</span>",
     ]
 
     def test_classic_page_diff_is_only_the_release_version(self):
-        old = (BACKUP / "classic.html").read_text(encoding="utf-8")
-        new = (WEB / "classic.html").read_text(encoding="utf-8")
-        diff = [line for line in difflib.unified_diff(old.splitlines(), new.splitlines(), lineterm="", n=0)
-                if line[:1] in "+-" and not line.startswith(("+++", "---"))]
-        self.assertEqual(diff, self.RELEASE_LINE_DIFF,
-                         f"classic.html 只许改页脚版本号这一行，实际差异：{diff}")
+        diff = diff_lines(BACKUP / "classic.html", WEB / "classic.html")
+        self.assertEqual(diff, sorted(self.RELEASE_LINE_DIFF + CLASSIC_DISPLAY_DIFF),
+                         "classic.html 只许改页脚版本号，加上显示层白名单那几行，实际差异：%s" % diff)
+
+    def test_display_whitelist_leaves_the_ask_text_alone(self):
+        """白名单只放行显示层：发给路由的原文必须一个字没改，否则就不是「只显示」。"""
+        for name, lines in list(DISPLAY_DIFF_OK.items()) + [("classic.html", CLASSIC_DISPLAY_DIFF)]:
+            for line in lines:
+                if not line.startswith("+"):
+                    continue
+                if "docName" in line and "const docName" in line:
+                    continue
+                for attr in ("data-ask=\"${esc(docName", "data-alt=\"${esc(docName",
+                             "data-ask=\"${docName", "data-alt=\"${docName"):
+                    self.assertNotIn(attr, line, f"{name} 的放行行把发送原文也剥了后缀：{line}")
 
     def test_other_original_files_are_byte_identical_to_backup(self):
         self.assertTrue(BACKUP.is_dir(), "缺少动手前的整目录备份")
@@ -891,6 +976,9 @@ class ProductionUntouchedTest(unittest.TestCase):
             if not target.is_file():
                 missing.append(str(target.relative_to(ROOT)))
             elif not filecmp.cmp(path, target, shallow=False):
+                allowed = DISPLAY_DIFF_OK.get(path.name)
+                if allowed is not None and diff_lines(path, target) == sorted(allowed):
+                    continue   # 白名单内的显示层改动
                 changed.append(str(target.relative_to(ROOT)))
         self.assertFalse(missing, f"原文件被删除：{missing}")
         self.assertFalse(changed, f"原文件被修改：{changed}")
@@ -904,6 +992,157 @@ class ProductionUntouchedTest(unittest.TestCase):
         }
         self.assertEqual(added, expected, "web-next 里出现或缺少了计划外的文件")
 
+
+
+class EmptySectionTest(unittest.TestCase):
+    """用户反馈：概览 / 材料 / 流程某一节整块没有内容时，连标签一起不显示，不要点进去看一句「没有」。"""
+
+    def test_tab_bar_hides_empty_sections(self):
+        code = read("field.js")
+        self.assertIn("function visibleTabs", code, "要有一处统一决定哪些标签有内容")
+        for content in ("OVERVIEW_KEYS", "MATERIAL_KEYS", "STEPS_KEYS"):
+            self.assertIn(content, code, f"缺少 {content}：某一节有没有内容的判据")
+
+    def test_hidden_tab_is_not_left_selected(self):
+        code = read("field.js")
+        self.assertRegex(code, r"state\.tab\s*=\s*", "标签显隐后要复位当前标签")
+        self.assertRegex(code, r"\.hidden\s*=\s*", "标签按钮要真的收起来")
+
+    def test_empty_placeholders_are_gone(self):
+        code = read("field.js")
+        for line in ("官方页面没有列出材料清单", "官方页面没有写分步流程", "这条事项在官方页面里没有登记地点"):
+            self.assertNotIn(line, code, f"这一节空着已经不显示标签了，{line} 的占位话该删")
+
+    def test_quotes_tab_always_stays(self):
+        html = read("field.html")
+        self.assertRegex(html, r'<button role="tab"[^>]*data-tab="quotes"', "原文标签是核对出处用的，不能跟着收起来")
+
+
+class TransparentTopbarTest(unittest.TestCase):
+    """用户反馈：地图 / 原文检索 / 联系方式 / 个人数据 / 返回 / 经典版 这一栏整条透明，只留按钮白底加描边。"""
+
+    def test_topbar_paints_nothing(self):
+        css = read("field.css")
+        for match in re.finditer(r"\.topbar\s*\{[^}]*\}", css):
+            self.assertNotIn("background", match.group(0), f"顶栏要透明：{match.group(0)[:120]}")
+
+    def test_nav_buttons_are_white_with_outline(self):
+        css = read("field.css")
+        block = re.search(r"\.ghostbtn\s*\{[^}]*\}", css).group(0)
+        self.assertIn("background: var(--bg)", block, "按钮底要白色")
+        self.assertRegex(block, r"border:\s*1px solid var\(--btn-line\)", "按钮要有描边")
+        self.assertIn("--btn-line:", css, "描边色要写成 token，不许在结构 CSS 里写死")
+
+    def test_mobile_no_longer_makes_buttons_transparent(self):
+        css = read("field.css")
+        self.assertNotRegex(css, r"\.ghostbtn\s*\{[^}]*background:\s*transparent", "窄屏把按钮刷成透明，就和「白底+描边」相反了")
+
+
+class PresetTest(unittest.TestCase):
+    """用户点名把 /field 首页预设换成这 8 条：字面、条数、顺序都按给的原话，不自作主张改写。"""
+
+    WANTED = [
+        "48教在哪", "校医院在哪", "校卡怎么补办", "转专业",
+        "出国用的成绩单怎么开", "奖学金", "保研", "宿舍购电",
+    ]
+
+    def presets(self):
+        code = read("field.js")
+        block = re.search(r"const PRESETS = \[(.*?)\];", code, re.S).group(1)
+        return re.findall(r'"([^"]+)"', block)
+
+    def test_presets_are_exactly_the_eight_the_user_named(self):
+        self.assertEqual(self.presets(), self.WANTED, "预设问法要与用户点名的逐字一致、顺序一致")
+
+    def test_every_preset_answers(self):
+        import app
+        for text in self.WANTED:
+            if text == "转专业":
+                # 光一个词的问法按设计先给联想菜单，不算答不上
+                d = app.answer_question(text, {}, False)
+                self.assertTrue(d.get("ambiguous"), "「转专业」这种单词问法要给选项菜单")
+                continue
+            d = app.answer_question(text, {}, False)
+            answers = d.get("answers") or []
+            self.assertTrue(d.get("matched") and answers, f"{text} 答不上来，不能当预设")
+            self.assertTrue(str(answers[0].get("text") or "").strip(), f"{text} 答案正文是空的")
+            # 「非官方补充」是诚实标注，允许；「这一问这次没答到」和已经答上是矛盾的，不许
+            self.assertNotIn("没答到", str(d.get("note") or ""), f"{text} 不该带自相矛盾的漏答提示")
+
+    def test_school_card_spoken_shortcut_resolves(self):
+        import app
+        d = app.answer_question("校卡怎么补办", {}, False)
+        self.assertEqual((d.get("item") or {}).get("id"), "xyk-buka",
+                         "「校卡」是校园卡的口语说法，要能落到校园卡补卡条目")
+
+
+class HideTopbarOnScrollTest(unittest.TestCase):
+    """用户要求：往下滑时顶栏收起，往上滑时再拉出来。收起只能用位移，不能用 display:none（会把内容顶跳）。"""
+
+    def test_css_moves_the_bar_up_out_of_view(self):
+        css = read("field.css")
+        rule = re.search(r"\.topbar\.is-up\s*\{([^}]*)\}", css)
+        self.assertIsNotNone(rule, "要有一条 .topbar.is-up 收起规则")
+        body = rule.group(1)
+        self.assertRegex(body, r"transform:\s*translateY\(-1\d+(\.\d+)?%", "整条往上移出视口")
+        self.assertIn("visibility: hidden", body, "移出后要从 Tab 焦点里出去，否则键盘用户会摸到看不见的按钮")
+        self.assertNotIn("display: none", body, "顶栏是 sticky，用 display:none 收起会让下面的内容整块跳动")
+
+    def test_bar_slides_instead_of_snapping(self):
+        css = read("field.css")
+        base = re.search(r"\.topbar\s*\{[^}]*\}", css).group(0)
+        self.assertRegex(base, r"transition:[^;]*transform[^;]*var\(--bar-slide\)",
+                         "位移时长要读 token，收起和拉出用同一个值")
+        up = re.search(r"\.topbar\.is-up\s*\{([^}]*)\}", css).group(1)
+        self.assertRegex(up, r"visibility\s+0s\s+var\(--bar-slide\)",
+                         "隐藏要延到位移结束再切，延时长必须跟位移时长是同一个 token")
+
+    def test_slide_duration_is_slow_enough(self):
+        # 用户要求「稍微慢一点，时长长一些」：0.22s 太急，卡在 0.3s 以上
+        css = read("field.css")
+        match = re.search(r"--bar-slide:\s*(\.\d+|\d+(?:\.\d+)?)s\s*;", css)
+        self.assertIsNotNone(match, "顶栏位移时长要写成 :root 里的 --bar-slide")
+        self.assertGreater(float(match.group(1)), 0.3, f"顶栏位移要慢一点，当前 --bar-slide={match.group(1)}s")
+
+    def test_slide_duration_token_lives_in_root(self):
+        css = read("field.css")
+        root = "".join(css[start:end] for start, end in root_blocks(css))
+        self.assertIn("--btn-line:", root, "先确认拿到的是主 :root")
+        self.assertIn("--bar-slide:", root, "时长 token 要和其他 token 一起放在 :root")
+
+    def test_js_toggles_the_class_on_scroll_direction(self):
+        code = read("field.js")
+        self.assertTrue(re.search(r'classList\.toggle\("is-up",\s*[\w.]+\)', code),
+                        "收起与否要由滚动方向算出来的布尔值决定，不能裸 toggle")
+        handler = re.search(r"function syncBarHide\([^)]*\)\s*\{(.*?)\n  \}", code, re.S)
+        self.assertIsNotNone(handler, "滚动逻辑集中在一处 syncBarHide")
+        body = handler.group(1)
+        self.assertIn("scrollY", body, "按滚动位置判方向")
+        self.assertIn("lastY", body, "要记住上一次的位置才能分辨上划还是下滑")
+        self.assertIn("delta", body, "要有一个最小位移量，否则手指微抖就会来回开关")
+
+    def test_bar_stays_when_panel_open_or_near_top(self):
+        code = read("field.js")
+        body = re.search(r"function syncBarHide\([^)]*\)\s*\{(.*?)\n  \}", code, re.S).group(1)
+        self.assertIn("el.panel.hidden", body, "面板开着时顶栏不能收，收起会让面板位置一起跳")
+        self.assertRegex(body, r"BAR_KEEP|scrollY\s*<\s*\d+", "贴着顶部时不收，否则首屏一抖顶栏就没了")
+
+    def test_scroll_listener_is_passive(self):
+        code = read("field.js")
+        self.assertTrue(
+            re.search(r'window\.addEventListener\("scroll",\s*\(\)\s*=>\s*syncBarHide\(\),\s*\{[^}]*passive:\s*true', code),
+            "滚动监听要 passive，不然手机端跟着掉帧")
+
+    def test_panel_top_ignores_the_collapsed_bar(self):
+        code = read("field.js")
+        body = re.search(r"function syncPanelTop\([^)]*\)\s*\{(.*?)\n  \}", code, re.S).group(1)
+        self.assertIn("barBottom", body,
+                      "顶栏收起时量到的是位移中的中间值，面板要按上一次没收起时量到的高度定位")
+
+    def test_opening_a_panel_pulls_the_bar_back_out_first(self):
+        code = read("field.js")
+        body = re.search(r"function openPanel\([^)]*\)\s*\{(.*?)\n  \}", code, re.S).group(1)
+        self.assertIn('"is-up"', body, "打开面板前先把顶栏拉出来，否则面板会从顶栏中间开始盖住那一排入口")
 
 
 if __name__ == "__main__":

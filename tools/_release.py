@@ -24,7 +24,9 @@ SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
              "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder",
              "_review_items", "_modelscope_bundle", "_api_dig", "_ilib_js", "extension",
              # 本机浏览器 profile（含 Login Data / History / Wallet）、回退副本与视频工程
-             ".superpowers", "_backups", "video-remotion"}
+             ".superpowers", "_backups", "video-remotion",
+             # 上云包是运行时文件的副本，内容源已经在仓库里，不再重复传一份
+             "_release_v09"}
 SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json.bak",
               "items-old.json", "ask-req.json", "aia-api.json", ".cdp_tab", "app-server.log",
               "18-个人数据接口调研.md", "api-inventory.json", "served.html",
@@ -34,7 +36,9 @@ SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json
               "_pipeline_out.txt", "_eval_out.txt", "_v04_body.md"}
 SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".pptx", ".npy", ".jsonl",
-               ".mp3", ".m4a", ".mov", ".webm", ".rar", ".7z", ".tar", ".tgz", ".gz"}
+               ".mp3", ".m4a", ".mov", ".webm", ".rar", ".7z", ".tar", ".tgz", ".gz",
+               # 派生检索库由 tools/build_kb_db.py 现建，181 MB，不随包发布
+               ".sqlite", ".sqlite3", ".db"}
 SKIP_PREFIX = ("shot", "llm-", "aia", "items_before_")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
 BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text",
@@ -100,12 +104,14 @@ def collect() -> list[tuple[str, Path]]:
         rel = p.relative_to(ROOT)
         if len(rel.parts) == 1 and p.name.startswith("_"):
             continue  # 根目录下划线开头的是本机临时输出，不入库
+        if rel.parts[0].startswith("_") and (ROOT / rel.parts[0]).is_dir():
+            continue  # 根目录下划线开头的目录同上：本机产物与上云包（_release_v09*）不重复入库
         if rel.as_posix().startswith("sources/attachments/files/"):
             continue  # 附件二进制原样留本地，发布只带抽取文本
         if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX) or ".bak" in p.name:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
-            keep = p.name in {"items.json.gz", "sources-archive.tar.gz"}
+            keep = p.name in {"items.json.gz", "table-rows.json.gz", "sources-archive.tar.gz"}
             rel_pdf = rel.as_posix()
             keep = keep or (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans) \
                 or rel_pdf.startswith("web-next/qr/")   # 微专业报名 / 身份验证二维码要随包发布

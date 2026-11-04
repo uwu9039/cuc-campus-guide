@@ -47,9 +47,11 @@ def main() -> None:
     data = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))
     index = json.loads((SRC / "index.json").read_text(encoding="utf-8"))
     texts = {slug: squash((SRC / f"{slug}.txt").read_text(encoding="utf-8")) for slug in index}
-    for sub in ("wechat", "crawl", "cdp", "pdf", "chsi", "moe", "national", "extra", "huibian", "local", "wendao-extra", "wendao-text", "attachments/text", "ilib-text", "ilib-list-text"):
+    for f in SRC.glob("*.txt"):                     # 根目录正文（index.json 未收录的也认）
+        texts.setdefault(f.stem, squash(f.read_text(encoding="utf-8")))
+    for sub in ("wechat", "crawl", "cdp", "pdf", "chsi", "moe", "national", "extra", "huibian", "local", "wendao-extra", "wendao-text", "attachments", "attachments/text", "ilib", "ilib-text", "ilib-list-text"):
         for f in (SRC / sub).glob("*.txt"):
-            texts[f.stem] = squash(f.read_text(encoding="utf-8"))
+            texts.setdefault(f.stem, squash(f.read_text(encoding="utf-8")))
 
     fails: list[str] = []
     total = ok = 0

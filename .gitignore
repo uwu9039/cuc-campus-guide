@@ -46,3 +46,11 @@ tools/_release.py
 # 系统
 .DS_Store
 Thumbs.db
+
+# 上云包（运行时文件副本，内容源已在仓库里）
+/_release_v09/
+/_release_*/
+
+# 派生检索库（由 tools/build_kb_db.py 重建，不入库、不随包发布）
+/kb.sqlite
+*.sqlite

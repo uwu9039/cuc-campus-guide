@@ -36,13 +36,39 @@ def sh(args: list[str], timeout: int = 180) -> str:
     return r.stdout.decode("utf-8", "ignore")
 
 
+JUNK_CHAR = re.compile("[\u0e00-\u0eff\u1000-\u109f\u0800-\u085f\u0b00-\u0b7f\u0c00-\u0c7f"
+                       "\u10a0-\u10ff\u1780-\u17ff\x00-\x08\x0e-\x1f]")
+
+
+def junk_ratio(t: str) -> float:
+    """泰/老/缅/藏/高棉这类字出现在中文公文里，只有一种解释：PDF 的 ToUnicode 表坏了。
+
+    poppler 对这种 PDF 会吐出乱码，pypdf 却能读对——所以抽完先量一下比率，高了就换引擎重抽。
+    """
+    if not t:
+        return 0.0
+    return len(JUNK_CHAR.findall(t)) / max(len(t), 1)
+
+
+def pypdf_text(p: Path) -> str:
+    from pypdf import PdfReader
+
+    return "\n".join((pg.extract_text() or "") for pg in PdfReader(str(p)).pages)
+
+
 def pdf_text(p: Path) -> str:
     try:
-        return sh(["pdftotext", "-layout", "-enc", "UTF-8", str(p), "-"])
+        t = sh(["pdftotext", "-layout", "-enc", "UTF-8", str(p), "-"])
     except Exception:
-        from pypdf import PdfReader
-
-        return "\n".join((pg.extract_text() or "") for pg in PdfReader(str(p)).pages)
+        return pypdf_text(p)
+    if junk_ratio(t) > 0.005:
+        try:
+            alt = pypdf_text(p)
+            if junk_ratio(alt) < junk_ratio(t):
+                return alt
+        except Exception:  # noqa: BLE001
+            pass
+    return t
 
 
 def docx_text(p: Path) -> str:

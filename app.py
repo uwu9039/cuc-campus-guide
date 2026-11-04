@@ -12,6 +12,7 @@ import gzip
 import json
 import os
 import re
+import time
 import unicodedata
 import urllib.error
 import urllib.parse
@@ -1363,6 +1364,19 @@ def _with_history(
     return msgs
 
 
+DS_RETRY_WAIT = 0.8  # 只等这一次；再久会把整页答案拖到用户以为卡死
+DS_RETRY_CODES = {408, 429, 500, 502, 503, 504}
+
+
+def _ds_fail_text(code: int, detail: str, tried: int) -> str:
+    """给用户分开两种失败：被限流（等一会就好）和真连不通（Key 或网络出问题）。"""
+    if code == 429:
+        return f"模型接口被限流（429），重试 {tried} 次仍被拒: {detail}"
+    if code in (401, 403):
+        return f"模型接口拒绝访问（{code}），Key 可能失效: {detail}"
+    return f"模型接口返回 {code}: {detail}"
+
+
 def ds_chat(
     messages: list[dict[str, Any]],
     max_tokens: int = 600,
@@ -1372,6 +1386,8 @@ def ds_chat(
     """deepseek-flash 默认开思考模式，会先烧 max_tokens，短任务必须关掉。
 
     thinking=True 时不发 temperature（该模式忽略它）。
+    限流和 5xx 各重试一次：跑一批回归就能把同一个 Key 打到 429，
+    不重试的话人正在用的时候会连着看到「模型接口失败」。
     """
     key = api_key()
     if not key:
@@ -1386,20 +1402,32 @@ def ds_chat(
         body["temperature"] = 0.2
     if json_mode:
         body["response_format"] = {"type": "json_object"}
-    req = urllib.request.Request(
-        f"{API_BASE}/chat/completions",
-        data=json.dumps(body).encode("utf-8"),
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        raise HTTPException(502, f"模型接口返回 {e.code}: {e.read().decode('utf-8', 'ignore')[:300]}")
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(502, f"模型接口调用失败: {e}")
-    return payload["choices"][0]["message"]["content"]
+    data = json.dumps(body).encode("utf-8")
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {key}"}
+    for attempt in range(2):
+        req = urllib.request.Request(
+            f"{API_BASE}/chat/completions", data=data, headers=headers, method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            return payload["choices"][0]["message"]["content"]
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", "ignore")[:300]
+            if e.code not in DS_RETRY_CODES or attempt:
+                raise HTTPException(502, _ds_fail_text(e.code, detail, attempt))
+            time.sleep(DS_RETRY_WAIT)
+        except urllib.error.URLError as e:
+            if attempt:
+                raise HTTPException(502, f"模型接口连不通（{e.reason}）")
+            time.sleep(DS_RETRY_WAIT)
+        except OSError as e:
+            if attempt:
+                raise HTTPException(502, f"模型接口连不通（{type(e).__name__}: {e}）")
+            time.sleep(DS_RETRY_WAIT)
+        except Exception as e:  # noqa: BLE001
+            raise HTTPException(502, f"模型接口调用失败: {e}")
+    raise HTTPException(502, "模型接口调用失败")
 
 
 # ---------------------------------------------------------------- app
@@ -1624,10 +1652,15 @@ FOCUS_RULES: list[tuple[str, str, str]] = [
     ("amount", "数量", r"几本|多少本|多少册|借多少|几张|几份|几个名额"),
     ("duration", "多久出结果", r"多久|几天|多长时间|当场|立等"),
     ("pitfalls", "容易白跑的情况", r"白跑|坑|失败|出错|被拒|注意|办不成"),
+    ("conditions", "条件与限制",
+     r"什么条件|哪些条件|条件是什么|条件是|需要满足|须满足|满足什么|申请条件|资格是什么|什么资格|具备.{0,4}资格|要求是什么|有什么要求|哪些要求|什么人能|谁能(?:办|申请|报|申请)|什么情况下(?:可以|能|不能)|能不能(?:转|报|申请|办|选)|是否可以(?:转|报|申请|办|选)"),
     ("steps", "办理流程", r"怎么办|流程|步骤|怎么弄|如何|怎么操作|怎么用|怎么使用|预约|办卡|报名|怎么申请|报销|怎么报|如何报|缴费|交费|缴纳|怎么交|放假|寒假|暑假|开学|校历"),
 ]
 
 FOCUS_LABEL = {k: label for k, label, _ in FOCUS_RULES}
+# 模型报问面时说的是这些中文说法，反向映射回规则里的键，认不出的丢掉
+FOCUS_BY_LABEL = {label: k for k, label, _ in FOCUS_RULES}
+FOCUS_KEYS = {k for k, _label, _p in FOCUS_RULES}
 
 
 def pick_answer_line(text: str, item: dict[str, Any], lines: list[Any]) -> int | None:
@@ -1683,6 +1716,10 @@ def detect_focus(text: str, item: dict[str, Any]) -> list[str]:
     # 太泛的问法（只问"怎么办"）就回到整体
     if not hits or hits == ["steps"]:
         return ["overview"]
+    # 问资格的，常常顺带问时间/地点；只端资格那一面会把同句里的另一半问话丢掉。
+    # 已经点了「办理流程」就不再补整体——两面读的是同一份流程，补了会把同一步摆两遍。
+    if "conditions" in hits and "overview" not in hits and "steps" not in hits:
+        hits.insert(hits.index("conditions") + 1, "overview")
     # 一句话里问了三件事（多少钱、几点、带什么）就答三面，别把第三问悄悄扔掉
     return hits[:3]
 
@@ -1868,6 +1905,8 @@ _FACET_COVER = {
         r"\d+\s*(?:天|日|个工作日|周|个月|月|年)|"
         r"[一二三四五六七八九十两]+(?:天|日|周|个月|月|年)|当场|立等|即时"),
     "数量": re.compile(r"\d+\s*(?:本|册|个|张|份|间|条|次|门|人)"),
+    "条件与限制": re.compile(
+        r"条件|资格|准入|门槛|不得|不能|仅限|只限|须|应当|需要|符合|不符合|不接受|面向|除外"),
 }
 
 
@@ -1916,9 +1955,9 @@ _ASK_IGNORE = {
 }
 # 虚词剥完之后剩下的碎词，开头是这些字就说明切坏了，不报
 _ASK_DANGLING = "者业点个些们等里内上中"
-# 结尾粘着这几个方位字才去掉：「绩点里」报成「绩点」。
+# 结尾粘着这几个字才去掉：「绩点里」报成「绩点」，「转其他学院」削掉「其他」后不留碎词。
 # 不能拿 _ASK_DANGLING 去尾，那会把「微专业」削成「微专」
-_ASK_TAIL = "里中内"
+_ASK_TAIL = "里中内其"
 # 多分句的问句里，只有真的在发问的那一句才算「问了没答」；
 # 「户口迁到学校后，身份证丢了怎么补办」前半句是背景，不是问题
 _CLAUSE_ASKING = re.compile(
@@ -1955,6 +1994,7 @@ _ASK_VARIANT = {
     "罚款": ("滞纳", "处罚", "元"),
     "免训": ("免训", "免于", "缓训"),
     "违约": ("违约", "解约", "赔偿"),
+    "满足": ("符合", "满足", "达到"),
 }
 
 
@@ -1985,6 +2025,8 @@ def _unasked(text: str, top: dict[str, Any],
     """
     chunks: list[str] = []
     for p in parts:
+        # 面标题也算答到了：卡片上摆着「条件与限制」那一块，就不能再说「条件这一问没答到」
+        chunks.append(str(p.get("label") or ""))
         chunks.append(str(p.get("text") or ""))
         for s in p.get("steps") or []:
             if isinstance(s, dict):
@@ -2136,6 +2178,21 @@ def _answer_one(item: dict[str, Any], focus: str, known: dict[str, str] | None =
             "text": "；".join(ps) if ps else None,
             "quotes": quotes_for("pitfalls."),
             "found": bool(ps),
+        }
+
+    if focus == "conditions":
+        # 资格类问法要的是「谁能办、什么情况下不行」，别把逾期提醒这类注意事项一起端上来；
+        # 一条都没筛着时按「官方没写这一面」处理：拿全量注意事项顶上，等于把不相干的话贴上「条件」的标签。
+        ps = item.get("pitfalls") or []
+        keep = re.compile(r"不得|不能|不接受|仅限|只限|须|应当|需要|符合|除外|排除|面向|资格|条件")
+        idxs = [i for i, p in enumerate(ps) if keep.search(p)]
+        rows = [ps[i] for i in idxs]
+        return {
+            "focus": focus,
+            "label": FOCUS_LABEL[focus],
+            "text": "；".join(rows) if rows else None,
+            "quotes": quotes_for(*[f"pitfalls.{i}" for i in idxs]),
+            "found": bool(rows),
         }
 
     if focus == "contact":
@@ -2324,12 +2381,13 @@ def _followups(
 def llm_route(
     text: str, candidates: list[tuple[dict[str, Any], int]],
     history: list[dict[str, str]] | None = None,
+    status: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     """规则拿不准时，让模型先把问题翻译成多种校园说法，再在候选里挑。
 
     只做「翻译 + 挑一个」，不生成任何事实。模型给的改写会拿回规则里重新检索，
     用来补上候选池没覆盖到的条目。默认开启，命令行设 ROUTER_LLM=0 可关；
-    模型异常一律当没选，不影响原有回答。
+    模型异常一律当没选，不影响原有回答，但失败原因会记进 status。
     """
     if not candidates:
         return None, []
@@ -2357,7 +2415,9 @@ def llm_route(
             json_mode=True,
         )
         data = json.loads(raw) or {}
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["error"] = _llm_err_text(e)
         return None, []
     if not isinstance(data, dict):
         return None, []
@@ -2387,8 +2447,28 @@ def _clean_rewrites(raw: Any, text: str) -> list[str]:
     return out
 
 
-ASSOC_MIN = 70   # 联想改写在规则里重新检索，至少要命中标题/别名才认
+ASSOC_MIN = 70   # 模型没调用成功时，改写只能靠关键词兜底：这条地板留着
 ASSOC_GAP = 5    # 且要与第二名拉开差距，避免拿改写去猜
+
+
+def rewrite_ranked(rewrites: list[str], limit: int = 12) -> list[tuple[dict[str, Any], int]]:
+    """把模型自己给出的校园说法逐条拿去检索，合成一个新候选池。
+
+    用户怎么说、缩写成什么样，没人能预先列全；能列全的是模型转译出来的说法。
+    这个池子只负责「把可能相关的条目端到模型面前」，定条的仍然是模型。
+    """
+    best: dict[str, int] = {}
+    for q in rewrites:
+        for it, sc in rank(q):
+            if sc <= 0:
+                continue
+            if it["id"] not in best or sc > best[it["id"]]:
+                best[it["id"]] = sc
+        if len(best) >= limit * 3:
+            break
+    rows = sorted(((ITEM_BY_ID[i], s) for i, s in best.items()),
+                  key=lambda x: -x[1])
+    return rows[:limit]
 
 
 def assoc_pick(rewrites: list[str]) -> tuple[dict[str, Any], int] | None:
@@ -2410,7 +2490,8 @@ def assoc_pick(rewrites: list[str]) -> tuple[dict[str, Any], int] | None:
     return best
 
 
-def llm_free_answer(text: str, history: list[dict[str, str]] | None = None) -> dict[str, Any] | None:
+def llm_free_answer(text: str, history: list[dict[str, str]] | None = None,
+                    status: dict[str, Any] | None = None) -> dict[str, Any] | None:
     """事项库一条都没对上时，才让模型直接回答。
 
     只由 miss 分支调用；命中了任何条目的问答路径不经过这里，
@@ -2439,7 +2520,11 @@ def llm_free_answer(text: str, history: list[dict[str, str]] | None = None) -> d
             json_mode=True,
         )
         data = json.loads(raw) or {}
-    except Exception:  # noqa: BLE001
+        if status is not None:
+            status["asked"] = True
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["error"] = _llm_err_text(e)
         return None
     answer = str(data.get("answer") or "").strip()
     if len(answer) < 8:
@@ -2455,15 +2540,19 @@ def llm_free_answer(text: str, history: list[dict[str, str]] | None = None) -> d
 
 
 def with_free_answer(resp: dict[str, Any], text: str, llm_on: bool,
-                     history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+                     history: list[dict[str, str]] | None = None,
+                     status: dict[str, Any] | None = None) -> dict[str, Any]:
     if llm_on:
-        gen = llm_free_answer(text, history)
+        gen = llm_free_answer(text, history, status=status)
         if gen:
             resp["llm_answer"] = gen
+    if status is not None:
+        resp["model_route"] = status
     return resp
 
 
-def llm_pick_line(text: str, item: dict[str, Any], lines: list[Any]) -> int | None:
+def llm_pick_line(text: str, item: dict[str, Any], lines: list[Any],
+                  status: dict[str, Any] | None = None) -> int | None:
     """问的是具体哪一处时，让模型只从官方原文行里挑一行，不生成任何内容。"""
     menu = "\n".join(
         f"{i}. {(l.get('line') if isinstance(l, dict) else l)}"
@@ -2480,8 +2569,12 @@ def llm_pick_line(text: str, item: dict[str, Any], lines: list[Any]) -> int | No
             max_tokens=60,
             json_mode=True,
         )
+        if status is not None:
+            status["asked"] = True
         picked = (json.loads(raw) or {}).get("line")
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["error"] = _llm_err_text(e)
         return None
     if isinstance(picked, int) and 0 <= picked < len(lines):
         return picked
@@ -2902,13 +2995,19 @@ def transfer_plan(text: str) -> dict[str, Any] | None:
             "parts": parts, "file": plan.get("file", ""), "note": PLAN_NOTE}
 
 
-def original_hits(text: str, k: int = 3, min_score: float = 0.28) -> list[dict[str, Any]]:
+def original_hits(text: str, k: int = 3, min_score: float = 0.28,
+                  status: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """规则没命中时，去原文向量库找几段；只给原文线索，不生成事实。"""
     try:
         import vector_index
 
-        return vector_index.search(text, k=k, min_score=min_score)
-    except Exception:
+        hits = vector_index.search(text, k=k, min_score=min_score)
+        if not hits and vector_index.load() is None and status is not None:
+            status["vector_error"] = "原文向量库没建（sources/vector 缺失）"
+        return hits
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["vector_error"] = _llm_err_text(e)
         return []
 
 
@@ -2932,7 +3031,8 @@ def _src_item_index() -> dict[str, list[str]]:
 
 
 def rerank_candidates(
-    text: str, ranked: list[tuple[dict[str, Any], int]], limit: int = 14
+    text: str, ranked: list[tuple[dict[str, Any], int]], limit: int = 14,
+    status: dict[str, Any] | None = None,
 ) -> list[tuple[dict[str, Any], int]]:
     """规则前排 + 向量命中文档里的条目，合成给模型判断的候选池。
 
@@ -2956,7 +3056,7 @@ def rerank_candidates(
     qn = norm(text)
     qb = bigrams(qn)
     extra: list[tuple[int, int, dict[str, Any]]] = []
-    for h in original_hits(text, k=8, min_score=0.18):
+    for h in original_hits(text, k=8, min_score=0.18, status=status):
         slug = str(h.get("source") or h.get("doc") or "").split("~")[0]
         ids = list(h.get("item_ids") or []) + src_items.get(slug, [])
         doc_pick: list[tuple[int, int, dict[str, Any]]] = []
@@ -2978,8 +3078,16 @@ def rerank_candidates(
     return pool
 
 
-RERANK_MIN = 75     # 模型判定「真的回答了问题」的最低分
+RERANK_MIN = 75     # 顶掉一个已达阈值的规则首选，模型至少要给到这么多
+RERANK_ACCEPT = 60  # 规则本来就没到阈值时，接住模型的最低分（低于 RERANK_MIN 算软命中）
 RERANK_MARGIN = 10  # 换掉规则首选，必须比规则首选高出这么多
+
+
+# 模型接口报错时给人看的一句话，别把 JSON 尾巴甩到界面上
+def _llm_err_text(e: Exception) -> str:
+    s = str(getattr(e, "detail", None) or e).strip()
+    s = re.sub(r"\s*\{.*$", "", s).strip().rstrip(" :：")
+    return (s[:120] or "模型接口调用失败")
 
 
 def _rerank_hint(item: dict[str, Any]) -> str:
@@ -2995,29 +3103,54 @@ def _rerank_hint(item: dict[str, Any]) -> str:
 def llm_rerank(
     text: str, pool: list[tuple[dict[str, Any], int]],
     history: list[dict[str, str]] | None = None,
+    status: dict[str, Any] | None = None,
+    menu_mode: bool = False,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     """让 DeepSeek Flash 判断候选里哪条真的回答了问题，并给出校园说法改写。
 
-    这是判断层，不生成事实：只打分、挑条目；改写拿回规则里二次检索。
+    这是判断层，不生成事实：只打分、挑条目、认问的是哪一面；改写拿回规则里二次检索。
+    模型说「一条都没答上」和「接口没调用成功」是两件事，前者 item=None，后者返回 None。
+    menu_mode 是给「用户只输入一个词」的菜单裁决用的：那句输入里没有问题，
+    按「有没有答上某个具体问题」去判，候选全是原文摘录时模型一律返回 null。
     """
     menu = "\n".join(
         f"- {it['id']}｜{it['title'][:50]}｜{'原文摘录' if it.get('auto') else '整理条目'}"
         f"｜{it.get('dept') or '—'}｜{_rerank_hint(it) or '（无摘要）'}"
         for it, _ in pool
     )
+    facet_menu = "、".join(label for _k, label, _p in FOCUS_RULES)
+    if menu_mode:
+        judge = (
+            "判断要求：\n"
+            "- 用户这一次只输入了一个词，没有说想问哪一面。你要判的是：候选里有没有一条，"
+            "它的主题就是用户输入的这个东西本身（它的整体介绍、办理指南、开放安排都算）。\n"
+            "- 有就选它，给 70～100：主题对上的原文摘录照样算数，不要因为它是摘录、"
+            "或者没回答某个具体问题就不选。\n"
+            "- 几条都在讲同一个东西时，选覆盖最全、最像总览的那一条，不要选只讲一个细节的片段。\n"
+            "- 给每条打 0～100：主题就是这个词的这件事 80 以上；沾边但讲的是另一件事的片段 40 以下；无关 0。\n"
+            "- 只有所有候选都跟用户输入的词不相干时，best 才填 null。\n"
+        )
+    else:
+        judge = (
+            "判断要求：\n"
+            "- 给每条打 0～100：100=直接回答了用户问的这件事；60=沾边但缺关键信息；0=无关。\n"
+            "- 只看关键词重合不算回答。用户问 A，条目讲 B，就是 0 分。\n"
+            "- 同一件事既有「整理条目」又有「原文摘录」时，优先选整理条目：它分好了费用、时间、材料，"
+            "能回答具体问法；原文摘录只在整理条目完全没覆盖这件事时才选。\n"
+            "- best 只能填真正回答了问题的条目 id；都没有就填 null，不要硬选。\n"
+        )
     prompt = (
         "用户在问校园办事的事。下面是从知识库检索出的候选条目。\n"
         f"{menu}\n\n"
-        "判断要求：\n"
-        "- 给每条打 0～100：100=直接回答了用户问的这件事；60=沾边但缺关键信息；0=无关。\n"
-        "- 只看关键词重合不算回答。用户问 A，条目讲 B，就是 0 分。\n"
-        "- 同一件事既有「整理条目」又有「原文摘录」时，优先选整理条目：它分好了费用、时间、材料，"
-        "能回答具体问法；原文摘录只在整理条目完全没覆盖这件事时才选。\n"
-        "- best 只能填真正回答了问题的条目 id；都没有就填 null，不要硬选。\n"
+        f"{judge}"
+        "问面要求：再判断用户这句话问的是这件事的哪一面，"
+        f"只能从这些说法里选，最多两个：{facet_menu}。\n"
+        "- 问的是整体怎么办、或这些都对不上，facets 返回空数组。\n"
+        "- 用户问的是资格准入（能不能办、什么人能办、什么情况下不行）就选「条件与限制」。\n"
         "改写要求：把用户问题翻译成 3～5 种校园里的常用说法，口语改书面、补全省略，"
         "一条只表达一个意思，不超过 24 个字。\n"
         '只输出 JSON：{"scores": {"条目id": 分数}, "best": "条目id或null", '
-        '"why": "一句话理由", "rewrites": ["…"]}'
+        '"why": "一句话理由", "rewrites": ["…"], "facets": ["…"]}'
     )
     try:
         msgs = _with_history(prompt, text, history)
@@ -3027,9 +3160,13 @@ def llm_rerank(
             json_mode=True,
         )
         data = json.loads(raw) or {}
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["error"] = _llm_err_text(e)
         return None, []
     if not isinstance(data, dict):
+        if status is not None:
+            status["error"] = "模型返回的不是 JSON"
         return None, []
     rewrites = _clean_rewrites(data.get("rewrites"), text)
     raw_scores = data.get("scores")
@@ -3040,15 +3177,23 @@ def llm_rerank(
                 scores[str(k)] = max(0, min(100, int(float(v))))
             except (TypeError, ValueError):
                 continue
+    # 问面只认规则里已有的那些，模型自己造的词一律丢掉
+    facets = [FOCUS_BY_LABEL[str(x).strip()]
+              for x in (data.get("facets") or [])
+              if isinstance(x, str) and str(x).strip() in FOCUS_BY_LABEL]
+    why = str(data.get("why") or "").strip()[:160]
     best_id = str(data.get("best") or "").strip()
     best = ITEM_BY_ID.get(best_id) if best_id and best_id != "null" else None
     if best is None:
-        return None, rewrites
+        # 看过并否掉了：和调用失败不一样，要把「问过了」这件事记下来
+        return {"item": None, "score": 0, "scores": scores, "why": why, "facets": facets}, rewrites
     return {
         "item": best,
-        "score": scores.get(best["id"], RERANK_MIN),
+        # 模型没给这一条打分时按 60 计：可以软命中，不足以顶掉已达阈值的规则首选
+        "score": scores.get(best["id"], RERANK_ACCEPT),
         "scores": scores,
-        "why": str(data.get("why") or "").strip()[:160],
+        "why": why,
+        "facets": facets,
     }, rewrites
 
 
@@ -3514,6 +3659,33 @@ def _curated_topic_menu(text: str) -> dict[str, Any] | None:
             })
         if len(opts) < 2 or first is None:
             continue
+        # 登记了 default 的菜单不反问：先按那一条直答，其余选项交给答案下面的相关事项。
+        # 只有 topic-menus.json 里点过 default 的词才走这条路，别的菜单照旧摊选项。
+        default = ITEM_BY_ID.get(menu.get("default") or "")
+        if default is not None and not any(o["id"] == default["id"] for o in opts):
+            default = None
+        if default is not None:
+            return {
+                "matched": True,
+                "query": text,
+                "normalized": None,
+                "confidence": 0.9,
+                "band": "high",
+                "ambiguous": False,
+                "item": public(default),
+                "answers": [],
+                "hold": False,
+                "followups": [],
+                "disambiguate": [o for o in opts if o["id"] != default["id"]],
+                "clarify": None,
+                "focus": [],
+                "quotes": [],
+                "map": None,
+                **sensitivity(text),
+                "router_llm": False,
+                "rule_unsure": False,
+                "_default_pick": default["id"],
+            }
         return {
             "matched": True,
             "query": text,
@@ -3653,7 +3825,64 @@ def _topic_menu(text: str) -> dict[str, Any] | None:
         **sensitivity(text),
         "router_llm": False,
         "rule_unsure": False,
+        "_rows": rows,
+        "_place_menu": tn in _place_names(),
     }
+
+
+MENU_PICK_MIN = 60   # 模型从单词菜单里定下一条的地板，和规则没到阈值时接住模型的分一致
+
+
+def _new_model_route() -> dict[str, Any]:
+    return {
+        "asked": False, "gate": None, "error": None, "pool": 0,
+        "changed": False, "confirmed": False, "score": 0, "why": "",
+        "facets": [], "rewrites": [], "vector_error": None,
+        "pool2": 0, "rescue": None,
+    }
+
+
+def _menu_llm_pick(text: str, rows: list[tuple[dict[str, Any], int]],
+                   history: list[dict[str, str]] | None,
+                   status: dict[str, Any]) -> tuple[dict[str, Any], int, list[str]] | None:
+    """单词菜单先交给模型裁决一次：定得下来就直答，定不下来才摊选项。
+
+    菜单在评分和模型裁决之前就 return 了，模型原本看不见这些候选。
+    候选优先按来源页收拢再送出去：同一页的三四段摘录一起给，等于让模型在
+    一页纸的段落里做选择题，答不出用户要的是哪件事。整份菜单只有一页时
+    收拢后只剩一条，那就照原样给，让模型挑这一页里最贴的那段。
+    """
+    pool: list[tuple[dict[str, Any], int]] = []
+    seen_page: set[str] = set()
+    for it, sc in rows:
+        page = _menu_dept(it)
+        if page in seen_page:
+            continue
+        seen_page.add(page)
+        pool.append((it, sc))
+        if len(pool) >= 12:
+            break
+    if len(pool) < 2:
+        pool = rows[:12]
+    if len(pool) < 2:
+        return None
+    status["pool"] = len(pool)
+    rr, _rewrites = llm_rerank(text, pool, history, status=status, menu_mode=True)
+    if rr is None:
+        status["gate"] = "menu_error"
+        return None
+    status["asked"] = True
+    best = rr["item"]
+    if best is None:
+        status["gate"] = "menu_declined"
+        return None
+    status["score"] = rr["score"]
+    status["why"] = rr.get("why") or ""
+    if rr["score"] < MENU_PICK_MIN:
+        status["gate"] = "menu_low"
+        return None
+    status["gate"] = "menu_pick"
+    return best, rr["score"], (rr.get("facets") or [])
 
 
 def _transfer_clarify(text: str, tp: dict[str, Any] | None,
@@ -3757,7 +3986,10 @@ def _contextual_text(text: str, context_item: str | None) -> tuple[str, str | No
 
 def _answer_core(text: str, given: dict[str, str] | None = None,
                  router_llm: bool | None = None,
-                 history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+                 history: list[dict[str, str]] | None = None,
+                 pick_id: str = "") -> dict[str, Any]:
+    # pick_id：用户在反问菜单里点了某一条。这一条是他挑的，直接打开它，
+    # 不能再走一遍路由——同一个词回炉只会把同样的选项再摊一次。
     # 模型裁决默认开着：规则模式在方向词（迁入/迁出）、身份限定词（留学生/研究生）
     # 和具体条款这几类问题上会自信地答错，48 题实测里模型层改判 10 次、8 次改对。
     # 界面开关传 true/false 时以开关为准；要在命令行关掉，设 ROUTER_LLM=0。
@@ -3765,6 +3997,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         llm_on = str(os.getenv("ROUTER_LLM", "1")).strip().lower() not in ("0", "false", "off", "no")
     else:
         llm_on = router_llm
+    picked = pick_id if (pick_id and pick_id in ITEM_BY_ID) else ""
     num = NUM_ONLY.match(text or "")
     if num:
         hit = number_answer(text, num.group(1), llm_on)
@@ -3807,23 +4040,43 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     place_slot = _place_slot_item(places)
 
     # 转专业先反问学院，别让「转专业」这个单词进联想菜单
-    tp = transfer_plan(text)
-    clarify = _transfer_clarify(text, tp, map_hit)
+    tp = None if picked else transfer_plan(text)
+    clarify = None if picked else _transfer_clarify(text, tp, map_hit)
     if clarify:
         return clarify
 
     # 单个词：先把相关事项全摊成选项（地点词的第一项是「在哪」，仍走地点卡）
-    menu = _topic_menu(text)
+    # 摊之前先让模型在候选里定一次：定得下来就直答，定不下来才摊选项。
+    menu_pick: tuple[dict[str, Any], int, list[str]] | None = None
+    menu_mr: dict[str, Any] | None = None
+    menu_default_opts: list[dict[str, Any]] = []
+    menu = None if picked else _topic_menu(text)
     if menu:
-        if places and _place_exact(text, places):
-            menu["item"] = public(_named_place_item(places) or place_item(places))
-            menu["map"] = map_hit
-        return menu
+        rows = menu.pop("_rows", [])
+        is_place_menu = menu.pop("_place_menu", False)
+        default_pick = menu.pop("_default_pick", "")
+        # 地点词不交给模型：菜单第一项本来就是「在哪」，点了直接出定位，
+        # 模型挑中某条原文反而会把地点答案挤掉。
+        if rows and not is_place_menu and llm_on and api_key():
+            menu_mr = _new_model_route()
+            menu_pick = _menu_llm_pick(text, rows, history, menu_mr)
+        if menu_pick is None and default_pick in ITEM_BY_ID:
+            # 这个词在 topic-menus.json 里登记了主答：按这一条答，其余选项挂在答案下面
+            picked = default_pick
+            menu_default_opts = menu.get("disambiguate") or []
+        elif menu_pick is None:
+            if places and _place_exact(text, places):
+                menu["item"] = public(_named_place_item(places) or place_item(places))
+                menu["map"] = map_hit
+            if menu_mr is not None:
+                menu["model_route"] = menu_mr
+                menu["router_llm"] = True
+            return menu
 
     # 只问地点：直接答点到的这一处，不再端出整张对照表，也不让转专业路由抢走
     # 例外：这个地点本身分几种情况（快递驿站分校内 / 梆子井），先问清再答，
     # 否则只会报一个点位，另一处的答案被吞掉。
-    if places and not place_slot and _place_exact(text, places) and (
+    if places and not picked and not place_slot and _place_exact(text, places) and (
         PLACE_ONLY.search(text) or not PLACE_ASK.search(text)
     ):
         parts = place_parts(places)
@@ -3913,7 +4166,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
 
     # 纯问地点的短句（「图书馆在哪」）优先给校园地点条目，别落到办这件事的条目上
     place_forced = False
-    if PLACE_ONLY.search(text) and not place_slot and "在哪" not in top["title"]:
+    if not picked and PLACE_ONLY.search(text) and not place_slot and "在哪" not in top["title"]:
         for cand, cand_score in ranked[:4]:
             if cand["id"] in ("campus-louming", "campus-jiancheng") and cand_score >= 70:
                 top, score, second = cand, cand_score, 0
@@ -3921,35 +4174,73 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 break
 
     # 规则拿不准时，若开启 LLM 兜底，让模型在候选里选（只选，不生成事实）。
-    # 比旧版多做一步：候选池除了规则前排，还从向量命中的原文段落反查条目，
+    # 候选池除了规则前排，还从向量命中的原文段落反查条目，
     # 由 DeepSeek Flash 判断哪条真的回答了问题，而不是只看关键词重合。
-    # 90 分以上、问句又够长的强命中不送模型，避免把已经答对的条目改坏。
+    # 96 分以上的强命中不送模型，避免把已经答对的条目改坏；问句长短不再设门槛。
     top_title = core_title(top["title"]) if top else ""
     rival = next((sc for it, sc in ranked[1:]
                   if core_title(it["title"]) != top_title), 0)
     risky = score < MATCH_THRESHOLD or (rival > 0 and score - rival < 8 and score < 90)
-    informative = len(text.strip()) >= 6
     resolved_by_llm = False
+    soft_match = False
     rerank_info: dict[str, Any] | None = None
-    if llm_on and informative and score < 96 and not place_forced:
-        rule_top_id = top["id"]
-        pool = rerank_candidates(text, ranked)
+    # 模型这一层到底有没有参与，是要给用户看的：没问、问了、报错，三样得分开。
+    model_route: dict[str, Any] = menu_mr if menu_mr is not None else _new_model_route()
+    if picked:
+        # 用户从选项里点了这一条：答案就按这一条给，规则和模型都不许再换
+        top, score, second = ITEM_BY_ID[picked], 90, 0
+        resolved_by_llm = True
+        model_route["gate"] = "menu_default" if menu_default_opts else "user_pick"
+    elif menu_pick is not None:
+        # 单词菜单已由模型定下一条：用它，别再让规则评分和第二轮裁决改回去
+        chosen, chosen_score, chosen_facets = menu_pick
+        top, score, second = chosen, chosen_score, 0
+        resolved_by_llm = True
+        soft_match = chosen_score < RERANK_MIN
+        model_route["changed"] = True
+        model_route["rescue"] = "menu_pick"
+        model_route["facets"] = chosen_facets
+    elif not llm_on:
+        model_route["gate"] = "router_off"
+    elif not api_key():
+        model_route["gate"] = "no_key"
+    elif place_forced:
+        model_route["gate"] = "place_forced"
+    elif score >= 96:
+        model_route["gate"] = "strong_hit"
+    if llm_on and not picked and menu_pick is None and score < 96 and not place_forced:
+        rule_top_id = top["id"] if top else ""
+        pool = rerank_candidates(text, ranked, status=model_route)
+        model_route["pool"] = len(pool)
         rewrites: list[str] = []
         rr = None
-        if len(pool) >= 2:
-            rr, rewrites = llm_rerank(text, pool, history)
+        if not pool:
+            model_route["gate"] = "no_candidates"
+        else:
+            rr, rewrites = llm_rerank(text, pool, history, status=model_route)
         if rr is not None:
             best = rr["item"]
             bsc = rr["score"]
             rule_llm = rr["scores"].get(rule_top_id, 0)
-            better = bool(best) and bsc >= RERANK_MIN and (
+            model_route["asked"] = True
+            model_route["facets"] = rr.get("facets") or []
+            model_route["why"] = rr.get("why") or ""
+            model_route["score"] = bsc
+            # 规则本来就没到阈值时，模型是唯一还能对上事项的人，60 分就接；
+            # 要顶掉一个已达阈值的规则首选，仍须 75 分且比规则首选高出 10 分。
+            floor = RERANK_MIN if score >= MATCH_THRESHOLD else RERANK_ACCEPT
+            better = bool(best) and bsc >= floor and (
                 score < MATCH_THRESHOLD
                 or (best["id"] != rule_top_id and bsc - rule_llm >= RERANK_MARGIN)
             )
-            if better and best["id"] != rule_top_id:
+            if better and best is not None and (
+                    best["id"] != rule_top_id or score < MATCH_THRESHOLD):
                 top, score = best, max(score, bsc)
                 second = 0
                 resolved_by_llm = True
+                soft_match = bsc < RERANK_MIN
+                model_route["changed"] = best["id"] != rule_top_id
+                model_route["confirmed"] = best["id"] == rule_top_id
             rerank_info = {
                 "used": True,
                 "pool": len(pool),
@@ -3958,24 +4249,66 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "score": bsc if best else 0,
                 "rule_score": rule_llm,
                 "changed": resolved_by_llm,
+                "soft": soft_match,
+                "facets": model_route["facets"],
                 "why": rr.get("why") or "",
             }
+            if best is None:
+                # 模型看完候选说「都没答上」：这时不能再拿它的改写给关键词运气开门，
+                # 否则一句含糊的「转其他学院」会被顶成高置信的无关事项。
+                model_route["gate"] = "llm_declined"
         elif risky:
             # rerank 不可用时退回旧路：先让模型翻译，再拿改写回规则检索
-            picked, rewrites = llm_route(text, ranked[:8], history)
+            model_route["gate"] = "rerank_unavailable"
+            picked, rewrites = llm_route(text, ranked[:8], history, status=model_route)
             if picked is not None:
                 top = picked
                 score = max(score, MATCH_THRESHOLD + 1)
                 second = 0
                 resolved_by_llm = True
+                soft_match = score < RERANK_MIN
+                model_route["asked"] = True
+                model_route["changed"] = True
         if not resolved_by_llm and rewrites and score < MATCH_THRESHOLD:
-            # 只有规则本身答不上来时，才用模型翻译出的校园说法重新检索；
-            # 规则已经强命中（如「补考成绩怎么记」93 分）时不再拿改写去换条目。
-            assoc = assoc_pick(rewrites)
-            if assoc is not None and assoc[0]["id"] != top["id"]:
-                top, score = assoc
+            # 规则答不上来时，用模型自己给的说法重建候选池，再让模型判一遍。
+            # 用户会用什么缩写没人能预先列全，列别名是白费；把条目端到模型面前才是正路。
+            pool2 = rewrite_ranked(rewrites)
+            model_route["pool2"] = len(pool2)
+            rr2 = None
+            if pool2:
+                rr2, _ = llm_rerank(text, pool2, history, status=model_route)
+            if rr2 is not None and rr2["item"] is not None and rr2["score"] >= RERANK_ACCEPT:
+                top, score = rr2["item"], max(score, rr2["score"])
                 second = 0
                 resolved_by_llm = True
+                soft_match = rr2["score"] < RERANK_MIN
+                model_route["asked"] = True
+                model_route["changed"] = True
+                model_route["rescue"] = "rewrite_pool"
+                model_route["score"] = rr2["score"]
+                model_route["why"] = rr2.get("why") or model_route["why"]
+                if rr2.get("facets"):
+                    model_route["facets"] = rr2["facets"]
+                rerank_info = {
+                    "used": True, "pool": len(pool2), "rule_top": top["id"],
+                    "best": top["id"], "score": rr2["score"], "rule_score": 0,
+                    "changed": True, "soft": soft_match,
+                    "facets": model_route["facets"], "why": model_route["why"],
+                    "from": "rewrite_pool",
+                }
+            elif rr2 is None:
+                # 模型这一轮没调用成功，才退回关键词地板（原来那条 70 分 + 拉开 5 分的路）
+                assoc = assoc_pick(rewrites)
+                if assoc is not None and assoc[0]["id"] != top["id"]:
+                    top, score = assoc
+                    second = 0
+                    resolved_by_llm = True
+                    soft_match = score < RERANK_MIN
+                    model_route["asked"] = True
+                    model_route["changed"] = True
+                    model_route["rescue"] = "keyword_fallback"
+        if rewrites:
+            model_route["rewrites"] = rewrites
 
     # 没到阈值但候选分数不低：不硬拒，给出"是不是这个"的选择题
     # 自动抽取的制度卡片不参与选择题：两个同名文件让用户选，等于没答
@@ -4007,6 +4340,8 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "router_llm": llm_on,
             "rule_unsure": risky,
             "rerank": rerank_info,
+            "model_route": model_route,
+            "soft_match": soft_match,
         }
 
     if score < MATCH_THRESHOLD:
@@ -4026,6 +4361,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "hints": miss_hints,
             "contacts": miss_contacts,
             "rerank": rerank_info,
+            "model_route": model_route,
             "alternatives": [
                 {"id": i["id"], "title": i["title"]}
                 for i, s in alt_rows[:3]
@@ -4049,7 +4385,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "found": False,
             }],
         }
-        hits = original_hits(text)
+        hits = original_hits(text, status=model_route)
         if hits:
             base["original_search"] = hits
             src_items = _src_item_index()
@@ -4084,7 +4420,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "router_llm": llm_on,
                 "rule_unsure": risky,
             })
-            return with_free_answer(base, text, llm_on, history)
+            return with_free_answer(base, text, llm_on, history, status=model_route)
         if CAMPUS_HINT.search(text):
             near_opts = [
                 {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
@@ -4102,7 +4438,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "router_llm": llm_on,
             "rule_unsure": risky,
         })
-        return with_free_answer(base, text, llm_on, history)
+        return with_free_answer(base, text, llm_on, history, status=model_route)
 
     # 同一族事项分数咬得很紧时，先答最像的那一条，把另一条放进「相关事项」；
     # 不拿「你是想问 A 还是 B」把回答整个拦住——点进来是要办事的。
@@ -4150,12 +4486,21 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             top, score = kid[0], max(kid[1], score)
             rivals = []
 
-    menu = _phone_menu(text, top)
+    menu = None if picked else _phone_menu(text, top)
     if menu:
         menu.update(**sensitivity(text), router_llm=llm_on)
         return menu
 
     focus = detect_focus(text, top)
+    # 正则一个问面都没认出时（退回整体流程），用模型认出的问面补上：
+    # 只铺整条流程会把「要什么条件」这类问题答成流程；这一面数据里真没有时，
+    # 走的是「官方页面没有写」那句声明，不是沉默。
+    focus_by_llm = False
+    if focus == ["overview"] and model_route["facets"]:
+        cand = [f for f in model_route["facets"] if f in FOCUS_KEYS and f != "overview"][:2]
+        if cand:
+            focus = cand
+            focus_by_llm = True
     known0 = {**_known_slots(text, top), **(given or {})}
     parts = [_answer_one(top, f, known0, text) for f in focus]
     found = [p for p in parts if p["found"]]
@@ -4220,7 +4565,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     if lines and top.get("id") in ("campus-changguan-weizhi", "campus-jiancheng", "campus-louming"):
         idx_line = pick_answer_line(text, top, lines)
         if idx_line is None and llm_on and (PLACE_ASK.search(text) or len(norm(text)) <= 12):
-            idx_line = llm_pick_line(text, top, lines)
+            idx_line = llm_pick_line(text, top, lines, status=model_route)
         rest = [p for p in parts if p["focus"] not in ("overview", "location")]
         if idx_line is not None:
             entry = lines[idx_line]
@@ -4278,12 +4623,20 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         if extra:
             related = extra + related
             compound_note = f"问句里还点到「{extra[0]['title']}」，相关内容放在下面的相关事项里。"
+    # 登记了主答的单词菜单：这个词还能问的几件事排在最前面，答完抬头就能点
+    if menu_default_opts:
+        have = {r.get("id") for r in related}
+        related = [o for o in menu_default_opts
+                   if o.get("id") not in have and o.get("id") != top["id"]] + related
     # 问句里点了、这一条根本没写的东西，用用户自己的词说出来，别让他以为答全了。
     # 正在反问用户时不说这句：那时候答案本来就是半截的，两句叠在一起自相矛盾。
     unasked = [] if blocked else _unasked(text, top, parts)
     # 不加书名号：_display_text 会把「」一律剥掉，留着反而读不通
     unasked_note = (f"{'、'.join(unasked)}这一问，这次没答到。"
                     if unasked else None)
+    # 模型只有 60～74 把握时接管的条目：照常给答案，但要把把握不够这件事说出来
+    soft_note = (None if not soft_match or blocked else
+                 "这一条是模型从相近事项里挑的，把握不到 75%，办之前按最新通知再确认一次。")
     return {
         "matched": True,
         "query": text,
@@ -4291,6 +4644,9 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         "router_llm": llm_on,
         "resolved_by_llm": resolved_by_llm,
         "rerank": rerank_info,
+        "model_route": model_route,
+        "soft_match": soft_match,
+        "focus_by_llm": focus_by_llm,
         # 已经在反问用户了，就不再说「规则没把握」——两句话叠在一起自相矛盾；
         # 地点分支条目（快递驿站）问清园区后给出的答案不再提示没把握
         "rule_unsure": risky and not blocked and not place_slot,
@@ -4313,6 +4669,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 experience_note(top, text),
                 compound_note,
                 unasked_note,
+                soft_note,
                 f"官方页面没有写「{'、'.join(missing)}」，我不能替学校补。" if missing else None,
             ) if b
         ) or None,
@@ -4321,18 +4678,49 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     }
 
 
+def _answer_is_thin(resp: dict[str, Any]) -> bool:
+    """这一答明显没接住：没命中、还在反问、没有正文，或把握不到 0.7。"""
+    if not resp.get("matched"):
+        return True
+    if resp.get("disambiguate") and resp.get("clarify"):
+        return True
+    if not any(p.get("found") or p.get("text") for p in (resp.get("answers") or [])):
+        return True
+    return float(resp.get("confidence") or 0) < 0.7
+
+
+def _answer_weight(resp: dict[str, Any]) -> tuple[int, int, float]:
+    body = sum(1 for p in (resp.get("answers") or []) if p.get("found") or p.get("text"))
+    return (1 if resp.get("matched") else 0, body, round(float(resp.get("confidence") or 0), 2))
+
+
 def answer_question(text: str, given: dict[str, str] | None = None,
                     router_llm: bool | None = None,
                     context_item: str | None = None,
                     context_slots: dict[str, str] | None = None,
-                    history: list[dict[str, str]] | None = None) -> dict[str, Any]:
-    """续问接住上一件事；独立的新问题照样按原样路由。"""
+                    history: list[dict[str, str]] | None = None,
+                    pick_item: str | None = None) -> dict[str, Any]:
+    """续问接住上一件事；独立的新问题照样按原样路由。
+
+    pick_item 是用户在反问菜单里点的那一条：直接打开它，不再重新路由。
+    """
     orig = text
     search, ctx_id = _contextual_text(text, context_item)
     if ctx_id:
         given = {**(context_slots or {}), **(given or {})}
-    resp = _answer_core(search, given, router_llm, history)
-    if search != orig:
+    resp = _answer_core(search, given, router_llm, history, pick_id=pick_item or "")
+    # 「几天能办好」「找谁问」这类续问不在 _FOLLOW_RE 词表里，第一遍会被当成独立问题，
+    # 多半答不上。屏幕上还摆着上一件事：带上它的标题再答一次，两版取更像的那一版。
+    # 句子里点了别的事项照样不套（沿用 _mentions_other_item 那道闸）；
+    # 没带 context_item 就进不来这里，206 题基线不带上下文，因此不会跟着漂。
+    if (not ctx_id and not pick_item and context_item in ITEM_BY_ID
+            and _answer_is_thin(resp) and not _mentions_other_item(orig, context_item)):
+        alt = _answer_core(f"{ITEM_BY_ID[context_item]['title']}，{orig}",
+                           {**(context_slots or {}), **(given or {})},
+                           router_llm, history)
+        if _answer_weight(alt) > _answer_weight(resp):
+            resp, ctx_id = alt, context_item
+    if ctx_id:
         resp["query"] = orig
         resp["context_item"] = ctx_id
     return resp
@@ -4345,6 +4733,7 @@ class AskReq(BaseModel):
     context_item: str | None = None
     context_slots: dict[str, str] = {}
     messages: list[dict[str, str]] = []
+    pick_item: str | None = None     # 反问菜单里点开的条目 id
 
 
 def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
@@ -4377,7 +4766,7 @@ def ask(req: AskReq) -> dict[str, Any]:
     return clean_response(answer_question(
         text, req.slots, router_llm=req.router_llm,
         context_item=req.context_item, context_slots=req.context_slots,
-        history=req.messages or None,
+        history=req.messages or None, pick_item=req.pick_item,
     ))
 
 

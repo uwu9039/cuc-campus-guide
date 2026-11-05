@@ -14,21 +14,29 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "sources"
 OUT = ROOT / "_modelscope_bundle"
 
 ROOT_FILES = [
     "app.py", "vector_index.py", "requirements.txt",
-    "items.json.gz", "table-rows.json.gz", "sources-archive.tar.gz",
+    "items.json.gz", "table-rows.json.gz", "doc-report.json.gz", "file-registry.json.gz",
+    "sources-archive.tar.gz",
     "presets.json", "topic-menus.json", "contacts.json",
     "departments.json", "transfer-plans.json", "campus-map.json",
     "major-aliases.json", "sensitive.json",
+]
+
+# 云端要能在裸包里跑完「解压语料 → 建向量 → 建检索库 → 自检」，这几个脚本必须随包
+TOOL_FILES = [
+    "extract_sources.py", "build_vector.py", "build_kb_db.py", "unpack_items.py",
+    "build_proper.py", "check_quotes.py",
 ]
 
 SOURCE_FILES = [
     "index.json", "crawl-index.json", "cdp-index.json", "wechat-index.json",
     "chsi-index.json", "moe-index.json", "national-index.json", "extra-index.json",
     "huibian-index.json", "wendao-index.json", "wendao-extra-index.json",
-    "local-index.json", "corpus-index.json", "campus-pois.json",
+    "local-index.json", "corpus-index.json", "campus-pois.json", "proper.json",
 ]
 
 WEB_SKIP = {"campus-guide-personal-data.zip", "serve.py"}
@@ -50,6 +58,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(OUT))
     ap.add_argument("--no-vector", action="store_true")
+    ap.add_argument("--slim", action="store_true",
+                    help="只带语料归档（GitHub 那套尺度）；默认整棵 sources/ 都带，云端解压即可用")
     args = ap.parse_args()
     out = Path(args.out)
     if out.exists():
@@ -69,17 +79,35 @@ def main() -> None:
             raise SystemExit(f"缺少 {name}（先跑发布前检查）")
         put(src, out / name)
 
-    for name in SOURCE_FILES:
-        src = ROOT / "sources" / name
+    if not args.slim:
+        # 全量模式：正文 + 二进制原件 + 索引一起带，云端不需要归档也能逐字核对与展原文
+        for src in sorted(SRC.rglob("*")):
+            if not src.is_file():
+                continue
+            rel = src.relative_to(SRC)
+            if "_quarantine" in rel.parts or rel.parts[0] == "vector" or src.name.startswith("_"):
+                continue
+            if src.name in {"sources-archive.tar.gz", "sources-binaries.tar.gz", ".extract-stamp"}:
+                continue
+            put(src, out / "sources" / rel)
+    else:
+        for name in SOURCE_FILES:
+            src = ROOT / "sources" / name
+            if not src.exists():
+                raise SystemExit(f"缺少 sources/{name}")
+            put(src, out / "sources" / name)
+
+        put(ROOT / "sources" / "wendao-text" / "1b97d899.txt",
+            out / "sources" / "wendao-text" / "1b97d899.txt")
+
+        for pdf in plan_pdfs():
+            put(pdf, out / "sources" / "local" / "_files" / pdf.name)
+
+    for name in TOOL_FILES:
+        src = ROOT / "tools" / name
         if not src.exists():
-            raise SystemExit(f"缺少 sources/{name}")
-        put(src, out / "sources" / name)
-
-    put(ROOT / "sources" / "wendao-text" / "1b97d899.txt",
-        out / "sources" / "wendao-text" / "1b97d899.txt")
-
-    for pdf in plan_pdfs():
-        put(pdf, out / "sources" / "local" / "_files" / pdf.name)
+            raise SystemExit(f"缺少 tools/{name}")
+        put(src, out / "tools" / name)
 
     for src in sorted((ROOT / "web-next").rglob("*")):
         if not src.is_file() or src.name in WEB_SKIP:

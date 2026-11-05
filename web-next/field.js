@@ -62,6 +62,62 @@
     ? ` data-pick="${esc(choice.id)}"` : "");
   const num = (value) => Number(value || 0).toLocaleString("zh-CN");
   const pct = (value) => Math.round((Number(value) || 0) * 100) + "%";
+
+  /* 原文检索走语义近似，输入的整句常常在原文里一个字都不重样（实测八句整串命中为零）。
+     所以标的不是整句，而是「你打的这串字里真正落在那段原文上的那几个字」：
+     疑问词先摘掉，剩下的按最长公共片段逐段找，找到的词把每一处都标出来。 */
+  const MARK_STOP = ["什么时候", "多少时间", "多长时间", "需不需要", "有没有", "是不是", "可不可以",
+                     "能不能", "为什么", "怎么样", "怎样", "如何", "哪里", "哪儿", "哪些", "什么",
+                     "怎么", "多少", "几个", "请问", "需要", "要", "吗", "呢", "的", "了", "啊", "是"];
+
+  function markHits(text, query) {
+    const s = String(text == null ? "" : text);
+    const low = s.toLowerCase();
+    let cleaned = String(query == null ? "" : query).toLowerCase();
+    for (const word of MARK_STOP) cleaned = cleaned.split(word).join("");
+    const terms = [];
+    const one = (ch) => {
+      // 单字退让只对汉字开：一个拉丁字母能在满屏里到处撞上车
+      if (!/[\u4e00-\u9fff]/.test(ch) || low.indexOf(ch) < 0) return;
+      if (!terms.includes(ch)) terms.push(ch);
+    };
+    const dig = (seg) => {
+      // 纯拉丁词最短要到三个字母，否则 "excel" 会退化成满屏的 "el"；两字母缩写（ps）本身就该整词认
+      const floor = /^[a-z0-9]+$/.test(seg) && seg.length > 2 ? 3 : 2;
+      for (let size = seg.length; size >= floor; size--) {
+        for (let at = 0; at + size <= seg.length; at++) {
+          const piece = seg.slice(at, at + size);
+          if (!/[a-z0-9\u4e00-\u9fff]/.test(piece) || low.indexOf(piece) < 0) continue;
+          if (!terms.includes(piece)) terms.push(piece);
+          dig(seg.slice(0, at));
+          dig(seg.slice(at + size));
+          return;
+        }
+      }
+      // 这一段连两个字都凑不上，退一步把单个字标出来
+      if (seg.length >= 2) Array.from(seg).forEach(one); else one(seg);
+    };
+    cleaned.split(/\s+/).forEach(dig);
+    const marks = [];
+    terms.sort((a, b) => b.length - a.length).forEach((term) => {
+      // 拉丁词卡词界：ps 不许从 wps 里被认出来（和条目定位器同一口径）
+      const tight = /^[a-z0-9]+$/.test(term);
+      let at = -1;
+      while ((at = low.indexOf(term, at + 1)) >= 0) {
+        const end = at + term.length;
+        if (tight && (/[a-z0-9]/.test(low.charAt(at - 1)) || /[a-z0-9]/.test(low.charAt(end)))) continue;
+        if (!marks.some(([m, n]) => at < n && m < end)) marks.push([at, end]);
+        at = end - 1;
+      }
+    });
+    if (!marks.length) return esc(s);
+    let html = "", cut = 0;
+    marks.sort((a, b) => a[0] - b[0]).forEach(([from, to]) => {
+      html += esc(s.slice(cut, from)) + '<mark class="hit">' + esc(s.slice(from, to)) + "</mark>";
+      cut = to;
+    });
+    return html + esc(s.slice(cut));
+  }
   // 「· 图书馆手册.docx」这种来源后缀是给条目自己用的，不该出现在给用户看的话里。
   // 只处理显示：data-ask 仍然原样发出去，免得动到路由。
   const docName = (value) => String(value == null ? "" : value)
@@ -414,7 +470,6 @@
       ? `<div class="known">已记下 ${known.map(([, value]) => `<span class="norm">${esc(value)}</span>`).join(" ")}</div>` : "";
     const questions = (data.followups || []).map((f, i) => `<div class="fq">
       <p class="aval">${String(i + 1).padStart(2, "0")}　${esc(f.question)}</p>
-      <p class="why">为什么问：${esc(f.why || "这一项会改变答案")}</p>
       <div class="opts">${(f.options || []).map((o) =>
         `<button class="opt" type="button" data-key="${esc(f.key)}" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>
     </div>`).join("");
@@ -433,7 +488,7 @@
     const body = (data.answers || []).map(partHtml).join("");
     return `<div class="card">${cardHead(data, item.title || "")}
       ${item.summary ? `<p class="aval">${esc(item.summary)}</p>` : ""}
-      ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}
+      ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}${tableBlock(data)}
       ${sourceBlock(item)}
       <div class="cardfoot">
         <button class="plainbtn" type="button" data-act="quotes">核对原文 <span>${quotes.length}</span></button>
@@ -515,6 +570,16 @@
         ${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`;
   }
 
+  // 数据表的行不进答案正文：一行表格数字没有办理上下文，顶在答案里等于拿它当结论。
+  // 后端只递一个条数，点开了到原文检索面板里看那几行原文。
+  function tableBlock(data) {
+    const t = data.table_link;
+    if (!t || !t.count || !t.q) return "";
+    return `<div class="sec"><h3>数据表（表格里的原文，不是办理结论）</h3><div class="opts">
+      <button class="opt" type="button" data-panel="search" data-query="${esc(t.q)}">有 ${num(t.count)} 行和这句话字面相近，点开看</button>
+    </div></div>`;
+  }
+
   function extractText(d) {
     if (d.llm_answer && d.llm_answer.text) return d.llm_answer.text.slice(0, 500);
     const bits = [];
@@ -543,20 +608,29 @@
     // 滚动的一直是文档（.thread 没有 overflow）；卡片入场动画会让它的
     // scrollHeight 短暂大于 clientHeight，所以不能拿「谁可滚滚谁」当判据。
     const shift = window.scrollY || document.documentElement.scrollTop || 0;
-    // --topbar-keep 是页面给 sticky 顶栏留的净高，面板也用同一个值
-    const keep = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topbar-keep"));
+    const style = getComputedStyle(document.documentElement);
+    // --panel-top 是实测顶栏底边后下发的真值：窄屏顶栏绕成两三行时它比 84 大得多，
+    // 只看 --topbar-keep 会把刚点亮的加载点顶到顶栏底下。后者只是 JS 没跑起来时的兜底。
+    const keep = parseFloat(style.getPropertyValue("--panel-top") || style.getPropertyValue("--topbar-keep"));
     const offset = (Number.isFinite(keep) ? keep : 0) + 12;
     const top = Math.max(0, anchor.getBoundingClientRect().top + shift - offset);
-    window.scrollTo({ top, behavior: reduced.matches ? "instant" : "smooth" });
+    // 不用 smooth：占位比答案高，答案到达时文档会突然矮一大截，而没跑完的平滑滚动
+    // 不理会这次收缩，继续往一个已经不存在的位置夹，实测把答案顶到顶栏上面
+    // （卡片 -64 ~ -10px，大标题压在透明顶栏底下）。瞬时落位没有这个窗口。
+    window.scrollTo({ top, behavior: "instant" });
   }
 
-  async function ask(text, pick, fromOption) {
+  async function ask(text, pick) {
     text = String(text || "").trim();
     if (text.length < 2) { toast("问得太短了，把要办的事说全一点"); return; }
     if (state.busy) return;
     state.busy = true;
     el.send.disabled = true;
     const slot = addExchange(text);
+    // 加载动画也写进这个槽：答案（或错误卡）随后覆盖 slot.innerHTML，三点就随之消失。
+    // 顺序不能反——先请求再点亮，等于答完了才动。
+    slot.innerHTML = `<div class="thinking" role="status" aria-label="正在等模型回话"><i></i><i></i><i></i></div>`;
+    jumpToStart(slot);
     try {
       const response = await api("/api/ask", {
         text,
@@ -572,15 +646,18 @@
       state.count += 1;
       slot.innerHTML = renderResult(response);
       afterResult(response);
+      // 落位要排在 afterResult 之后：这一问定位到条目时它会 setMode("work")，
+      // .hero 整块 display:none，文档当场矮掉一大截。在那之前量到的位置不作数。
+      jumpToStart(slot);
       state.history.push({ role: "user", content: text });
       state.history.push({ role: "assistant", content: extractText(response) });
       if (state.history.length > 24) state.history = state.history.slice(-24);
     } catch (error) {
       slot.innerHTML = `<div class="errcard"><h2>这次没答上来</h2><p class="aval">${esc(error.message)}</p></div>`;
+      jumpToStart(slot);
     } finally {
       state.busy = false;
       el.send.disabled = false;
-      if (fromOption) jumpToStart(slot.previousElementSibling || slot);
     }
   }
 
@@ -786,6 +863,8 @@
       barUp = false;
     }
     syncPanelTop();
+    // 每次打开都回到默认半屏：上一次拉出来的高度不带进下一次
+    el.panel.style.removeProperty("--sheet-h");
     el.scrim.hidden = false;
     el.panel.hidden = false;
     el.body.dataset.panelOpen = kind;
@@ -821,6 +900,32 @@
     panelReturn = null;
   }
 
+  // 手机端抽屉的拉手：按住标题行向上提，高度从半屏长到 2/3 屏。
+  // 上下限都写在 field.css 的 clamp 里，这里只报一个 --sheet-h；报多了被夹住的那一段
+  // 不扔掉，接着拿去滚内容——一次手势从「拉高抽屉」直接接到「滚列表」，不用松手重按。
+  const sheetMedia = window.matchMedia("(max-width: 720px)");
+
+  function initSheetDrag() {
+    const head = $(".panelhead", el.panel);
+    if (!head) return;
+    let drag = null;
+    head.addEventListener("pointerdown", (event) => {
+      if (!sheetMedia.matches || event.target.closest("button")) return;
+      drag = { y: event.clientY, h: el.panel.getBoundingClientRect().height, top: el.panelbody.scrollTop };
+      head.setPointerCapture(event.pointerId);
+    });
+    head.addEventListener("pointermove", (event) => {
+      if (!drag) return;
+      const want = drag.h + (drag.y - event.clientY);
+      el.panel.style.setProperty("--sheet-h", `${want}px`);
+      const got = el.panel.getBoundingClientRect().height;
+      if (want > got) el.panelbody.scrollTop = drag.top + (want - got);
+    });
+    const stop = () => { drag = null; };
+    head.addEventListener("pointerup", stop);
+    head.addEventListener("pointercancel", stop);
+  }
+
   /* ---------- 原文检索：GET /api/search?q=&k=，只给原文段落 ---------- */
   async function searchPanel() {
     const q = String(state.searchQuery || "").trim();
@@ -830,9 +935,19 @@
     const data = await api("/api/search?q=" + encodeURIComponent(q) + "&k=12").catch((error) => ({ fail: error.message }));
     if (data.fail) { out.innerHTML = `<p class="insempty">${esc(data.fail)}</p>`; return; }
     const hits = data.hits || [];
-    const rows = hits.map((h) => `<div class="hitrow"><div class="ht">${esc(docName(h.title) || "原文段落")}</div><p class="norm">${[h.kind || "原文", h.page ? "第 " + esc(String(h.page)) + " 页" : "", h.score != null ? "相关度 " + pct(h.score) : ""].filter(Boolean).join(" · ")}</p><p class="aval">${esc(h.snippet || "")}</p>${h.url ? `<a class="opt" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}</div>`).join("");
+    const rows = hits.map((h) => `<div class="hitrow"><div class="ht">${esc(docName(h.title) || "原文段落")}</div><p class="norm">${[h.kind || "原文", h.page ? "第 " + esc(String(h.page)) + " 页" : "", h.score != null ? "相关度 " + pct(h.score) : ""].filter(Boolean).join(" · ")}</p><p class="aval">${markHits(h.snippet || "", q)}</p>${h.url ? `<a class="opt" href="${esc(h.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}</div>`).join("");
+    const tableRows = (data.rows || []).map((r) => {
+      const who = docName(r.label || r.title) || "数据表";
+      const meta = [(r.kind && r.kind !== "未知" ? r.kind : "表格行"),
+        r.row_no ? "第 " + esc(String(r.row_no)) + " 行" : "",
+        r.shared ? "字面重合 " + num(r.shared) + " 处" : ""].filter(Boolean).join(" · ");
+      return `<div class="hitrow"><div class="ht">${esc(who)}</div><p class="norm">${meta}</p>
+        <p class="aval">${markHits(r.text || "", q)}</p>${
+        r.url && isReadableSource(r.url) ? `<a class="opt" href="${esc(r.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}</div>`;
+    }).join("");
     out.innerHTML = `<p class="norm">原文里共命中 ${num(data.total)} 段，下面是最接近的 ${hits.length} 段。</p>`
-      + (rows || `<p class="insempty">原文里没有相近的段落，换一个更具体的说法再试。</p>`);
+      + (rows || `<p class="insempty">原文里没有相近的段落，换一个更具体的说法再试。</p>`)
+      + (tableRows ? `<p class="pansub">数据表里最接近的 ${(data.rows || []).length} 行，逐格原文照搬，不是办理结论。</p>${tableRows}` : "");
   }
 
   /* ---------- 联系方式：GET /api/contacts[?purpose=]，全部来自公开原文 ---------- */
@@ -1010,6 +1125,20 @@
   }
 
   /* ---------- 事件 ---------- */
+  /* 日夜开关：只翻 <html> 的 data-theme，别的东西一律不动。
+     不写 storage 也不写 cookie——刷新就回到日间，默认状态随时能拿回去。
+     状态挂在 aria-pressed 上：样式表靠它挑皮肤，读屏也能报出现在是白天还是夜里。 */
+  function initThemeSwitch() {
+    const btn = $("#themesw");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme !== "cobalt-dark";
+      document.documentElement.dataset.theme = dark ? "cobalt-dark" : "cobalt-field";
+      btn.setAttribute("aria-pressed", String(dark));
+      btn.setAttribute("aria-label", dark ? "切回日间模式" : "切到夜间模式");
+    });
+  }
+
   function bind() {
     el.presets.innerHTML = PRESETS.map((text) => `<button type="button" data-ask="${esc(text)}">${esc(text)}</button>`).join("");
 
@@ -1026,7 +1155,7 @@
         event.preventDefault();
         // 点选项不把选项文字留在输入框：这一问已经回声在对话流里了
         el.q.value = "";
-        ask(askBtn.dataset.ask, askBtn.dataset.pick, true);
+        ask(askBtn.dataset.ask, askBtn.dataset.pick);
         return;
       }
       const slotBtn = event.target.closest("[data-key]");
@@ -1076,7 +1205,17 @@
     // 时先命中 body 上的同名属性，被当成重新打开口令，选点和筛选一次都没生效。
     document.addEventListener("click", (event) => {
       const entry = event.target.closest("button[data-panel], a[data-panel]");
-      if (entry) { openPanel(entry.dataset.panel); return; }
+      if (entry) {
+        // 答案卡上的数据表链接自带那句话：不换掉旧输入，打开的还是上一次检索的词。
+        // 面板外壳里写着旧词，得逼 openPanel 重画一次，搜索框才对得上。
+        const preset = entry.dataset.query;
+        if (preset != null && preset !== state.searchQuery) {
+          state.searchQuery = preset;
+          delete el.panel.dataset.kind;
+        }
+        openPanel(entry.dataset.panel);
+        return;
+      }
       const chip = event.target.closest("[data-purpose]");
       if (chip) { state.contactPurpose = chip.dataset.purpose; contactPanel(); return; }
       const pin = event.target.closest("[data-poi]");
@@ -1133,6 +1272,8 @@
     window.addEventListener("scroll", scheduleMotion, { passive: true });
     window.addEventListener("scroll", () => syncBarHide(), { passive: true });
     window.addEventListener("resize", scheduleMotion);
+    initSheetDrag();
+    initThemeSwitch();
   }
 
   function handleAction(act) {

@@ -19,8 +19,15 @@
   --bar-slide: .38s;
   --chip-bg: #efefec;
   --warn-ink: #a8452f;
+  /* 检索标字（原文检索里输入对应的字）：浅底配金底深字，和下面的暗色块成一对 */
+  --hit-bg: #ffe9a3;
+  --hit-ink: #211a05;
   --chrome-bg: #111111;
   --chrome-ink: #ffffff;
+  /* 面板背后那层压暗：不跟着胶囊走，胶囊会翻面，压暗永远要往暗的方向压 */
+  --scrim-bg: #111111;
+  /* 输入区那个小开关的滑块：取 --bg 的话暗色下变成深灰槽上的黑点，等于看不见 */
+  --knob-bg: #ffffff;
   /* 校徽底盘：官方校徽是白字单色，底盘必须是深色。换浅色主题时在这里改一个值，不动 .brand-mark。 */
   --emblem-bg: var(--accent);
   --radius-panel: 24px;
@@ -40,6 +47,91 @@
   --reel-font: clamp(38px, 6.6vw, 100px);
   --reel-ease: cubic-bezier(.76, 0, .24, 1);
   --land-ease: cubic-bezier(.2, .8, .2, 1);
+
+  /* 日夜开关的骨架：轨道高与宽、滑块留缝，滑块滚多远 = 宽减高（两边的缝正好抵消）。
+     尺寸与主题无关，所以只在这里落一次；颜色在下面两块里各写一遍。 */
+  --sw-h: 32px;
+  --sw-w: 76px;
+  --sw-inset: 2.5px;
+  --sw-night: #2b303e;
+  --sw-day: #5a81b4;
+  --sw-star: #ffffff;
+  --sw-sun: #e9cb50;
+  --sw-sun-hi: #f8f4e4;
+  --sw-sun-lo: #665613;
+  --sw-moon: #cbcdda;
+  --sw-crater: #939aa5;
+  --sw-cloud: #abc1d9;
+  --sw-halo: rgba(255, 255, 255, .2);
+  --sw-halo-b: rgba(255, 255, 255, .15);
+  --sw-halo-c: rgba(255, 255, 255, .21);
+  --sw-edge-up: #999999;
+  --sw-edge-down: #ffffee;
+  --sw-edge-in-top: #333333;
+  --sw-edge-in-bottom: #dddddd;
+  --sw-knob-shade: #333333;
+}
+
+/* 暗色（夜里看屏幕不刺眼）。顶栏那个日夜开关只改 <html> 的 data-theme，色值全在这里换，
+   下面的结构 CSS 一处不动。三个刻意的决定：
+   1) 强调色比日间提亮一档：钴蓝压在近黑上只有 3.4:1，正文里的链接和小字读不清，
+      提亮以后反过来要求「亮底配深字」，所以 --accent-ink 换成深色。
+   2) 品牌块与提示条（--chrome-*）是深底白字的胶囊，暗色下整页都深，不翻过来就糊成一片。
+   3) 底纹与均衡器的透明度降一档：白天下是若有似无的光，压到暗底上会浮成一层灰。
+   每一个色值 token 都在这里重新落一次数，漏一个就是一小块界面还是白天的颜色。 */
+:root[data-theme="cobalt-dark"] {
+  --bg: #0e0f12;
+  --surface: #16181d;
+  --ink: #f2f2f0;
+  --muted: #a0a3a8;
+  --accent: #6e8bff;
+  --accent-ink: #0e0f12;
+  --line: #2a2d34;
+  --btn-line: #3a3e46;
+  --bar-slide: .38s;
+  --chip-bg: #21242b;
+  --warn-ink: #e78a6b;
+  /* 检索标字的暗色一档：金底压成暗金、字提亮，夜里不会在屏幕上烫出一个亮块 */
+  --hit-bg: #4a3f14;
+  --hit-ink: #ffdf7e;
+  --chrome-bg: #f2f2f0;
+  --chrome-ink: #0e0f12;
+  --scrim-bg: #000000;
+  --knob-bg: #e9ebef;
+  /* 校徽是白字单色，底盘永远要深；暗色的强调色已经提亮到接近浅蓝，再当底盘白徽就陷进去了 */
+  --emblem-bg: #2b3d7a;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+  --panel-pad: clamp(20px, 3vw, 40px);
+  --topbar-keep: 84px;
+  --display: "Arial Narrow", "Helvetica Neue", Impact, "Microsoft YaHei", sans-serif;
+  --ambient-hero: .18;
+  --ambient-work: .1;
+  --eq-hero: .35;
+  --eq-work: .18;
+  --reel-line: clamp(56px, 8.6vw, 124px);
+  --reel-font: clamp(38px, 6.6vw, 100px);
+  --reel-ease: cubic-bezier(.76, 0, .24, 1);
+  --land-ease: cubic-bezier(.2, .8, .2, 1);
+
+  /* 日夜开关画的是天空本身，白天夜里同一套星点与云；只有四周的拟态阴影跟着底色换 */
+  --sw-night: #2b303e;
+  --sw-day: #5a81b4;
+  --sw-star: #ffffff;
+  --sw-sun: #e9cb50;
+  --sw-sun-hi: #f8f4e4;
+  --sw-sun-lo: #665613;
+  --sw-moon: #cbcdda;
+  --sw-crater: #939aa5;
+  --sw-cloud: #abc1d9;
+  --sw-halo: rgba(255, 255, 255, .2);
+  --sw-halo-b: rgba(255, 255, 255, .15);
+  --sw-halo-c: rgba(255, 255, 255, .21);
+  --sw-edge-up: #000000;
+  --sw-edge-down: #20242c;
+  --sw-edge-in-top: #05060a;
+  --sw-edge-in-bottom: #2a2f38;
+  --sw-knob-shade: #000000;
 }
 
 * { box-sizing: border-box; }
@@ -82,13 +174,19 @@ a { color: inherit; }
   translate: 0 calc(var(--scroll-shift) * 1.55);
 }
 .fx i {
-  flex: 1 1 0; height: var(--h); min-height: 6px; transform-origin: bottom;
+  flex: 1 1 0; height: var(--h); min-height: 6px;
   border-radius: var(--radius-pill) var(--radius-pill) 0 0; background: var(--accent);
   animation: field-eq 1.7s ease-in-out infinite alternate; animation-delay: var(--d);
 }
 @keyframes field-drift-a { from { transform: scale(.9) translate3d(-3%, -2%, 0); } to { transform: scale(1.14) translate3d(6%, 7%, 0); } }
 @keyframes field-drift-b { from { transform: scale(1.08) translate3d(4%, -5%, 0); } to { transform: scale(.86) translate3d(-7%, 6%, 0); } }
-@keyframes field-eq { from { transform: scaleY(.26); } to { transform: scaleY(1.55); } }
+/* 起伏改成动 height，不再用 scaleY：变换会把顶部圆角一起压扁（柱子越矮压得越狠），
+   浏览器按柱宽夹出来的那个半圆帽就没了，看着就是切了边的方块。动 height 时矮柱子
+   会被夹成圆帽，高柱子正好是半圆，两种都不再有锐角。 */
+@keyframes field-eq {
+  from { height: calc(var(--h) * .26); }
+  to { height: calc(var(--h) * 1.55); }
+}
 
 /* ---------- 顶栏（sticky，绝不遮内容） ---------- */
 .topbar {
@@ -126,6 +224,103 @@ a { color: inherit; }
   display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
   border: 1px solid var(--btn-line); border-radius: var(--radius-pill);
   background: var(--bg); color: var(--ink); font-size: 12px; text-decoration: none; white-space: nowrap;
+}
+
+/* ---------- 日夜开关（等比缩小复刻单标签日间/黑夜开关） ---------- */
+/* 一整条天空压在胶囊里：背景铺成两倍宽，左半是带星点的夜空、右半是白昼，
+   按下只是把这张图左右挪——滑块滚过去的同时天色跟着换，两段共用一条 .5s 时间线。
+   滑块始终是同一个圆：白天是带内阴影的太阳，夜里换成一片环形山的月亮；
+   ::after 那一圈 box-shadow 画白天的云和夜里的月晕，被 overflow 裁在胶囊内。 */
+.themesw {
+  position: relative; flex: none;
+  width: var(--sw-w); height: var(--sw-h);
+  border-radius: var(--radius-pill);
+  background:
+    radial-gradient(circle at 18% 7px, var(--sw-star), var(--sw-star) 2.1px, transparent 2.6px, transparent),
+    radial-gradient(circle at 35% 16px, var(--sw-star), var(--sw-star) .5px, transparent 1px, transparent),
+    radial-gradient(circle at 10% 25px, var(--sw-star), var(--sw-star) .9px, transparent 1.4px, transparent),
+    radial-gradient(circle at 25% 5px, var(--sw-star), var(--sw-star) 1.1px, transparent 1.6px, transparent),
+    radial-gradient(circle at 15% 18px, var(--sw-star), var(--sw-star) .6px, transparent 1.1px, transparent),
+    radial-gradient(circle at 30% 27px, var(--sw-star), var(--sw-star) 1.8px, transparent 2.3px, transparent),
+    radial-gradient(circle at 5% 11px, var(--sw-star), var(--sw-star) .5px, transparent 1px, transparent),
+    radial-gradient(circle at 25% 21px, var(--sw-star), var(--sw-star) .5px, transparent 1px, transparent),
+    radial-gradient(circle at 7% 12px, var(--sw-star), var(--sw-star) .5px, transparent 1px, transparent),
+    linear-gradient(90deg, var(--sw-night), var(--sw-night) 50%, var(--sw-day) 50%, var(--sw-day));
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  box-shadow:
+    0 -1px 2px var(--sw-edge-up),
+    inset 0 1px 2px var(--sw-edge-in-top),
+    0 1px 2px var(--sw-edge-down),
+    inset 0 -1px 2px var(--sw-edge-in-bottom);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-position .5s ease;
+}
+.themesw::before,
+.themesw::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  transition: .5s ease;
+}
+.themesw::before {
+  width: calc(var(--sw-h) - var(--sw-inset) * 2);
+  height: calc(var(--sw-h) - var(--sw-inset) * 2);
+  inset: var(--sw-inset);
+  background: var(--sw-sun);
+  box-shadow:
+    0 0 2px var(--sw-knob-shade),
+    inset 1px 1px 1.5px var(--sw-sun-hi),
+    inset -1px -1px 1.5px var(--sw-sun-lo);
+  z-index: 1;
+}
+.themesw::after {
+  width: calc(var(--sw-h) - var(--sw-inset) * 2 - 2px);
+  height: calc(var(--sw-h) - var(--sw-inset) * 2 - 2px);
+  inset: calc(var(--sw-inset) + 1px);
+  box-shadow:
+    4px 21px 0 4px var(--sw-cloud),
+    23px 21px 0 2px var(--sw-cloud),
+    34px 25px 0 4px var(--sw-cloud),
+    48px 16px 0 2px var(--sw-cloud),
+    55px 5px 0 4px var(--sw-cloud),
+    68px -7px 0 4px var(--sw-cloud),
+    -4px 0 0 18px var(--sw-halo),
+    5px 0 0 18px var(--sw-halo-b),
+    14px 0 0 18px var(--sw-halo-c);
+}
+.themesw:hover::before { filter: contrast(90%) brightness(110%); scale: 1.05; }
+.themesw:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.themesw[aria-pressed="true"] { background-position: 0 0; }
+.themesw[aria-pressed="true"]::before {
+  translate: calc(var(--sw-w) - var(--sw-h)) 0;
+  /* 月亮换的是灰底的立体阴影：沿用太阳那圈暖色内阴影，缩到 27px 就变成一道金边 */
+  box-shadow:
+    0 0 2px var(--sw-knob-shade),
+    inset 1px 1px 1.5px var(--sw-moon),
+    inset -1px -1px 1.5px var(--sw-crater);
+  background:
+    radial-gradient(circle at 50% 7px, var(--sw-crater), var(--sw-crater) 2.3px, transparent 3px, transparent),
+    radial-gradient(circle at 35% 16px, var(--sw-crater), var(--sw-crater) 4px, transparent 4.6px, transparent),
+    radial-gradient(circle at 72% 18px, var(--sw-crater), var(--sw-crater) 3px, transparent 3.6px, transparent),
+    radial-gradient(var(--sw-moon), var(--sw-moon));
+}
+/* 夜里的光晕收一半：原稿那一圈 50px 铺展在 90px 高的轨道上只是月光，
+   等比放到这里会把右半的夜空糊成灰，星点就白摆了。白天不动，淡蓝底上那一片是阳光。 */
+.themesw[aria-pressed="true"]::after {
+  transform: translate(calc(var(--sw-w) - var(--sw-h)), 0);
+  box-shadow:
+    4px 21px 0 4px transparent,
+    23px 21px 0 2px transparent,
+    34px 25px 0 4px transparent,
+    48px 16px 0 2px transparent,
+    55px 5px 0 4px transparent,
+    68px -7px 0 4px transparent,
+    4px 0 0 9px var(--sw-halo),
+    -5px 0 0 9px var(--sw-halo-b),
+    -14px 0 0 9px var(--sw-halo-c);
 }
 
 /* ---------- 页面骨架 ---------- */
@@ -167,7 +362,7 @@ body[data-mode="work"] .topline { display: inline-block; }
 body[data-mode="work"] .statline { display: none; }
 body[data-mode="work"] .ambient { opacity: var(--ambient-work); }
 body[data-mode="work"] .fx { height: min(10vh, 90px); opacity: var(--eq-work); }
-body[data-mode="work"] .fx i { animation: none; transform: scaleY(.3); }
+body[data-mode="work"] .fx i { animation: none; height: calc(var(--h) * .3); }
 body[data-mode="work"] .workspace { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
 body[data-mode="work"] .inspector {
   display: block; position: sticky; top: 84px; padding: var(--panel-pad);
@@ -191,7 +386,7 @@ body[data-mode="work"] .inspector {
 .llmsw { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; }
 .llmsw input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .llmsw .track { width: 38px; height: 22px; border-radius: var(--radius-pill); background: var(--chip-bg); display: inline-flex; align-items: center; padding: 3px; transition: background .18s ease; }
-.llmsw .track i { width: 16px; height: 16px; border-radius: 50%; background: var(--bg); transition: translate .18s ease; }
+.llmsw .track i { width: 16px; height: 16px; border-radius: 50%; background: var(--knob-bg); transition: translate .18s ease; }
 .llmsw input:checked + .track { background: var(--accent); }
 .llmsw input:checked + .track i { translate: 16px 0; }
 .llmsw input:focus-visible + .track { outline: 3px solid var(--accent); outline-offset: 3px; }
@@ -214,6 +409,21 @@ body[data-mode="work"] .inspector {
 .card { padding: var(--panel-pad); background: var(--surface); border-radius: var(--radius-panel); animation: field-land .48s var(--land-ease) both; overflow-wrap: anywhere; }
 body[data-mode="hero"] .card { background: var(--surface); }
 .ask { padding: 14px 18px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink); font-size: 15px; justify-self: start; }
+/* 等模型回话时的占位：三个点在答案将要开始的原地点跳，答案一到就被覆盖掉。
+   min-height 不是留白好看，是这一条能成立的前提——文档不够长时 window.scrollTo
+   会被滚动上限夹住，「先跳到答案位置」根本跳不到位。 */
+.thinking {
+  display: flex; align-items: flex-start; gap: 8px; padding-left: 1em;
+  min-height: calc(100vh - var(--panel-top, var(--topbar-keep)) - 90px);
+}
+.thinking i {
+  width: 9px; height: 9px; border-radius: 50%; background: var(--accent);
+  animation: field-bounce 1.05s var(--land-ease) infinite;
+}
+.thinking i:nth-child(1) { animation-delay: 0s; }
+.thinking i:nth-child(2) { animation-delay: .16s; }
+.thinking i:nth-child(3) { animation-delay: .32s; }
+@keyframes field-bounce { 0%, 64%, 100% { translate: 0 0; opacity: .3; } 32% { translate: 0 -9px; opacity: 1; } }
 .cardhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 .tag { padding: 5px 11px; border-radius: var(--radius-pill); background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
 .tag.warn { background: var(--chip-bg); color: var(--muted); }
@@ -226,6 +436,9 @@ body[data-mode="hero"] .card { background: var(--surface); }
 .alab { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 6px; }
 .aval { margin: 0; font-size: 17px; line-height: 1.62; }
 .aval.none { color: var(--muted); font-style: normal; border-left: 3px solid var(--accent); padding-left: 12px; }
+/* 检索标字：原文里与你输入对应的那几个字。钴蓝已经是品牌/链接色，再拿来标字就分不清
+   「这是你打的」和「这是能点的」，所以走琥珀一笔。两个色值都取自主题 token。 */
+mark.hit { background: var(--hit-bg); color: var(--hit-ink); padding: 0 2px; border-radius: 3px; }
 .asteps { margin: 0; padding-left: 0; list-style: none; counter-reset: step; display: grid; gap: 8px; }
 .asteps li { counter-increment: step; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
 .asteps li::before { content: counter(step, decimal-leading-zero); color: var(--accent); font-weight: 800; font-size: 12px; }
@@ -242,7 +455,6 @@ body[data-mode="hero"] .card { background: var(--surface); }
 .qsrc .qline + .qline { margin-top: 8px; }
 .qsrc .qmeta { display: inline; margin: 0 8px 0 0; }
 .qsrc .qtxt { font-size: 13px; }
-.why { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
 .plannote { margin: 14px 0 0; color: var(--muted); font-size: 13px; }
 .hitrow { margin-top: 10px; padding: 12px 14px; background: var(--bg); border-radius: calc(var(--radius-panel) * .5); }
 .hitrow .ht { font-size: 14px; }
@@ -320,7 +532,7 @@ body[data-panel-open] { overflow: hidden; }
 .scrim[hidden] { display: none; }
 .scrim {
   position: fixed; inset: var(--panel-top, var(--topbar-keep)) 0 0; z-index: 14;
-  background: var(--chrome-bg); opacity: .38;
+  background: var(--scrim-bg); opacity: .38;
 }
 .panel {
   position: fixed; z-index: 15; top: var(--panel-top, var(--topbar-keep)); right: 0; bottom: 0;
@@ -411,7 +623,20 @@ body[data-panel-open] { overflow: hidden; }
   .brand-sub { display: none; }
   .boxfoot .send { margin-left: 0; width: 100%; }
   .kicker { letter-spacing: .18em; }
-  .panel { padding: 16px 18px 20px; border-left: 0; }
+  /* 手机端抽屉：满屏高会把背后的答案和键盘一起盖住。改成贴屏幕底的抽屉，默认半屏，
+     向上最多拉到 2/3 屏——上下限都夹在这里，field.js 只写 --sheet-h 一个数。
+     标题行是拉手（touch-action 收掉，否则拖一下变成整页跟着滚）。 */
+  .panel {
+    padding: 16px 18px 20px; border-left: 0;
+    top: auto; left: 0; width: 100%;
+    height: clamp(50vh, var(--sheet-h, 50vh), calc(100vh * 2 / 3));
+    animation: sheet-rise .34s var(--land-ease) both;
+  }
+  /* 贴底以后入场从下面升，不再从右边滑：右边滑那一下会在左边露出一条缝 */
+  @keyframes sheet-rise { from { opacity: .2; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+  .panelhead { touch-action: none; }
+  /* 抽屉上面那一片压暗删掉：遮罩节点留着，它还要接「点外面关闭」那一下，只是不再涂色 */
+  .scrim { background: none; }
   /* 窄屏顶栏换成两三行时高度是变大的，这里不再写档位：field.js 实测顶栏底边后下发 --panel-top */
   .poirow { flex-wrap: wrap; }
   .poirow .opt { margin-left: 0; }

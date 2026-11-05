@@ -62,6 +62,11 @@ def main() -> None:
 
     # 已抽正文的键集合
     att_by_sha = {v.get("sha256", ""): v for v in att_idx.values()}
+    # 用户手工转格式（.doc → .docx）的原件：转换件的字节哈希也指回同一条正文
+    for v in att_idx.values():
+        conv = SRC.parent / v.get("saved", "")
+        if v.get("converted") and conv.is_file():
+            att_by_sha.setdefault(hashlib.sha256(conv.read_bytes()).hexdigest(), v)
     have_att = {k for k, v in att_txt.items() if (SRC / "attachments" / "text" / f"{k}.txt").exists()}
     have_wendao = {p.stem for p in (SRC / "wendao-text").glob("*.txt")}
     txt_stems = {p.stem for p in SRC.rglob("*.txt")}

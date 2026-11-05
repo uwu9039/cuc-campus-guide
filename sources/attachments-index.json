@@ -720,12 +720,15 @@
   "page_slug": "jwc-list2",
   "page_title": "信息下载",
   "name": "2022-10-27 【考试】重考补退报名申请表.doc",
-  "ext": "doc",
-  "bytes": 21555,
+  "ext": "docx",
+  "bytes": 20664,
   "sha256": "93b852ff1a686e67f569cb71c395807c4c655d03703dcb16f06a2f0e599bc0b0",
-  "saved": "sources/attachments/files/93b852ff-2022-10-27 【考试】重考补退报名申请表.doc",
+  "saved": "sources/attachments/files/93b852ff-2022-10-27 【考试】重考补退报名申请表.docx",
   "fetched_at": "2026-10-30T02:11:24+08:00",
-  "status": "ok"
+  "status": "ok",
+  "converted": "2026-11-04 用户把 .doc 另存为 .docx（WPS 老格式本机抽不出正文）",
+  "original_saved": "sources/attachments/files/93b852ff-2022-10-27 【考试】重考补退报名申请表.doc",
+  "original_bytes": 21555
  },
  "https://jwc.cuc.edu.cn/_upload/article/files/a7/a4/2fa3de504959b3bfb2f4e65b002a/98c0bee2-3e41-4a7c-a9dd-c4a58b6e2402.doc": {
   "url": "https://jwc.cuc.edu.cn/_upload/article/files/a7/a4/2fa3de504959b3bfb2f4e65b002a/98c0bee2-3e41-4a7c-a9dd-c4a58b6e2402.doc",
@@ -1370,12 +1373,15 @@
   "page_slug": "20250508-c2813a255322",
   "page_title": "各国家和地区住宿费、伙食费、公杂费开支标准表",
   "name": "附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc.doc",
-  "ext": "doc",
-  "bytes": 845292,
+  "ext": "docx",
+  "bytes": 446728,
   "sha256": "9de9396694fff83953be3410527f9642aa87de1ee67451d7c20da0a1dec4b414",
-  "saved": "sources/attachments/files/9de93966-附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc.doc",
+  "saved": "sources/attachments/files/9de93966-附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.docx",
   "fetched_at": "2026-10-30T02:11:35+08:00",
-  "status": "ok"
+  "status": "ok",
+  "converted": "2026-11-04 用户把 .doc 另存为 .docx（WPS 老格式本机抽不出正文）",
+  "original_saved": "sources/attachments/files/9de93966-附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc.doc",
+  "original_bytes": 845292
  },
  "https://jwc.cuc.edu.cn/_upload/article/files/72/3d/41c75a04499c929e56b8a9605ccd/8a2f3e24-d341-4201-9eba-675cebf28b3d.pdf": {
   "url": "https://jwc.cuc.edu.cn/_upload/article/files/72/3d/41c75a04499c929e56b8a9605ccd/8a2f3e24-d341-4201-9eba-675cebf28b3d.pdf",

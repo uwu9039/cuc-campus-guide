@@ -14,6 +14,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))   # 直接 python tools/test_field_ui.py 时，压在测试体里的 import app 才找得到
 WEB = ROOT / "web-next"
 BACKUP = ROOT / "_backups" / "web-next-before-field-2026-11-02"
 NEW_FILES = ("field.html", "field.css", "field.js")
@@ -139,6 +140,39 @@ def strip_root_blocks(css):
     return outside
 
 
+def theme_block(css, selector):
+    """取某个 :root 主题块里的 token 定义（不含大括号）。"""
+    at = css.index(selector)
+    open_at = css.index("{", at)
+    depth = 0
+    for index in range(open_at, len(css)):
+        if css[index] == "{":
+            depth += 1
+        elif css[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return css[open_at + 1:index]
+    raise AssertionError(f"{selector} 块没有闭合")
+
+
+def colour_tokens(block):
+    """块里「值是颜色」的 token 名。圆角、时长这类几何 token 不参与主题对照。"""
+    named = {}
+    for line in block.splitlines():
+        match = re.match(r"\s*(--[a-z0-9-]+)\s*:\s*([^;]+);", line)
+        if match:
+            named[match.group(1)] = match.group(2).strip()
+    direct = {name for name, value in named.items()
+              if re.search(r"#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(", value)}
+    # var(--x) 引来的也是颜色，那它本身就算颜色 token（例如 --emblem-bg: var(--accent)）
+    borrowed = set()
+    for name, value in named.items():
+        ref = re.fullmatch(r"var\((--[a-z0-9-]+)\)", value)
+        if ref and ref.group(1) in direct:
+            borrowed.add(name)
+    return direct | borrowed
+
+
 class RouteTest(unittest.TestCase):
     def routes(self, path):
         sys.path.insert(0, str(ROOT))
@@ -155,6 +189,26 @@ class RouteTest(unittest.TestCase):
         for deco in ('@app.get("/")', '@app.get("/desk")'):
             self.assertIn(deco, source, f"app.py 没有 {deco} 路由")
             self.assertLess(source.index(deco), mount, f"{deco} 必须注册在静态挂载之前")
+
+    def test_public_source_shape_is_always_a_list(self):
+        """库里 30648 条的 source 存的是单个对象，8574 条才是数组。
+
+        前端按数组渲染（field.js 的可选来源那一路直接 .filter），接口给对象就整块答面
+        渲染不出来——用户看到的是「ps激活 没答上」，其实是后端 matched=True 之后前端炸了。
+        """
+        sys.path.insert(0, str(ROOT))
+        import app as backend
+
+        base = {"id": "t1", "title": "测试条目", "dept": "教务处"}
+        for src in ({"title": "教务处", "url": "https://jwc.cuc.edu.cn/a"},
+                    "教务处 · https://jwc.cuc.edu.cn/a"):
+            got = backend.public({**base, "source": src})
+            self.assertIsInstance(got["source"], list,
+                                  f"source 是 {type(src).__name__} 时接口没归一成数组")
+            self.assertEqual(len(got["source"]), 1, "单个来源归一后应当只有一条")
+        self.assertEqual(backend.public(base)["source"], [], "没写来源要出空数组")
+        kept = backend.public({**base, "source": [{"title": "a", "url": "https://x"}]})
+        self.assertEqual(kept["source"], [{"title": "a", "url": "https://x"}], "本来就是数组要照原样出去")
 
     def test_field_route_serves_field_html_without_cache(self):
         routes = self.routes("/field")
@@ -274,6 +328,128 @@ class ThemeTest(unittest.TestCase):
             self.assertIn(token, outside, f"结构 CSS 没有消费 {token}")
 
 
+class DarkModeTest(unittest.TestCase):
+    """暗色模式：一个 :root[data-theme="cobalt-dark"] token 块 + 顶栏那个日夜开关。"""
+
+    LIGHT = ':root[data-theme="cobalt-field"]'
+    DARK = ':root[data-theme="cobalt-dark"]'
+
+    def dark_block(self):
+        return theme_block(read("field.css"), self.DARK)
+
+    def test_dark_block_redeclares_every_colour_token(self):
+        # 漏一个颜色 token，暗色下就有一小块界面还是白天的颜色——半明半暗最难查。
+        light = colour_tokens(theme_block(read("field.css"), self.LIGHT))
+        dark = colour_tokens(self.dark_block())
+        self.assertTrue(light, "没读到日间主题的色值 token")
+        self.assertEqual(light - dark, set(), "这些色值 token 在暗色块里没有着落")
+        self.assertEqual(dark - light, set(), "暗色块凭空多了 token，日间主题用不到")
+
+    def test_dark_block_turns_the_page_over(self):
+        dark = self.dark_block()
+        for token, value in (("--bg", "#0e0f12"), ("--surface", "#16181d"), ("--chip-bg", "#21242b"),
+                             ("--line", "#2a2d34"), ("--ink", "#f2f2f0"), ("--muted", "#a0a3a8")):
+            self.assertIn(f"{token}: {value};", dark, f"暗色块里 {token} 应该是 {value}")
+
+    def test_dark_block_lifts_the_accent_off_near_black(self):
+        # 钴蓝 #2b5bff 压在近黑底上只有 3.4:1，链接和小字读不清；提亮后正文改用深字。
+        dark = self.dark_block()
+        self.assertIn("--accent: #6e8bff;", dark, "暗色的强调色要提亮，不能沿用钴蓝")
+        self.assertIn("--accent-ink: #0e0f12;", dark, "亮强调底上的字要换成深色")
+        self.assertIn("--warn-ink: #e78a6b;", dark, "警示色在暗色下同样要提亮")
+
+    def test_dark_block_flips_the_chrome_pill(self):
+        # 品牌块与提示条是「深底白字」的胶囊，暗色下得反过来，否则两块黑糊在一起。
+        dark = self.dark_block()
+        self.assertIn("--chrome-bg: #f2f2f0;", dark)
+        self.assertIn("--chrome-ink: #0e0f12;", dark)
+
+    def test_dark_block_quiets_the_ambient_layer(self):
+        # 底纹本来就是白天的弱光，压到暗底上会糊成一片灰，强度得跟着降一档。
+        dark = self.dark_block()
+        self.assertIn("--ambient-hero: .18;", dark)
+        self.assertIn("--eq-hero: .35;", dark)
+
+    def test_switch_is_a_two_half_sky_pill(self):
+        css = read("field.css")
+        block = re.search(r"\.themesw \{[\s\S]*?\n\}", css).group(0)
+        self.assertIn("border-radius: var(--radius-pill);", block)
+        self.assertIn("overflow: hidden;", block, "云和星点要裁在胶囊里")
+        self.assertIn("background-size: 200% 100%;", block, "夜空与白昼是同一张图的两半")
+        self.assertIn("background-position: 100% 0;", block, "默认露出右半的白昼")
+        for token in ("var(--sw-night)", "var(--sw-day)", "var(--sw-star)"):
+            self.assertIn(token, block, f"开关的色值要走 token：{token}")
+
+    def test_night_state_slides_the_knob_and_gives_it_craters(self):
+        css = read("field.css")
+        block = re.search(r'\.themesw\[aria-pressed="true"\] \{([\s\S]*?)\}', css).group(1)
+        self.assertIn("background-position: 0 0;", block, "按下后要露出左半的夜空")
+        knob = re.search(r'\.themesw\[aria-pressed="true"\]::before \{([\s\S]*?)\n\}', css).group(1)
+        self.assertIn("translate: calc(var(--sw-w) - var(--sw-h)) 0;", knob, "滑块滚到另一端")
+        self.assertIn("var(--sw-crater)", knob, "夜里换成带环形山的月亮")
+
+    def test_switch_is_not_a_panel_entry(self):
+        html = read("field.html")
+        topacts = re.search(r'<nav class="topacts"[\s\S]*?</nav>', html).group(0)
+        button = re.search(r'<button class="themesw"[^>]*></button>', topacts)
+        self.assertTrue(button, "顶栏里要有一个不带文字内容的日夜开关")
+        self.assertIn('id="themesw"', button.group(0))
+        self.assertIn('aria-pressed="false"', button.group(0), "初始是日间")
+        self.assertIn("aria-label=", button.group(0), "空按钮也要有可读的名字")
+        self.assertNotIn("data-panel", button.group(0), "开关不是面板入口，蹭到 data-panel 会被当成打开面板")
+
+    def test_switch_sits_at_the_right_end_of_the_bar(self):
+        # 2026-11-05 用户点名：开关要排在「经典版」右边，成为功能区最末一个。
+        topacts = re.search(r'<nav class="topacts"[\s\S]*?</nav>', read("field.html")).group(0)
+        button = re.search(r'<button class="themesw"[^>]*></button>', topacts)
+        self.assertTrue(button, "顶栏里找不到日夜开关")
+        classic = topacts.index(">经典版</a>")
+        self.assertGreater(button.start(), classic, "开关要放在「经典版」右边")
+        self.assertEqual(topacts[button.end():].strip(), "</nav>", "开关右边不该再排任何东西，它是最末一个")
+
+    def test_toggle_only_flips_data_theme(self):
+        js = js_region(read("field.js"), "function initThemeSwitch", "\n  function ")
+        self.assertIn("document.documentElement.dataset.theme", js, "只换 <html> 的 data-theme")
+        self.assertIn('"cobalt-dark"', js)
+        self.assertIn('"cobalt-field"', js)
+        self.assertIn('setAttribute("aria-pressed"', js, "开关状态要写在 aria-pressed 上，样式与读屏都读它")
+        for banned in ("localStorage", "sessionStorage", "document.cookie", "history.", "fetch("):
+            self.assertNotIn(banned, js, f"切主题不该留下别的痕迹：{banned}")
+
+    def test_page_remembers_nothing(self):
+        # 不落盘：刷新回到日间，用户随时能拿默认状态。
+        for name in ("field.js", "field.html", "field.css"):
+            for banned in ("localStorage", "sessionStorage", "indexedDB"):
+                self.assertNotIn(banned, read(name), f"{name} 不该用 {banned}")
+
+    def test_map_tiles_keep_their_own_colours(self):
+        # 高德瓦片是路网图，反色会把路名和道路等级一起弄错，暗色下也照常显示。
+        css = read("field.css")
+        self.assertNotIn("invert", css, "不要用滤镜给底图染色")
+
+    def test_the_dim_behind_the_panel_stays_dark(self):
+        # 面板背后那层压暗跟着 --chrome-bg 走，暗色下它就翻成浅灰——整页像蒙了张白纸。
+        css = read("field.css")
+        scrim = re.search(r"\.scrim \{([\s\S]*?)\}", css).group(1)
+        self.assertIn("background: var(--scrim-bg);", scrim, "压暗要用自己的 token，不跟着胶囊翻")
+        self.assertIn("--scrim-bg: #111111;", theme_block(css, self.LIGHT))
+        self.assertIn("--scrim-bg: #000000;", theme_block(css, self.DARK))
+
+    def test_the_composer_knob_stays_visible_when_off(self):
+        # 开关滑块原本取 --bg：白天是白点在浅灰槽上，夜里变成黑点在深灰槽上，看不见。
+        css = read("field.css")
+        knob = re.search(r"\.llmsw \.track i \{([\s\S]*?)\}", css).group(1)
+        self.assertIn("background: var(--knob-bg);", knob, "滑块要跟着主题给一个永远比槽亮的数")
+        self.assertIn("--knob-bg: #ffffff;", theme_block(css, self.LIGHT))
+        self.assertIn("--knob-bg: #e9ebef;", theme_block(css, self.DARK))
+
+    def test_the_emblem_keeps_a_dark_plate(self):
+        # 官方校徽是白字单色，底盘必须一直是深色；暗色里强调色被提亮，不能再拿它当底盘。
+        css = read("field.css")
+        self.assertIn("--emblem-bg: #2b3d7a;", theme_block(css, self.DARK),
+                      "暗色的校徽底盘要单独给一个深钴蓝，不能沿用提亮后的强调色")
+
+
 class ReelTest(unittest.TestCase):
     def test_word_pool_keeps_selection_rules(self):
         source = read("field.js")
@@ -301,6 +477,31 @@ class ReelTest(unittest.TestCase):
         mask = re.search(r"\.rotate\s*\{[^}]*\}", read("field.css"))
         self.assertTrue(mask and "overflow: hidden" in mask.group(0),
                         ".rotate 自身必须带遮罩，否则会一次露出两行半字")
+
+
+class EqBarTest(unittest.TestCase):
+    def test_bars_wear_a_pill_cap(self):
+        css = read("field.css")
+        bars = re.search(r"\.fx i \{([^}]*)\}", css)
+        self.assertTrue(bars, "找不到柱子规则")
+        self.assertRegex(bars.group(1), r"border-radius: var\(--radius-pill\) var\(--radius-pill\) 0 0",
+                         "柱顶要胶囊圆角，而且只圆上面两个角")
+
+    def test_bars_grow_by_height_so_the_cap_stays_round(self):
+        # 用户点名：柱子顶部改成半圆，现在太锐利。根因是起伏用 scaleY 压柱子——
+        # 变换会把圆角一起压扁（越矮压得越狠），浏览器按柱宽夹出来的那个半圆帽就没了。
+        # 改成动 height，矮柱子才会被夹成真正的圆帽。
+        css = read("field.css")
+        self.assertNotIn("transform-origin", css, "不再用 scaleY 缩放，缩放原点要跟着删掉")
+        key = re.search(r"@keyframes field-eq \{([\s\S]*?)\n\}", css)
+        self.assertTrue(key, "找不到 field-eq 关键帧")
+        self.assertNotIn("scaleY", key.group(1), "起伏不能靠压扁柱子")
+        self.assertRegex(key.group(1), r"from \{ height: calc\(var\(--h\) \* \.26\); \}")
+        self.assertRegex(key.group(1), r"to \{ height: calc\(var\(--h\) \* 1\.55\); \}")
+        work = re.search(r'body\[data-mode="work"\] \.fx i \{([^}]*)\}', css)
+        self.assertTrue(work, "找不到工作区的柱子规则")
+        self.assertNotIn("scaleY", work.group(1), "工作区矮下去同样不能压扁圆角")
+        self.assertIn("height: calc(var(--h) * .3)", work.group(1), "工作区用高度收到三成，和满屏态一个路子")
 
 
 class ResultContractTest(unittest.TestCase):
@@ -404,6 +605,83 @@ class ResultContractTest(unittest.TestCase):
                         "答案槽必须在搬走子节点之前取")
         self.assertRegex(code, r"return slot;", "渲染要返回那个槽")
 
+    def test_loading_shows_and_view_jumps_before_the_answer(self):
+        # 用户要的是：按下发送就先跳到答案将要开始的位置，同时给三点跳动加载，
+        # 等模型真的返回内容才收掉。跳转与加载都必须排在 await /api/ask 之前，
+        # 否则等于答完才跳、答完才亮——那就什么都没发生。
+        body = re.search(r"async function ask\(text, pick\)\s*\{([\s\S]*?)\n  \}", read("field.js"))
+        self.assertTrue(body, "找不到 ask()")
+        code = body.group(1)
+        self.assertIn("thinking", code, "等答案时要在槽里放加载动画")
+        self.assertIn("jumpToStart(slot)", code, "要先跳到答案将要开始的位置")
+        call = code.index("jumpToStart(slot)")
+        self.assertLess(call, code.index('api("/api/ask"'), "跳转要在发请求之前，不能答完才跳")
+        self.assertLess(code.index("thinking"), code.index('api("/api/ask"'), "加载动画要在发请求之前就位")
+        # 三个点是这一条的点名的形态：两个或四个都算没按要求做
+        self.assertRegex(code, r"(<i></i>){3}", "加载动画要正好三个点")
+        self.assertRegex(code, r'class="thinking"[^>]*role="status"', "加载状态要让读屏软件读得到")
+        # 原先点选项在答完后再往回跳一次（跳到这一问的开头）。现在发请求前就跳到位，
+        # 再留那一支会把已经停好的答案顶出屏幕。
+        self.assertNotIn("fromOption", read("field.js"), "答完后的回跳已撤销，不能再留着")
+
+    def test_answer_replaces_the_loading_animation(self):
+        # 「返回内容后隐藏」的实现就是把答案写进同一个槽；槽里若留着 .thinking，
+        # 加载点会和答案并存。错误分支同理：答不上来也要收掉加载。
+        body = re.search(r"async function ask\(text, pick\)\s*\{([\s\S]*?)\n  \}", read("field.js"))
+        self.assertTrue(body, "找不到 ask()")
+        code = body.group(1)
+        self.assertRegex(code, r"slot\.innerHTML = renderResult\(response\)", "答案要渲染进那个槽")
+        self.assertRegex(code, r"slot\.innerHTML = `<div class=\"errcard\"", "失败也要渲染进那个槽")
+        self.assertLess(code.index('await api("/api/ask"'), code.index("slot.innerHTML = renderResult"),
+                        "渲染必须在请求返回之后")
+        # 答案写进同一个槽，所以「隐藏加载」就是覆盖 innerHTML；不能再留一处 separate 的
+        # .thinking 选择器去删它，那样点选项那一支会漏收。
+        self.assertNotIn("querySelector(\".thinking\")", code, "收加载靠覆盖槽，不需要单独找动画节点")
+
+    def test_answer_lands_where_the_loader_stood(self):
+        # 真实速度下答案常在 0.3~1s 回来，「跳过去」的平滑滚动还没跑完：占位比答案高，
+        # 文档当场矮一大截，动画不理会这次收缩，继续往一个已经不存在的位置夹，
+        # 答案被顶到顶栏上面（实测卡片 -64 ~ -10px，大标题压在透明顶栏底下）。
+        # 所以答案（和错误卡）渲染完要立刻按新布局再落一次位。
+        body = re.search(r"async function ask\(text, pick\)\s*\{([\s\S]*?)\n  \}", read("field.js"))
+        self.assertTrue(body, "找不到 ask()")
+        code = body.group(1)
+        self.assertEqual(code.count("jumpToStart(slot)"), 3, "发请求前一次，答案后一次，错误卡后一次")
+        self.assertLess(code.index("jumpToStart(slot)"), code.index('api("/api/ask"'), "第一跳仍要在发请求之前")
+        self.assertRegex(code, r"afterResult\(response\);\s*\n\s*(//[^\n]*\n\s*)*jumpToStart\(slot\);",
+                         "答案渲染完、afterResult 把满屏态收掉之后要立刻重新落位")
+        self.assertRegex(code, r"slot\.innerHTML = `<div class=\"errcard\"[\s\S]*?`;\s*\n\s*jumpToStart\(slot\);",
+                         "错误卡写进槽后也要重新落位，它比占位更矮")
+
+    def test_jump_lands_instantly_not_by_gliding(self):
+        # 落位必须是瞬时的：动画一跑起来，答案到达时既收缩文档又撞上没跑完的动画，
+        # 纠正也压不住它（实测纠正后仍停在 -10px）。瞬时没有这个窗口。
+        code = js_region(read("field.js"), "function jumpToStart(anchor) {", "\n  }")
+        self.assertRegex(code, r'behavior:\s*"instant"', "落位要瞬时到位，不能留平滑滚动的窗口")
+        self.assertNotRegex(code, r'behavior:\s*"smooth"', "这一条链路不再用平滑滚动")
+
+    def test_thinking_dots_have_a_bounce_keyframe(self):
+        css = read("field.css")
+        self.assertRegex(css, r"@keyframes field-bounce\b", "要有三点跳动的关键帧")
+        self.assertRegex(css, r"\.thinking i\s*\{[^}]*animation:", "每个点都要挂上跳动动画")
+        self.assertEqual(len(re.findall(r"\.thinking i:nth-child", css)), 3, "三个点要各错开相位，才跳得出顺序")
+        # 占位必须撑得起一屏：文档不够长时 window.scrollTo 会被浏览器夹住，
+        # 「跳到答案将要开始的位置」根本跳不到位。
+        self.assertRegex(css, r"\.thinking\s*\{[^}]*min-height:", "加载占位要留出高度，否则跳转会被滚动上限夹住")
+
+    def test_loader_is_indented_by_one_character(self):
+        # 用户点名：加载点往右移一个字宽。落在 .thinking 容器上，跟着答案槽同一列缩进，
+        # 不能去动单个点（那会把三点之间的 8px 间距也改掉）。
+        css = read("field.css")
+        self.assertRegex(css, r"\.thinking\s*\{[^}]*padding-left:\s*1em", "加载点整体要向右错开一个字宽")
+
+    def test_jump_uses_the_measured_topbar_edge(self):
+        # 窄屏顶栏会绕成两三行（实测 159→190px），写死的 --topbar-keep=84 会把
+        # 刚点亮的加载点顶到顶栏底下去：跳转要先用 field.js 实测下发的 --panel-top。
+        code = js_region(read("field.js"), "function jumpToStart(anchor) {", "\n  }")
+        self.assertIn('"--panel-top"', code, "跳转要先读实测出来的顶栏底边")
+        self.assertLess(code.index('"--panel-top"'), code.index('"--topbar-keep"'), "实测值优先，token 只当兜底")
+
     def test_note_only_shows_where_classic_shows_it(self):
         # 浏览器对齐发现：经典版只在答案卡与计划卡渲染 d.note，澄清/先确认/未命中卡都不渲染。
         # /field 多渲染一次就是内容不一致，不是呈现差异。
@@ -457,8 +735,17 @@ class FeedbackTest(unittest.TestCase):
         self.assertNotIn("<details", code, "不能用折叠隐藏原文：折叠后浏览器取不到全文，两版内容就不一致了")
         self.assertNotIn("这一项另有", js, "「另有 N 段原文」这类提示噪声要删掉")
         self.assertNotIn("点「核对原文」查看", js, "同上")
-        self.assertRegex(js, r"function holdCard[\s\S]{0,900}class=\"why\"", "反问的理由要用轻量的 why 行")
+        # 2026-11-05 用户点名：反问卡里「为什么问：…」那行灰色小字关掉。
+        # 原口径是「理由要用轻量的 why 行呈现」，现在整条不渲染，问题行与选项照旧。
+        hold = re.search(r"function holdCard\(data\)\s*\{([\s\S]*?)\n  \}", js)
+        self.assertTrue(hold, "找不到 holdCard()")
+        body = hold.group(1)
+        self.assertNotIn('class="why"', body, "「为什么问」小字已按要求关掉")
+        self.assertNotIn("为什么问", body, "这一行整条不渲染，不留空标签")
+        self.assertIn('class="aval"', body, "反问的问题行要留着")
+        self.assertIn('class="opts"', body, "反问的选项要留着")
         css = read("field.css")
+        self.assertNotIn(".why {", css, "样式跟着一起删，不留没人用的规则")
         answer = re.search(r"\.aval \{[^}]*font-size: ([\d.]+)px", css)
         quote = re.search(r"\.qsrc \.qtxt \{[^}]*font-size: ([\d.]+)px", css)
         self.assertTrue(answer and quote, "答案与引文的字号要有明确层级")
@@ -484,12 +771,13 @@ class FeedbackTest(unittest.TestCase):
         self.assertRegex(css, r'body\[data-mode="hero"\] #backbtn \{ display: none', "满屏态不显示返回键")
 
     def test_footer_carries_the_team_credit(self):
-        # 反馈 5：页脚小字署名
+        # 反馈 5：页脚小字署名。2026-11-06 用户点名删掉右下角那句「事实来自 /api/*，界面不生成内容」。
         html = read("field.html")
         footer = re.search(r'<footer class="page-footer">([\s\S]*?)</footer>', html)
         self.assertTrue(footer, "页脚没了")
         self.assertIn("广院通——由记忆队制作", footer.group(1), "署名要按用户给的原句")
-        self.assertIn("/api/", footer.group(1), "数据来源说明保留")
+        self.assertEqual(footer.group(1).count("<span"), 1, f"页脚只留署名一行：{footer.group(1).strip()}")
+        self.assertNotIn("/api/", footer.group(1), "右下角那句数据来源说明已按用户口径删掉")
 
     def test_hero_headline_is_the_new_copy_without_the_grey_lede(self):
         # 反馈 6：大字换成「校园事务 / 有求必应」，滚动大字下面的灰字删掉
@@ -863,6 +1151,54 @@ class PhaseTwoTest(unittest.TestCase):
         # 写死的窄屏档位已经不管用了，留着只会让人以为它还在生效
         self.assertNotRegex(css, r"--topbar-keep-mobile", "窄屏改用实测高度，写死的档位要一并删掉")
 
+    def test_mobile_panel_is_a_half_screen_sheet(self):
+        # 手机端抽屉实测满屏高：上沿贴顶栏底、下沿贴屏幕底，把背后的答案和键盘一起盖住。
+        # 改成贴屏幕底的抽屉，默认半屏高，向上最多拉到 2/3 屏。上下限都夹在 CSS 里，
+        # JS 只写 --sheet-h，两边不会各背一套数字。
+        css = read("field.css")
+        narrow = css[css.index("@media (max-width: 720px)"):]
+        panel = re.search(r"\n\s*\.panel \{([^}]*)\}", narrow)
+        self.assertTrue(panel, "窄屏要改 .panel 自己的定位规则")
+        self.assertIn("top: auto", panel.group(1), "窄屏不再从顶栏底边铺开，改成贴屏幕底")
+        self.assertRegex(panel.group(1), r"height: clamp\(50vh, var\(--sheet-h, 50vh\), calc\(100vh \* 2 / 3\)\)",
+                         "默认半屏、最多 2/3 屏，两头都要夹住")
+        self.assertRegex(narrow, r"\.panelhead \{[^}]*touch-action: none",
+                         "标题行要接管竖向手势，否则拉一下变成页面跟着滚")
+        self.assertRegex(panel.group(1), r"animation: sheet-rise",
+                         "贴底以后入场要从下面升：还是用右边滑会在左边露出一条缝")
+
+    def test_mobile_sheet_has_no_dark_dim_above_it(self):
+        # 用户点名：抽屉出来时上面那一片黑色阴影删掉。遮罩节点要留着——它还是
+        # 「点外面关闭」的受力面（点它才关得掉面板），只是不再涂色。
+        css = read("field.css")
+        start = css.index("@media (max-width: 720px)")
+        narrow = css[start:css.index("@media print", start)]
+        self.assertRegex(narrow, r"\.scrim \{[^}]*background: none", "窄屏遮罩不涂黑")
+        self.assertNotRegex(narrow, r"\.scrim \{[^}]*display: none",
+                            "遮罩不能整个删掉，点外面关闭要靠它接着事件")
+
+    def test_dragging_the_sheet_past_the_top_scrolls_the_content(self):
+        # 用户要的是：拉到 2/3 顶住之后，同一只手继续往上提就变成滚内容。
+        # 被上限夹住没用掉的那一段位移（want - got）转给 panelbody 的滚动，
+        # 手势不用松手重按。窄屏以外不接管标题行，桌面的侧栏照旧。
+        js = read("field.js")
+        self.assertIn('matchMedia("(max-width: 720px)")', js, "抽屉拖拽只给窄屏")
+        code = js_region(js, "function initSheetDrag() {", "\n  }")
+        self.assertIn("sheetMedia.matches", code, "每次按下都要重新判断视口，不能只在启动时判一次")
+        self.assertRegex(code, r'el\.panel\.style\.setProperty\("--sheet-h"', "高度写成 CSS 变量，让 clamp 去夹")
+        self.assertIn("el.panel.getBoundingClientRect().height", code, "夹完以后的真实高度要实测，不能算")
+        self.assertRegex(code, r"if \(want > got\) el\.panelbody\.scrollTop = drag\.top \+ \(want - got\);",
+                         "拉高用剩的位移接着拿去滚内容")
+
+    def test_sheet_opens_at_half_screen_height(self):
+        # 上一次拉满 2/3 不该带进下一次：默认半屏是这一条反馈里「默认」两个字。
+        js = read("field.js")
+        code = js_region(js, "function openPanel(kind, keepFocus) {", "\n  }")
+        self.assertIn('el.panel.style.removeProperty("--sheet-h")', code, "每次打开都要抹掉上次拖出来的人身高")
+        self.assertLess(code.index('el.panel.style.removeProperty("--sheet-h")'), code.index("el.panel.hidden = false"),
+                        "要在面板现身之前复位，否则会看到它从满高缩回半屏")
+        self.assertRegex(js, r"\n    initSheetDrag\(\);", "拖拽要在启动接线那一段里挂上")
+
     def test_narrow_full_width_send_does_not_squeeze_the_panel_form(self):
         # 窄屏截图复核抓到：把「问」按钮拉满整行的规则写成了裸 .send，
         # 于是面板里的「定位 / 搜索」也一起满行，输入框被挤到只剩几个字。
@@ -1143,6 +1479,91 @@ class HideTopbarOnScrollTest(unittest.TestCase):
         code = read("field.js")
         body = re.search(r"function openPanel\([^)]*\)\s*\{(.*?)\n  \}", code, re.S).group(1)
         self.assertIn('"is-up"', body, "打开面板前先把顶栏拉出来，否则面板会从顶栏中间开始盖住那一排入口")
+
+
+class SearchHitMarkTest(unittest.TestCase):
+    """用户要求：原文检索的结果里，把搜索框输入对应的那几个字特殊显示，明暗两套都要有落点。"""
+
+    def test_mark_hits_behavior(self):
+        # 真跑一遍：语义检索的段落常常整句不重样，标的是「输入里真正出现在原文上的那几段」
+        import subprocess
+        import tempfile
+
+        js = read("field.js")
+        esc = re.search(r"  const esc = \(value\) =>[\s\S]*?;\n", js)
+        fn = re.search(r"  const MARK_STOP = \[[\s\S]*?\n  \}\n", js)
+        self.assertTrue(esc and fn, "取不到 esc 或 markHits，没法跑标字的行为检查")
+        script = (
+            esc.group(0) + fn.group(0) +
+            "const cases=["
+            # 中文：整串不出现，只有分开的词出现；「需要」是疑问词，不该跟着标色
+            '["申请报名的同学需要符合转专业管理办法中规定的转专业基本条件","转专业需要什么条件"],'
+            # 拉丁字母：输入小写，原文大写，标出来要保留原文写法
+            '["安装 Adobe 应用程序时需注意哪些方面","adobe怎么装"],'
+            # 原文里没有对应字：一段都不许标
+            '["校园卡仅限本人使用，禁止转借或出租","空调"],'
+            '["","绩点"],'
+            # 转义：命中标色不许把原文里的尖括号当标签吃进去
+            '["A & B <script>alert(1)</script>","xyz"],'
+            # 相邻重复：两处都要标，且不能互相套
+            '["绩点绩点绩点","绩点"],'
+            '["一、办理转专业申请的条件说明，二、转专业时间安排","转专业条件"],'
+            # 用户追加：整串（两段字以上）凑不上时，退一步把单个字标出来
+            '["该场馆仅在工作日开放","周末开门吗"],'
+            '["计算方法为：一门课程的学分绩点＝绩点×学分数","绩点怎么算"],'
+            # 单字退让只对汉字开：拉丁字母单独标会把满屏染上
+            '["推荐使用WPS365教育版","ps怎么激活"]'
+            "];"
+            "process.stdout.write(JSON.stringify(cases.map(([t,q])=>markHits(t,q))));"
+        )
+        handle = tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8")
+        handle.write(script)
+        handle.close()
+        try:
+            result = subprocess.run(["node", handle.name], capture_output=True, text=True, timeout=60)
+            self.assertEqual(result.returncode, 0, f"node 跑不起来：{result.stderr[:400]}")
+            cn, latin, none, empty, danger, repeat, split, single, both, latin1 = json.loads(result.stdout)
+            self.assertIn('<mark class="hit">转专业</mark>', cn, f"「转专业」该标出来：{cn}")
+            self.assertIn('<mark class="hit">条件</mark>', cn, f"「条件」该标出来：{cn}")
+            self.assertNotIn(">需要<", cn, "「需要」是疑问词，标了就是把整句都染上")
+            self.assertIn('<mark class="hit">Adobe</mark>', latin,
+                          f"大小写不敏感比对、原样输出：{latin}")
+            self.assertNotIn("<mark", none, "原文里没有对应字时不该凭空标色")
+            self.assertEqual(empty, "", "原文为空要出空串")
+            self.assertNotIn("<script>", danger, "原文里的标签必须转义")
+            self.assertIn("&amp;", danger, "与号要转义")
+            self.assertEqual(repeat.count('<mark class="hit">'), 3, f"三处都该标：{repeat}")
+            self.assertEqual(repeat.count("</mark>"), repeat.count('<mark class="hit">'), "标签要成对")
+            self.assertEqual(split.count('<mark class="hit">'), 3,
+                             f"「转专业」两处、「条件」一处，共三段：{split}")
+            self.assertEqual(single.count('<mark class="hit">'), 1, f"只该标出一个「开」：{single}")
+            self.assertIn('<mark class="hit">开</mark>', single, "整串凑不上时退到单个字")
+            self.assertIn('<mark class="hit">绩点</mark>', both, f"「绩点」该标：{both}")
+            self.assertIn('<mark class="hit">算</mark>', both, f"单字「算」该标：{both}")
+            self.assertEqual(both.count('<mark class="hit">'), 3, f"绩点两处加算一处：{both}")
+            self.assertNotIn("<mark", latin1, "拉丁字母不单独标，ps 也不许从 WPS 里被认出来")
+        finally:
+            Path(handle.name).unlink(missing_ok=True)
+
+    def test_search_panel_marks_both_hit_kinds(self):
+        # 段落命中与数据表行是两套渲染，只标一套就等于半屏没效果
+        body = js_region(read("field.js"), "async function searchPanel", "\n  async function ")
+        self.assertIn("markHits(h.snippet", body, "原文段落里的命中字没走标字")
+        self.assertIn("markHits(r.text", body, "数据表行里的命中字没走标字")
+        self.assertNotIn("${esc(h.snippet", body, "段落正文还在裸转义，标字没接上")
+
+    def test_hit_colour_tokens_live_in_both_theme_blocks(self):
+        css = read("field.css")
+        light = theme_block(css, ':root[data-theme="cobalt-field"]')
+        dark = theme_block(css, ':root[data-theme="cobalt-dark"]')
+        for token in ("--hit-bg", "--hit-ink"):
+            self.assertIn(f"{token}:", light, f"日间主题缺 {token}")
+            self.assertIn(f"{token}:", dark, f"夜间主题缺 {token}，暗色下标字块会跟着主题漏色")
+        rule = re.search(r"mark\.hit\s*\{([^}]*)\}", css)
+        self.assertTrue(rule, "标出来的那一块没有排版规则")
+        body = rule.group(1)
+        self.assertIn("background: var(--hit-bg)", body, "底色要读 token，不写死色值")
+        self.assertIn("color: var(--hit-ink)", body, "字色要读 token，不写死色值")
 
 
 if __name__ == "__main__":

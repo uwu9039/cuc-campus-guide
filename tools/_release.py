@@ -111,7 +111,8 @@ def collect() -> list[tuple[str, Path]]:
         if p.name in SKIP_FILES or p.name.startswith(SKIP_PREFIX) or ".bak" in p.name:
             continue
         if p.suffix.lower() in SKIP_SUFFIX:
-            keep = p.name in {"items.json.gz", "table-rows.json.gz", "sources-archive.tar.gz"}
+            keep = p.name in {"items.json.gz", "table-rows.json.gz", "sources-archive.tar.gz",
+                              "doc-report.json.gz", "file-registry.json.gz"}
             rel_pdf = rel.as_posix()
             keep = keep or (rel_pdf.startswith(PLAN_DIR + "/") and p.name in plans) \
                 or rel_pdf.startswith("web-next/qr/")   # 微专业报名 / 身份验证二维码要随包发布
@@ -172,7 +173,7 @@ def build_archive() -> None:
     for p in src.rglob("*"):
         if p.is_dir() or set(p.relative_to(src).parts) & ex_dirs:
             continue
-        if p.name.startswith("_") or p.name == "huibian-2025.txt":
+        if p.name.startswith("_"):
             continue
         if p.suffix.lower() in keep_ext:
             picked.append(p)

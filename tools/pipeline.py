@@ -54,12 +54,20 @@ def main() -> None:
     manifest = ROOT / "sources" / "vector" / "manifest.json"
     if "--vector" in sys.argv or not manifest.exists():
         ok &= run("原文向量库 build_vector", ["tools/build_vector.py"])
+    # 专名词表是从条目正文抽的，条目一换就落后；落后就重抽，不落后不动。
+    proper = ROOT / "sources" / "proper.json"
+    items = ROOT / "items.json"
+    if not proper.exists() or (items.exists() and items.stat().st_mtime > proper.stat().st_mtime):
+        ok &= run("专名词表 build_proper", ["tools/build_proper.py"])
     if not (ROOT / "transfer-plans.json").exists():
         ok &= run("学院接收计划 build_transfer_plans", ["tools/build_transfer_plans.py"])
     if not (ROOT / "major-aliases.json").exists():
         ok &= run("专业简称 import_major_aliases", ["tools/import_major_aliases.py"])
     ok &= run("口径核对 check_counts", ["tools/check_counts.py"])
     ok &= run("重点问法 check_hot", ["tools/check_hot.py"])
+    ok &= run("专名与菜单 test_proper_and_menu", ["tools/test_proper_and_menu.py"])
+    ok &= run("补面与专名映射 test_facet_fill_and_proper_map",
+              ["tools/test_facet_fill_and_proper_map.py"])
     ok &= run("学院转专业 check_transfer", ["tools/check_transfer.py"])
     ok &= run("专业简称 check_major_aliases", ["tools/check_major_aliases.py"])
     ok &= run("评测 eval", ["eval.py"])

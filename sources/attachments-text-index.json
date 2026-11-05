@@ -1754,6 +1754,21 @@
   "fetched_at": "2026-10-30T02:11:24+08:00",
   "status": "ok"
  },
+ "att-545e58e02d": {
+  "url": "https://jwc.cuc.edu.cn/_upload/article/files/9f/ec/fb59ad0246beb07556f1fd5d6617/13f24c80-c72e-498d-ba33-7f0df942b2ee.doc",
+  "page_url": "https://jwc.cuc.edu.cn/6366/list2.htm",
+  "page_slug": "jwc-list2",
+  "page_title": "信息下载",
+  "title": "信息下载 · 2022-10-27 【考试】重考补退报名申请表",
+  "name": "2022-10-27 【考试】重考补退报名申请表.doc",
+  "ext": "docx",
+  "chars": 510,
+  "bytes": 20664,
+  "source_sha256": "93b852ff1a686e67f569cb71c395807c4c655d03703dcb16f06a2f0e599bc0b0",
+  "kind": "attachment",
+  "fetched_at": "2026-10-30T02:11:24+08:00",
+  "status": "ok"
+ },
  "att-6c52ec062b": {
   "url": "https://jwc.cuc.edu.cn/_upload/article/files/a7/a4/2fa3de504959b3bfb2f4e65b002a/98c0bee2-3e41-4a7c-a9dd-c4a58b6e2402.doc",
   "page_url": "https://jwc.cuc.edu.cn/6366/list2.htm",
@@ -1930,6 +1945,21 @@
   "chars": 1423,
   "bytes": 12334,
   "source_sha256": "33ff90e0f55663da512b4eeb96c7a4587068b6c7fc98b40f7c3005591b528bbd",
+  "kind": "attachment",
+  "fetched_at": "2026-10-30T02:11:35+08:00",
+  "status": "ok"
+ },
+ "att-6316d0e243": {
+  "url": "https://cwc.cuc.edu.cn/_upload/article/files/d9/78/c8a1f77648d88afdaec8e5658ff4/1c7f02e9-18c8-403a-9c47-43909e8c11d0.doc",
+  "page_url": "https://cwc.cuc.edu.cn/2025/0508/c2813a255322/page.htm",
+  "page_slug": "20250508-c2813a255322",
+  "page_title": "各国家和地区住宿费、伙食费、公杂费开支标准表",
+  "title": "各国家和地区住宿费、伙食费、公杂费开支标准表 · 附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc",
+  "name": "附件5：各国家和地区住宿费、伙食费、公杂费开支标准表.doc.doc",
+  "ext": "docx",
+  "chars": 8962,
+  "bytes": 446728,
+  "source_sha256": "9de9396694fff83953be3410527f9642aa87de1ee67451d7c20da0a1dec4b414",
   "kind": "attachment",
   "fetched_at": "2026-10-30T02:11:35+08:00",
   "status": "ok"

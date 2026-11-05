@@ -3,6 +3,7 @@
 用法：
     ./.venv/Scripts/python.exe tools/build_kb_db.py            # 重建
     ./.venv/Scripts/python.exe tools/build_kb_db.py --verify    # 只核对不重建
+    ./.venv/Scripts/python.exe tools/build_kb_db.py --stage     # 把流水线产物落成随包的根目录 gz
 
 表：
     doc        每份进过流水线的正文文件一行（条目数/行数/位图缺口）
@@ -12,8 +13,10 @@
     registry   sources/ 下每一个文件的处置结论（含二进制与名单），「每个文件都有交代」的台账
     search     FTS5 虚表：中文按二元 gram 展开 + unicode61（2 字查询也能命中，trigram 不行）
 
-前置：_review_items/ 里要有 v2_report.json、v2_table_rows.json、coverage_20261104.json，
+前置：本机在 _review_items/ 里要有 v2_report.json、v2_table_rows.json、coverage_20261104.json，
       由 tools/build_items_v2.py --apply 与 tools/build_coverage.py 产出（都是可重跑的派生物）。
+      仓库与云端没有 _review_items/，改读根目录的 items.json.gz、table-rows.json.gz、
+      doc-report.json.gz、file-registry.json.gz —— 后两份由 --stage 从本机产物落出来。
 """
 from __future__ import annotations
 
@@ -74,19 +77,59 @@ def load_rows() -> list[dict]:
     sys.exit("缺数据表行产物（_review_items/v2_table_rows.json 或 table-rows.json.gz）")
 
 
+def _read_json(path: Path) -> object:
+    if path.suffix == ".gz":
+        return json.loads(gzip.decompress(path.read_bytes()).decode("utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _pick(local_name: str, shipped: str) -> object:
+    """本机优先读 _review_items/ 的明文产物，仓库与云端退回随包的根目录 gz。"""
+    p = REV / local_name
+    if p.exists():
+        return _read_json(p)
+    gz = ROOT / shipped
+    if gz.exists():
+        return _read_json(gz)
+    sys.exit(f"缺 {local_name}（本机）或 {shipped}（随包）\n"
+             "本机先跑：python tools/build_items_v2.py --apply && python tools/build_coverage.py\n"
+             "云端先跑：python tools/build_kb_db.py --stage 后把根目录 gz 一并入库")
+
+
+def load_items() -> list[dict]:
+    src = (ROOT / "items.json") if (ROOT / "items.json").exists() else (ROOT / "items.json.gz")
+    if not src.exists():
+        sys.exit("缺 items.json 或 items.json.gz")
+    return _read_json(src)["items"]
+
+
+def load_report() -> list[dict]:
+    return _pick("v2_report.json", "doc-report.json.gz")
+
+
+def load_registry() -> list[dict]:
+    reg = _pick("coverage_20261104.json", "file-registry.json.gz")
+    return reg["rows"] if isinstance(reg, dict) and "rows" in reg else reg
+
+
+def stage() -> None:
+    """把两份流水线产物压成根目录 gz，供仓库与云端重建用（gzip mtime=0，可比对字节）。"""
+    for local, shipped in [("v2_report.json", "doc-report.json.gz"),
+                           ("coverage_20261104.json", "file-registry.json.gz")]:
+        data = _read_json(REV / local)
+        raw = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        gz = ROOT / shipped
+        gz.write_bytes(gzip.compress(raw, 9, mtime=0))
+        print(f"{shipped} {len(raw)} → {gz.stat().st_size} 字节，{len(data)} 行")
+
+
 def build() -> None:
-    need = ["v2_report.json", "coverage_20261104.json"]
-    lack = [n for n in need if not (REV / n).exists()]
-    if lack:
-        sys.exit("缺流水线产物 " + "、".join(lack) +
-                 "\n先跑：python tools/build_items_v2.py --apply && python tools/build_coverage.py")
     if DB.exists():
         DB.unlink()
-    items = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
-    report = json.loads((REV / "v2_report.json").read_text(encoding="utf-8"))
+    items = load_items()
+    report = load_report()
     rows = load_rows()
-    reg = json.loads((REV / "coverage_20261104.json").read_text(encoding="utf-8"))
-    reg = reg["rows"] if isinstance(reg, dict) and "rows" in reg else reg
+    reg = load_registry()
 
     con = sqlite3.connect(DB)
     con.executescript(
@@ -165,7 +208,9 @@ def build() -> None:
 
 
 def verify() -> int:
-    items = json.loads((ROOT / "items.json").read_text(encoding="utf-8"))["items"]
+    items = load_items()
+    n_reg_src = len(load_registry())
+    n_doc_src = len(load_report())
     con = sqlite3.connect(DB)
     n_item = con.execute("select count(*) from item").fetchone()[0]
     n_quote = con.execute("select count(*) from quote").fetchone()[0]
@@ -173,10 +218,16 @@ def verify() -> int:
     n_row = con.execute("select count(*) from table_row").fetchone()[0]
     n_src_row = len(load_rows())
     n_reg = con.execute("select count(*) from registry").fetchone()[0]
+    n_doc = con.execute("select count(*) from doc").fetchone()[0]
     files = [p for p in SRC.rglob("*") if p.is_file() and "_quarantine" not in p.parts]
     miss = con.execute("select count(*) from doc where missing > 0").fetchone()[0]
     over = con.execute("select coalesce(sum(overlap),0) from doc").fetchone()[0]
     arch = con.execute("select count(*) from item where archive_only = 1").fetchone()[0]
+    # 正文文件必须逐个在场；二进制原件（434 份 PDF/Office）不随包，只报数不判失败
+    strict = [r[0] for r in con.execute("select file from registry where status like '正文%'")]
+    loose = [r[0] for r in con.execute("select file from registry where status like '二进制·已抽%'")]
+    gone = [f for f in strict if not (SRC / f).exists()]
+    gone_bin = [f for f in loose if not (SRC / f).exists()]
 
     def hit(q: str) -> int:
         toks = [q[i:i + 2] for i in range(len(q) - 1)] if CJK.search(q) else [q.lower()]
@@ -191,15 +242,22 @@ def verify() -> int:
         bad.append(f"quote 行数 {n_quote} != 证据字段 {n_ev}")
     if n_row != n_src_row:
         bad.append(f"table_row 行数 {n_row} != 产物 {n_src_row}")
-    if n_reg != len(files):
-        bad.append(f"registry 行数 {n_reg} != sources 文件数 {len(files)}")
+    if n_reg != n_reg_src:
+        bad.append(f"registry 行数 {n_reg} != 产物 {n_reg_src}")
+    if n_doc != n_doc_src:
+        bad.append(f"doc 行数 {n_doc} != 产物 {n_doc_src}")
+    if gone:
+        bad.append(f"登记为正文但盘上没有的文件 {len(gone)} 份，例如 {gone[:3]}")
     if miss or over:
         bad.append(f"位图缺口 {miss} 份 / 重复认领 {over} 字")
     if not any(v > 0 for v in probes.values()):
         bad.append("FTS 探针全 0 命中，索引没建对")
 
-    print(f"item {n_item}（archive_only {arch}）/ quote {n_quote} / table_row {n_row} / registry {n_reg}")
+    print(f"item {n_item}（archive_only {arch}）/ quote {n_quote} / table_row {n_row} "
+          f"/ registry {n_reg} / doc {n_doc}")
     print("2 字探针命中：", " ".join(f"{k}:{v}" for k, v in probes.items()))
+    print(f"sources/ 在场文件 {len(files)} 份；正文 {len(strict) - len(gone)}/{len(strict)}；"
+          f"二进制原件缺 {len(gone_bin)}/{len(loose)} 份（不随包，属预期）")
     for b in bad:
         print("  ✗", b)
     print("✅ 库与 items.json、流水线产物、sources/ 逐一对上" if not bad else "❌ 有对不上的项")
@@ -210,7 +268,11 @@ def verify() -> int:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--verify", action="store_true")
+    ap.add_argument("--stage", action="store_true", help="只落随包产物，不建库")
     a = ap.parse_args()
+    if a.stage:
+        stage()
+        sys.exit(0)
     if not a.verify:
         build()
     if not DB.exists():

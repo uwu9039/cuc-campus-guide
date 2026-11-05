@@ -29,6 +29,9 @@ ROOT = Path(__file__).parent
 API_BASE = "https://api.deepseek.com"
 MODEL = "deepseek-flash"
 MATCH_THRESHOLD = 55
+# 规则分落在 50~54 这一档：只靠二字组相似度凑出来，差一点够不着。
+# 这一档不许直接作答，必须全文复核签字（任务 4，2026-11-04 拍板）。
+NEAR_MISS_FLOOR = 50
 AMBIGUOUS_GAP = 12
 
 # ---------------------------------------------------------------- env / data
@@ -118,7 +121,7 @@ _WZY_SIBS: dict[str, list[dict[str, Any]]] = {}
 def maybe_reload() -> None:
     """改了 items.json 不用重启服务。"""
     global DATA, ITEMS, ITEM_BY_ID, DATA_UPDATED, _MTIME, _SRC_ITEMS, _RELATED_ROWS
-    global _WZY_SIBS
+    global _WZY_SIBS, _PROPER, _PROPER_MENU
     path = _items_file()
     mtime = path.stat().st_mtime
     if mtime == _MTIME:
@@ -131,6 +134,191 @@ def maybe_reload() -> None:
     _SRC_ITEMS = None
     _RELATED_ROWS = None
     _WZY_SIBS.clear()
+    _PROPER = None          # 专名维度是从条目正文抽的，条目换了就得重读
+    _PROPER_MENU = None     # 给模型认名字的那份菜单也跟着条目重取
+    _SURFACES.clear()
+
+
+_TABLE_REC: list[dict[str, Any]] | None = None
+_TABLE_MTIME = 0.0
+
+# 专名维度（sources/proper.json，由 tools/build_proper.py 从条目原文抽）
+_PROPER: dict[str, Any] | None = None
+
+
+def proper_index() -> dict[str, Any]:
+    """{tokens, postings, items}：词表、词→条目、条目→词。文件不在就当这个维度不存在。"""
+    global _PROPER
+    if _PROPER is not None:
+        return _PROPER
+    path = ROOT / "sources" / "proper.json"
+    if not path.exists():
+        _PROPER = {"tokens": [], "postings": {}, "items": {}}
+        return _PROPER
+    data = json.loads(path.read_text(encoding="utf-8"))
+    items = {k: set(v) for k, v in (data.get("items") or {}).items()}
+    postings: dict[str, set[str]] = {}
+    for iid, toks in items.items():
+        for t in toks:
+            postings.setdefault(t, set()).add(iid)
+    _PROPER = {"tokens": data.get("vocab") or sorted(postings), "postings": postings,
+               "items": items}
+    return _PROPER
+
+
+def question_proper(q: str) -> set[str]:
+    """问句点到的产品/系统名。按词表回查，不另立一套判断——问句大小写不固定。"""
+    if not q:
+        return set()
+    pi = proper_index()
+    if not pi["tokens"]:
+        return set()
+    ql = q.lower()
+    out: set[str] = set()
+    latin = pi.get("latin_re")
+    if latin is None:
+        toks = [t for t in pi["tokens"] if "a" <= t[0] <= "z"]
+        # 长的排前面，免得「wps」先吃掉「wps365」
+        toks.sort(key=len, reverse=True)
+        # 边界只认 ASCII 字母数字：中文在 isalnum 里也算字母，用它是把「统」当墙，
+        # 「…系统vpn怎么连」就会被判成 vpn 不成词。
+        pat = "|".join(re.escape(t) for t in toks)
+        pi["latin_re"] = re.compile(f"(?<![0-9a-z])(?:{pat})(?![0-9a-z])") if pat else None
+        pi["latin_toks"] = toks
+        latin = pi["latin_re"]
+    if latin:
+        out.update(m.group(0) for m in re.finditer(latin, ql))
+    out.update(t for t in pi["tokens"] if t[0] >= "\u4e00" and t in ql)
+    # 用户写的名字少了一截（「office」对条目里的「office365」）时按包含关系对上。
+    # 只放宽到四个字母以上，且必须词表里确有这个词的一部分——不是拿词表去猜新别名。
+    # 对上之后原词和词表词都留着：判条目「有没有点到这个名字」时要用用户说的那个词。
+    for m in re.finditer(r"(?<![0-9a-z])[a-z][a-z0-9]{3,15}(?![0-9a-z])", ql):
+        w = m.group(0)
+        if any(w == t or w in t or t in w for t in out):
+            continue
+        near = {t for t in pi["latin_toks"]
+                if len(t) >= 4 and (w in t or t in w) and abs(len(t) - len(w)) <= 5}
+        if near:
+            out.add(w)
+            out.update(near)
+    return out
+
+
+_SURFACES: dict[str, str] = {}
+
+
+_NAME_RE: dict[str, re.Pattern] = {}
+
+
+def _name_re(t: str) -> re.Pattern:
+    """名字怎么在一段文字里认出来：两三个字母的缩写按词边界认，其余照字面找。
+
+    「ps」字面就躺在「wps365」里，纯子串判会把 WPS 条目算成写了 ps——
+    2026-11-05 的错答正是这个形状，所以缩写必须有边界。
+    """
+    rx = _NAME_RE.get(t)
+    if rx is None:
+        esc = re.escape(t)
+        if len(t) < 3 and t.isascii() and t.isalpha():
+            rx = re.compile(f"(?<![0-9a-z]){esc}(?![0-9a-z])", re.I)
+        else:
+            rx = re.compile(esc, re.I)
+        _NAME_RE[t] = rx
+    return rx
+
+
+def item_surface(item: dict[str, Any]) -> str:
+    """条目自己叫什么：标题、别名、关键词拼在一起，算过一次就留着。"""
+    iid = item.get("id", "")
+    s = _SURFACES.get(iid)
+    if s is None:
+        s = _mn(" ".join([str(item.get("title") or "")]
+                         + [str(x) for x in (item.get("aliases") or [])]
+                         + [str(x) for x in (item.get("keywords") or [])]))
+        _SURFACES[iid] = s
+    return s
+
+
+def names_product(item: dict[str, Any], qp: set[str]) -> bool:
+    """这个条目有没有点到问句里那个名字。
+
+    正文抽到的专名、标题/别名/关键词的字面，两条路都认；
+    名字之间按互为包含算同一个（问「WPS365」不该把写了「WPS」的正版软件条目判成无关）。
+    """
+    ip = proper_index()["items"].get(item.get("id", ""))
+    if ip:
+        for a in ip:
+            for b in qp:
+                if a == b or (len(a) >= 3 and len(b) >= 3 and (a in b or b in a)):
+                    return True
+    surf = item_surface(item)
+    # 长名字照旧按字面找（三万次比对里这路占多数），只有两三个字母的缩写才走边界判定
+    return any(t in surf if len(t) >= 3 or not t.isascii() or not t.isalpha()
+               else bool(_name_re(t).search(surf)) for t in qp)
+
+
+
+def _table_file() -> Path:
+    plain = ROOT / "table-rows.json"
+    return plain if plain.exists() else ROOT / "table-rows.json.gz"
+
+
+def table_records() -> list[dict[str, Any]]:
+    """逐格的数据行拼成「一条记录」：同一 (doc, row_no) 的格子按列序排好，附带 bigram 索引。
+
+    3.5 万格 ≈ 1.2 万条记录，建一次索引常驻内存，之后每次问只扫一遍 gram 集合。
+    """
+    global _TABLE_REC, _TABLE_MTIME
+    path = _table_file()
+    if not path.exists():
+        return []
+    mtime = path.stat().st_mtime
+    if _TABLE_REC is not None and mtime == _TABLE_MTIME:
+        return _TABLE_REC
+    raw = gzip.decompress(path.read_bytes()) if path.suffix == ".gz" else path.read_bytes()
+    rows = json.loads(raw.decode("utf-8"))
+    grouped: dict[tuple[str, int], dict[str, Any]] = {}
+    for r in rows:
+        key = (str(r.get("doc", "")), int(r.get("row_no", 0) or 0))
+        g = grouped.setdefault(key, {"doc": key[0], "bucket": r.get("bucket", ""),
+                                     "title": r.get("title", ""), "row_no": key[1], "cells": []})
+        g["cells"].append((str(r.get("header", "") or ""), str(r.get("value", "") or ""),
+                           int(r.get("col", 0) or 0)))
+    out: list[dict[str, Any]] = []
+    for g in grouped.values():
+        g["cells"].sort(key=lambda c: c[2])
+        cells = [(h, v) for h, v, _ in g["cells"] if (h or v).strip()]
+        if not cells:
+            continue
+        hay = norm("".join(g["title"] + h + v for h, v in cells))
+        if len(hay) < 4:
+            continue
+        out.append({"doc": g["doc"], "bucket": g["bucket"], "title": g["title"],
+                    "row_no": g["row_no"],
+                    "text": "；".join(f"{h}：{v}" if h else v for h, v in cells),
+                    "grams": bigrams(hay)})
+    _TABLE_REC, _TABLE_MTIME = out, mtime
+    return out
+
+
+def table_search(q: str, k: int = 6, min_shared: int = 2) -> list[dict[str, Any]]:
+    """按二元 gram 找最像这条问句的数据行；只回原文行与出处，不编造字段。
+
+    先去掉语气词二字组：否则「怎么」「多少」这类框架词能让任意一行都凑够分。
+    """
+    qg = bigrams(norm(q)) - NOISE_BIGRAMS
+    if not qg:
+        return []
+    scored: list[tuple[int, dict[str, Any]]] = []
+    for rec in table_records():
+        shared = len(qg & rec["grams"])
+        if shared < min_shared:
+            continue
+        scored.append((shared, rec))
+    scored.sort(key=lambda x: (-x[0], x[1]["doc"], x[1]["row_no"]))
+    return [{"doc": rec["doc"], "title": rec["title"], "row_no": rec["row_no"],
+             "text": rec["text"][:600], "shared": s, **src_label(rec["doc"])}
+            for s, rec in scored[:k]]
 
 
 _CAMPUS: dict[str, Any] | None = None
@@ -822,6 +1010,21 @@ def rank(q: str) -> list[tuple[dict[str, Any], int]]:
     # archive_only：存档条目（如转专业接收计划附件）只入库、不参与问答路由
     scored = [(it, score_item(qn, it, blocked.get(it["id"])))
               for it in ITEMS if not it.get("archive_only")]
+    # 专名维度（1-B，2026-11-04）：问句点了某个产品/系统名，条目却没点到同一个名字，
+    # 就不许顶在前面。原先「Adobe软件怎么激活」靠「激活」两字抢到 86 分，
+    # 把真正写 Adobe 的条目挤在池子外——打分只认字面重合，专名没有身份。
+    # 只在池子里确有同名条目时动刀：问的是库里根本没提的东西（ps、校车）时照旧作答，
+    # 那种情况该说的是「资料里没提到」，不在这条规则里。
+    qp = question_proper(q)
+    if qp:
+        pi = proper_index()
+        # 词表里的名字和问句里的名字互为包含就算对上（office ↔ wpsofficepc）
+        named = [t for t in pi["postings"]
+                 if any(t == w or (len(t) >= 3 and len(w) >= 3 and (t in w or w in t))
+                        for w in qp)]
+        if any(pi["postings"][t] for t in named):
+            scored = [(it, sc if names_product(it, qp) else min(sc, MATCH_THRESHOLD - 1))
+                      for it, sc in scored]
     # 自动抽取的制度卡片只是资料，不抢人工整理的服务条目：
     # 分数接近时让人工条目胜出；差距很大（如直接问办法原文）仍返回原文条目。
     hand_best = max((sc for it, sc in scored if not it.get("auto")), default=0)
@@ -1288,6 +1491,18 @@ def experience_note(item: dict[str, Any], text: str = "") -> str | None:
     return "；".join(out) or None
 
 
+def _source_list(src: Any) -> list[Any]:
+    """接口只出去一种来源形状：数组。
+
+    库里两种写法都有（30648 条存单个对象、8574 条存数组），前端按数组渲染，
+    拿到对象就在 (item.source || []).filter 处炸掉，整块答面出不来——
+    看起来像「没答上」，其实是后端答上了前端没渲染。
+    """
+    if not src:
+        return []
+    return list(src) if isinstance(src, list) else [src]
+
+
 def public(item: dict[str, Any]) -> dict[str, Any]:
     out = _clean_text_item({
         "id": item["id"],
@@ -1304,7 +1519,7 @@ def public(item: dict[str, Any]) -> dict[str, Any]:
         "materials": item.get("materials", []),
         "steps": item.get("steps", []),
         "pitfalls": item.get("pitfalls", []),
-        "source": item.get("source", []),
+        "source": _source_list(item.get("source")),
         "slots": item.get("slots", []),
         "answer": item.get("answer"),
         "note": item.get("note"),
@@ -1573,7 +1788,10 @@ def campus(q: str = "", limit: int = 30) -> dict[str, Any]:
 
 @app.get("/api/search")
 def search(q: str = "", k: int = 8) -> dict[str, Any]:
-    """独立原文检索：按语义近似找段落，只返回原文与出处，不生成答案。"""
+    """独立原文检索：按语义近似找段落，只返回原文与出处，不生成答案。
+
+    数据表（表格/阅读报告逐行）另走 gram 一路，段落命中里塞不进去。
+    """
     q = (q or "").strip()
     if len(q) < 2:
         raise HTTPException(400, "请再说得具体一点")
@@ -1584,7 +1802,8 @@ def search(q: str = "", k: int = 8) -> dict[str, Any]:
         counts = vector_index.stats()
     except Exception as e:  # 向量库未建好时明确告知，不静默降级
         raise HTTPException(503, f"原文库未就绪：{e}")
-    return {"query": q, "total": len(hits), **counts, "hits": hits}
+    return {"query": q, "total": len(hits), **counts, "hits": hits,
+            "rows": table_search(q, k=max(1, min(k, 10)))}
 
 
 @app.get("/api/plan-file")
@@ -1737,6 +1956,10 @@ def src_label(slug: str) -> dict[str, str]:
             ("extra-index.json", "官网"), ("huibian-index.json", "制度汇编"),
             ("corpus-index.json", "本地文件"),
             ("wendao-index.json", "问道原文"), ("wendao-extra-index.json", "问道原文"),
+            ("attachments-text-index.json", "官网附件"),
+            # 图书馆的规章、阅读报告、新闻公告只登记在这份索引里；不加载它，
+            # 数据表那几百行的出处只能退回内部编号（文献保障-0174252e…）。
+            ("ilib-list-index.json", "图书馆"),
         ):
             f = ROOT / "sources" / fname
             if not f.exists():
@@ -1932,6 +2155,28 @@ def _facet_covered(label: str, parts: list[dict[str, Any]]) -> bool:
         if pat.search(" ".join(chunks)):
             return True
     return False
+
+
+def _part_body(p: dict[str, Any]) -> str:
+    """一面的答复正文（步骤、清单都算进去），用来比两面重不重叠。"""
+    chunks = [str(p.get("text") or "")]
+    for s in p.get("steps") or []:
+        chunks.append(" ".join(str(s.get(k) or "") for k in ("what", "where", "when"))
+                      if isinstance(s, dict) else str(s))
+    for ln in p.get("lines") or []:
+        chunks.append(str(ln.get("text") if isinstance(ln, dict) else ln))
+    return " ".join(chunks)
+
+
+def _body_overlap(new_body: str, parts: list[dict[str, Any]]) -> bool:
+    """要补的这一面里，七成以上的说法已经在别处出现过——那就是同一份内容摆两遍。"""
+    want = bigrams(norm(new_body)) - NOISE_BIGRAMS
+    if not want:
+        return True
+    have: set[str] = set()
+    for p in parts:
+        have |= bigrams(norm(_part_body(p))) - NOISE_BIGRAMS
+    return len(want & have) / len(want) >= 0.7
 
 
 # 问句里的疑问词、助词和单字虚词都当分隔符用，剥掉之后剩下的才是「用户点名要的东西」
@@ -3030,8 +3275,11 @@ def _src_item_index() -> dict[str, list[str]]:
     return _SRC_ITEMS
 
 
+RERANK_POOL_LIMIT = 14    # 给模型判断的候选池条数上限：11-04 扩池实验的结论是池子越大越容易挑跑偏
+
+
 def rerank_candidates(
-    text: str, ranked: list[tuple[dict[str, Any], int]], limit: int = 14,
+    text: str, ranked: list[tuple[dict[str, Any], int]], limit: int = RERANK_POOL_LIMIT,
     status: dict[str, Any] | None = None,
 ) -> list[tuple[dict[str, Any], int]]:
     """规则前排 + 向量命中文档里的条目，合成给模型判断的候选池。
@@ -3195,6 +3443,388 @@ def llm_rerank(
         "why": why,
         "facets": facets,
     }, rewrites
+
+
+# —— 复核层：模型腿选完之后，再看一次「准备回答」到底答没答上 ——
+# 摘要版（只给 70 字）实测改坏 8 题：整理条目的内容常在 steps 里，摘要只看得见第一步，
+# 模型就判「答不上」并把题改派给沾边的原文摘录。给条目全貌之后新增改坏 0 题。
+# 实测口径与逐题复看：_review_items/实验_复核看全文vs现行_20261104.md、
+# _review_items/问题清单与修改建议_20261104全量.md
+RECHECK_PROMPT = (
+    "用户在问校园办事的事。系统已经选出一条，准备完整这样回答：\n"
+    "问题：{q}\n"
+    "条目 {chosen_id}（{chosen_title}）：\n{chosen_full}\n\n"
+    "下面是候选条目（每条只显示一句摘要）：\n{menu}\n\n"
+    "复核要求（只判断，不要自己编事实）：\n"
+    "- verdict 判「准备回答」有没有答上用户问的这件事：yes=答上了；partial=答上了但缺关键信息；no=答的是另一件事。\n"
+    "- 摘要里没有、正文里有的内容，算答上了；不要因为候选摘要更细就换。\n"
+    "- best 填你认为最合适的那一条 id；就选现在这条也填它的 id；全都答不上填 null。\n"
+    "- best_answers 单独回答「换成 best 这一条，到底答不答得上用户问的这件事」：yes/no。"
+    "只是话题沾边、讲的仍是别的考试或别的部门，就填 no。\n"
+    '只输出 JSON：{{"verdict": "yes|partial|no", "best": "条目id或null", '
+    '"best_answers": "yes|no", "why": "一句话理由"}}'
+)
+
+SECOND_LOOK_PROMPT = (
+    "用户在问校园办事的事。系统准备回答的那一条（{chosen_id}）复核后判定答不上用户问的这件事，不再用它。\n"
+    "问题：{q}\n\n"
+    "下面是库里其余沾边的条目，这次给每条的正文（每条截 300 字）：\n{menu}\n\n"
+    "判断要求（只看这些文字，不要自己编事实）：\n"
+    "- 逐条判它有没有答上用户问的这件事，答上才选；话题沾边、讲的是别的考试或别的部门，都不算。\n"
+    "- best 填最合适那一条的 id；全都答不上填 null。\n"
+    "- best_answers 单独回答「best 这一条到底答不答得上」：yes/no。\n"
+    '只输出 JSON：{{"best": "条目id或null", "best_answers": "yes|no", "why": "一句话理由"}}'
+)
+
+
+def _item_full_text(item: dict[str, Any], limit: int = 600) -> str:
+    """条目全貌：正文＋全部步骤＋材料＋费用/时间/地点＋易错，给复核看，截 limit 字。"""
+    parts = [str(item.get("answer") or "")]
+    for s in item.get("steps") or []:
+        head = "、".join(str(x) for x in [s.get("name"), s.get("what"), s.get("where"), s.get("how")] if x)
+        if head:
+            parts.append(head)
+    for m in item.get("materials") or []:
+        if m.get("name"):
+            parts.append(f"材料：{m['name']}" + (f"（{m.get('note')}）" if m.get("note") else ""))
+    for k in ("fee", "hours", "location", "window", "duration"):
+        if item.get(k):
+            parts.append(f"{k}：{item[k]}")
+    for p in item.get("pitfalls") or []:
+        parts.append(f"注意：{p}")
+    return "\n".join(x for x in parts if x).strip().replace("\n", " ")[:limit]
+
+
+def llm_recheck(text: str, chosen: dict[str, Any],
+                pool: list[tuple[dict[str, Any], int]]) -> dict[str, Any]:
+    """判「准备回答」答没答上，并问「换成那条答不答得上」。失败返回 {"error": …}。"""
+    menu = "\n".join(
+        f"- {it['id']}｜{(it.get('title') or '')[:50]}｜{'原文摘录' if it.get('auto') else '整理条目'}"
+        f"｜{it.get('dept') or '—'}｜{_rerank_hint(it) or '（无摘要）'}"
+        for it, _ in pool
+    )
+    prompt = RECHECK_PROMPT.format(
+        q=text, chosen_id=chosen["id"], chosen_title=(chosen.get("title") or "")[:40],
+        chosen_full=_item_full_text(chosen), menu=menu,
+    )
+    try:
+        raw = ds_chat(
+            [{"role": "system", "content": "你是校园办事问答的复核员，只判断不改写事实。"},
+             {"role": "user", "content": prompt}],
+            max_tokens=300, json_mode=True,
+        )
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"error": _llm_err_text(e)}
+    if not isinstance(data, dict):
+        return {"error": "模型返回的不是 JSON"}
+    best = str(data.get("best") or "").strip()
+    return {
+        "verdict": str(data.get("verdict") or "").strip().lower(),
+        "best": "" if best in ("", "null") else best,
+        "answers": str(data.get("best_answers") or "").strip().lower(),
+        "why": str(data.get("why") or "").strip()[:180],
+    }
+
+
+def offpool_candidates(text: str, seen_ids: set[str], exclude_id: str,
+                        k: int = 10) -> list[dict[str, Any]]:
+    """复核说答不上之后，第一次没送进候选池的沾边条目（按规则分取前 k）。"""
+    qn = norm(text)
+    qb = bigrams(qn)
+    rows: list[tuple[int, int, dict[str, Any]]] = []
+    for it, sc in rank(text):
+        if it.get("archive_only") or it["id"] in seen_ids or it["id"] == exclude_id or sc <= 0:
+            continue
+        cover = len(qb & bigrams((it.get("title") or "") + " " + (it.get("answer") or "")))
+        rows.append((sc, cover, it))
+    rows.sort(key=lambda x: (-x[0], -x[1]))
+    return [it for _, _, it in rows[:k]]
+
+
+def llm_second_look(text: str, chosen_id: str,
+                    cands: list[dict[str, Any]]) -> dict[str, Any]:
+    """第二次确认：把池外条目的正文摊开，问有没有哪一条真答得上。"""
+    if not cands:
+        return {"best": "", "answers": "", "why": "", "none_in_library": True}
+    menu = "\n".join(
+        f"- {it['id']}｜{(it.get('title') or '')[:50]}｜{'原文摘录' if it.get('auto') else '整理条目'}"
+        f"｜{it.get('dept') or '—'}｜{_item_full_text(it, 300)}"
+        for it in cands
+    )
+    prompt = SECOND_LOOK_PROMPT.format(q=text, chosen_id=chosen_id, menu=menu)
+    try:
+        raw = ds_chat(
+            [{"role": "system", "content": "你是校园办事问答的复核员，只判断不改写事实。"},
+             {"role": "user", "content": prompt}],
+            max_tokens=240, json_mode=True,
+        )
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"error": _llm_err_text(e)}
+    if not isinstance(data, dict):
+        return {"error": "模型返回的不是 JSON"}
+    best = str(data.get("best") or "").strip()
+    return {
+        "best": "" if best in ("", "null") else best,
+        "answers": str(data.get("best_answers") or "").strip().lower(),
+        "why": str(data.get("why") or "").strip()[:180],
+    }
+
+
+FACET_MENU_LABEL = "整体流程"
+# 「整体流程／官方答复」是 overview 那一面的两种说法，规则里的问面标签没有它们
+_FACET_BY_MENU = {FACET_MENU_LABEL: "overview", "官方答复": "overview"}
+
+FACET_FILL_PROMPT = (
+    "用户在问校园办事的事，一句话里问了两面。系统已经答了其中一面，这是给出去的内容：\n"
+    "问题：{q}\n\n已答内容：\n{answered}\n\n"
+    "系统认为下面这几问还没答到：{missing}\n"
+    "条目 {item_id}（{item_title}）的正文全貌：\n{item_full}\n\n"
+    "判断要求（只判断，不要自己编事实）：\n"
+    "- covers：上面「已答内容」其实有没有答到「{missing}」这一问？答到了填 yes，"
+    "哪怕它用的词和问句不一样（说了整周开放时间就算答了「周末开吗」）。\n"
+    "- 没答到才填 no，并从这些问面里挑一个真能答上这一问的：{facets}。\n"
+    "- facet 填选中的问面名字；这些问面都没法答这一问时填 null。\n"
+    "- snippet 从条目正文里逐字抄出能回答这一问的那一句，不许改写、不许拼接；"
+    "正文里没有这么一句就填 null。\n"
+    "- fills 照抄「没答到」那一栏里的说法，只能填一条。\n"
+    '只输出 JSON：{{"covers": "yes|no", "facet": "问面名或null", "snippet": "原文一句或null", '
+    '"fills": "原话或null", "why": "一句话理由"}}'
+)
+
+PROPER_MAP_MIN_POSTINGS = 5    # 至少 5 条条目写过这个名字，才摆给模型当候选名
+PROPER_MAP_ADD = 8             # 一次最多端进候选池的条目数
+PROPER_MAP_SCOPE = 60          # 名字菜单只从规则排前 60 的条目里取，别把一池子名字全摊开
+PROPER_MAP_GLOSS = 14          # 每个名字后面挂的出处片段长度
+PROPER_MAP_MAX = 20            # 菜单最多摆 20 个名字，多了按这次的相关度截断
+
+PROPER_MAP_PROMPT = (
+    "用户在问校园办事的事，句子里出现了一个用字母写的名称：{said}\n"
+    "系统认得的名称只有下面这些（都是这次相关的条目里确实写过的，括号里是它的出处）：\n{names}\n\n"
+    "判断要求：\n"
+    "- 从上面列表里挑一个和用户说的名称指同一个软件、同一个系统或同一个品牌："
+    "简称、缩写、母品牌、俗称都算。\n"
+    "- 按实际归属判，不要按拼写像不像判：用户说的若是某个品牌下的产品，就选那个品牌；"
+    "括号里的出处写明是哪家软件，就按那家判。\n"
+    "- 列表里没有能对上的一定填 null，不要挑一个话题沾边的凑数。\n"
+    '只输出 JSON：{{"name": "列表里的名称或null", "why": "一句话理由"}}'
+)
+
+
+def _facet_menu(parts: list[dict[str, Any]]) -> list[str]:
+    """还没答过的问面，用模型看得懂的中文说法列出来。"""
+    have = {p.get("focus") for p in parts}
+    labels = [label for key, label, _p in FOCUS_RULES if key not in have]
+    if "overview" not in have:
+        labels.insert(0, FACET_MENU_LABEL)
+    return labels
+
+
+def _facet_key(label: str) -> str:
+    return _FACET_BY_MENU.get(label, "") or FOCUS_BY_LABEL.get(label, "")
+
+
+def _answered_brief(parts: list[dict[str, Any]]) -> str:
+    """给模型看的「已经答了什么」：每面的标题＋正文，截 900 字。"""
+    rows = [f"〔{p.get('label')}〕{_part_body(p)}" for p in parts if p.get("found")]
+    return " \n".join(rows)[:900]
+
+
+def llm_facet_fill(text: str, item: dict[str, Any], parts: list[dict[str, Any]],
+                   unasked: list[str],
+                   known: dict[str, str] | None = None) -> dict[str, Any]:
+    """一题两问：模型判「眼前这段答没覆盖第二问」，没覆盖再由它挑这一条目里能答的那一面。
+
+    规则侧的 _unasked 只会按字面比对，一周开放时间答得上「周末开吗」却对不上字面，
+    所以这一判断交给模型（2026-11-05 拍板②）。补进来的那一面必须有条目原文撑著：
+    模型摘的句子在正文里逐字找不到就不算，声明照旧说「这一问没答到」。
+    """
+    if not unasked:
+        return {"gate": "declined", "why": "系统没报出缺哪一问"}
+    prompt = FACET_FILL_PROMPT.format(
+        q=text, answered=_answered_brief(parts), missing="；".join(str(u) for u in unasked),
+        item_id=item.get("id", ""), item_title=(item.get("title") or "")[:60],
+        item_full=_item_full_text(item, 900), facets="、".join(_facet_menu(parts)),
+    )
+    try:
+        data = json.loads(ds_chat(
+            [{"role": "system", "content": "你是校园办事问答的复核员，只判断不改写事实。"},
+             {"role": "user", "content": prompt}],
+            max_tokens=260, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"gate": "error", "error": _llm_err_text(e)}
+    if not isinstance(data, dict):
+        return {"gate": "error", "error": "模型返回的不是 JSON"}
+    why = str(data.get("why") or "").strip()[:180]
+    covers = str(data.get("covers") or "").strip().lower()
+    if covers == "yes":
+        return {"gate": "covered", "why": why}
+    if covers != "no":
+        return {"gate": "declined", "why": why or "模型没判出覆盖情况"}
+    fills = str(data.get("fills") or "").strip()
+    if fills not in unasked:
+        return {"gate": "declined", "why": f"补的不是系统报的那一问（{fills[:24]}）"}
+    key = _facet_key(str(data.get("facet") or "").strip())
+    if not key or key in {p.get("focus") for p in parts}:
+        return {"gate": "declined", "why": f"问面挑不出或已经答过（{data.get('facet')}）"}
+    snippet = str(data.get("snippet") or "")
+    if len(_mn(snippet)) < 6 or _mn(snippet) not in _mn(_item_full_text(item, 4000)):
+        return {"gate": "declined", "why": "摘的原文在条目正文里逐字找不到"}
+    part = _answer_one(item, key, known or {}, text)
+    if not part.get("found"):
+        return {"gate": "declined", "why": "这一面条目里没写"}
+    if _body_overlap(_part_body(part), parts):
+        return {"gate": "declined", "why": "补进来会和已答内容重复"}
+    return {"gate": "filled", "part": part, "fills": fills, "why": why}
+
+
+def _unmatched_name(q: str) -> str:
+    """问句里像产品/系统名、词表却不认识的那截字母；没有就返回空。
+
+    只认拉丁片段：中文简称本来就要靠字面和词表对，对不上说明它不是名字。
+    """
+    ql = _mn(q)
+    frags = [m.group(0) for m in re.finditer(r"(?<![0-9a-z])[a-z][a-z0-9]{1,15}(?![0-9a-z])", ql)]
+    if not frags:
+        return ""
+    qp = question_proper(ql)
+    if not qp:
+        return max(frags, key=len)
+    unknown = [f for f in frags if not any(f == t or (len(f) >= 3 and len(t) >= 3 and (f in t or t in f))
+                                          for t in qp)]
+    return max(unknown, key=len) if unknown else ""
+
+
+_PROPER_MENU: list[str] | None = None
+
+
+def proper_name_menu() -> list[str]:
+    """词表里确有分量的专名（全量），摆给模型做「用户这个叫法对应库里哪个名字」。"""
+    global _PROPER_MENU
+    if _PROPER_MENU is None:
+        pi = proper_index()
+        _PROPER_MENU = sorted(t for t, ids in pi["postings"].items()
+                              if len(ids) >= PROPER_MAP_MIN_POSTINGS)
+    return _PROPER_MENU
+
+
+def _name_gloss(item: dict[str, Any], name: str) -> str:
+    """条目原文里点到这个名字的那一小段，摆给模型看它到底属于哪家。"""
+    hay = f"{item.get('title') or ''} {item.get('answer') or ''}"
+    m = _name_re(name).search(hay)
+    if not m:
+        return (item.get("title") or "").strip()[:PROPER_MAP_GLOSS]
+    return hay[max(0, m.start() - 6):m.start() + PROPER_MAP_GLOSS].strip()
+
+
+def proper_menu_for(ranked: list[tuple[dict[str, Any], int]]) -> list[tuple[str, str]]:
+    """这次的候选条目里确实写过的名字：菜单收窄到本问，不摊开整张词表。
+
+    摊开 293 个名字，模型会照拼写凑——「ps」对上「wps」，端进 8 条 WPS 条目，
+    答出 WPS 登录，比不映射更糟（2026-11-05 实测）。收窄加出处，是按实际归属判。
+    """
+    pi = proper_index()
+    scope = ranked[:PROPER_MAP_SCOPE]
+    freq: dict[str, int] = {}
+    gloss: dict[str, str] = {}
+    for it, _sc in scope:
+        for t in pi["items"].get(it.get("id") or "", ()):
+            if len(pi["postings"].get(t, ())) < PROPER_MAP_MIN_POSTINGS:
+                continue
+            freq[t] = freq.get(t, 0) + 1
+            if t not in gloss:
+                g = _name_gloss(it, t)
+                if g:
+                    gloss[t] = g
+    ordered = sorted(freq, key=lambda t: (-freq[t], -len(pi["postings"][t]), t))
+    return [(t, gloss.get(t, "")) for t in ordered[:PROPER_MAP_MAX]]
+
+
+def llm_proper_map(text: str, said: str,
+                   menu: list[tuple[str, str]] | None = None) -> dict[str, Any]:
+    """把词表外的叫法对到词表里已有的名字上（ps → adobe）。
+
+    模型只能从菜单里选，报出来的名字必须字面在菜单里，对不上就当没有这件事；
+    它填 null 也不硬凑——「问的东西库里没有」本来就是要说出口的。
+    """
+    pairs = menu if menu is not None else [(n, "") for n in proper_name_menu()]
+    names = {n for n, _g in pairs}
+    if not names:
+        return {"name": "", "why": "这次相关的条目里没写过别的名字"}
+    listed = "、".join(f"{n}（{g}）" if g else n for n, g in pairs)
+    try:
+        data = json.loads(ds_chat(
+            [{"role": "system", "content": "你在帮校园办事问答认名字，只做映射不编事实。"},
+             {"role": "user", "content": PROPER_MAP_PROMPT.format(said=said, names=listed)}],
+            max_tokens=120, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"name": "", "error": _llm_err_text(e)}
+    if not isinstance(data, dict):
+        return {"name": "", "error": "模型返回的不是 JSON"}
+    why = str(data.get("why") or "").strip()[:120]
+    name = str(data.get("name") or "").strip().lower()
+    if name and name not in names:
+        return {"name": "", "why": why, "rejected": name}
+    return {"name": name, "why": why}
+
+
+def proper_map_extra(ranked: list[tuple[dict[str, Any], int]], name: str,
+                     have_ids: set[str], limit: int = PROPER_MAP_ADD) -> list[tuple[dict[str, Any], int]]:
+    """条目自己写了这个名字、又没进过这次候选池的那些，按规则原序端进去。"""
+    ids = proper_index()["postings"].get(name) or set()
+    if not ids or not name:
+        return []
+    return [(it, sc) for it, sc in ranked
+            if it["id"] in ids and it["id"] not in have_ids and not it.get("archive_only")][:limit]
+
+
+PROPER_FILL_ADD = 8     # 池子里一条都没点名时，最多补几条进去
+
+
+def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
+                           pool: list[tuple[dict[str, Any], int]],
+                           limit: int = PROPER_FILL_ADD) -> list[tuple[dict[str, Any], int]]:
+    """问句点了产品名，候选池里却没一条带它——把带这个名字的条目补进池尾给模型看。
+
+    闸门只会把不带名的条目压到 54，不会给带名的加分；打分又不看正文与定位器，
+    所以「photoshop怎么安装」时那些 Adobe 安装条目是 0 分、排不进规则前八，
+    模型对着六条 [Sheet1] 杂表行只能判未收录（2026-11-05 实测：把同一条塞进池子，
+    模型立刻给 70 分并答对）。只补候选，打分、75/60/10 门槛与复核一行不动。
+    """
+    qp = question_proper(q)
+    if not qp or any(names_product(it, qp) for it, _sc in pool):
+        return []
+    named: set[str] = set()
+    for t, ids in proper_index()["postings"].items():
+        if any(t == w or (len(t) >= 3 and len(w) >= 3 and (t in w or w in t)) for w in qp):
+            named |= ids
+    if not named:
+        return []
+    have = {it["id"] for it, _sc in pool}
+    # 补完不许把池子撑破：条数上限一直是 rerank_candidates 那个数，
+    # 扩池实验测过——池子越大，模型挑跑偏的越多。
+    limit = min(limit, RERANK_POOL_LIMIT - len(pool))
+    if limit <= 0:
+        return []
+    # 名字本身不参与「像不像在问这件事」的比较：带名的条目当然都带名，
+    # 把名字挖掉剩下的那截（「怎么安装」「怎么下载」）才是排序依据。
+    hole = norm(q)
+    for w in sorted(qp, key=len, reverse=True):
+        hole = hole.replace(w, "\x00")
+    qb = {g for seg in hole.split("\x00") for g in bigrams(seg)}
+    order = {it["id"]: k for k, (it, _sc) in enumerate(ranked)}
+    cand: list[tuple[int, int, dict[str, Any]]] = []
+    for iid in named:
+        it = ITEM_BY_ID.get(iid)
+        if it is None or iid in have or it.get("archive_only"):
+            continue
+        # 同批带名条目在规则腿里全是 0 分，名次分不出高下；按「跟这句问的像不像」排，
+        # 让讲安装的那几条先出现在「怎么安装」的池子里，同分仍按规则原序。
+        hay = norm((it.get("title") or "") + " " + str(it.get("answer") or "")[:120])
+        cand.append((-len(qb & bigrams(hay)), order.get(iid, len(ranked)), it))
+    cand.sort()
+    return [(it, 0) for _cover, _rank, it in cand[:limit]]
 
 
 NUM_ONLY = re.compile(r"^\s*(\d{1,3})\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$")
@@ -3376,6 +4006,32 @@ def _menu_dept(item: dict[str, Any]) -> str:
         t = re.split(r"\s*·\s*", str(raw or ""))[0].strip()
         return t[:24] + ("…" if len(t) > 24 else "")
     return d
+
+
+def _menu_group_key(item: dict[str, Any], label: str) -> str:
+    """同一份文件里连着编号排下来的条目，在菜单里只算一条。
+
+    长汇编按自然段切条目，「空调使用注意事项」一个小问能刷出七条选项，
+    用户看到的是同一份文件占满屏幕。这里只并自动摘录的条目，人工整理的事项条目不动。
+    """
+    if not item.get("auto"):
+        return ""
+    srcs = item.get("source") or []
+    if isinstance(srcs, (str, dict)):
+        srcs = [srcs]
+    if not srcs:
+        return ""
+    first = srcs[0]
+    src = ""
+    if isinstance(first, dict):
+        src = str(first.get("slug") or first.get("title") or first.get("url") or "")
+    else:
+        raw = str(first or "")
+        src = src_label(raw).get("label") or raw
+    if not src:
+        return ""
+    seg = _mn(re.split(r"[｜:：]", label)[0])
+    return f"{src}\u0001{seg if len(seg) >= 6 else _mn(label)[:12]}"
 
 
 def _wzy_options() -> list[dict[str, Any]] | None:
@@ -3789,6 +4445,7 @@ def _topic_menu(text: str) -> dict[str, Any] | None:
     rows = distinct_rows(rows)
     opts: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
+    seen_src: set[str] = set()
     if tn in _place_names():
         # 地点类单词：位置排第一，后面接所有相关事项，点「在哪」才走地点卡
         opts.append({"id": "", "title": f"{token}在哪",
@@ -3800,7 +4457,12 @@ def _topic_menu(text: str) -> dict[str, Any] | None:
         key = (norm(label), norm(dept))
         if key in seen:
             continue
+        gkey = _menu_group_key(it, label)
+        if gkey and gkey in seen_src:
+            continue
         seen.add(key)
+        if gkey:
+            seen_src.add(gkey)
         opts.append({"id": it["id"], "title": it["title"], "label": label, "dept": dept})
         if len(opts) >= 120:
             break
@@ -4180,10 +4842,15 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     top_title = core_title(top["title"]) if top else ""
     rival = next((sc for it, sc in ranked[1:]
                   if core_title(it["title"]) != top_title), 0)
+    # 「差一点」按规则原始分算：模型抬完分再判就永远判不到这一档。
+    rule_score = score
+    near_miss = NEAR_MISS_FLOOR <= rule_score < MATCH_THRESHOLD
     risky = score < MATCH_THRESHOLD or (rival > 0 and score - rival < 8 and score < 90)
+    rc_signed: bool | None = None   # None＝复核没参与（规则模式、用户点选、菜单、地点强答）
     resolved_by_llm = False
     soft_match = False
     rerank_info: dict[str, Any] | None = None
+    pool: list[tuple[dict[str, Any], int]] = []
     # 模型这一层到底有没有参与，是要给用户看的：没问、问了、报错，三样得分开。
     model_route: dict[str, Any] = menu_mr if menu_mr is not None else _new_model_route()
     if picked:
@@ -4212,6 +4879,29 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         rule_top_id = top["id"] if top else ""
         pool = rerank_candidates(text, ranked, status=model_route)
         model_route["pool"] = len(pool)
+        # 用户点了个词表里没有的名字（ps 这类简称），候选里没人写它：先让模型把这叫法
+        # 对到库里已有的名字上，再把写了那个名字的条目按规则原序端进池子。
+        # 只加候选、不加门槛——下面 rerank 的 75/60/10 三道闸照样把关，规则腿一行不动。
+        said = _unmatched_name(text)
+        if said:
+            pmenu = proper_menu_for(ranked)
+            pm = llm_proper_map(text, said, pmenu)
+            name = pm.get("name") or ""
+            extra = proper_map_extra(ranked, name, {it["id"] for it, _ in pool})
+            if extra:
+                pool = pool + extra
+                model_route["pool"] = len(pool)
+            model_route["proper_map"] = {
+                "said": said, "name": name, "added": len(extra), "menu": len(pmenu),
+                "why": pm.get("why", ""), "error": pm.get("error", ""),
+            }
+        # 名字在词表里、池子里却一条都没带它（0 分的正答条目进不了规则前八）：
+        # 上面那条映射只管词表不认识的名字，这一路管认识的——补的仍是候选，门槛不动。
+        fill = proper_fill_candidates(text, ranked, pool)
+        if fill:
+            pool = pool + fill
+            model_route["pool"] = len(pool)
+            model_route["proper_fill"] = [it["id"] for it, _sc in fill]
         rewrites: list[str] = []
         rr = None
         if not pool:
@@ -4260,9 +4950,11 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         elif risky:
             # rerank 不可用时退回旧路：先让模型翻译，再拿改写回规则检索
             model_route["gate"] = "rerank_unavailable"
-            picked, rewrites = llm_route(text, ranked[:8], history, status=model_route)
-            if picked is not None:
-                top = picked
+            # 别复用 picked：那是用户点选的条目 id。这里把它改成模型选的条目，
+            # 下面的复核入口看到 picked 非空就整块跳过，等于模型自己选的题没人复核。
+            route_pick, rewrites = llm_route(text, ranked[:8], history, status=model_route)
+            if route_pick is not None:
+                top = route_pick
                 score = max(score, MATCH_THRESHOLD + 1)
                 second = 0
                 resolved_by_llm = True
@@ -4310,12 +5002,92 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         if rewrites:
             model_route["rewrites"] = rewrites
 
+    # 复核：模型腿把这条定下来之后，再看一次它到底答没答上用户问的这件事。
+    # 范围＝模型模式的正常作答路径。用户自己点选的（picked）不许再改；
+    # 单词菜单（menu_pick）与地点强答（place_forced）没进过 206 题实测，不动。
+    recheck_none = ""          # 非空＝复核判答不上，走「没收录」那一栏，值就是给人看的那句
+    recheck_declined = ""      # 被复核判答不上的那一条，别再挂在「相关事项」里让用户去点
+    recheck_switch = False     # 复核换过去的那条按用户点选那条同样的方式渲染
+    if (llm_on and api_key() and not picked and menu_pick is None
+            and not place_forced and top is not None):
+        rc_pool = pool or rerank_candidates(text, ranked, status=model_route)
+        rc_ids = {it["id"] for it, _ in rc_pool}
+        model_route["pool"] = len(rc_pool)
+        cur = top["id"]
+        if not rc_ids:
+            # 候选池空着，复核没有可比的条目，别多烧一次调用
+            model_route["recheck"] = {"gate": "skipped"}
+        else:
+            rc = llm_recheck(text, top, rc_pool)
+            best_id = rc.get("best") or ""
+            if "error" in rc:
+                # 复核自己挂了不能把答得上顶掉：照现行答案给，把失败记在状态里
+                rc_gate = "error"
+            elif rc.get("verdict") == "no" and (not best_id or rc.get("answers") != "yes"):
+                # 说「没收录」之前，先看第一次没送进候选池的那些条目里有没有真答得上的
+                cands = offpool_candidates(text, rc_ids, cur)
+                look = llm_second_look(text, cur, cands)
+                hit_id = "" if look.get("error") else (look.get("best") or "")
+                rc_gate = "say_none"
+                model_route["recheck_second"] = {
+                    "candidates": len(cands), "best": hit_id,
+                    "answers": look.get("answers", ""), "why": look.get("why", ""),
+                    "error": look.get("error", ""),
+                }
+                if hit_id and look.get("answers") == "yes" and hit_id in ITEM_BY_ID:
+                    top, score, second = ITEM_BY_ID[hit_id], 90, 0
+                    resolved_by_llm, recheck_switch = True, True
+                    rc_gate = "second_look"
+                    model_route["asked"] = True
+                    model_route["changed"] = True
+                    model_route["rescue"] = "offpool_second_look"
+                else:
+                    recheck_none = (
+                        "学校文件里没写这件事。" if look.get("none_in_library") else
+                        "库里沾边的原文讲的都是别的事，你问的这一点我没对上能回答的原文。")
+                    recheck_declined = cur
+            elif best_id and best_id != cur and rc.get("answers") == "yes" and best_id in rc_ids:
+                top, score, second = ITEM_BY_ID[best_id], 90, 0
+                resolved_by_llm, recheck_switch = True, True
+                rc_gate = "switch"
+                model_route["asked"] = True
+                model_route["changed"] = True
+            elif best_id and best_id != cur:
+                # 想换但护栏拦住：不在候选池里，或模型自己说换成它也答不上
+                rc_gate = "rejected"
+            else:
+                rc_gate = "keep"
+            model_route["recheck"] = {
+                "gate": rc_gate, "verdict": rc.get("verdict", ""), "best": best_id,
+                "answers": rc.get("answers", ""), "why": rc.get("why", ""),
+                "error": rc.get("error", ""),
+            }
+
+    rc_gate_seen = str((model_route.get("recheck") or {}).get("gate") or "")
+    if rc_gate_seen:
+        # 复核看过全文、认了这条（或换成另一条）才算签字；
+        # 接口失败、没有可比候选、想换被护栏拦住、判「没收录」，都不算。
+        rc_signed = rc_gate_seen in ("keep", "switch", "second_look")
+    # 50~54 这一档只能由复核签字开门。复核没参与的路径（规则模式、用户点选、
+    # 菜单、地点强答）保持原样，不在这条规则里改行为。
+    near_miss_unsigned = bool(near_miss and llm_on and api_key()
+                              and not picked and menu_pick is None and not place_forced
+                              and rc_signed is False)
+    if near_miss:
+        model_route["near_miss"] = {"recheck": rc_signed or "", "blocked": near_miss_unsigned}
+    near_miss_note = ("这一条只是字面上沾了一点边，模型看过原文全文没确认，我不拿它当答案。"
+                      if near_miss_unsigned else "")
+    if near_miss_unsigned and top is not None:
+        # 模型没确认的那条，别再挂到「相关事项」里请用户去点
+        recheck_declined = recheck_declined or top["id"]
+
     # 没到阈值但候选分数不低：不硬拒，给出"是不是这个"的选择题
     # 自动抽取的制度卡片不参与选择题：两个同名文件让用户选，等于没答
     alt_rows = distinct_rows([(i, sc) for i, sc in ranked[:6]
                               if sc >= 38 and not i.get("auto")])
     near = [(i, sc) for i, sc in alt_rows[:3] if _names_subject(norm(text), i)]
-    if (not resolved_by_llm) and score < MATCH_THRESHOLD and len(near) >= 2 and (near[0][1] - near[1][1]) < 14:
+    if (not resolved_by_llm) and (not recheck_none) and score < MATCH_THRESHOLD \
+            and len(near) >= 2 and (near[0][1] - near[1][1]) < 14:
         return {
             "matched": True,
             "query": text,
@@ -4344,7 +5116,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "soft_match": soft_match,
         }
 
-    if score < MATCH_THRESHOLD:
+    if score < MATCH_THRESHOLD or recheck_none or near_miss_unsigned:
         miss_hints = dept_hints(text)
         miss_contacts = related_contacts(text)
         # 归口线索 / 公开联系方式两栏都可能为空，为空时卡片上没有部门那一栏，
@@ -4352,6 +5124,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         dept_action = ("按公开联系方式里的部门查最新通知，或直接打电话问"
                        if miss_contacts else
                        "打开公开联系方式，挑一个对得上的部门打电话问")
+        alt_miss = [i for i, _ in alt_rows[:3] if i["id"] != recheck_declined]
         base = {
             "matched": False,
             "query": text,
@@ -4364,21 +5137,22 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "model_route": model_route,
             "alternatives": [
                 {"id": i["id"], "title": i["title"]}
-                for i, s in alt_rows[:3]
+                for i in alt_miss
             ],
             "next_actions": [
                 "换个更具体的说法，比如「校园卡补卡」「开成绩单」",
                 dept_action,
                 "找到官方通知后，以通知上写的为准",
             ],
-            "suggestion": "这一项我没对上官方原文，给不出办理流程。",
-            "confidence": round(score / 100, 2),
+            "suggestion": recheck_none or near_miss_note or "这一项我没对上官方原文，给不出办理流程。",
+            "confidence": 0.0 if (recheck_none or near_miss_unsigned) else round(score / 100, 2),
             "band": "none",
             "focus": [],
             "quotes": [],
             "answers": [{
                 "focus": "overview",
-                "label": "知识库未收录",
+                # 库里其实有一条沾边的，只是模型看完全文没确认——不写成「未收录」
+                "label": "相近但没确认" if near_miss_unsigned else "知识库未收录",
                 "text": None,
                 "steps": [],
                 "quotes": [],
@@ -4400,7 +5174,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                  "title": (ITEM_BY_ID.get(iid) or {}).get("title", iid),
                  # title 还是原来那句，点下去要用它去问；label 才是给人看的写法
                  "label": _card_label(ITEM_BY_ID.get(iid) or {"title": iid})}
-                for iid in ids[:3]
+                for iid in [x for x in ids if x != recheck_declined][:3]
             ]
             if related:
                 base["related_items"] = related
@@ -4414,7 +5188,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "disambiguate": [
                     {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
                      "hint": (i.get("aliases") or [""])[0]}
-                    for i, _ in distinct_rows(ranked[:3])
+                    for i, _ in distinct_rows(ranked[:3]) if i["id"] != recheck_declined
                 ],
                 **sensitivity(text),
                 "router_llm": llm_on,
@@ -4425,7 +5199,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             near_opts = [
                 {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
                  "hint": (i.get("aliases") or [""])[0]}
-                for i, _ in alt_rows[:3]
+                for i, _ in alt_rows[:3] if i["id"] != recheck_declined
             ]
             if near_opts:
                 base.update({
@@ -4486,7 +5260,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             top, score = kid[0], max(kid[1], score)
             rivals = []
 
-    menu = None if picked else _phone_menu(text, top)
+    menu = None if (picked or recheck_switch) else _phone_menu(text, top)
     if menu:
         menu.update(**sensitivity(text), router_llm=llm_on)
         return menu
@@ -4580,6 +5354,43 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             parts = place_parts([map_hit]) + rest
             missing = [m for m in missing if m not in ("官方答复", "办理地点")]
 
+    # 一题两问：后半句没认出问面、按现在的答案也确实没答到时，补第二面。
+    # 「怎么租」「要空腹吗」这类问法没人能列全词表，「这段答没答到第二问」也只有模型判得出来
+    # （2026-11-05 拍板②）：规则侧的 _unasked 按字面比对，说了整周开放时间也对不上「周末开吗」。
+    # 模型补的那一面必须有条目原文逐字撑著；它不接手（判已答到、挑不出、接口失败）时，
+    # 照原来的路子试一次整体流程那一面——补进来若与已答内容七成重合、或缺的那一问没少，都不补，
+    # 端出来只会让用户同时看到答案和「这一问没答到」两句互相打脸的话（206 题里 7 题全卡在这）。
+    # 「已答面是流程／步骤就不补」这条老闸门只留给规则腿：模型腿里「办理流程」恰恰是最常见的第一面，
+    # 它答得上「怎么预约」却往往不含「收费吗」，这一问只有读了全文的模型判得出来。
+    filled_pieces: list[str] = []
+    flow_first = any(p["focus"] in ("overview", "steps") for p in parts)
+    if not blocked and any(p["found"] for p in parts):
+        unasked_before = _unasked(text, top, parts)
+        # 模型腿的触发比规则腿宽一档：「收费吗」对上「前 5 次免费」时字面比对判已答到，
+        # detect_focus 报出的问面（missing）才知道那一问其实没影（2026-11-05 实测 f1/f4 卡在这）。
+        # 两样不并列喂：模型会照抄成「怎么收费；费用」一条，反而撞在自己那条照抄校验上（本轮 f2/f3）。
+        # 所以有用户原话就只报原话；原话一条都对不上，才改用问面标签——且限一问真有两问的问句：
+        # 「贵重物品怎么报案」里的「贵」会被 fee 规则认成「费用」，单问句拿标签触发就会补出一面假缺口
+        # （2026-11-05 实测 f4 补进「该找哪个部门」，还悄悄撤了缺问声明）。规则腿的兜底仍只认字面那几问。
+        two_asks = len([c for c in _CLAUSE_SPLIT.split(text or "")
+                        if len(_mn(c)) >= 2 and _CLAUSE_ASKING.search(c)]) >= 2
+        signals = unasked_before or (list(missing) if two_asks else [])
+        if signals:
+            add = None
+            if llm_on and api_key():
+                ff = llm_facet_fill(text, top, parts, signals, known)
+                model_route["facet_fill"] = {k: ff[k] for k in ("gate", "fills", "why", "error") if k in ff}
+                if ff["gate"] == "filled":
+                    add, filled_pieces = ff["part"], [ff["fills"]]
+            if add is None and unasked_before and not flow_first:
+                ov = _answer_one(top, "overview", known, text)
+                if ov["found"] and not _body_overlap(_part_body(ov), parts) \
+                        and set(_unasked(text, top, parts + [ov])) < set(unasked_before):
+                    add = ov
+            if add is not None:
+                parts.append(add)
+                focus_keys = [p["focus"] for p in parts]
+
     # 已经有内容可看时，不再单开一面写「没有收录」，缺的部分交给 note 逐项说清
     if any(p["found"] for p in parts):
         parts = [p for p in parts if p["found"]]
@@ -4631,12 +5442,24 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     # 问句里点了、这一条根本没写的东西，用用户自己的词说出来，别让他以为答全了。
     # 正在反问用户时不说这句：那时候答案本来就是半截的，两句叠在一起自相矛盾。
     unasked = [] if blocked else _unasked(text, top, parts)
+    if filled_pieces:
+        # 模型认这一面答得上那一问，补都补进答案了，就不许在同一张卡片上说「这一问没答到」。
+        # 只在模型补掉的那几问上收口，其余照旧逐项声明。
+        # 它照抄的可能是问面标签（「费用」）而不是用户原话（「收费吗」），
+        # 所以同属那一面的原话一起收口，别让答案和声明各说一半。
+        labs = {p for p in filled_pieces if p in FOCUS_BY_LABEL}
+        unasked = [u for u in unasked if u not in filled_pieces and not (
+            labs & {FOCUS_LABEL.get(k, "") for k in detect_focus(u, top)})]
     # 不加书名号：_display_text 会把「」一律剥掉，留着反而读不通
     unasked_note = (f"{'、'.join(unasked)}这一问，这次没答到。"
                     if unasked else None)
     # 模型只有 60～74 把握时接管的条目：照常给答案，但要把把握不够这件事说出来
     soft_note = (None if not soft_match or blocked else
                  "这一条是模型从相近事项里挑的，把握不到 75%，办之前按最新通知再确认一次。")
+    # 数据表的行不进作答（2026-11-04 拍板「准确至上」）：逐格表格行没有办理上下文，
+    # 顶在正文里等于拿一行数字当结论。只在答案下面留一个指向原文检索的链接。
+    # 门槛取 4 个二字组，比 /api/search 更严——凑不满这个重合度就连链接都不给。
+    rows_count = 0 if blocked else len(table_search(text, k=3, min_shared=4))
     return {
         "matched": True,
         "query": text,
@@ -4675,6 +5498,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         ) or None,
         "related": related,
         "map": show_map,
+        "table_link": ({"q": text, "count": rows_count} if rows_count else None),
     }
 
 

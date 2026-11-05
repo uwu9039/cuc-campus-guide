@@ -1,9 +1,9 @@
 # 评测报告
 
 - 用例数：33
-- 规则识别准确率：**100.0%**（33/33）
-- 拒答正确率：3/3
-- 事项库：8573 条，其中已核验 8538 条
+- 规则识别准确率：**87.9%**（29/33）
+- 拒答正确率：0/3
+- 事项库：39222 条，其中已核验 39187 条
 
 | 问题 | 期望 | 实际 | 分数 | 类型 | 结果 |
 |---|---|---|---|---|---|
@@ -24,19 +24,19 @@
 | 六级怎么报名 | jwc-cet | jwc-cet | 97 | normal | OK |
 | 校外怎么上知网 | it-vpn | it-vpn | 100 | normal | OK |
 | 校园网密码忘了 | it-mima | it-mima | 100 | normal | OK |
-| 数字校园登不上 | it-mima | it-mima | 58 | normal | OK |
+| 数字校园登不上 | it-mima | pt-b924874b1d | 86 | normal | FAIL |
 | 宿舍wifi连不上 | it-wangluo | it-wangluo | 100 | normal | OK |
 | 饭卡没了刷不了饭 | xyk-buka | xyk-buka | 88 | vague | OK |
 | 想补个卡 | xyk-buka | xyk-buka | 85 | vague | OK |
 | 四六级成绩单在哪打印 | jwc-cet | jwc-cet | 90 | vague | OK |
 | 我要打印成绩单还要盖章 | jwc-chengjidan | jwc-chengjidan | 87 | vague | OK |
 | 课表上有门课错了 | jwc-buxuanke | jwc-buxuanke | 86 | vague | OK |
-| 我要办个证明 | 拒绝 | 拒绝 | 0 | trap | OK |
-| 卡的事怎么弄 | 拒绝 | 拒绝 | 0 | trap | OK |
+| 我要办个证明 | 拒绝 | pt-4178277442 | 86 | trap | FAIL |
+| 卡的事怎么弄 | 拒绝 | pt-22459ff766 | 83 | trap | FAIL |
 | 毕业证明书丢了能补吗 | doc-20240412-c6366a218572 | doc-20240412-c6366a218572 | 89 | normal | OK |
 | 宿舍能不能换 | sushe-huansu | sushe-huansu | 100 | normal | OK |
 | 奖学金怎么申请 | jiangxuejin | jiangxuejin | 87 | normal | OK |
 | 图书馆能续借吗 | lib-jieyue | lib-jieyue | 86 | normal | OK |
-| 研究生能换导师吗 | 拒绝 | 拒绝 | 50 | absent | OK |
+| 研究生能换导师吗 | 拒绝 | pt-e1c839a34e | 86 | absent | FAIL |
 | 学历证书电子注册备案表怎么申请 | chsi-baogao | chsi-baogao | 94 | normal | OK |
 | 想转学去别的学校 | moe-zhuanxue | moe-zhuanxue | 86 | normal | OK |

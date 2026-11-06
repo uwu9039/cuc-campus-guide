@@ -23,6 +23,8 @@ OWNER, REPO = "uwu9039", "cuc-campus-guide"
 SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
              "aia-runs", "_quarantine", "vector", "wendao", "wendao-extra", ".qoder",
              "_review_items", "_modelscope_bundle", "_api_dig", "_ilib_js", "extension",
+             # 视频宣传工程与问答项目无关：整棵树扫描时差点把 12 个文件误发出去（v0.9.1 之后已删）
+             "video-promo",
              # 本机浏览器 profile（含 Login Data / History / Wallet）、回退副本与视频工程
              ".superpowers", "_backups", "video-remotion",
              # 上云包是运行时文件的副本，内容源已经在仓库里，不再重复传一份

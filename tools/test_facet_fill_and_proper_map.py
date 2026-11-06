@@ -261,5 +261,31 @@ check("规则腿不发模型请求", rule_ok, "答面 %s" % ([p["label"] for p i
 check("规则腿不记 facet_fill", rule_ok and "facet_fill" not in ((res or {}).get("model_route") or {}),
       str((res or {}).get("model_route") or {})[:100])
 
+# ---- 甲：规则腿一分没给时，llm_route 挑中也不许出答 ----
+# 「滚木」这类词库里根本没有，ranked 前 8 名全是 0 分的无关条目（0 分并列，谁排第一
+# 是原表顺序的巧合）。旧路把这种池子端到模型面前让它「挑一条」，挑中就答，
+# 而复核又因为候选池空被跳过（app.py 里 rc_ids 为空 → skipped），错答就这么发出去了。
+NAMED = app.ITEM_BY_ID.get("xyk-buka")
+old_route, old_rerank = app.llm_route, app.llm_rerank
+old_recheck, old_key = app.llm_recheck, app.api_key
+app.llm_route = lambda *a, **k: (NAMED, [])
+app.llm_rerank = lambda *a, **k: (None, [])
+app.llm_recheck = lambda *a, **k: {"verdict": "yes", "answers": "yes", "best": "xyk-buka", "why": ""}
+app.api_key = lambda: "test-key"
+try:
+    none = app.answer_question("滚木")
+    kept = app.answer_question("校园电梯卡")
+finally:
+    app.llm_route, app.llm_rerank, app.llm_recheck, app.api_key = old_route, old_rerank, old_recheck, old_key
+
+nm, km = (none.get("model_route") or {}), (kept.get("model_route") or {})
+check("零分候选里挑中也不出答", not none.get("matched"),
+      "matched=%s 条目=%s gate=%s conf=%s" % (none.get("matched"),
+      (none.get("item") or {}).get("id"), nm.get("gate"), none.get("confidence")))
+check("有分候选里仍接模型的挑", bool(kept.get("matched"))
+      and (kept.get("item") or {}).get("id") == "xyk-buka",
+      "matched=%s 条目=%s gate=%s" % (kept.get("matched"),
+      (kept.get("item") or {}).get("id"), km.get("gate")))
+
 print("failed", failed)
 sys.exit(1 if failed else 0)

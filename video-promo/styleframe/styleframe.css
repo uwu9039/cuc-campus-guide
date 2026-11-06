@@ -1,0 +1,105 @@
+/* styleframe 共用：全部色值/字体取自 web-next/field.css 的产品 token，不另造皮肤 */
+:root {
+  --bg: #ffffff;
+  --surface: #f7f7f4;
+  --ink: #111111;
+  --muted: #5a5a5a;
+  --accent: #2b5bff;
+  --line: #e3e3de;
+  --hit-bg: #ffe9a3;
+  --hit-ink: #211a05;
+  --night-bg: #0e0f12;
+  --night-surface: #16181d;
+  --night-ink: #f2f2f0;
+  --night-accent: #6e8bff;
+  --night-hit-bg: #4a3f14;
+  --night-hit-ink: #ffdf7e;
+  --display: "Arial Narrow", "Helvetica Neue", Impact, "Microsoft YaHei", sans-serif;
+  --body: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --land: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html, body { width: 1920px; height: 1080px; overflow: hidden; }
+body {
+  font-family: var(--body);
+  line-height: 1.62;
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.frame { width: 1920px; height: 1080px; position: relative; overflow: hidden; }
+.night { background: var(--night-bg); color: var(--night-ink); }
+
+/* 产品的场域：三颗同色实心圆靠得足够近就融成一片，不靠滤镜。
+   亮度/尺寸按产品 work 模式的 --ambient-work .12 收，圆不能压过文字 */
+.field { position: absolute; inset: 0; pointer-events: none; }
+.field i {
+  position: absolute; border-radius: 50%;
+  background: var(--accent); opacity: .055;
+}
+.night .field i { background: var(--night-accent); opacity: .05; }
+.field i:nth-child(1) { width: 560px; height: 560px; left: 1180px; top: -220px; }
+.field i:nth-child(2) { width: 360px; height: 360px; left: 1420px; top: 40px; }
+.field i:nth-child(3) { width: 300px; height: 300px; left: 1260px; top: 210px; }
+
+.display {
+  font-family: var(--display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -.05em;
+  line-height: 1.04;
+}
+
+/* 本片主角动效的静止态：金底逐字核验 */
+.hit { background: var(--hit-bg); color: var(--hit-ink); padding: 0 .06em; }
+.night .hit { background: var(--night-hit-bg); color: var(--night-hit-ink); }
+
+.kicker {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: 20px;
+  color: var(--muted);
+}
+.night .kicker { color: #a0a3a8; }
+
+.topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 84px;
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 40px;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; }
+.brand .mark {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: grid; place-items: center; font-size: 13px; font-weight: 800;
+  letter-spacing: .02em;
+}
+.night .brand .mark { background: #2b3d7a; }
+.brand small { font-size: 13px; color: var(--muted); font-weight: 400; display: block; }
+.night .brand small { color: #a0a3a8; }
+.acts { margin-left: auto; display: flex; gap: 10px; }
+.ghost {
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 16px; font-size: 14px; color: var(--muted);
+}
+.night .ghost { border-color: #2a2d34; color: #a0a3a8; }
+
+.pill {
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 10px 20px; font-size: 17px;
+}
+.night .pill { border-color: #3a3e46; }
+.pill.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.night .pill.on { background: var(--night-accent); border-color: var(--night-accent); color: var(--night-bg); }
+
+.card {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 24px; padding: 28px 32px;
+  box-shadow: 0 24px 60px rgba(17, 17, 17, .07);
+}
+.night .card { background: var(--night-surface); border-color: #2a2d34; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+.card h2 { font-family: var(--display); font-size: 40px; letter-spacing: -.03em; text-transform: uppercase; line-height: 1.12; }

@@ -4953,6 +4953,14 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             # 别复用 picked：那是用户点选的条目 id。这里把它改成模型选的条目，
             # 下面的复核入口看到 picked 非空就整块跳过，等于模型自己选的题没人复核。
             route_pick, rewrites = llm_route(text, ranked[:8], history, status=model_route)
+            if route_pick is not None and not pool:
+                # 候选池空着（规则腿 0 分、向量补面也没捞到）时，ranked[:8] 全是 0 分的无关
+                # 条目——0 分并列，谁排第一是原表顺序的巧合。把这种池子端到模型面前让它「挑一条」，
+                # 挑中就是错答：「滚木」被答成校园卡补卡就是这么来的，而复核那条路又因为候选池空
+                # 被跳过。有候选池（含向量补面来的）照旧接，改写照旧留给下面 rewrite_pool
+                # 那条有 rerank 打分把关的救场路。
+                model_route["pick_dropped"] = route_pick["id"]
+                route_pick = None
             if route_pick is not None:
                 top = route_pick
                 score = max(score, MATCH_THRESHOLD + 1)

@@ -53,18 +53,18 @@ Docker 类型创空间，容器内 `uvicorn app:app --host 0.0.0.0 --port 7860`�
 | `sources/` | 全部原文正文与来源索引、校园 POI、向量索引、16 份转专业计划 PDF |
 | `tools/` | 抽取、建库、逐字校验脚本（云端要重建检索库时才用） |
 
-## 离线重建全文检索库
+## 全文检索库
 
-`kb.sqlite` 不随包发，是派生品。包里四个 gz 齐了就能现建，实测在这份目录本身里跑：
+`kb.sqlite` 不随仓库发（398 MB），镜像构建时由 `Dockerfile` 现建；本地也能手建（四个 gz 齐了就行）：
 
 ```bash
-python tools/build_kb_db.py           # 约 15 秒，建出 182 MB
+python tools/build_kb_db.py           # 约 21 秒，建出 398 MB
 python tools/build_kb_db.py --verify  # 与条目库、台账、sources/ 逐字段对上
 ```
 
 建出来的表：doc 2184 / item 39222 / quote 42275 / table_row 35333 / registry 3737，另有 coverage 视图。`--verify` 会核对逐字引文、位图缺口与重复认领，并跑 8 个二字探针（中文二元 gram，FTS5 自带的 trigram 对 2 字查询恒 0 命中，所以自建了 gram 列）。
 
-问答服务本身不依赖这个库，`app.py` 直接读 gz；这个库是给逐字核对与批量检索用的。
+问答服务在库缺失时仍能答，但四路融合只剩规则＋向量；库在就会自动接上 BM25 与名目两路。
 
 ## 来源
 

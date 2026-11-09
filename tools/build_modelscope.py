@@ -37,6 +37,9 @@ SOURCE_FILES = [
     "chsi-index.json", "moe-index.json", "national-index.json", "extra-index.json",
     "huibian-index.json", "wendao-index.json", "wendao-extra-index.json",
     "local-index.json", "corpus-index.json", "campus-pois.json", "proper.json",
+    # 这两份是运行时读的：src_label() 靠它们把 att-…/文献保障-… 翻成「谁说的」。
+    # 少了不报错，但附件与图书馆那批条目的出处会退回内部编号。
+    "attachments-text-index.json", "ilib-list-index.json",
 ]
 
 WEB_SKIP = {"campus-guide-personal-data.zip", "serve.py"}

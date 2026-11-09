@@ -6100,12 +6100,34 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                        if miss_contacts else
                        "打开公开联系方式，挑一个对得上的部门打电话问")
         alt_miss = [i for i, _ in alt_rows[:3] if i["id"] != recheck_declined]
-        # 「换个更具体的说法」的例子不写死：先用模型自己给的校园说法（rewrites），
-        # 它才是真看过这句问话、真联想过的；模型没给（规则模式/接口挂）才退回候选事项标题。
-        ex = [w.strip() for w in (model_route.get("rewrites") or [])
-              if w.strip() and norm(w) != norm(text)]
+
+        # 「换个更具体的说法」的例子：先拿模型给的校园说法，但**必须真能检索到像样的条目**。
+        # 两道门：够匹配线，且条目标题跟这句话有共同二字组——
+        # 只按分数放行会把「我饿了，想找点吃的」配到一条标题是「的。」的碎条目（83 分）。
+        def _hint_ok(w: str) -> bool:
+            try:
+                it, sc = rank(w)[0]
+            except Exception:  # noqa: BLE001
+                return False
+            title = norm(str(it.get("title") or ""))
+            # 只认人工整理条目：自动摘录里有一堆「的。」「校友版块答疑」这类碎条目，
+            # 分数够、标题也沾边，但把人引过去照样答不上（「中传有没有滑雪选修课」86 分
+            # 落到一条校友答疑文档上）。建议宁可少，不许假。
+            if sc < MATCH_THRESHOLD or len(title) < 6 or it.get("auto"):
+                return False
+            grams = {g for g in bigrams(norm(w)) if re.search(r"[\w\u4e00-\u9fff]", g)}
+            return bool(grams & bigrams(title))
+
+        ex = []
+        for w in (model_route.get("rewrites") or []):
+            w = w.strip()
+            if not w or norm(w) == norm(text) or w in ex or not _hint_ok(w):
+                continue
+            ex.append(w)
         if not ex:
-            ex = [str(i.get("title") or "").strip() for i in alt_miss if str(i.get("title") or "").strip()]
+            # 模型没给能答的说法：退回候选事项的标题——标题本来就是能答上的那句话
+            ex = [str(i.get("title") or "").strip() for i in alt_miss
+                  if str(i.get("title") or "").strip()]
         more_hint = "换个更具体的说法" + ("，比如" + "、".join(f"「{x}」" for x in ex[:3]) if ex else "")
         base = {
             "matched": False,

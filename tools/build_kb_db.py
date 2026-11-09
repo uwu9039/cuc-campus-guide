@@ -41,6 +41,83 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", "", s or "")
 
 
+FULL_SKIP = {"id", "auto", "auto_kind", "archive_only", "status", "confidence",
+             "exclude_exact", "slots", "draft", "kind", "url"}
+
+
+CHUNK_MAX = 120
+
+
+def split_chunk(s: str) -> list[str]:
+    """长句再切成小句：BM25 按块长归一化，400 字的块会被 30 字的块压死。"""
+    if len(s) <= CHUNK_MAX:
+        return [s]
+    out, buf = [], ""
+    for piece in re.split(r"(?<=[。；！？;!?])|(?<=\n)", s):
+        if not piece:
+            continue
+        if len(buf) + len(piece) > CHUNK_MAX and buf:
+            out.append(buf.strip())
+            buf = piece
+        else:
+            buf += piece
+        while len(buf) > CHUNK_MAX:          # 单句就超长，硬切
+            out.append(buf[:CHUNK_MAX].strip())
+            buf = buf[CHUNK_MAX:]
+    if buf.strip():
+        out.append(buf.strip())
+    return [x for x in out if x]
+
+
+SHORT_LEAF = 8
+
+
+def item_chunks(it: dict) -> list[str]:
+    """把一条条目切成若干可检索块：长文按句切，短词并成一块。
+
+    整条拼一行会被长度归一化压死（11-06 实测 `xyy-gongfei` 排 60 名开外，
+    它的 answer 是空的、正文全在 steps 里）；但反过来把 keywords 里「医保」
+    这种 2 字词单独成块，它在任何查询下都靠超短长度通吃 BM25——
+    实测「医保」查询前 5 名全是 2 字块，真正的条目反而排 40 名外。
+    所以短词合并，长文切句。
+    """
+    long_chunks: list[str] = []
+    shorts: list[str] = []
+
+    def walk(v):
+        if isinstance(v, str):
+            s = v.strip()
+            if not s:
+                return
+            if len(s) < SHORT_LEAF:
+                shorts.append(s)
+            else:
+                long_chunks.extend(split_chunk(s))
+        elif isinstance(v, dict):
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, (list, tuple)):
+            for x in v:
+                walk(x)
+
+    for k, v in it.items():
+        if k in FULL_SKIP:
+            continue
+        walk(v)
+
+    out = long_chunks
+    buf = ""
+    for w in shorts:
+        if len(buf) + len(w) + 1 > CHUNK_MAX and buf:
+            out.append(buf.strip())
+            buf = w
+        else:
+            buf = f"{buf} {w}".strip()
+    if buf.strip():
+        out.append(buf.strip())
+    return [x for x in out if x]
+
+
 def bigrams(t: str) -> str:
     """中文串按相邻 2 字展开，非中文整段小写保留；单字补一个全角空格占位，保证它也可查。"""
     out: list[str] = []
@@ -197,6 +274,18 @@ def build() -> None:
     # 检索索引：条目答案 + 数据行 + 逐字引文，三类都进 gram 虚表，kind 用来分路
     trip = [("item", it["id"], it.get("answer") or "") for it in items]
     trip += [("title", it["id"], it.get("title") or "") for it in items]
+    # 字段级块：长文切句、短词合并（见 item_chunks 的说明）
+    for it in items:
+        trip += [("full", it["id"], chunk) for chunk in item_chunks(it)]
+    # 名目行：标题＋别名＋关键词单独一块，权重自成一路。
+    # 「学校医保」这种问句，正文里出现「医保」的摘录有几十条，
+    # 只有别名里写着「医保报销」的那条才是学生口径——名目行让这一眼可排。
+    for it in items:
+        meta = " ".join([it.get("title") or ""]
+                        + [str(a) for a in (it.get("aliases") or [])]
+                        + [str(w) for w in (it.get("keywords") or [])]).strip()
+        if meta:
+            trip.append(("meta", it["id"], meta))
     trip += [("row", f"{r['doc']}#{r.get('row_no', 0)}#{r.get('col', 0)}", r["value"]) for r in rows]
     trip += [(f"{q[0]}~{q[1]}", q[2], q[5]) for q in ins_quote if len(q[5]) <= 1200]
     con.executemany("insert into search(gram, ref, kind, text) values(?,?,?,?)",

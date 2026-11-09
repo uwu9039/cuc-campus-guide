@@ -159,7 +159,7 @@ Token 全部集中在一处，主题切换靠 `html` 上的 `data-theme` 属性�
 1. 面板与遮罩从顶栏下方开始，且这个高度是**实测**出来的：`field.js` 量顶栏 `getBoundingClientRect().bottom` 下发成 `--panel-top`，CSS 用 `var(--panel-top, var(--topbar-keep))`（`--topbar-keep: 84px` 只做 JS 没跑起来时的兜底），顶栏挂 `ResizeObserver` 跟着重算。写死的窄屏档位（曾为 `--topbar-keep-mobile: 172px`）已删——答完题顶栏会多出「当前事项 · …」一行，窄屏再换行，实测从 159px 长到 190px，任何常量都会压住入口。验收直接量真实几何：`面板顶 >= 顶栏底`，且 `document.elementFromPoint(入口中心)` 仍是那个入口。
 2. 滚动锁定属性叫 `data-panel-open`，入口委托限定成 `button[data-panel], a[data-panel]`。两者曾因同名而互相吞事件：body 上的 `data-panel` 永远先被 `closest()` 命中，面板内部的选点与筛选全部走成「重新打开面板」。窄屏另有一条：满整行的规则写成 `.boxfoot .send`，不能是裸 `.send`，否则面板表单的按钮把输入框挤没。
 
-### 等模型回话的中间态（2026-11-05 追加）
+### 等模型回话的中间态（2026-11-05 追加；2026-11-07 占位形态已换成思考框，见下一节）
 
 用户口径：「输入但是还没出答案的时候先跳转回答将要开始的位置，然后做一个三点跳动的加载动画，等模型返回内容后再隐藏加载动画。」
 
@@ -190,6 +190,18 @@ Token 全部集中在一处，主题切换靠 `html` 上的 `data-theme` 属性�
 行为口径：`initThemeSwitch()` 只翻 `<html>` 的 `data-theme` 和按钮的 `aria-pressed` / `aria-label`，不写 `localStorage`、不写 cookie、不动 `history`、不发请求——刷新就回到日间。这条「不记录任何数据」同时写在按钮的 `title` 里，和测试里对 `localStorage` / `sessionStorage` / `document.cookie` / `history.` / `fetch(` 的禁令一起钉住。
 
 2026-11-06 用户点名把开关挪到功能区最右：`field.html` 里 `<button class="themesw">` 从 `.topacts` 的第一个孩子改成最后一个孩子，排在「经典版」右边，经典版对应左移。桌面顶栏仍是一行（高 78，开关落在 1264–1340，横向溢出 0）；400px 窄屏第一行放得下六个入口，开关自己换到第二行最左（顶栏高 159→155，横向溢出 0）。位置这件事由 `test_switch_sits_at_the_right_end_of_the_bar` 钉住，改红验证过：把开关挪回第一位，它报「开关要放在「经典版」右边」。
+
+### 思考框换掉三点跳动（2026-11-07 追加）
+
+用户口径：「把三点跳动的加载动画换成思考过程，用符合风格的框套着，等模型返回内容后再隐藏掉。不要动后端，后端在改东西。」
+
+先确认能拿到什么：`app.py` 没有 SSE / `StreamingResponse`，`/api/ask` 一次性返回，`llm()` 的 `thinking` 参数只管请求体、响应里也没有 `reasoning_content`——**模型的思考文本现在拿不到，进度也一条都没报**。把三条路摆出来（逐行点亮的阶段清单 / 只一句静态话 / 本轮只做框等后端透传真思考链），用户选**本轮只做框**。
+
+于是框里什么都不写。`.thinking` 容器与它的 `min-height`、`padding-left: 1em` 一字不动（跳转落位的前提），里面换成 `.thinkbox`——配方照页面既有 `.genbox`：`--chip-bg` 底、`1px --line` 描边、左侧 `3px --accent` 竖条、半档圆角；框内只有一条 44% 宽的 `--accent` 细线走 `@keyframes field-think`（opacity .28↔.85，1.5s 循环）。三点那套整个退役，`.thinking i` 三条规则与 `@keyframes field-bounce` 一起删——留着 `.thinking i` 会串到框里的线上。收框机制没变：答案或错误卡覆盖同一个槽。
+
+「不写阶段文字」是这一节的要点，不是偷懒：任何一行「正在检索…核对原文…」都是前端自己估的节奏，后端一个字都没报，写上去就是拿编的进度冒充思考过程。这条判断同时钉在 CSS 注释与测试里（`test_thinking_is_a_breathing_box_not_a_progress_script` 要求框内恰好一条 `<i></i>`、模板里没有文字节点），浏览器门 2.5 也加了「框内文字必须为空」这一断言。
+
+后续（等后端这轮改完）：`llm()` 里读出 `reasoning_content`，随 `/api/ask` 回一个 `thinking` 数组，前端再把这些行逐条落进同一个框——那时才有真的思考过程可显示。
 
 ### 验收增补
 

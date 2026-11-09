@@ -1,0 +1,1203 @@
+{
+ "meta": {
+  "standardName": "《国家学生体质健康标准（2014年修订）》",
+  "standardDocNo": "教体艺〔2014〕5号",
+  "schoolPolicyName": "《中国传媒大学〈国家学生体质健康标准〉实施办法（2024年修订）》",
+  "schoolPolicyDocNo": "本科生院〔2024〕115号",
+  "policyEffectiveScope": "自2024级本科生起施行（2023级及更早年级适用性不在本阶段单学年国家标准算分中强行推断）",
+  "phaseScope": "single_academic_year_undergraduate_only",
+  "verifiedDate": "2026-10-19",
+  "derivedAt": "2026-11-09",
+  "sourceModule": "data/fitness-standard.js",
+  "sourceSha256": "51d2afd929da9290",
+  "transcriber": "tools/tice_build_json.js"
+ },
+ "scoreLadder": [
+  {
+   "score": 100,
+   "level": "优秀"
+  },
+  {
+   "score": 95,
+   "level": "优秀"
+  },
+  {
+   "score": 90,
+   "level": "优秀"
+  },
+  {
+   "score": 85,
+   "level": "良好"
+  },
+  {
+   "score": 80,
+   "level": "良好"
+  },
+  {
+   "score": 78,
+   "level": "及格"
+  },
+  {
+   "score": 76,
+   "level": "及格"
+  },
+  {
+   "score": 74,
+   "level": "及格"
+  },
+  {
+   "score": 72,
+   "level": "及格"
+  },
+  {
+   "score": 70,
+   "level": "及格"
+  },
+  {
+   "score": 68,
+   "level": "及格"
+  },
+  {
+   "score": 66,
+   "level": "及格"
+  },
+  {
+   "score": 64,
+   "level": "及格"
+  },
+  {
+   "score": 62,
+   "level": "及格"
+  },
+  {
+   "score": 60,
+   "level": "及格"
+  },
+  {
+   "score": 50,
+   "level": "不及格"
+  },
+  {
+   "score": 40,
+   "level": "不及格"
+  },
+  {
+   "score": 30,
+   "level": "不及格"
+  },
+  {
+   "score": 20,
+   "level": "不及格"
+  },
+  {
+   "score": 10,
+   "level": "不及格"
+  }
+ ],
+ "limits": {
+  "maxStandardScore": 100,
+  "maxSingleBonusScore": 10,
+  "maxTotalBonusScore": 20,
+  "maxTotalScore": 120
+ },
+ "weights": {
+  "bmi": 15,
+  "vitalCapacity": 15,
+  "sprint50m": 20,
+  "sitAndReach": 10,
+  "standingLongJump": 10,
+  "pullUps": 10,
+  "run1000m": 20,
+  "sitUps": 10,
+  "run800m": 20
+ },
+ "gradeGroups": {
+  "GRADE_12": "grade12",
+  "GRADE_34": "grade34"
+ },
+ "gradeToGroup": {
+  "大一": "grade12",
+  "大二": "grade12",
+  "大三": "grade34",
+  "大四": "grade34"
+ },
+ "events": {
+  "vitalCapacity": {
+   "name": "肺活量",
+   "tableCode": "表1-2",
+   "unit": "mL",
+   "unitLabel": "毫升",
+   "direction": "higher_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "number",
+   "weightPercent": 15,
+   "bonusEligible": false,
+   "integerOnly": false,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": true,
+   "allowNegative": false,
+   "bonusDeltas": null,
+   "thresholds": {
+    "male": {
+     "grade12": [
+      5040,
+      4920,
+      4800,
+      4550,
+      4300,
+      4180,
+      4060,
+      3940,
+      3820,
+      3700,
+      3580,
+      3460,
+      3340,
+      3220,
+      3100,
+      2940,
+      2780,
+      2620,
+      2460,
+      2300
+     ],
+     "grade34": [
+      5140,
+      5020,
+      4900,
+      4650,
+      4400,
+      4280,
+      4160,
+      4040,
+      3920,
+      3800,
+      3680,
+      3560,
+      3440,
+      3320,
+      3200,
+      3030,
+      2860,
+      2690,
+      2520,
+      2350
+     ]
+    },
+    "female": {
+     "grade12": [
+      3400,
+      3350,
+      3300,
+      3150,
+      3000,
+      2900,
+      2800,
+      2700,
+      2600,
+      2500,
+      2400,
+      2300,
+      2200,
+      2100,
+      2000,
+      1960,
+      1920,
+      1880,
+      1840,
+      1800
+     ],
+     "grade34": [
+      3450,
+      3400,
+      3350,
+      3200,
+      3050,
+      2950,
+      2850,
+      2750,
+      2650,
+      2550,
+      2450,
+      2350,
+      2250,
+      2150,
+      2050,
+      2010,
+      1970,
+      1930,
+      1890,
+      1850
+     ]
+    }
+   },
+   "genders": [
+    "female",
+    "male"
+   ]
+  },
+  "sprint50m": {
+   "name": "50米跑",
+   "tableCode": "表1-3",
+   "unit": "s",
+   "unitLabel": "秒",
+   "direction": "lower_is_better",
+   "scale": 10,
+   "decimalPlaces": 1,
+   "unitType": "number",
+   "weightPercent": 20,
+   "bonusEligible": false,
+   "integerOnly": false,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": false,
+   "allowNegative": false,
+   "bonusDeltas": null,
+   "thresholds": {
+    "male": {
+     "grade12": [
+      6.7,
+      6.8,
+      6.9,
+      7,
+      7.1,
+      7.3,
+      7.5,
+      7.7,
+      7.9,
+      8.1,
+      8.3,
+      8.5,
+      8.7,
+      8.9,
+      9.1,
+      9.3,
+      9.5,
+      9.7,
+      9.9,
+      10.1
+     ],
+     "grade34": [
+      6.6,
+      6.7,
+      6.8,
+      6.9,
+      7,
+      7.2,
+      7.4,
+      7.6,
+      7.8,
+      8,
+      8.2,
+      8.4,
+      8.6,
+      8.8,
+      9,
+      9.2,
+      9.4,
+      9.6,
+      9.8,
+      10
+     ]
+    },
+    "female": {
+     "grade12": [
+      7.5,
+      7.6,
+      7.7,
+      8,
+      8.3,
+      8.5,
+      8.7,
+      8.9,
+      9.1,
+      9.3,
+      9.5,
+      9.7,
+      9.9,
+      10.1,
+      10.3,
+      10.5,
+      10.7,
+      10.9,
+      11.1,
+      11.3
+     ],
+     "grade34": [
+      7.4,
+      7.5,
+      7.6,
+      7.9,
+      8.2,
+      8.4,
+      8.6,
+      8.8,
+      9,
+      9.2,
+      9.4,
+      9.6,
+      9.8,
+      10,
+      10.2,
+      10.4,
+      10.6,
+      10.8,
+      11,
+      11.2
+     ]
+    }
+   },
+   "genders": [
+    "female",
+    "male"
+   ]
+  },
+  "sitAndReach": {
+   "name": "坐位体前屈",
+   "tableCode": "表1-4",
+   "unit": "cm",
+   "unitLabel": "厘米",
+   "direction": "higher_is_better",
+   "scale": 10,
+   "decimalPlaces": 1,
+   "unitType": "number",
+   "weightPercent": 10,
+   "bonusEligible": false,
+   "integerOnly": false,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": true,
+   "allowNegative": true,
+   "bonusDeltas": null,
+   "thresholds": {
+    "male": {
+     "grade12": [
+      24.9,
+      23.1,
+      21.3,
+      19.5,
+      17.7,
+      16.3,
+      14.9,
+      13.5,
+      12.1,
+      10.7,
+      9.3,
+      7.9,
+      6.5,
+      5.1,
+      3.7,
+      2.7,
+      1.7,
+      0.7,
+      -0.3,
+      -1.3
+     ],
+     "grade34": [
+      25.1,
+      23.3,
+      21.5,
+      19.9,
+      18.2,
+      16.8,
+      15.4,
+      14,
+      12.6,
+      11.2,
+      9.8,
+      8.4,
+      7,
+      5.6,
+      4.2,
+      3.2,
+      2.2,
+      1.2,
+      0.2,
+      -0.8
+     ]
+    },
+    "female": {
+     "grade12": [
+      25.8,
+      24,
+      22.2,
+      20.6,
+      19,
+      17.7,
+      16.4,
+      15.1,
+      13.8,
+      12.5,
+      11.2,
+      9.9,
+      8.6,
+      7.3,
+      6,
+      5.2,
+      4.4,
+      3.6,
+      2.8,
+      2
+     ],
+     "grade34": [
+      26.3,
+      24.4,
+      22.4,
+      21,
+      19.5,
+      18.2,
+      16.9,
+      15.6,
+      14.3,
+      13,
+      11.7,
+      10.4,
+      9.1,
+      7.8,
+      6.5,
+      5.7,
+      4.9,
+      4.1,
+      3.3,
+      2.5
+     ]
+    }
+   },
+   "genders": [
+    "female",
+    "male"
+   ]
+  },
+  "standingLongJump": {
+   "name": "立定跳远",
+   "tableCode": "表1-5",
+   "unit": "cm",
+   "unitLabel": "厘米",
+   "direction": "higher_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "number",
+   "weightPercent": 10,
+   "bonusEligible": false,
+   "integerOnly": false,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": true,
+   "allowNegative": false,
+   "bonusDeltas": null,
+   "thresholds": {
+    "male": {
+     "grade12": [
+      273,
+      268,
+      263,
+      256,
+      248,
+      244,
+      240,
+      236,
+      232,
+      228,
+      224,
+      220,
+      216,
+      212,
+      208,
+      203,
+      198,
+      193,
+      188,
+      183
+     ],
+     "grade34": [
+      275,
+      270,
+      265,
+      258,
+      250,
+      246,
+      242,
+      238,
+      234,
+      230,
+      226,
+      222,
+      218,
+      214,
+      210,
+      205,
+      200,
+      195,
+      190,
+      185
+     ]
+    },
+    "female": {
+     "grade12": [
+      207,
+      201,
+      195,
+      188,
+      181,
+      178,
+      175,
+      172,
+      169,
+      166,
+      163,
+      160,
+      157,
+      154,
+      151,
+      146,
+      141,
+      136,
+      131,
+      126
+     ],
+     "grade34": [
+      208,
+      202,
+      196,
+      189,
+      182,
+      179,
+      176,
+      173,
+      170,
+      167,
+      164,
+      161,
+      158,
+      155,
+      152,
+      147,
+      142,
+      137,
+      132,
+      127
+     ]
+    }
+   },
+   "genders": [
+    "female",
+    "male"
+   ]
+  },
+  "pullUps": {
+   "name": "引体向上",
+   "tableCode": "表1-6",
+   "unit": "count",
+   "unitLabel": "次",
+   "direction": "higher_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "number",
+   "weightPercent": 10,
+   "bonusEligible": true,
+   "integerOnly": true,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": true,
+   "allowNegative": false,
+   "bonusDeltas": [
+    {
+     "bonusScore": 10,
+     "delta": 10
+    },
+    {
+     "bonusScore": 9,
+     "delta": 9
+    },
+    {
+     "bonusScore": 8,
+     "delta": 8
+    },
+    {
+     "bonusScore": 7,
+     "delta": 7
+    },
+    {
+     "bonusScore": 6,
+     "delta": 6
+    },
+    {
+     "bonusScore": 5,
+     "delta": 5
+    },
+    {
+     "bonusScore": 4,
+     "delta": 4
+    },
+    {
+     "bonusScore": 3,
+     "delta": 3
+    },
+    {
+     "bonusScore": 2,
+     "delta": 2
+    },
+    {
+     "bonusScore": 1,
+     "delta": 1
+    }
+   ],
+   "thresholds": {
+    "male": {
+     "grade12": [
+      19,
+      18,
+      17,
+      16,
+      15,
+      null,
+      14,
+      null,
+      13,
+      null,
+      12,
+      null,
+      11,
+      null,
+      10,
+      9,
+      8,
+      7,
+      6,
+      5
+     ],
+     "grade34": [
+      20,
+      19,
+      18,
+      17,
+      16,
+      null,
+      15,
+      null,
+      14,
+      null,
+      13,
+      null,
+      12,
+      null,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+     ]
+    }
+   },
+   "genders": [
+    "male"
+   ]
+  },
+  "run1000m": {
+   "name": "1000米跑",
+   "tableCode": "表1-8",
+   "unit": "s",
+   "unitLabel": "分·秒",
+   "direction": "lower_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "mmss",
+   "weightPercent": 20,
+   "bonusEligible": true,
+   "integerOnly": true,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": false,
+   "allowNegative": false,
+   "bonusDeltas": [
+    {
+     "bonusScore": 10,
+     "reductionSeconds": 35
+    },
+    {
+     "bonusScore": 9,
+     "reductionSeconds": 32
+    },
+    {
+     "bonusScore": 8,
+     "reductionSeconds": 29
+    },
+    {
+     "bonusScore": 7,
+     "reductionSeconds": 26
+    },
+    {
+     "bonusScore": 6,
+     "reductionSeconds": 23
+    },
+    {
+     "bonusScore": 5,
+     "reductionSeconds": 20
+    },
+    {
+     "bonusScore": 4,
+     "reductionSeconds": 16
+    },
+    {
+     "bonusScore": 3,
+     "reductionSeconds": 12
+    },
+    {
+     "bonusScore": 2,
+     "reductionSeconds": 8
+    },
+    {
+     "bonusScore": 1,
+     "reductionSeconds": 4
+    }
+   ],
+   "thresholds": {
+    "male": {
+     "grade12": [
+      197,
+      202,
+      207,
+      214,
+      222,
+      227,
+      232,
+      237,
+      242,
+      247,
+      252,
+      257,
+      262,
+      267,
+      272,
+      292,
+      312,
+      332,
+      352,
+      372
+     ],
+     "grade34": [
+      195,
+      200,
+      205,
+      212,
+      220,
+      225,
+      230,
+      235,
+      240,
+      245,
+      250,
+      255,
+      260,
+      265,
+      270,
+      290,
+      310,
+      330,
+      350,
+      370
+     ]
+    }
+   },
+   "genders": [
+    "male"
+   ]
+  },
+  "sitUps": {
+   "name": "一分钟仰卧起坐",
+   "tableCode": "表1-7",
+   "unit": "count",
+   "unitLabel": "次",
+   "direction": "higher_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "number",
+   "weightPercent": 10,
+   "bonusEligible": true,
+   "integerOnly": true,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": true,
+   "allowNegative": false,
+   "bonusDeltas": [
+    {
+     "bonusScore": 10,
+     "delta": 13
+    },
+    {
+     "bonusScore": 9,
+     "delta": 12
+    },
+    {
+     "bonusScore": 8,
+     "delta": 11
+    },
+    {
+     "bonusScore": 7,
+     "delta": 10
+    },
+    {
+     "bonusScore": 6,
+     "delta": 9
+    },
+    {
+     "bonusScore": 5,
+     "delta": 8
+    },
+    {
+     "bonusScore": 4,
+     "delta": 7
+    },
+    {
+     "bonusScore": 3,
+     "delta": 6
+    },
+    {
+     "bonusScore": 2,
+     "delta": 4
+    },
+    {
+     "bonusScore": 1,
+     "delta": 2
+    }
+   ],
+   "thresholds": {
+    "female": {
+     "grade12": [
+      56,
+      54,
+      52,
+      49,
+      46,
+      44,
+      42,
+      40,
+      38,
+      36,
+      34,
+      32,
+      30,
+      28,
+      26,
+      24,
+      22,
+      20,
+      18,
+      16
+     ],
+     "grade34": [
+      57,
+      55,
+      53,
+      50,
+      47,
+      45,
+      43,
+      41,
+      39,
+      37,
+      35,
+      33,
+      31,
+      29,
+      27,
+      25,
+      23,
+      21,
+      19,
+      17
+     ]
+    }
+   },
+   "genders": [
+    "female"
+   ]
+  },
+  "run800m": {
+   "name": "800米跑",
+   "tableCode": "表1-8",
+   "unit": "s",
+   "unitLabel": "分·秒",
+   "direction": "lower_is_better",
+   "scale": 1,
+   "decimalPlaces": 0,
+   "unitType": "mmss",
+   "weightPercent": 20,
+   "bonusEligible": true,
+   "integerOnly": true,
+   "belowMinimumRuleStatus": "zero_score",
+   "allowZero": false,
+   "allowNegative": false,
+   "bonusDeltas": [
+    {
+     "bonusScore": 10,
+     "reductionSeconds": 50
+    },
+    {
+     "bonusScore": 9,
+     "reductionSeconds": 45
+    },
+    {
+     "bonusScore": 8,
+     "reductionSeconds": 40
+    },
+    {
+     "bonusScore": 7,
+     "reductionSeconds": 35
+    },
+    {
+     "bonusScore": 6,
+     "reductionSeconds": 30
+    },
+    {
+     "bonusScore": 5,
+     "reductionSeconds": 25
+    },
+    {
+     "bonusScore": 4,
+     "reductionSeconds": 20
+    },
+    {
+     "bonusScore": 3,
+     "reductionSeconds": 15
+    },
+    {
+     "bonusScore": 2,
+     "reductionSeconds": 10
+    },
+    {
+     "bonusScore": 1,
+     "reductionSeconds": 5
+    }
+   ],
+   "thresholds": {
+    "female": {
+     "grade12": [
+      198,
+      204,
+      210,
+      217,
+      224,
+      229,
+      234,
+      239,
+      244,
+      249,
+      254,
+      259,
+      264,
+      269,
+      274,
+      284,
+      294,
+      304,
+      314,
+      324
+     ],
+     "grade34": [
+      196,
+      202,
+      208,
+      215,
+      222,
+      227,
+      232,
+      237,
+      242,
+      247,
+      252,
+      257,
+      262,
+      267,
+      272,
+      282,
+      292,
+      302,
+      312,
+      322
+     ]
+    }
+   },
+   "genders": [
+    "female"
+   ]
+  }
+ },
+ "bmi": {
+  "unit": "kg/m2",
+  "unitLabel": "千克/米²",
+  "scale": 10,
+  "weightPercent": 15,
+  "allowZero": false,
+  "allowNegative": false,
+  "categoriesByGender": {
+   "male": [
+    {
+     "category": "normal",
+     "categoryLabel": "正常",
+     "score": 100,
+     "minInclusive": 17.9,
+     "maxInclusive": 23.9,
+     "scaledMinInclusive": 179,
+     "scaledMaxInclusive": 239,
+     "rawDisplay": "17.9~23.9"
+    },
+    {
+     "category": "underweight",
+     "categoryLabel": "低体重",
+     "score": 80,
+     "minInclusive": null,
+     "maxInclusive": 17.8,
+     "scaledMinInclusive": null,
+     "scaledMaxInclusive": 178,
+     "rawDisplay": "≤17.8"
+    },
+    {
+     "category": "overweight",
+     "categoryLabel": "超重",
+     "score": 80,
+     "minInclusive": 24,
+     "maxInclusive": 27.9,
+     "scaledMinInclusive": 240,
+     "scaledMaxInclusive": 279,
+     "rawDisplay": "24.0~27.9"
+    },
+    {
+     "category": "obese",
+     "categoryLabel": "肥胖",
+     "score": 60,
+     "minInclusive": 28,
+     "maxInclusive": null,
+     "scaledMinInclusive": 280,
+     "scaledMaxInclusive": null,
+     "rawDisplay": "≥28.0"
+    }
+   ],
+   "female": [
+    {
+     "category": "normal",
+     "categoryLabel": "正常",
+     "score": 100,
+     "minInclusive": 17.2,
+     "maxInclusive": 23.9,
+     "scaledMinInclusive": 172,
+     "scaledMaxInclusive": 239,
+     "rawDisplay": "17.2~23.9"
+    },
+    {
+     "category": "underweight",
+     "categoryLabel": "低体重",
+     "score": 80,
+     "minInclusive": null,
+     "maxInclusive": 17.1,
+     "scaledMinInclusive": null,
+     "scaledMaxInclusive": 171,
+     "rawDisplay": "≤17.1"
+    },
+    {
+     "category": "overweight",
+     "categoryLabel": "超重",
+     "score": 80,
+     "minInclusive": 24,
+     "maxInclusive": 27.9,
+     "scaledMinInclusive": 240,
+     "scaledMaxInclusive": 279,
+     "rawDisplay": "24.0~27.9"
+    },
+    {
+     "category": "obese",
+     "categoryLabel": "肥胖",
+     "score": 60,
+     "minInclusive": 28,
+     "maxInclusive": null,
+     "scaledMinInclusive": 280,
+     "scaledMaxInclusive": null,
+     "rawDisplay": "≥28.0"
+    }
+   ]
+  },
+  "unresolvedGapsByGender": {
+   "male": [
+    {
+     "lowerTenths": 178,
+     "upperTenths": 179,
+     "rangeDisplay": "(17.8, 17.9)",
+     "betweenCategories": [
+      "underweight",
+      "normal"
+     ]
+    },
+    {
+     "lowerTenths": 239,
+     "upperTenths": 240,
+     "rangeDisplay": "(23.9, 24.0)",
+     "betweenCategories": [
+      "normal",
+      "overweight"
+     ]
+    },
+    {
+     "lowerTenths": 279,
+     "upperTenths": 280,
+     "rangeDisplay": "(27.9, 28.0)",
+     "betweenCategories": [
+      "overweight",
+      "obese"
+     ]
+    }
+   ],
+   "female": [
+    {
+     "lowerTenths": 171,
+     "upperTenths": 172,
+     "rangeDisplay": "(17.1, 17.2)",
+     "betweenCategories": [
+      "underweight",
+      "normal"
+     ]
+    },
+    {
+     "lowerTenths": 239,
+     "upperTenths": 240,
+     "rangeDisplay": "(23.9, 24.0)",
+     "betweenCategories": [
+      "normal",
+      "overweight"
+     ]
+    },
+    {
+     "lowerTenths": 279,
+     "upperTenths": 280,
+     "rangeDisplay": "(27.9, 28.0)",
+     "betweenCategories": [
+      "overweight",
+      "obese"
+     ]
+    }
+   ]
+  }
+ },
+ "unresolvedRules": {
+  "bmi_boundary_precision_unresolved": {
+   "code": "bmi_boundary_precision_unresolved",
+   "status": "unresolved",
+   "affectedEvents": [
+    "bmi"
+   ],
+   "description": "国家标准BMI评分表仅列示一位小数区间（如男正常17.9~23.9、低体重≤17.8、超重24.0~27.9、肥胖≥28.0；女正常17.2~23.9、低体重≤17.1），未在标准表注中规定原始BMI保留一位小数采用四舍五入、截断还是直接比较。落入相邻一位小数开区间空隙（如17.85、23.95、27.95）时无法确定唯一分类，返回unresolved。"
+  },
+  "measurement_precision_rounding_unresolved": {
+   "code": "measurement_precision_rounding_unresolved",
+   "status": "unresolved",
+   "affectedEvents": [
+    "vitalCapacity",
+    "sprint50m",
+    "sitAndReach",
+    "standingLongJump"
+   ],
+   "description": "当输入的原始测量值精度高于评分表刻度（例如50米跑输入两位小数6.75秒、坐位体前屈输入两位小数24.85厘米）且向下取位与向上取位跨越不同得分档位时，因未核实学校电子设备统一取位规则，禁止擅自四舍五入或截断，返回unresolved。"
+  },
+  "cuc_2024_policy_multi_year_scope_unresolved": {
+   "code": "cuc_2024_policy_multi_year_scope_unresolved",
+   "status": "unresolved",
+   "affectedEvents": [],
+   "description": "《中国传媒大学〈国家学生体质健康标准〉实施办法（2024年修订）》（本科生院〔2024〕115号）明确自2024级本科生起施行；学生工作部HTML正文已读取，附件PDF未另下载，毕业综合成绩折算、免测、补测、评奖资格及2023级及更早学生适用细则的完整实现与应用仍不在Phase 1范围内，不因读取正文自动视为已完成管理规则核验。"
+  }
+ }
+}

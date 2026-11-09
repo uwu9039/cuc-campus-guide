@@ -18,6 +18,8 @@
   --btn-line: #cfcfc7;
   --bar-slide: .38s;
   --chip-bg: #efefec;
+  /* 思考框体那层微弱毛玻璃：白底上靠压暗一点点的透白，夜里靠提亮一点点的透白 */
+  --glass: rgba(255, 255, 255, .58);
   --warn-ink: #a8452f;
   /* 检索标字（原文检索里输入对应的字）：浅底配金底深字，和下面的暗色块成一对 */
   --hit-bg: #ffe9a3;
@@ -53,6 +55,8 @@
   --sw-h: 32px;
   --sw-w: 76px;
   --sw-inset: 2.5px;
+  /* 思考行折叠时的高度：三行中文（12px × 行高 1.62 × 3） */
+  --think-fold: calc(12px * 1.62 * 3);
   --sw-night: #2b303e;
   --sw-day: #5a81b4;
   --sw-star: #ffffff;
@@ -90,6 +94,7 @@
   --btn-line: #3a3e46;
   --bar-slide: .38s;
   --chip-bg: #21242b;
+  --glass: rgba(255, 255, 255, .06);
   --warn-ink: #e78a6b;
   /* 检索标字的暗色一档：金底压成暗金、字提亮，夜里不会在屏幕上烫出一个亮块 */
   --hit-bg: #4a3f14;
@@ -409,21 +414,57 @@ body[data-mode="work"] .inspector {
 .card { padding: var(--panel-pad); background: var(--surface); border-radius: var(--radius-panel); animation: field-land .48s var(--land-ease) both; overflow-wrap: anywhere; }
 body[data-mode="hero"] .card { background: var(--surface); }
 .ask { padding: 14px 18px; border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--ink); font-size: 15px; justify-self: start; }
-/* 等模型回话时的占位：三个点在答案将要开始的原地点跳，答案一到就被覆盖掉。
+/* 等模型回话时的占位：一个不带文字的思考框停在答案将要开始的原地点，内容一到就被覆盖掉。
    min-height 不是留白好看，是这一条能成立的前提——文档不够长时 window.scrollTo
    会被滚动上限夹住，「先跳到答案位置」根本跳不到位。 */
 .thinking {
   display: flex; align-items: flex-start; gap: 8px; padding-left: 1em;
   min-height: calc(100vh - var(--panel-top, var(--topbar-keep)) - 90px);
 }
-.thinking i {
+/* 2026-11-07 用户口径「像 qoder 那样」：不用填色卡片，改成一道竖线挂着的灰字行。
+   后端一条都不报（思考过程很短）时，这条线后面只跳三个点。 */
+.thinkbox {
+  flex: 1; min-width: 0; max-width: 620px; padding: 10px 14px;
+  background: var(--glass); backdrop-filter: blur(8px);
+  border-left: 2px solid var(--line);
+  border-radius: 0 var(--radius-panel) var(--radius-panel) 0;
+}
+.thinkbox.now { border-left-color: var(--accent); }
+/* 三点那一行不铺玻璃：它只是「还在想」的信号，不是一步的内容 */
+.thinkbox.dots {
+  display: flex; align-items: center; gap: 8px; padding: 2px 0 2px 12px;
+  background: none; backdrop-filter: none; border-radius: 0; font-size: 12px;
+}
+/* 排在框体下面时再往下让一个汉字高（1em＝上面这条的 12px），贴着上一行会看着像同一块 */
+.thinksteps > .thinkbox.dots:not(:first-child) { margin-top: 1em; }
+.thinkbox i {
   width: 9px; height: 9px; border-radius: 50%; background: var(--accent);
   animation: field-bounce 1.05s var(--land-ease) infinite;
 }
-.thinking i:nth-child(1) { animation-delay: 0s; }
-.thinking i:nth-child(2) { animation-delay: .16s; }
-.thinking i:nth-child(3) { animation-delay: .32s; }
+.thinkbox i:nth-child(1) { animation-delay: 0s; }
+.thinkbox i:nth-child(2) { animation-delay: .16s; }
+.thinkbox i:nth-child(3) { animation-delay: .32s; }
 @keyframes field-bounce { 0%, 64%, 100% { translate: 0 0; opacity: .3; } 32% { translate: 0 -9px; opacity: 1; } }
+/* 后端报出每一步之后改成「一调用一行」。等待时那一屏高的占位要留着（跳转落位靠它），
+   答案到达后塌成摘要行，占位就不再需要了。 */
+.thinksteps { flex: 1; min-width: 0; display: grid; gap: 6px; }
+/* display:grid 的优先级压过 UA 的 [hidden]{display:none}，不补这一条就永远收不起来 */
+.thinksteps[hidden] { display: none; }
+.thinking[data-done="1"] { display: block; min-height: 0; }
+.thinklab { margin: 0; color: var(--ink); font-size: 12px; font-weight: 700; }
+.thinktxt { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.62; overflow-wrap: anywhere; }
+/* 上一行折起来：正文夹到三行中文高度 */
+.thinkbox.folded .thinktxt {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  max-height: var(--think-fold); overflow: hidden;
+}
+.thinksum {
+  display: inline-flex; align-items: center; gap: 6px; padding: 0;
+  border: 0; background: none; color: var(--muted); font-size: 12px; cursor: pointer;
+}
+.thinksum::before { content: "▸"; color: var(--accent); }
+.thinksum[aria-expanded="true"]::before { content: "▾"; }
+.thinksum:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .cardhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 .tag { padding: 5px 11px; border-radius: var(--radius-pill); background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
 .tag.warn { background: var(--chip-bg); color: var(--muted); }
@@ -483,6 +524,9 @@ mark.hit { background: var(--hit-bg); color: var(--hit-ink); padding: 0 2px; bor
 .errcard h2 { font-size: 22px; text-transform: none; letter-spacing: 0; }
 .plink { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--line); }
 .plink:hover { border-bottom-color: var(--accent); }
+/* 正文里的网址：长串必须能折行，否则一条 URL 把整张卡撑破 */
+.ulink { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.ulink:hover { border-bottom-color: var(--accent); }
 @keyframes field-land { from { opacity: .3; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 /* 条目档案 */

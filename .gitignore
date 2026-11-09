@@ -54,3 +54,32 @@ Thumbs.db
 # 派生检索库（由 tools/build_kb_db.py 重建，不入库、不随包发布）
 /kb.sqlite
 *.sqlite
+
+# 体测计算器开工前基线忽略补充（Task 0）
+/items.json
+/items*.json
+/items_before_*.json
+/_review_items/
+/_api_dig/
+/_attachments_*
+/_studio_*/
+/_exp_review_*/
+/video-remotion/
+/video-promotion/
+/video-promo/
+/sources/
+/dist/
+*.npy
+*.tar.gz
+*.json.gz
+/download.devtools
+__pycache__/
+
+# 一次性重型快照（items/presets 的 .bak-* 后缀不被 *.bak 命中；ssr/审计转储均为可重建派生物）
+/*.bak*
+/_*ssr*.html
+/_ilib_js/
+/_new_items.json
+/_mc_tmp.json
+/_review*
+/_audit_*

@@ -57,6 +57,11 @@ def plan_pdf_names() -> set[str]:
 
 def token() -> str:
     import os
+    # 沙箱里 Python 开不了管道调 PowerShell（CreatePipe 被拒），先在 shell 里取好放环境变量；
+    # 环境变量只活在这一次进程里，不落盘、不打印。
+    env = os.environ.get("GH_TOKEN", "").strip()
+    if env.startswith("gh"):
+        return env
     path = os.path.expandvars(r"%USERPROFILE%\.dsh\skills\github-credential\gh-token.ps1")
     ps = "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force; & '%s'" % path
     out = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, timeout=60)

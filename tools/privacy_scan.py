@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -22,12 +23,16 @@ SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
 TEXT_EXT = {".py", ".json", ".md", ".html", ".txt", ".bat", ".js", ".css", ".cfg", ".toml", ".yml", ".yaml"}
 BIN_EXT = {".pdf", ".png", ".jpg", ".jpeg", ".gif", ".zip", ".docx", ".xlsx"}
 
+_USER = (os.environ.get("USERNAME") or os.environ.get("USER") or "").strip()
+
 RULES = [
     ("API Key", re.compile(r"sk-[A-Za-z0-9]{16,}")),
     ("GitHub Token", re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}")),
     ("手机号", re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)")),
     ("邮箱", re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")),
-    ("本机用户路径", re.compile(r"[A-Za-z]:[\\\\/]+Users[\\\\/]+admin", re.I)),
+    # 账号名从环境取，不写死在仓库里：扫描器自己也不该把本机用户名带出去
+    ("本机用户路径", re.compile(rf"[A-Za-z]:[\\\\/]+Users[\\\\/]+{re.escape(_USER)}", re.I)
+     if _USER else re.compile(r"(?!x)x")),
     ("本地项目路径", re.compile(r"[A-Za-z]:[\\\\/]+DSH[\\\\/]")),
     ("file:// 本地引用", re.compile(r"file:///[A-Za-z]:/")),
 ]
@@ -77,7 +82,9 @@ def main() -> None:
             new = text
             new = re.sub(r"file:///[A-Za-z]:/[^\"'\s]*", "（本地文件，未入库）", new)
             new = re.sub(r"[A-Za-z]:[\\/]+DSH[\\/][^\"'\s]*", "（本地路径已隐藏）", new)
-            new = re.sub(r"[A-Za-z]:[\\/]+Users[\\/]+admin[^\"'\s]*", "（本地路径已隐藏）", new)
+            if _USER:
+                new = re.sub(rf"[A-Za-z]:[\\/]+Users[\\/]+{re.escape(_USER)}[^\"'\s]*",
+                             "（本地路径已隐藏）", new, flags=re.I)
             if new != text:
                 p.write_text(new, encoding="utf-8")
                 changed += 1

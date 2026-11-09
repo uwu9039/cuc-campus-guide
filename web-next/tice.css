@@ -1,0 +1,915 @@
+/* ============================================================
+   体测计算器 / web-next/tice.css
+   沿用 field.css 的「钴蓝场」令牌；本文件不得出现裸色值（十六进制、rgb 函数、hsl 函数），
+   颜色一律 var(--…)，日夜两套由 field.css 的 :root[data-theme] 各自落数。
+
+   两套纪律（设计审计量出来的）：
+   · 字号只保留 6 档：12 / 13 / 15 / 16 / 32 / 64(display)；
+   · 间距只落 4px 网格：4 / 8 / 12 / 16 / 24 / 32。
+   ============================================================ */
+
+.tice-page {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.tice-page .brand-sub { font-size: 12px; }
+.tice-page .statline { font-size: 13px; }
+.tice-page .ghostbtn { font-size: 13px; }
+
+.tice-main {
+  /* 顶栏是 position:sticky —— 它在文档流里、自己占高度，所以这里**不能**再加
+     --topbar-keep（那是给浮层留的偏移，加在正文上等于算了两次，整页会被推下 ~116px）。
+     左右留白与顶栏对齐（44px），视觉上才是同一条版心线。 */
+  width: min(1100px, calc(100% - 44px));
+  margin: 0 auto;
+  padding: 32px 0 96px;
+  display: grid;
+  gap: 32px;
+}
+
+/* ---------- 抬头 ---------- */
+.tice-hero { display: grid; gap: 12px; }
+
+.tice-kicker {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  color: var(--muted);
+}
+
+.tice-h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(36px, 5.4vw, 64px);
+  line-height: .94;
+  letter-spacing: -.02em;
+  font-weight: 800;
+}
+
+.tice-lede {
+  margin: 0;
+  max-width: 64ch;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.tice-disclaimer {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- 两栏 ---------- */
+.tice-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 940px) {
+  .tice-body { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 性别 / 年级：滑动选择器 ---------- */
+.tice-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-end;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+}
+
+.tice-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
+
+.tice-seg {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 4px;
+  gap: 0;
+  background: var(--chip-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  --n: 2;
+  --i: 0;
+}
+
+/* 滑动块是白胶囊，选中项用强调色字：对比度按真实底色（浅底）算，
+   不必依赖「白字压在一个兄弟元素上」那种算不出来 1:1 的分层。 */
+.tice-seg-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--n));
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--btn-line);
+  border-radius: var(--radius-pill);
+  transform: translateX(calc(100% * var(--i)));
+  transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+  pointer-events: none;
+}
+
+.tice-seg button {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color .2s ease;
+}
+
+.tice-seg button[aria-pressed="true"] {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.tice-seg button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tice-seg-thumb { transition: none; }
+}
+
+/* ---------- 卡片列表：一项一张 ---------- */
+.tice-cards { display: grid; gap: 16px; }
+
+.tice-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.tice-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tice-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.tice-card-idx {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 输入框：单位贴在框内右侧 */
+.tice-inputwrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--btn-line);
+  border-radius: 16px;
+}
+
+.tice-inputwrap:focus-within {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.tice-inputwrap.is-bad { border-color: var(--warn-ink); }
+
+.tice-inputwrap input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tice-inputwrap input:focus { outline: none; }
+.tice-inputwrap input::placeholder { color: var(--muted); opacity: .72; }
+
+.tice-suffix {
+  flex: 0 0 auto;
+  padding-right: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 身高 / 体重并排 */
+.tice-duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 620px) {
+  .tice-duo { grid-template-columns: minmax(0, 1fr); }
+}
+
+.tice-duo-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* BMI 大数 + 分类 */
+.tice-bmi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tice-bmi-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+
+.tice-bmi-value {
+  font-family: var(--display);
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 状态行：徽标 + 实测值 */
+.tice-statusline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.tice-badge[data-state="ok"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tice-badge[data-state="bad"] { color: var(--warn-ink); }
+
+.tice-badge[data-state="uncertain"] {
+  background: var(--surface);
+  color: var(--warn-ink);
+  box-shadow: inset 0 0 0 1px var(--warn-ink);
+}
+
+/* 三列统计：单项得分 / 权重 / 加权贡献 */
+.tice-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.tice-stats div { display: grid; gap: 4px; }
+
+.tice-stats dt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.tice-stats dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tice-stats dd .u {
+  margin-left: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.tice-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.tice-hint.is-warn { color: var(--warn-ink); }
+
+/* ---------- 结果卡 ---------- */
+.tice-result {
+  position: sticky;
+  top: calc(var(--topbar-keep) + 16px);
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 940px) {
+  .tice-result { position: static; }
+}
+
+.tice-score {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.tice-total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.tice-total b {
+  font-family: var(--display);
+  font-size: clamp(36px, 5.4vw, 64px);
+  line-height: .9;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tice-total span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tice-grade {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.tice-breakdown {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.tice-note {
+  margin: 0;
+  padding: 16px;
+  border: 1px dashed var(--btn-line);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.tice-note.is-warn {
+  border-color: var(--warn-ink);
+  color: var(--warn-ink);
+}
+
+/* ---------- 保存按钮 ---------- */
+.tice-save {
+  justify-self: start;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tice-save:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 最终结果页：单学年成绩结果 ---------- */
+.tice-report { display: grid; gap: 16px; }
+
+.tr-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tr-kicker {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.tr-count { color: var(--muted); font-size: 12px; font-weight: 700; }
+
+.tr-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.tr-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tr-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.tr-total b {
+  font-family: var(--display);
+  font-size: 64px;
+  line-height: .9;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-of { color: var(--muted); font-size: 13px; font-weight: 700; }
+
+.tr-grade { text-align: right; }
+
+.tr-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.tr-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.tr-split b {
+  font-family: var(--display);
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-overview {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg);
+  font-size: 13px;
+}
+
+.tr-overview b { font-size: 15px; }
+.tr-overview span { color: var(--muted); }
+
+.tr-detail-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.tr-detail-head b { font-size: 15px; }
+.tr-detail-head span { color: var(--muted); font-size: 12px; }
+
+.tr-list { display: grid; gap: 12px; }
+
+.tr-row {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateY(-14px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.16, .84, .24, 1);
+}
+
+.tr-row.is-in { opacity: 1; transform: translateY(0); }
+
+/* 行内数字逐个浮现：单项分 → 权重 → 加权贡献 → 附加分 */
+.tr-stats dd {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity .42s ease, transform .42s ease;
+}
+
+.tr-row.is-in .tr-stats dd { opacity: 1; transform: translateY(0); }
+.tr-row.is-in .tr-stats div:nth-child(1) dd { transition-delay: .10s; }
+.tr-row.is-in .tr-stats div:nth-child(2) dd { transition-delay: .22s; }
+.tr-row.is-in .tr-stats div:nth-child(3) dd { transition-delay: .34s; }
+.tr-row.is-in .tr-stats div:nth-child(4) dd { transition-delay: .46s; }
+
+/* 总分读板最后才出现（滚到底之后） */
+.tr-readout {
+  opacity: 0;
+  transform: translateY(-14px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(.16, .84, .24, 1);
+}
+
+.tr-readout.is-in { opacity: 1; transform: translateY(0); }
+
+.tr-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tr-idx {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-row-head b { font-size: 15px; flex: 1 1 auto; }
+
+.tr-measured {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tr-measured b {
+  color: var(--ink);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-stats {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 12px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.tr-stats dt { font-size: 12px; font-weight: 700; color: var(--muted); }
+
+.tr-stats dd {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-foot {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tr-foot.is-strong { color: var(--ink); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-row { animation: none; }
+}
+
+/* ---------- 结果出现 / 说明展开的过渡 ---------- */
+.tice-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tice-btn[disabled] {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* 出现方式：从上方缓缓落到位（translateY -14px → 0）+ 淡入。
+   方向是「下移」，不是常见的往上浮；时长放缓到 520ms。 */
+@keyframes tice-drop {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tice-score.is-in { animation: tice-drop .52s cubic-bezier(.16, .84, .24, 1) both; }
+
+.tice-score.is-pending .tice-total b { color: var(--muted); }
+
+.tice-decl[open] .tice-decl-body { animation: tice-drop .36s cubic-bezier(.16, .84, .24, 1) both; }
+
+/* 结果页整体铺开：靠 JS 把 max-height 从 0 过渡到内容高度，页面因此被缓缓往下推。 */
+.tice-report.is-unfolding {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .7s cubic-bezier(.16, .84, .24, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tice-score.is-in,
+  .tice-decl[open] .tice-decl-body { animation: none; }
+  .tice-report.is-unfolding { transition: none; max-height: none; }
+}
+
+/* ---------- 本机记录 ---------- */
+.tice-history { display: grid; gap: 12px; margin-top: 16px; }
+
+.tice-history-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tice-hrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  font-size: 13px;
+}
+
+.tice-hyear {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.tice-hscore {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tice-htime {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tice-hacts { display: flex; gap: 8px; }
+
+.tice-hacts .ghostbtn { padding: 4px 8px; font-size: 12px; }
+
+@media (max-width: 620px) {
+  .tice-hrow { grid-template-columns: minmax(0, 1fr) auto; }
+  .tice-htime { display: none; }
+  .tice-hacts { grid-column: 1 / -1; }
+}
+
+/* ---------- 档案浮层 ---------- */
+#archive-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: var(--scrim-bg);
+  opacity: .42;
+}
+
+#archive-panel {
+  position: fixed;
+  z-index: 21;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+#archive-panel h2 { margin: 0; font-size: 15px; }
+
+.tice-form-row { display: grid; gap: 8px; }
+
+.tice-form-row label { font-size: 13px; font-weight: 800; }
+
+.tice-form-row input {
+  padding: 12px 16px;
+  border: 1px solid var(--btn-line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.tice-form-row input:focus,
+.tice-form-row input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.tice-form-err {
+  margin: 0;
+  color: var(--warn-ink);
+  font-size: 12px;
+}
+
+.tice-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.tice-btn {
+  border: 1px solid var(--btn-line);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tice-btn.is-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* ---------- 来源与说明（默认收起） ---------- */
+.tice-decl {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  color: var(--muted);
+}
+
+.tice-decl-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  border-radius: var(--radius-panel);
+}
+
+.tice-decl-summary::-webkit-details-marker { display: none; }
+
+.tice-decl-summary::after {
+  content: "展开";
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tice-decl[open] .tice-decl-summary::after { content: "收起"; }
+
+.tice-decl-summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tice-decl-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 24px 24px;
+  font-size: 13px;
+}
+
+.tice-decl p {
+  margin: 0;
+  max-width: 62ch;
+  line-height: 1.7;
+}
+
+.tice-decl ul {
+  margin: 0;
+  padding-left: 20px;
+  max-width: 62ch;
+  display: grid;
+  gap: 8px;
+  line-height: 1.65;
+}
+
+.tice-decl .u { color: var(--warn-ink); }
+
+
+
+/* ---------- 顶栏：滚动收起 / 日夜开关钉右缘 ---------- */
+/* 日夜开关不跟版心：固定到视口右侧，移动端/PC 都在最右边，只调位置不改尺寸。
+   顶栏收起时 .topbar.is-up 会把整条 visibility:hidden，这个按钮要单独放行。 */
+.tice-page .themesw {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 8;
+}
+
+.tice-page .topacts { padding-right: 56px; }
+
+.tice-page .topbar.is-up .themesw { visibility: visible; }
+
+@media (max-width: 620px) {
+  .tice-page .themesw { top: 12px; right: 12px; }
+  .tice-page .topacts { padding-right: 52px; }
+}
+
+/* hidden 属性必须压过作者样式里的 display：给 #archive-panel 写了 display:grid 之后，
+   浏览器默认的 [hidden]{display:none} 就失效了，空面板会变成屏幕中间一条白条。 */
+.tice-page [hidden] { display: none !important; }

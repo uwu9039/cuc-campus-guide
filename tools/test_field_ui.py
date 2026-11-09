@@ -615,28 +615,33 @@ class ResultContractTest(unittest.TestCase):
         self.assertIn("thinking", code, "等答案时要在槽里放加载动画")
         self.assertIn("jumpToStart(slot)", code, "要先跳到答案将要开始的位置")
         call = code.index("jumpToStart(slot)")
-        self.assertLess(call, code.index('api("/api/ask"'), "跳转要在发请求之前，不能答完才跳")
-        self.assertLess(code.index("thinking"), code.index('api("/api/ask"'), "加载动画要在发请求之前就位")
-        # 三个点是这一条的点名的形态：两个或四个都算没按要求做
-        self.assertRegex(code, r"(<i></i>){3}", "加载动画要正好三个点")
+        self.assertLess(call, code.index("await askStream("), "跳转要在发请求之前，不能答完才跳")
+        self.assertLess(code.index("thinking"), code.index("await askStream("), "加载动画要在发请求之前就位")
+        # 2026-11-07 用户改口两轮：先换成不带文字的框（qoder 那种一行一行），再把「后端一条都不报」
+        # 时的那一个占位换回跳动三点。等待态与逐步态各一套，见 test_waiting_placeholder_is_three_bouncing_dots。
+        self.assertIn("thinkbox dots", code, "等待时要跳三个点")
+        self.assertIn("<i></i><i></i><i></i>", code, "等待时要正好三个点，两个或四个都算没按要求")
         self.assertRegex(code, r'class="thinking"[^>]*role="status"', "加载状态要让读屏软件读得到")
         # 原先点选项在答完后再往回跳一次（跳到这一问的开头）。现在发请求前就跳到位，
         # 再留那一支会把已经停好的答案顶出屏幕。
         self.assertNotIn("fromOption", read("field.js"), "答完后的回跳已撤销，不能再留着")
 
     def test_answer_replaces_the_loading_animation(self):
-        # 「返回内容后隐藏」的实现就是把答案写进同一个槽；槽里若留着 .thinking，
-        # 加载点会和答案并存。错误分支同理：答不上来也要收掉加载。
+        # 「返回内容后隐藏」的实现就是把内容写进同一个槽。2026-11-07 用户改口：
+        # 后端报出思考流时，那一串框不消失而是塌成一行摘要留在答案上方（点开看全文），
+        # 所以槽里现在是「塌好的摘要 + 答案」——摘要由 collapsed() 生成，没有框时它给空串。
         body = re.search(r"async function ask\(text, pick\)\s*\{([\s\S]*?)\n  \}", read("field.js"))
         self.assertTrue(body, "找不到 ask()")
         code = body.group(1)
-        self.assertRegex(code, r"slot\.innerHTML = renderResult\(response\)", "答案要渲染进那个槽")
-        self.assertRegex(code, r"slot\.innerHTML = `<div class=\"errcard\"", "失败也要渲染进那个槽")
-        self.assertLess(code.index('await api("/api/ask"'), code.index("slot.innerHTML = renderResult"),
-                        "渲染必须在请求返回之后")
-        # 答案写进同一个槽，所以「隐藏加载」就是覆盖 innerHTML；不能再留一处 separate 的
-        # .thinking 选择器去删它，那样点选项那一支会漏收。
-        self.assertNotIn("querySelector(\".thinking\")", code, "收加载靠覆盖槽，不需要单独找动画节点")
+        self.assertRegex(code, r"slot\.innerHTML = flow\.collapsed\(\) \+ renderResult\(response\)",
+                         "答案要渲染进那个槽，前面顶多带一行塌好的摘要")
+        self.assertRegex(code, r"slot\.innerHTML = `\$\{flow\.collapsed\(\)\}<div class=\"errcard\"",
+                         "失败也要渲染进那个槽")
+        self.assertLess(code.index("await askStream("), code.index("flow.collapsed()"),
+                        "摘要只能在请求返回之后塌")
+        # 塌与不塌都由 collapsed() 一个出口决定，不能再留一处单独的 .thinking 节点删除逻辑，
+        # 那样点选项那一支会漏收。
+        self.assertNotIn("querySelector(\".thinking\")", code, "收加载靠重写槽，不需要单独找动画节点")
 
     def test_answer_lands_where_the_loader_stood(self):
         # 真实速度下答案常在 0.3~1s 回来，「跳过去」的平滑滚动还没跑完：占位比答案高，
@@ -647,10 +652,10 @@ class ResultContractTest(unittest.TestCase):
         self.assertTrue(body, "找不到 ask()")
         code = body.group(1)
         self.assertEqual(code.count("jumpToStart(slot)"), 3, "发请求前一次，答案后一次，错误卡后一次")
-        self.assertLess(code.index("jumpToStart(slot)"), code.index('api("/api/ask"'), "第一跳仍要在发请求之前")
+        self.assertLess(code.index("jumpToStart(slot)"), code.index("await askStream("), "第一跳仍要在发请求之前")
         self.assertRegex(code, r"afterResult\(response\);\s*\n\s*(//[^\n]*\n\s*)*jumpToStart\(slot\);",
                          "答案渲染完、afterResult 把满屏态收掉之后要立刻重新落位")
-        self.assertRegex(code, r"slot\.innerHTML = `<div class=\"errcard\"[\s\S]*?`;\s*\n\s*jumpToStart\(slot\);",
+        self.assertRegex(code, r"slot\.innerHTML = `\$\{flow\.collapsed\(\)\}<div class=\"errcard\"[\s\S]*?`;\s*\n\s*jumpToStart\(slot\);",
                          "错误卡写进槽后也要重新落位，它比占位更矮")
 
     def test_jump_lands_instantly_not_by_gliding(self):
@@ -660,20 +665,154 @@ class ResultContractTest(unittest.TestCase):
         self.assertRegex(code, r'behavior:\s*"instant"', "落位要瞬时到位，不能留平滑滚动的窗口")
         self.assertNotRegex(code, r'behavior:\s*"smooth"', "这一条链路不再用平滑滚动")
 
-    def test_thinking_dots_have_a_bounce_keyframe(self):
+    def test_waiting_placeholder_is_three_bouncing_dots(self):
+        # 2026-11-07 用户口径：思考过程很短（后端一条都不报）时，那条蓝色长横线换回跳动三点，
+        # 其余形态（一行一调用、灰竖线、塌摘要）都不动。
         css = read("field.css")
+        block = re.search(r"\.thinkbox \{([^}]*)\}", css)
+        self.assertTrue(block, "思考行的样式还没写")
+        self.assertIn("border-left: 2px solid var(--line);", block.group(1), "竖线是灰的，只有正在想的那条变强调色")
+        self.assertNotIn("background: var(--chip-bg)", block.group(1), "不用填色卡片，框体改走微弱毛玻璃")
+        self.assertNotIn("border: 1px solid var(--line); border-left", block.group(1),
+                         "描边卡片那套已经去掉，只留竖线与毛玻璃")
+        now = re.search(r"\.thinkbox\.now \{([^}]*)\}", css)
+        self.assertTrue(now, "正在想的那一条要有区分")
+        self.assertIn("border-left-color: var(--accent);", now.group(1))
+        dots = re.search(r"\.thinkbox i \{([^}]*)\}", css)
+        self.assertTrue(dots, "等待时的三点还没写")
+        for want in ("width: 9px;", "height: 9px;", "border-radius: 50%;", "background: var(--accent);"):
+            self.assertIn(want, dots.group(1), f"三点要跳的是圆点：{want}")
+        self.assertRegex(dots.group(1), r"animation:\s*field-bounce\b", "三点要挂跳动动画")
         self.assertRegex(css, r"@keyframes field-bounce\b", "要有三点跳动的关键帧")
-        self.assertRegex(css, r"\.thinking i\s*\{[^}]*animation:", "每个点都要挂上跳动动画")
-        self.assertEqual(len(re.findall(r"\.thinking i:nth-child", css)), 3, "三个点要各错开相位，才跳得出顺序")
+        self.assertNotIn("field-think", css, "蓝色长横线换回三点之后，呼吸线这套就没人用了")
+        self.assertEqual(len(re.findall(r"\.thinkbox i:nth-child", css)), 3, "三个点要各错开相位，才跳得出顺序")
+        self.assertNotIn(".thinking i", css, "点挂在 .thinkbox 里，`.thinking i` 会串到别处")
+        # 框里不许写阶段、统计、耗时——后端没报进度，那些都是前端估的。
+        # 钉的是「等待中那一个框」的模板（塌好的摘要是另一段，里面本来就有文字）。
+        html = re.search(r'slot\.innerHTML = `<div class="thinking"[\s\S]*?`;', read("field.js"))
+        self.assertTrue(html, "找不到等待中的那个框")
+        self.assertEqual(re.findall(r"<i></i>", html.group(0)), ["<i></i>"] * 3, "等待时是三个点，不多不少")
         # 占位必须撑得起一屏：文档不够长时 window.scrollTo 会被浏览器夹住，
         # 「跳到答案将要开始的位置」根本跳不到位。
         self.assertRegex(css, r"\.thinking\s*\{[^}]*min-height:", "加载占位要留出高度，否则跳转会被滚动上限夹住")
 
+    def test_dots_stay_at_the_bottom_while_steps_stack(self):
+        # 2026-11-07 用户口径：那三个点一直在，每出现一个框就往下顺延一格。
+        code = read("field.js")
+        self.assertIn("thinkbox dots", code, "三点要在思考流里常驻，不只是没步骤时的临时占位")
+        open_fn = js_region(code, "function open() {", "\n    }")
+        self.assertIn('<div class="thinkbox dots"><i></i><i></i><i></i></div>', open_fn,
+                     "框组建好时就把三点放在最后一条")
+        step = js_region(code, "step(evt) {", "\n      },")
+        self.assertIn("insertBefore(node, dots)", step, "新行要插在三点之前，三点永远垫在最下面")
+        self.assertNotIn("wrap.appendChild(node)", step, "appendChild 会把行落到三点下面")
+        collapsed = js_region(code, "collapsed() {", "\n      },")
+        self.assertNotIn("dots", collapsed, "塌成摘要时三点要消失——它报的是「还在想」")
+        # 2026-11-07 用户口径：三点排在框体下面时，再往下让一个汉字高
+        css = read("field.css")
+        under = re.search(r"\.thinksteps > \.thinkbox\.dots:not\(:first-child\) \{([^}]*)\}", css)
+        self.assertTrue(under, "三点在框体下方时没有下移规则")
+        self.assertIn("margin-top: 1em;", under.group(1), "下移量用 1em，跟着思考行的字号走＝一个汉字高")
+        dots_rule = re.search(r"\.thinkbox\.dots \{([^}]*)\}", css)
+        self.assertIn("font-size: 12px;", dots_rule.group(1), "1em 要有基准：三点行按思考正文 12px")
+
+    def test_step_boxes_use_a_faint_glass_plate(self):
+        # 2026-11-07 用户口径：框体（每一步那一块）垫一层微弱毛玻璃。
+        css = read("field.css")
+        lab = re.search(r"\.thinkbox \{([^}]*)\}", css)
+        self.assertTrue(lab, "框体样式还没写")
+        self.assertIn("background: var(--glass);", lab.group(1), "毛玻璃的底色要走 token，两套主题各给一份")
+        self.assertIn("backdrop-filter: blur(", lab.group(1), "毛玻璃要靠 backdrop-filter，只给半透明底不算")
+        self.assertIn("var(--radius-panel)", lab.group(1), "框体要有圆角，走面板那一档")
+        glass = re.findall(r"--glass: rgba\([^)]*\);", css)
+        self.assertEqual(len(glass), 2, "--glass 要在日间与夜间两块各写一次，微弱不等于没有")
+
+    def test_summary_actually_hides_the_steps(self):
+        # 2026-11-07 实测两条投诉的同一个根因：.thinksteps 写了 display:grid，
+        # 作者样式压过 UA 的 [hidden]{display:none}，于是「答案后没自动收起」和
+        # 「收起按钮点了没反应」一起出现。JS 翻 hidden 属性是对的，缺的是这一条规则。
+        css = read("field.css")
+        hidden = re.search(r"\.thinksteps\[hidden\] \{([\s\S]*?)\}", css)
+        self.assertTrue(hidden, "display:grid 会盖掉 [hidden]，必须单独写一条 .thinksteps[hidden]")
+        self.assertIn("display: none;", hidden.group(1))
+        self.assertIn(".thinksteps {", css, "折叠靠的是 hidden 属性，框组仍要有自己的布局")
+        self.assertRegex(css, r"\.thinksteps \{[^}]*display: grid", "框组是竖排的一行一行")
+
     def test_loader_is_indented_by_one_character(self):
         # 用户点名：加载点往右移一个字宽。落在 .thinking 容器上，跟着答案槽同一列缩进，
-        # 不能去动单个点（那会把三点之间的 8px 间距也改掉）。
+        # 换成思考框后这条缩进仍然算数，动它就等于动整列。
         css = read("field.css")
         self.assertRegex(css, r"\.thinking\s*\{[^}]*padding-left:\s*1em", "加载点整体要向右错开一个字宽")
+
+    def test_ask_consumes_the_step_stream(self):
+        # 2026-11-07 用户口径：每一次模型调用各占一个框。前提是后端把调用一条条报出来，
+        # 所以现在按 event-stream 读；后端还没上 SSE 时，同一段代码要退回现在这一个框。
+        js = read("field.js")
+        self.assertIn("async function askStream(", js, "流式读取还没实现")
+        code = js_region(js, "async function askStream(", "\n  }")
+        self.assertIn('Accept: "text/event-stream"', code, "请求要声明收 event-stream")
+        self.assertIn("getReader()", code, "流式响应要按块读")
+        self.assertIn("TextDecoder", code)
+        for event in ("step", "done", "err"):
+            self.assertIn(event, code, f"SSE 三种事件里少了 {event}")
+        self.assertIn("event-stream", code, "要先看 content-type 判断是不是流")
+        self.assertIn("res.json()", code, "不是流就按一次性 JSON 读，退回现在这一个框")
+
+    def test_one_box_per_call_and_the_previous_folds(self):
+        code = read("field.js")
+        self.assertIn('classList.add("folded")', code, "下一框开始打字时，上一框要折起来")
+        self.assertIn('classList.remove("now")', code, "旧行要退回灰竖线，「正在想」只标最新那条")
+        self.assertIn("step(evt) {", code, "逐步开框的处理器还没写")
+        step = js_region(code, "step(evt) {", "\n      },")
+        self.assertRegex(step, r"thinkbox", "每一步各开一个 .thinkbox")
+        self.assertRegex(step, r"evt\.label", "框标题用后端报的 label，前端不自己起名")
+        self.assertIn("thinkLine(evt)", step, "框里的内容走后端字段，不写现成的句子")
+        line = js_region(code, "function thinkLine(", "\n  }")
+        self.assertRegex(line, r"evt\.fields|evt\.route", "字段要从后端报的那一步里取")
+        self.assertRegex(line, r"THINK_KEYS\[key\] \|\| key", "认得的字段给中文名，不认得的照原样报，别默默丢掉")
+        self.assertIn("thinkValue(value)", line, "数组与嵌套字典要递归展开，不然打成 [object Object]")
+        flat = js_region(code, "function thinkValue(", "\n  }")
+        self.assertIn('typeof value === "object"', flat, "字典值要展开成 键=值，不能直接 String(value)")
+
+    def test_folded_box_is_three_lines_of_chinese(self):
+        css = read("field.css")
+        fold = re.search(r"--think-fold: ([^;]+);", css)
+        self.assertTrue(fold, "折叠高度要落在 token 上，别把 3 行写死在规则里")
+        self.assertEqual(fold.group(1).replace(" ", ""), "calc(12px*1.62*3)",
+                         "三行中文：思考行 12px × 行高 1.62 × 3")
+        block = re.search(r"\.thinkbox\.folded \.thinktxt \{([\s\S]*?)\n\}", css)
+        self.assertTrue(block, "折叠态样式还没写")
+        self.assertIn("-webkit-line-clamp: 3;", block.group(1), "上一行的正文夹到三行")
+        self.assertIn("max-height: var(--think-fold);", block.group(1))
+        self.assertIn("overflow: hidden;", block.group(1))
+
+    def test_answer_collapse_leaves_one_summary_line(self):
+        # 用户口径：答案回来时整串框塌成一行摘要，点开看全文。
+        code = read("field.js")
+        self.assertIn('class="thinksum"', code, "摘要行要有自己的类，门和点击委托都按它找")
+        self.assertIn('aria-expanded="false"', code, "摘要行默认收起，读屏要能读出可展开")
+        self.assertIn("已思考", code, "摘要要报走了几步")
+        self.assertIn("collapsed() {", code, "塌成摘要那段还没写")
+        collapsed = js_region(code, "collapsed() {", "\n      },")
+        self.assertIn("hidden", collapsed, "摘要后面的框组默认不展开")
+        self.assertNotIn("folded", collapsed, "点开时每个框恢复全文，不再受三行限制")
+        self.assertIn('closest(".thinksum")', code, "摘要行的点击委托还没接")
+        toggle = js_region(code, 'closest(".thinksum")', "\n      }")
+        self.assertIn("aria-expanded", toggle, "点摘要要翻 aria-expanded")
+        self.assertIn("hidden", toggle, "点摘要要翻框组的 hidden")
+
+    def test_no_stage_names_are_made_up_in_the_frontend(self):
+        # 后端没报的阶段名，前端一个字都不许编（这条是上一轮「框里不写文字」的延续）。
+        js = read("field.js")
+        for banned in ("候选裁决", "正在检索", "正在核对原文", "重排候选", "改写问句"):
+            self.assertNotIn(banned, js, f"阶段名要后端报，前端不该写死：{banned}")
+
+    def test_typing_respects_reduced_motion_and_stops_on_answer(self):
+        code = read("field.js")
+        self.assertIn("function typeInto(", code, "逐字打那段还没写")
+        type_fn = js_region(code, "function typeInto(", "\n    }")
+        self.assertIn("prefers-reduced-motion", type_fn, "减少动效时直接给全文，不逐字打")
+        self.assertIn("clearInterval", code, "答案到达要停掉还在跑的打字定时器")
 
     def test_jump_uses_the_measured_topbar_edge(self):
         # 窄屏顶栏会绕成两三行（实测 159→190px），写死的 --topbar-keep=84 会把
@@ -1320,7 +1459,7 @@ class ProductionUntouchedTest(unittest.TestCase):
         self.assertFalse(changed, f"原文件被修改：{changed}")
 
     def test_only_the_expected_files_were_added(self):
-        expected = {f"field.{ext}" for ext in ("html", "css", "js")} | {EMBLEM}
+        expected = {f"field.{ext}" for ext in ("html", "css", "js")} | {EMBLEM} | {"tice-standard.json", "tice-calc.js", "tice-checks.js", "tice.html", "tice.css", "tice.js", "tice-store.js"}
         added = {
             str(path.relative_to(WEB)).replace("\\", "/")
             for path in WEB.rglob("*")
@@ -1564,6 +1703,111 @@ class SearchHitMarkTest(unittest.TestCase):
         body = rule.group(1)
         self.assertIn("background: var(--hit-bg)", body, "底色要读 token，不写死色值")
         self.assertIn("color: var(--hit-ink)", body, "字色要读 token，不写死色值")
+
+
+class UrlLinkHeadlineTest(unittest.TestCase):
+    """用户两条要求：回答里的网址要能点开；顶部大字改成模型生成的一句总括，正文不动。"""
+
+    def test_rich_text_behavior(self):
+        import subprocess
+        import tempfile
+
+        js = read("field.js")
+        esc = re.search(r"  const esc = \(value\) =>[\s\S]*?;\n", js)
+        place = re.search(r"  let PLACE_RE = null;\n", js)
+        link = re.search(r"  function linkify\(html\) \{[\s\S]*?\n  \}\n", js)
+        url = re.search(r"  const URL_RE = [^\n]*\n  function richText\(value\) \{[\s\S]*?\n  \}\n", js)
+        self.assertTrue(esc and place and link and url, "取不到 esc/linkify/richText，跑不了网址链接的行为检查")
+        script = (
+            esc.group(0) + place.group(0) + link.group(0) + url.group(0)
+            + "PLACE_RE=new RegExp('(?<!第)(?:图书馆)','g');"
+            "const cases=["
+            # 正文里的网址：要变成 a，href 与文字一致
+            '["登录 https://software.cuc.edu.cn 下载软件"],'
+            # www 开头补上协议，否则浏览器当相对路径
+            '["入口 www.cuc.edu.cn 打开"],'
+            # 全角括号和句号不能被吞进网址
+            '["平台（https://x.cn/a）。"],'
+            # 带 & 的网址：href 必须转义，不能把属性截断
+            '["看 https://a.cn/?u=1&v=2 这页"],'
+            # 没有网址的句子：一个 a 都不许多出来（地点词仍走老逻辑）
+            '["图书馆三层有自习区"],'
+            '[""],'
+            # 网址里含地点词时不许 a 套 a
+            '["https://lib.cuc.edu.cn/图书馆 是入口"],'
+            # 尖括号照旧转义，不能被当标签吃进去
+            '["<b>粗</b> https://a.cn"]'
+            "];"
+            "process.stdout.write(JSON.stringify(cases.map(([t])=>richText(t))));"
+        )
+        handle = tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8")
+        handle.write(script)
+        handle.close()
+        try:
+            result = subprocess.run(["node", handle.name], capture_output=True, text=True, timeout=60)
+            self.assertEqual(result.returncode, 0, f"node 跑不起来：{result.stderr[:400]}")
+            out = json.loads(result.stdout)
+        finally:
+            Path(handle.name).unlink(missing_ok=True)
+
+        self.assertIn('class="ulink" href="https://software.cuc.edu.cn"', out[0], out[0][:120])
+        self.assertIn('href="https://www.cuc.edu.cn"', out[1], out[1][:120])
+        self.assertIn('href="https://x.cn/a"', out[2], out[2][:120])
+        self.assertIn("）。", out[2].split("</a>")[1], "全角括号和句号该留在网址外面")
+        self.assertIn("u=1&amp;v=2", out[3], out[3][:160])
+        self.assertNotIn("ulink", out[4], "没网址就不许多一个链接")
+        self.assertIn('data-ask="图书馆在哪"', out[4], "地点词的链接不能因为改造型丢掉")
+        self.assertEqual(out[5], "", "空串要出空串")
+        self.assertEqual(out[6].count("<a "), 1, f"网址整体成链接，里面的地点词不能再套一层：{out[6][:160]}")
+        self.assertNotIn("<a class=\"ulink\" href=\"https://lib.cuc.edu.cn/<a", out[6])
+        self.assertIn("&lt;b&gt;", out[7], "转义不能因为加链接而退化")
+
+    def test_all_answer_paths_render_urls(self):
+        body = read("field.js")
+        # linkify(esc( 只允许剩两处，且都在 richText 自己肚子里（非网址段仍要走地点词）
+        self.assertEqual(body.count("linkify(esc("), 2,
+                         "richText 之外还有一处直接 linkify(esc(...))，那条路径的网址点不开")
+        for anchor in ("richText(what)", "richText(line)", "richText(text)", "richText(q.quote)",
+                       "richText(data.note)", "richText(item.summary)",
+                       "richText(data.llm_answer.text"):
+            self.assertIn(anchor, body, f"少了 {anchor}")
+
+    def test_headline_only_moves_the_big_text(self):
+        body = read("field.js")
+        self.assertIn("cardHead(data, data.headline || item.title || \"\")", body,
+                      "顶部大字要优先用模型总括，没有才回退条目标题")
+        self.assertIn("NO.${String(state.count).padStart(3, \"0\")} · ${esc(docName(item.title || \"\"))}",
+                      body, "卡底必须继续写真实条目标题，否则改完就没法核对是哪一条")
+
+    def test_ulink_style_uses_tokens(self):
+        css = read("field.css")
+        rule = re.search(r"\.ulink \{([^}]*)\}", css)
+        self.assertTrue(rule, "没有 .ulink 规则")
+        self.assertIn("var(--accent)", rule.group(1))
+        self.assertIn("overflow-wrap: anywhere", rule.group(1), "长网址必须能折行")
+        self.assertIsNone(re.search(r"#[0-9a-fA-F]{3,8}", rule.group(1)), "色值只能读 token")
+
+
+class ShortTitleTest(unittest.TestCase):
+    """「理解成」那一行原本直接端条目标题，汇编切片带网址和章节号，最显眼处没法看。"""
+
+    def test_short_title_strips_url_and_section(self):
+        import app
+        ugly = ("五、正版化软件 正版Adobe使用说明，｜1在学校正版化软件平台"
+                "（https://software.cuc.edu.cn）首页")
+        got = app._short_title(ugly)
+        self.assertNotIn("http", got, got)
+        self.assertNotIn("｜", got, got)
+        self.assertFalse(got.startswith("五、"), got)
+        self.assertLessEqual(len(got), 25, got)
+        self.assertTrue(got, "标题不能收拾成空串")
+        self.assertEqual(app._short_title("校园卡补卡"), "校园卡补卡")
+        self.assertEqual(app._short_title(None), "")
+
+    def test_normalized_uses_short_title(self):
+        src = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn('normalized = f"{_short_title(top[\'title\'])} · "', src,
+                      "「理解成」那行还在用原始条目标题")
 
 
 if __name__ == "__main__":

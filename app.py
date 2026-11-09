@@ -8,22 +8,29 @@
 from __future__ import annotations
 
 import base64
+import contextvars
+import functools
 import gzip
 import json
 import os
+import queue
 import re
+import sqlite3
+import threading
 import time
 import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+
+import prompt_parts as pp
 
 ROOT = Path(__file__).parent
 API_BASE = "https://api.deepseek.com"
@@ -1592,7 +1599,157 @@ def _ds_fail_text(code: int, detail: str, tried: int) -> str:
     return f"模型接口返回 {code}: {detail}"
 
 
+# ------------------------------------------------------- 流式回法：每一步模型调用报一帧
+# 只有 /api/ask 带 Accept: text/event-stream 时才挂接收器。没挂的时候下面全是
+# 一句 if 判断，非流式那条腿（经典版 app.js 与 206 回归）字节都不变。
+
+STEP_LABELS: dict[str, str] = {
+    "ctx_need": "续问判定",
+    "condense": "问句补全",
+    "route": "词条定位",
+    "rerank": "候选重排",
+    "recheck": "原文复核",
+    "second_look": "池外再看",
+    "phrase": "官方说法",
+    "assemble_plan": "拼装计划",
+    "assemble_decide": "逐面裁决",
+    "facet_fill": "缺面补检",
+    "proper_map": "名称对齐",
+    "pick_line": "表格行选定",
+    "free_answer": "组织回答",
+    "headline": "顶部总括",
+}
+
+# 一帧里能露出来的键：全是 model_route 里已有的叫法（前端认得的显示中文名，
+# 认得的照原样 key=value）。token 数、原始 prompt、模型名、重试次数不在其中——
+# 它们本来也没写进 model_route，这里再挡一道，将来有人顺手塞也漏不出去。
+STEP_FIELDS = (
+    "gate", "pool", "pool2", "score", "facets", "rewrites", "rescue", "changed",
+    "confirmed", "why", "error", "assembly", "verdict", "answers", "fills", "name",
+    "asked", "ctx_need", "ctx_need_why", "ctx_need_error", "ctx_need_dropped",
+    "condensed_query", "condense_error", "condense_dropped",
+    "pre_phrases", "headline_error", "headline_dropped",
+)
+
+_STEP_SINK: contextvars.ContextVar[Any] = contextvars.ContextVar("step_sink", default=None)
+
+
+def _clean_fields(obj: Any) -> dict[str, Any]:
+    """只留看得懂、且对人有用那几个键；空值一律丢掉（false／null／空串前端本就不显示）。"""
+    if isinstance(obj, tuple):
+        obj = next((x for x in obj if isinstance(x, dict)), {})
+    if not isinstance(obj, dict):
+        return {}
+    return {k: v for k, v in obj.items()
+            if k in STEP_FIELDS and v not in ("", None, False, [], {})}
+
+
+class _StepSink:
+    """把这一次问答里真实发生的每一次模型调用变成一帧，投进请求线程的队列。"""
+
+    def __init__(self, put: "queue.Queue[Any]") -> None:
+        self.q = put
+        self.calls = 0
+        self.secs = 0.0
+
+    def note_call(self, secs: float) -> None:
+        self.calls += 1
+        self.secs += secs
+
+    def emit(self, step_id: str, base: int, fields: dict[str, Any]) -> None:
+        if self.calls == base:          # 这一腿根本没发过模型调用，不报
+            return
+        self.q.put(("step", {
+            "id": step_id, "label": STEP_LABELS.get(step_id, step_id),
+            "t": round(self.secs, 2), "fields": fields,
+        }))
+        self.secs = 0.0
+
+
+def steped(step_id: str, pick=None):
+    """装饰每一次模型调用：真调用过才补一帧，字段就是这一次真正产出的那些。
+
+    pick 给那几个返回值不是「一目了然的字典」的腿用（压缩出来是一句问话、
+    重排出来是「条目＋说法表」这种二元组）。没挂接收器时直接透传，一次快照都不做。
+    """
+    def deco(fn):
+        @functools.wraps(fn)
+        def wrap(*a, **kw):
+            sink = _STEP_SINK.get()
+            if sink is None:
+                return fn(*a, **kw)
+            base = sink.calls
+            status = kw.get("status")
+            before = dict(status) if isinstance(status, dict) else {}
+            try:
+                out = fn(*a, **kw)
+            except Exception as e:  # noqa: BLE001
+                sink.emit(step_id, base, {"error": _short_err(e)})
+                raise
+            delta = {k: v for k, v in (status or {}).items() if k not in before or before[k] != v}
+            fields = _clean_fields(delta)
+            fields.update(_clean_fields(pick(out) if pick else out))
+            sink.emit(step_id, base, fields)
+            return out
+        return wrap
+    return deco
+
+
+def _short_err(e: Exception) -> str:
+    if isinstance(e, HTTPException):
+        return str(e.detail)[:120]
+    return f"{type(e).__name__}: {e}"[:120]
+
+
+def _sse(event: str, obj: Any) -> str:
+    """一帧两行＋空行。json 不换行缩进，值里的换行会被转义，data 恒为单行。"""
+    return f"event: {event}\ndata: {json.dumps(obj, ensure_ascii=False)}\n\n"
+
+
+def _ask_stream(**kw) -> Iterator[str]:
+    """边跑边发：模型调用落在工作线程里，主线程从队列里一帧一帧取。
+
+    done 那一帧就是 /api/ask 现在返回的那个 dict，一个键没加没减；
+    中途整体挂掉发 err，不静默断流。
+    """
+    q: queue.Queue[Any] = queue.Queue()
+
+    def work() -> None:
+        token = _STEP_SINK.set(_StepSink(q))
+        try:
+            q.put(("done", clean_response(answer_question(**kw))))
+        except Exception as e:  # noqa: BLE001
+            q.put(("err", {"error": _short_err(e)}))
+        finally:
+            _STEP_SINK.reset(token)
+            q.put(("end", None))
+
+    threading.Thread(target=work, daemon=True).start()
+    while True:
+        kind, payload = q.get()
+        if kind == "end":
+            return
+        yield _sse(kind, payload)
+
+
 def ds_chat(
+    messages: list[dict[str, Any]],
+    max_tokens: int = 600,
+    json_mode: bool = False,
+    thinking: bool = False,
+) -> str:
+    """模型调用的唯一出口；挂了流式接收器就顺手记下这一次花了多久（重试合在一起算）。"""
+    sink = _STEP_SINK.get()
+    if sink is None:
+        return _ds_chat_once(messages, max_tokens, json_mode, thinking)
+    t0 = time.perf_counter()
+    try:
+        return _ds_chat_once(messages, max_tokens, json_mode, thinking)
+    finally:
+        sink.note_call(time.perf_counter() - t0)
+
+
+def _ds_chat_once(
     messages: list[dict[str, Any]],
     max_tokens: int = 600,
     json_mode: bool = False,
@@ -2623,6 +2780,7 @@ def _followups(
     return out
 
 
+@steped("route", pick=lambda out: {"rewrites": out[1], "changed": out[0] is not None} if isinstance(out, tuple) and out[1] else {})
 def llm_route(
     text: str, candidates: list[tuple[dict[str, Any], int]],
     history: list[dict[str, str]] | None = None,
@@ -2640,18 +2798,7 @@ def llm_route(
         f"- {i['id']}：{i['title']}（别名：{'、'.join((i.get('aliases') or [])[:4])}）"
         for i, _ in candidates
     )
-    prompt = (
-        "用户在问校园办事的事。请先把他的问题翻译成 3～5 种校园里常用的说法，"
-        "再判断下列候选中是否有唯一最匹配的一项。\n"
-        f"{menu}\n\n"
-        "翻译要求：\n"
-        "- 口语改书面，同义替换，补全省略的主语或对象。\n"
-        "- 用词贴近学校文件，例如「宿舍换一下」→「调宿申请」「转宿舍办理」；"
-        "「卡丢了」→「校园卡挂失」；「成绩单在哪开」→「成绩证明办理」。\n"
-        "- 一条只表达一个意思，不超过 24 个字，不要重复原句。\n"
-        "判断要求：只挑一个候选；都不匹配 id 返回 null；不要解释。\n"
-        '只输出 JSON：{"rewrites": ["…"], "id": "候选id或null"}'
-    )
+    prompt = pp.assemble("route", {"menu": menu})
     try:
         msgs = _with_history(prompt, text, history)
         raw = ds_chat(
@@ -2735,6 +2882,7 @@ def assoc_pick(rewrites: list[str]) -> tuple[dict[str, Any], int] | None:
     return best
 
 
+@steped("free_answer", pick=lambda out: {"gate": "generated"} if out else {})
 def llm_free_answer(text: str, history: list[dict[str, str]] | None = None,
                     status: dict[str, Any] | None = None) -> dict[str, Any] | None:
     """事项库一条都没对上时，才让模型直接回答。
@@ -2742,21 +2890,7 @@ def llm_free_answer(text: str, history: list[dict[str, str]] | None = None,
     只由 miss 分支调用；命中了任何条目的问答路径不经过这里，
     所以已有条目的回答不受影响。生成内容只随响应返回，不写进 items.json。
     """
-    prompt = (
-        "你在帮中国传媒大学的同学回答校园办事问题。事项库里没有收录这个问题，"
-        "请直接给出可执行的回答：先给结论，再说该去哪个部门问。\n"
-        "要求：\n"
-        "- 电话、金额、截止日期、文件条款号这类细节，不确定就不要写出具体数值，改成以学校最新通知为准。\n"
-        "- 不要声称这是学校原文，不要伪造文件名、链接或文号。\n"
-        "- 不要列要准备的材料清单。你没有官方来源，写出来的清单就是编的；"
-        "用户问要带什么，就说这一项要问哪个部门，让他按部门答复准备。\n"
-        "- 确实不知道就直接说不知道，并指出该问哪个部门；不要用「一般来说」「通常」把猜测写成学校规定。\n"
-        "- 用正常的中文标点：逗号、句号、问号、冒号、引号都照常写，不要写成没有句号的流水句。\n"
-        "- 不要用 Markdown 的星号、井号、反引号。\n"
-        "- 不用首先、其次、最后、此外、值得注意的是、总而言之这类开场词。\n"
-        "- 不用不是A而是B、与其说A不如说B、然而A不过B这类转折套话，不用比喻和排比。\n"
-        '只输出 JSON：{"answer": "…", "confidence": "low|medium|high", "caveat": "…"}'
-    )
+    prompt = pp.assemble("free_answer", {})
     try:
         msgs = _with_history(prompt, text, history)
         raw = ds_chat(
@@ -2796,6 +2930,139 @@ def with_free_answer(resp: dict[str, Any], text: str, llm_on: bool,
     return resp
 
 
+HEADLINE_PUNCT = re.compile(r"[?？“”《》「」『』]")
+HEADLINE_LINK = re.compile(r"https?://|www\.|[a-z0-9-]+\.(?:cn|com|net|org|edu|gov)(?:\.[a-z]{2,3})?",
+                           re.IGNORECASE)
+HEADLINE_PHONE = re.compile(r"\d{3,4}-\d{2,4}-\d{4}")
+
+
+def _headline_ok(head: str, body: str) -> bool:
+    """总括能不能用：长度、标点、网址、电话过关，数字必须逐段在正文里出现过。
+
+    数字不是一律禁——「学校共有 8 个餐厅」正文里逐字有，丢了反而不如模型写的。
+    要拦的是正文里没有的数字，那才是模型自己编的。
+    """
+    if not head or len(head) > 24:
+        return False
+    if HEADLINE_PUNCT.search(head) or HEADLINE_LINK.search(head):
+        return False
+    runs = re.findall(r"\d+", head)
+    if HEADLINE_PHONE.search(head) or any(len(r) >= 5 for r in runs):
+        return False
+    body_runs = set(re.findall(r"\d+", body))
+    return all(r in body_runs for r in runs)
+
+
+@steped("headline", pick=lambda out: {"gate": "ok"} if out else {})
+def llm_headline(text: str, body: str, llm_on: bool,
+                 status: dict[str, Any] | None = None) -> str | None:
+    """卡片顶部那句总括，只概括已经答出来的正文；不合格就回退条目标题。
+
+    带数字的一律拦掉：模型很自然会把「8 个餐厅」「400-168-6616」写进标题，
+    而标题后面不跟引文，等于把没核对过的数值放到最显眼的位置。
+    """
+    if not llm_on or not api_key() or not body:
+        return None
+    prompt = pp.assemble("headline", {"q": text, "body": body[:1200]})
+    try:
+        raw = ds_chat([{"role": "system", "content": prompt}],
+                      max_tokens=80, json_mode=True)
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["headline_error"] = _llm_err_text(e)
+        return None
+    head = str(data.get("headline") or "").strip()
+    if not _headline_ok(head, body):
+        if status is not None and head:
+            status["headline_dropped"] = head[:40]
+        return None
+    return head
+
+
+def _headline_body(parts: list[dict[str, Any]]) -> str:
+    out: list[str] = []
+    for part in parts:
+        if not part.get("found"):
+            continue
+        if part.get("text"):
+            out.append(str(part["text"]))
+        out.extend(str(s.get("what") if isinstance(s, dict) else s)
+                   for s in (part.get("steps") or []))
+        out.extend(str(line) for line in (part.get("lines") or []))
+    return "\n".join(x for x in out if x.strip())
+
+
+CONDENSE_MAX = 30
+
+
+def _history_questions(history: list[dict[str, str]] | None, limit: int = 3) -> list[str]:
+    """上一轮只取「问」，不取「答」：回答正文里全是上一条事项的词，喂进检索就跟着跑偏。"""
+    return [str(m.get("content") or "").strip()
+            for m in (history or []) if m.get("role") == "user"][-limit:]
+
+
+@steped("ctx_need")
+def llm_needs_context(text: str, ctx_title: str, prev_q: str = "",
+                      status: dict[str, Any] | None = None) -> bool | None:
+    """这句要不要接着上一条才答得清楚；判不出来返回 None，由调用方退回词表。
+
+    词表判续问只有两种错法，而这两种都错在词表本身：句里带「怎么」就判续问，
+    自带主体的句子（「滑雪」「校园卡丢了怎么补办」）被拼上上一条；词表没覆盖的
+    续问（「几天能办好」）判独立，答不上。一次几十字的调用替掉这两半。
+    """
+    if not ctx_title or not api_key():
+        return None
+    prompt = pp.assemble("ctx_need", {"title": ctx_title, "prev_q": prev_q, "q": text})
+    try:
+        data = json.loads(ds_chat([{"role": "system", "content": prompt}],
+                                  max_tokens=60, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["ctx_need_error"] = _llm_err_text(e)
+        return None
+    if not isinstance(data, dict):
+        return None
+    need = data.get("need")
+    if not isinstance(need, bool):
+        if status is not None and "need" in data:
+            status["ctx_need_dropped"] = str(need)[:20]
+        return None
+    if status is not None:
+        status["ctx_need"] = "yes" if need else "no"
+        status["ctx_need_why"] = str(data.get("why") or "")[:40]
+    return need
+
+
+@steped("condense", pick=lambda out: {"condensed_query": out} if out else {})
+def llm_condense(text: str, history: list[dict[str, str]] | None,
+                 status: dict[str, Any] | None = None) -> str | None:
+    """把省略式追问补成一句能独立检索的问句；补不出就用原句，绝不断整轮。
+
+    照抄上一问、超长、空串都算没补成——照抄会把用户已经问过的东西再检索一遍，
+    还不如原句加上上下文标题那条老路。
+    """
+    asked = _history_questions(history)
+    if not asked or not api_key():
+        return None
+    prompt = pp.assemble("condense", {"history": "；".join(asked), "q": text})
+    try:
+        raw = ds_chat([{"role": "system", "content": prompt}],
+                      max_tokens=80, json_mode=True)
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["condense_error"] = _llm_err_text(e)
+        return None
+    out = str(data.get("query") or "").strip()
+    if not out or len(out) > CONDENSE_MAX or out in asked or out == text:
+        if status is not None and out:
+            status["condense_dropped"] = out[:40]
+        return None
+    return out
+
+
+@steped("pick_line", pick=lambda out: {"gate": "ok"} if isinstance(out, int) else {})
 def llm_pick_line(text: str, item: dict[str, Any], lines: list[Any],
                   status: dict[str, Any] | None = None) -> int | None:
     """问的是具体哪一处时，让模型只从官方原文行里挑一行，不生成任何内容。"""
@@ -3275,18 +3542,268 @@ def _src_item_index() -> dict[str, list[str]]:
     return _SRC_ITEMS
 
 
+# 2026-11-07 定案：100 题带标签集两个独立样本 对82/错8/拒10 与 对81/错9/拒10，
+# 效用 (82-24)/2=56，裸 fusion 同集 78/14/8 效用 36。三档归因（关组装 45、关改写腿 38、
+# 地板抬到 0.75 反涨错答）与各档判据见
+# docs/superpowers/plans/2026-11-07-retrieval-judgment-chain.md 与 _review_items/归因三档_20261107.md
+RETRIEVAL_MODE = str(os.getenv("RETRIEVAL", "fusion")).strip().lower()
+
+# 两道输出闸（2026-11-06 平衡实测定案，2026-11-07 起开）。
+# DECLINE_REFUSES：模型看完候选说「都没答上」时，不要再拿规则腿第一名替它作答。
+#   100 题带标签实测里，这一条把错答 14→9，代价是要和改写腿一起上——单独用会赔 6 条答对。
+# MIN_ANSWER_CONF：置信低于地板的命中转拒答。实测 0.7 与 0.8 等价，0.9 会把覆盖打到 59%；
+#   装闸后再扫 0.75 反而多放进错答（P12），地板停在 0.7。
+DECLINE_REFUSES = str(os.getenv("DECLINE_REFUSES", "1")).strip().lower() not in ("0", "false", "off", "no")
+MIN_ANSWER_CONF = float(os.getenv("MIN_ANSWER_CONF", "0.7") or 0)
+
+# —— 2026-11-07 剩下的四件候选：一律先按「关」装进来，边际在最终世界里实测完才拍默认值。
+# TIE_BREAK：模型给分严格并列时按候选池名次取靠前那条。治的是「同一题两跑换了条目」。
+TIE_BREAK = str(os.getenv("TIE_BREAK", "0")).strip().lower() not in ("0", "false", "off", "no")
+# RECHECK_SKIP_ABOVE：最终得分（规则分与模型分取大）到线就不再全文复核。0=一律复核（现行）。
+#   省的是每题 1.00 次调用、约 34% token；风险是复核正是兜「高分错答」的那道，所以阈值必须实测。
+RECHECK_SKIP_ABOVE = int(float(os.getenv("RECHECK_SKIP_ABOVE", "0") or 0))
+# PHRASE_CACHE：同一句问话的官方说法只问模型一次，键是整句归一＋prompt 版本（改了 prompt 自动作废）。
+PHRASE_CACHE = str(os.getenv("PHRASE_CACHE", "0")).strip().lower() not in ("0", "false", "off", "no")
+# POOL_META：候选行补上归口、适用对象和出处文档名，让模型判「谁管的」而不是只看标题。
+POOL_META = str(os.getenv("POOL_META", "0")).strip().lower() not in ("0", "false", "off", "no")
+# STRONG_HIT（2026-11-09 定案）：强命中免检线。分数语义见 score_item：100=标题/别名原样命中，
+#   97=去掉问法词后原样命中，98/99=关键词叠加（函数末尾封顶 99）。旧线 96 把「关键词叠到 99」
+#   也算强命中——2026-11-09 靶向复测：把 99 分放回判定层后，「考试不及格」0/8 → 8/8，
+#   「宿舍电器」「超市」「补考重修」两臂不变、0 次拒答。默认走 literal。
+#   取值："literal"（默认，只认 100 与 97）｜"96"（旧行为，含 99）｜其它数字按阈值。
+STRONG_HIT_MODE = str(os.getenv("STRONG_HIT", "literal")).strip().lower()
+
+
+def _strong_hit(score: int) -> bool:
+    """这条规则分够不够格整块跳过模型判定层。"""
+    if STRONG_HIT_MODE == "literal":
+        return score >= 97 and score != 99
+    try:
+        return score >= float(STRONG_HIT_MODE)
+    except ValueError:
+        return score >= 96
+
+
+def _output_gate(model_route: dict[str, Any], score: int) -> str:
+    """这题该不该从「答」改成「不答」。返回原因串，空串表示照常答。"""
+    if DECLINE_REFUSES and model_route.get("gate") == "llm_declined":
+        return "decline_gate"
+    if MIN_ANSWER_CONF and 0 < score < MIN_ANSWER_CONF * 100:
+        return "conf_floor"
+    return ""
+FTS_DB = ROOT / "kb.sqlite"
+_FTS_CON: Any = None
+
+
+def _fts_con():
+    """BM25 腿的连接。库不在就当这条腿没有，原有回答不受影响。"""
+    global _FTS_CON
+    if _FTS_CON is None:
+        if not FTS_DB.exists():
+            return None
+        _FTS_CON = sqlite3.connect(f"file:{FTS_DB.as_posix()}?mode=ro", uri=True,
+                                   check_same_thread=False)
+    return _FTS_CON
+
+
+def _gram_terms(q: str) -> list[str]:
+    """和建库那侧的 bigrams() 同一切词法，否则查询串和索引对不上。"""
+    toks: list[str] = []
+    for run in re.findall(r"[一-鿿]+|[^\s一-鿿]+", q or ""):
+        if len(run) == 1 and "\u4e00" <= run <= "\u9fff":
+            toks.append(run + "　")
+        elif "\u4e00" <= run[0] <= "\u9fff":
+            toks.extend(run[i:i + 2] for i in range(len(run) - 1))
+        else:
+            toks.append(run.lower())
+    out: list[str] = []
+    for t in toks:
+        if t not in out:
+            out.append(t)
+    return out
+
+
+def _fts_rows(kind: str, text: str, k: int) -> list[tuple[dict[str, Any], float]]:
+    con = _fts_con()
+    toks = _gram_terms(text)
+    if con is None or not toks:
+        return []
+    expr = " OR ".join('"' + t.replace('"', "") + '"' for t in toks)
+    try:
+        rows = con.execute(
+            "select ref, bm25(search) from search where search match ? and kind=? "
+            "order by 2 limit ?", (expr, kind, max(k * 8, 80))).fetchall()
+    except sqlite3.Error:
+        return []
+    out: list[tuple[dict[str, Any], float]] = []
+    seen: set[str] = set()
+    for ref, sc in rows:
+        if ref in seen or ref not in ITEM_BY_ID:
+            continue
+        seen.add(ref)
+        out.append((ITEM_BY_ID[ref], sc))
+        if len(out) >= k:
+            break
+    return out
+
+
+def bm25_hits(text: str, k: int = 30) -> list[tuple[dict[str, Any], float]]:
+    """BM25 腿：字段级块进 FTS5，按内置 bm25() 名次取条目（值越小越相关）。"""
+    return _fts_rows("full", text, k)
+
+
+def _meta_text(it: dict[str, Any]) -> str:
+    """名目串：标题＋别名＋关键词，与建库时 meta 行同一拼法。"""
+    return " ".join([str(it.get("title") or "")]
+                    + [str(a) for a in (it.get("aliases") or [])]
+                    + [str(w) for w in (it.get("keywords") or [])])
+
+
+def meta_hits(text: str, k: int = 20) -> list[tuple[dict[str, Any], float]]:
+    """名目腿：先用 FTS 取候选，再按二字组覆盖率重排。
+
+    bm25() 的长度归一化在这里是反效果——二三十个字的摘录标题天然比几百字的
+    名目串得分高，而「学校医保」要的恰恰是别名里写着「医保报销」「校医院报销」
+    的那条学生口径条目。覆盖率优先、不罚长度，谁把问句里的词占全了谁在前。
+    """
+    con = _fts_con()
+    toks = _gram_terms(text)
+    if con is None or not toks:
+        return []
+    expr = " OR ".join('"' + t.replace('"', "") + '"' for t in toks)
+    try:
+        rows = con.execute(
+            "select distinct ref from search where search match ? and kind='meta' limit ?",
+            (expr, max(k * 10, 200))).fetchall()
+    except sqlite3.Error:
+        return []
+    qset = set(toks)
+    scored: list[tuple[dict[str, Any], float]] = []
+    for (ref,) in rows:
+        it = ITEM_BY_ID.get(ref)
+        if it is None:
+            continue
+        meta = _meta_text(it)
+        cover = len(qset & set(_gram_terms(meta))) / len(qset)
+        scored.append((it, round(cover, 4)))
+    # 同覆盖率下整理条目优先（它分好了费用、时间、材料，摘录只是一个片段），
+    # 再看名目串更短的——别名越贴，说明这个词就是这件事的本名。
+    scored.sort(key=lambda x: (-x[1], 1 if x[0].get("auto") else 0, len(_meta_text(x[0])), x[0]["id"]))
+    return scored[:k]
+
+
+def vector_item_hits(text: str, k: int = 30,
+                     status: dict[str, Any] | None = None) -> list[tuple[dict[str, Any], float]]:
+    """向量腿：原文 chunk 命中后换算回条目，取法与现行候选池一致。"""
+    hits = original_hits(text, k=12, min_score=0.15, status=status)
+    src_items = _src_item_index()
+    out: list[tuple[dict[str, Any], float]] = []
+    seen: set[str] = set()
+    for h in hits:
+        slug = str(h.get("source") or h.get("doc") or "").split("~")[0]
+        for iid in dict.fromkeys(list(h.get("item_ids") or []) + src_items.get(slug, [])):
+            if iid in seen or iid not in ITEM_BY_ID:
+                continue
+            seen.add(iid)
+            out.append((ITEM_BY_ID[iid], float(h.get("score") or 0.0)))
+            if len(out) >= k:
+                return out
+    return out
+
+
+def rrf_fuse(lists: list[tuple[str, list[tuple[str, float]]]], limit: int = 32,
+             k: int = 60) -> list[tuple[str, float, dict[str, Any]]]:
+    """Reciprocal Rank Fusion：只认名次不认原分，量纲不同的三路也能合。
+
+    某一路 0 命中不该把条目筛掉——大佬那边 bm25 为 0 的照样进结果，靠 dense 撑住。
+    """
+    score: dict[str, float] = {}
+    meta: dict[str, dict[str, Any]] = {}
+    blank = {name: None for name, _entries in lists}
+    for name, entries in lists:
+        for rank, (key, _sc) in enumerate(entries, 1):
+            score[key] = score.get(key, 0.0) + 1.0 / (k + rank)
+            meta.setdefault(key, dict(blank))[name] = rank
+    ordered = sorted(score.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]
+    return [(key, sc, meta[key]) for key, sc in ordered]
+
+
+def fused_candidates(text: str, top_ranked: list[tuple[dict[str, Any], int]],
+                     limit: int = 12,
+                     status: dict[str, Any] | None = None) -> list[tuple[dict[str, Any], float, dict[str, Any]]]:
+    """三路融合出候选池：规则腿、BM25 全文腿、向量腿。每条带各腿名次。
+
+    名额先按腿轮流给（snake merge），剩下的按 RRF 补。纯 RRF 排序下，
+    只出现在一条腿里的条目分数永远比不过两条腿都命中的 14 条摘录，
+    而「学校医保」要捞的正是只在 BM25 或向量里出现的那条学生口径条目。
+    """
+    rule = [(it["id"], float(sc)) for it, sc in top_ranked[:40]]
+    mt = [(it["id"], sc) for it, sc in meta_hits(text, k=20)]
+    bm = [(it["id"], sc) for it, sc in bm25_hits(text, k=40)]
+    vec = [(it["id"], sc) for it, sc in vector_item_hits(text, k=30, status=status)]
+    lists = [("rule", rule), ("meta", mt), ("bm25", bm), ("vec", vec)]
+
+    scored = rrf_fuse(lists, limit=len(rule) + len(bm) + len(vec) + len(mt) + 1)
+    rrf = {key: (sc, meta) for key, sc, meta in scored}
+    # 名额按腿分配而不是纯 snake：四路轮转时 12 个名额只够每条腿的前 3 名，
+    # 名目腿第 4 名之后的整理条目就再也进不来（11-06 实测 xyy-gongfei 卡在第 4~6 名）。
+    quota = {"rule": 4, "meta": 4, "bm25": 3, "vec": 3}
+    order: list[str] = []
+    for name, entries in lists:
+        for key, _sc in entries[:quota.get(name, 3)]:
+            if key not in order:
+                order.append(key)
+    for key, _sc, _meta in scored:
+        if key not in order:
+            order.append(key)
+
+    out: list[tuple[dict[str, Any], float, dict[str, Any]]] = []
+    for key in order[:limit]:
+        it = ITEM_BY_ID.get(key)
+        if it is not None and key in rrf:
+            out.append((it, rrf[key][0], rrf[key][1]))
+    if status is not None:
+        status["fusion"] = {"rule": len(rule), "meta": len(mt), "bm25": len(bm),
+                            "vec": len(vec), "pool": len(out)}
+    return out
+
+
 RERANK_POOL_LIMIT = 14    # 给模型判断的候选池条数上限：11-04 扩池实验的结论是池子越大越容易挑跑偏
 
 
 def rerank_candidates(
     text: str, ranked: list[tuple[dict[str, Any], int]], limit: int = RERANK_POOL_LIMIT,
-    status: dict[str, Any] | None = None,
+    status: dict[str, Any] | None = None, pre_rewrite: bool = True,
 ) -> list[tuple[dict[str, Any], int]]:
     """规则前排 + 向量命中文档里的条目，合成给模型判断的候选池。
 
     规则只按关键词打分，问「游泳馆开放时间」会被「图书馆开放时间」抢走；
     向量能捞到游泳馆那段原文，再由模型判断哪条真的回答了问题。
+
+    RETRIEVAL=fusion 时池子改由三路 RRF 融合给出。A/B 只换这一处：
+    每条仍带规则腿的分，判分阈值、门、模型调用一概不动。
+
+    pre_rewrite=False 是给改写腿自己用的：官方说法再检一遍时不许再触发一次改写。
     """
+    if pre_rewrite and _rewrite_pre_on(ranked):
+        return _with_pre_legs(
+            rerank_candidates(text, ranked, limit, status, pre_rewrite=False),
+            text, limit, status)
+    if RETRIEVAL_MODE == "fusion":
+        rule_scores = {it["id"]: sc for it, sc in ranked[:400]}
+        fused_pool: list[tuple[dict[str, Any], int]] = []
+        fused_seen: set[str] = set()
+        for it, _sc, _meta in fused_candidates(text, ranked, limit=limit, status=status):
+            if it["id"] in fused_seen or it.get("archive_only"):
+                continue
+            fused_seen.add(it["id"])
+            fused_pool.append((it, int(rule_scores.get(it["id"], 0))))
+            if len(fused_pool) >= limit:
+                break
+        if status is not None:
+            status["fusion_ids"] = [it["id"] for it, _ in fused_pool]
+        return fused_pool
+
     pool: list[tuple[dict[str, Any], int]] = []
     seen: set[str] = set()
 
@@ -3348,6 +3865,66 @@ def _rerank_hint(item: dict[str, Any]) -> str:
     return text.replace("\n", " ")[:70]
 
 
+TIE_SEEN: list[str] = []    # 归因用：这一趟里出现过同分并列的题（开关关着也记，只数不改）
+
+
+def _tie_break(pool: list[tuple[dict[str, Any], int]], scores: dict[str, int],
+               best: dict[str, Any] | None) -> dict[str, Any] | None:
+    """模型给分严格并列时，按候选池名次取靠前那一条；不是并列一律不动。
+
+    并列时模型选的哪条取决于采样运气（同题两跑换条目就是这个原因）。名次顺序是模型
+    自己在候选行里看到的顺序，用它定序不改动模型的判断范围。判死（best=None）不动，
+    免得定序把「都没答上」救成某一条。
+    """
+    if best is None or not scores:
+        return best
+    my = scores.get(best["id"])
+    if my is None or my < max(scores.values()):
+        return best
+    if TIE_BREAK is False and len([1 for v in scores.values() if v == my]) > 1:
+        TIE_SEEN.append(best["id"])
+    if not TIE_BREAK:
+        return best
+    for it, _ in pool:
+        if scores.get(it["id"]) == my:
+            return it
+    return best
+
+
+_OPAQUE_DOC = re.compile(r"^[a-z]+-[0-9a-f]{6,}")
+
+
+def _doc_label(it: dict[str, Any]) -> str:
+    """出处文档名；附件这类只有内部 id 的不摆，摆上去模型也读不出信息。"""
+    src = it.get("source") or []
+    if isinstance(src, dict):
+        src = [src]
+    for s in src:
+        t = str((s or {}).get("title") or "").strip()
+        if t and not _OPAQUE_DOC.match(t):
+            return t[:34]
+    return "—"
+
+
+def _pool_row(it: dict[str, Any], hint: str, with_kind: bool = True) -> str:
+    """候选池里的一行。
+
+    with_kind=True 是候选重排那套（条目类型＋归口两栏），False 是逐面裁决那套（只有标题）。
+    POOL_META 打开才追加 归口／适用对象／出处文档名 三栏：模型判「这条是谁管的、对谁有效」
+    靠的就是这两栏，只看标题会把留学生条款当成通用条款端上来。关着时两处的字节与今天相同。
+    """
+    row = f"- {it['id']}｜{(it.get('title') or '')[:50]}"
+    if with_kind:
+        row += f"｜{'原文摘录' if it.get('auto') else '整理条目'}｜{it.get('dept') or '—'}"
+    if POOL_META:
+        aud = "、".join(str(a) for a in (it.get("audience") or [])) or "—"
+        if not with_kind:
+            row += f"｜归口:{it.get('dept') or '—'}"
+        row += f"｜适用:{aud}｜出处:{_doc_label(it)}"
+    return f"{row}｜{hint}"
+
+
+@steped("rerank", pick=lambda out: {"rewrites": out[1]} if isinstance(out, tuple) and len(out) > 1 and out[1] else {})
 def llm_rerank(
     text: str, pool: list[tuple[dict[str, Any], int]],
     history: list[dict[str, str]] | None = None,
@@ -3362,44 +3939,12 @@ def llm_rerank(
     按「有没有答上某个具体问题」去判，候选全是原文摘录时模型一律返回 null。
     """
     menu = "\n".join(
-        f"- {it['id']}｜{it['title'][:50]}｜{'原文摘录' if it.get('auto') else '整理条目'}"
-        f"｜{it.get('dept') or '—'}｜{_rerank_hint(it) or '（无摘要）'}"
+        _pool_row(it, _rerank_hint(it) or "（无摘要）")
         for it, _ in pool
     )
     facet_menu = "、".join(label for _k, label, _p in FOCUS_RULES)
-    if menu_mode:
-        judge = (
-            "判断要求：\n"
-            "- 用户这一次只输入了一个词，没有说想问哪一面。你要判的是：候选里有没有一条，"
-            "它的主题就是用户输入的这个东西本身（它的整体介绍、办理指南、开放安排都算）。\n"
-            "- 有就选它，给 70～100：主题对上的原文摘录照样算数，不要因为它是摘录、"
-            "或者没回答某个具体问题就不选。\n"
-            "- 几条都在讲同一个东西时，选覆盖最全、最像总览的那一条，不要选只讲一个细节的片段。\n"
-            "- 给每条打 0～100：主题就是这个词的这件事 80 以上；沾边但讲的是另一件事的片段 40 以下；无关 0。\n"
-            "- 只有所有候选都跟用户输入的词不相干时，best 才填 null。\n"
-        )
-    else:
-        judge = (
-            "判断要求：\n"
-            "- 给每条打 0～100：100=直接回答了用户问的这件事；60=沾边但缺关键信息；0=无关。\n"
-            "- 只看关键词重合不算回答。用户问 A，条目讲 B，就是 0 分。\n"
-            "- 同一件事既有「整理条目」又有「原文摘录」时，优先选整理条目：它分好了费用、时间、材料，"
-            "能回答具体问法；原文摘录只在整理条目完全没覆盖这件事时才选。\n"
-            "- best 只能填真正回答了问题的条目 id；都没有就填 null，不要硬选。\n"
-        )
-    prompt = (
-        "用户在问校园办事的事。下面是从知识库检索出的候选条目。\n"
-        f"{menu}\n\n"
-        f"{judge}"
-        "问面要求：再判断用户这句话问的是这件事的哪一面，"
-        f"只能从这些说法里选，最多两个：{facet_menu}。\n"
-        "- 问的是整体怎么办、或这些都对不上，facets 返回空数组。\n"
-        "- 用户问的是资格准入（能不能办、什么人能办、什么情况下不行）就选「条件与限制」。\n"
-        "改写要求：把用户问题翻译成 3～5 种校园里的常用说法，口语改书面、补全省略，"
-        "一条只表达一个意思，不超过 24 个字。\n"
-        '只输出 JSON：{"scores": {"条目id": 分数}, "best": "条目id或null", '
-        '"why": "一句话理由", "rewrites": ["…"], "facets": ["…"]}'
-    )
+    prompt = pp.assemble("rerank", {"menu": menu, "facet_menu": facet_menu,
+                                    "menu_mode": menu_mode})
     try:
         msgs = _with_history(prompt, text, history)
         raw = ds_chat(
@@ -3495,6 +4040,7 @@ def _item_full_text(item: dict[str, Any], limit: int = 600) -> str:
     return "\n".join(x for x in parts if x).strip().replace("\n", " ")[:limit]
 
 
+@steped("recheck")
 def llm_recheck(text: str, chosen: dict[str, Any],
                 pool: list[tuple[dict[str, Any], int]]) -> dict[str, Any]:
     """判「准备回答」答没答上，并问「换成那条答不答得上」。失败返回 {"error": …}。"""
@@ -3542,6 +4088,7 @@ def offpool_candidates(text: str, seen_ids: set[str], exclude_id: str,
     return [it for _, _, it in rows[:k]]
 
 
+@steped("second_look")
 def llm_second_look(text: str, chosen_id: str,
                     cands: list[dict[str, Any]]) -> dict[str, Any]:
     """第二次确认：把池外条目的正文摊开，问有没有哪一条真答得上。"""
@@ -3631,6 +4178,7 @@ def _answered_brief(parts: list[dict[str, Any]]) -> str:
     return " \n".join(rows)[:900]
 
 
+@steped("facet_fill")
 def llm_facet_fill(text: str, item: dict[str, Any], parts: list[dict[str, Any]],
                    unasked: list[str],
                    known: dict[str, str] | None = None) -> dict[str, Any]:
@@ -3677,6 +4225,330 @@ def llm_facet_fill(text: str, item: dict[str, Any], parts: list[dict[str, Any]],
     if _body_overlap(_part_body(part), parts):
         return {"gate": "declined", "why": "补进来会和已答内容重复"}
     return {"gate": "filled", "part": part, "fills": fills, "why": why}
+
+
+# ---------------------------------------------------------------- 跨条目组装（#56）
+# 「图书馆周末开吗」和「学校医保」是同一件事的两面：前者口语和官方说法对不上，
+# 检索四条腿没有一条够得着答案条目；后者条目找到了，但一个条目只讲了整件事的一面。
+# 两层都靠同一个机制：先让模型把这句话拆成学校文件里会分开写的几面，每面换成
+# 官方说法再检索一遍，然后让模型在「这一面的候选」里行使否决权——只认逐字原文，
+# 它自己一个字都不写。拼装只在 ASSEMBLE 打开时发生。
+
+# 2026-11-07 定案：关掉组装的归因档 P7 效用 45，开着 56（58/54 两样本），差值远在 ±4 噪声带外。
+# 旧那条 206 基线是组装关着时录的，再拿它逐字段 diff 会看到差异，那不是漂移。
+ASSEMBLE_MODE = str(os.getenv("ASSEMBLE", "rescue")).strip().lower()   # off | fill | rescue | both
+ASSEMBLE_MAX_FACES = 3      # 再多就是在替用户设想他没问的事
+ASSEMBLE_PER_FACE = 6       # 端到模型面前的池子条数
+ASSEMBLE_QUOTE_MIN = 6      # 短到这个数以下的「原文」撑不住一个面
+ASSEMBLE_CONF_CAP = 0.7     # 拼出来的答案天花板：它没经过整条事项的流程校验
+
+
+def _assemble_on(entry: str) -> bool:
+    return ASSEMBLE_MODE in ("both", entry)
+
+
+def _phrase_useful(ph: str, text: str) -> bool:
+    """改写串得还是同一件事，而且真的换了说法。
+
+    两头都闸住：跑偏到另一件事（「图书馆周末开吗」改写成「体育馆开放时间」）靠
+    二字组重合挡掉；照抄口语（改写成「周末」）等于没改写，白跑一次检索，挡掉。
+    """
+    p = _mn(ph)
+    if len(p) < 4 or _mn(text) in p or p in _mn(text):
+        return False
+    grams = [g for g in _gram_terms(text) if len(g) == 2 and "　" not in g]
+    return any(g in p for g in grams)
+
+
+# ①「改写腿事前并」：检索前先让模型把口语换成官方说法，用这些说法再检一遍，
+# 只补原句四条腿都够不着的条目，主池的名次顺序不动。REWRITE_PRE 选触发范围。
+
+# 2026-11-07 定案：装闸之后单独归因，关掉改写腿 B 的 P11 效用 38，开着 56，错答 8.5→13。
+REWRITE_PRE = str(os.getenv("REWRITE_PRE", "B")).strip().upper()   # OFF | A | B | C
+REWRITE_PRE_MAX = 3      # 一次最多取三条官方说法
+REWRITE_PRE_SLOTS = 4    # 改写腿最多换掉主池尾部 4 个名额
+REWRITE_PRE_KEEP = 8     # 主池前 8 名锁死：改写腿只动第 9 名以后的尾部
+
+
+def _rewrite_pre_on(ranked: list[tuple[dict[str, Any], int]]) -> bool:
+    """三档触发：A 只在融合且规则腿第一名是原文摘录时；B 融合每题；C 两种模式每题。"""
+    mode = REWRITE_PRE
+    if mode == "OFF" or not ranked:
+        return False
+    if mode == "C":
+        return True
+    if RETRIEVAL_MODE != "fusion":
+        return False
+    if mode == "B":
+        return True
+    if mode == "A":
+        return bool(ranked[0][0].get("auto"))
+    return False
+
+
+_PHRASE_CACHE: dict[str, list[str]] = {}
+PHRASE_CACHE_MAX = 512    # 一句键存一条说法表；满了整表清空，不做 LRU（这是省调用不是做缓存库）
+
+
+@steped("phrase", pick=lambda out: {"pre_phrases": out} if out else {})
+def llm_official_phrases(text: str, status: dict[str, Any] | None = None) -> list[str]:
+    """同一件事，换成学校文件里可能的写法。只换说法，不拆面也不回答。
+
+    PHRASE_CACHE 打开时按「整句归一＋prompt 版本」缓存结果：改一个字就是另一句话，
+    不会把上一句的说法套下来；prompt 文本一改，版本变了旧缓存自动作废。
+    """
+    if REWRITE_PRE == "OFF":
+        return []
+    key = pp.cache_key("phrase", {"q": text}, text) if PHRASE_CACHE else ""
+    if key and key in _PHRASE_CACHE:
+        out = list(_PHRASE_CACHE[key])
+        if out and status is not None:
+            status["pre_phrases"] = out
+        return out
+    prompt = pp.assemble("phrase", {"q": text})
+    try:
+        data = json.loads(ds_chat(
+            [{"role": "system", "content": prompt},
+             {"role": "user", "content": "只输出 JSON。"}],
+            max_tokens=200, json_mode=True)) or {}
+    except Exception:  # noqa: BLE001
+        return []
+    if not isinstance(data, dict):
+        return []
+    out: list[str] = []
+    for x in data.get("phrases") or []:
+        ph = str(x).strip()
+        if ph and _phrase_useful(ph, text) and ph not in out:
+            out.append(ph)
+        if len(out) >= REWRITE_PRE_MAX:
+            break
+    if key:
+        if len(_PHRASE_CACHE) >= PHRASE_CACHE_MAX:
+            _PHRASE_CACHE.clear()
+        _PHRASE_CACHE[key] = list(out)
+    if out and status is not None:
+        status["pre_phrases"] = out
+    return out
+
+
+def _with_pre_legs(pool: list[tuple[dict[str, Any], int]], text: str, limit: int,
+                   status: dict[str, Any] | None) -> list[tuple[dict[str, Any], int]]:
+    """官方说法检出来的条目换掉主池尾部，池子总数不变。
+
+    上一版写成「只填主池剩下的空位」，而主池常年是满的 14 条——改写腿于是整体空转，
+    48 问实测里 A/B/C 三档命中一模一样就是这么来的。尾部那些位置本来摆着
+    模型给 0 分的无关条目（校园卡补卡、成绩单、留级在每道题的池子里轮班），
+    拿它们换掉不违背 11-04「池子越大越容易挑跑偏」的结论。
+    """
+    phrases = llm_official_phrases(text, status)
+    if not phrases:
+        return pool
+    legs = [rerank_candidates(ph, rank(ph), limit=limit, pre_rewrite=False) for ph in phrases]
+    have = {it["id"] for it, _ in pool}
+    extras: list[tuple[dict[str, Any], int]] = []
+    depth = 0
+    while len(extras) < REWRITE_PRE_SLOTS and depth < limit:
+        for rows in legs:
+            if depth >= len(rows):
+                continue
+            it, sc = rows[depth]
+            if it["id"] in have or it.get("archive_only"):
+                continue
+            have.add(it["id"])
+            extras.append((it, sc))
+            if len(extras) >= REWRITE_PRE_SLOTS:
+                break
+        depth += 1
+    if not extras:
+        return pool
+    drop = min(len(extras), max(0, len(pool) - REWRITE_PRE_KEEP))
+    before = [it["id"] for it, _ in pool]
+    if drop:
+        pool = pool[:len(pool) - drop] + extras[:drop]
+    if status is not None:
+        status["pre_added"] = drop
+        status["pre_dropped"] = before[len(before) - drop:] if drop else []
+    return pool
+
+
+@steped("assemble_plan")
+def llm_faces_plan(text: str, parts: list[dict[str, Any]],
+                   status: dict[str, Any] | None = None) -> dict[str, Any]:
+    """这句问话在学校文件里分几面写，每面官方会怎么说。"""
+    if not _assemble_on("fill") and not _assemble_on("rescue"):
+        return {"gate": "off", "faces": []}
+    answered = "；".join(str(p.get("label") or "") for p in parts if p.get("found"))
+    prompt = pp.assemble("assemble_plan", {"q": text, "answered": answered})
+    try:
+        data = json.loads(ds_chat(
+            [{"role": "system", "content": prompt},
+             {"role": "user", "content": "只输出 JSON。"}],
+            max_tokens=320, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"gate": "error", "error": _llm_err_text(e), "faces": []}
+    if not isinstance(data, dict):
+        return {"gate": "error", "error": "模型返回的不是 JSON", "faces": []}
+    faces: list[dict[str, Any]] = []
+    for f in data.get("faces") or []:
+        if not isinstance(f, dict):
+            continue
+        name = str(f.get("face") or "").strip()[:24]
+        if not name or (answered and _mn(name) in _mn(answered)):
+            continue
+        phrases = [str(x).strip() for x in (f.get("phrases") or [])
+                   if _phrase_useful(str(x), text)][:2]
+        if not phrases:
+            continue
+        faces.append({"face": name, "phrases": phrases})
+        if len(faces) >= ASSEMBLE_MAX_FACES:
+            break
+    if status is not None:
+        status.setdefault("assembly", {})["faces"] = [f["face"] for f in faces]
+    return {"gate": "ok" if faces else "empty", "faces": faces,
+            "why": str(data.get("why") or "")[:160]}
+
+
+def face_pool(phrases: list[str], limit: int = ASSEMBLE_PER_FACE,
+              exclude_ids: set[str] | None = None) -> list[tuple[dict[str, Any], float, dict[str, Any]]]:
+    """按官方说法逐串走一遍现行检索，取最好名次合成这一面的池子。"""
+    skip = set(exclude_ids or ())
+    lists = []
+    for ph in phrases[:2]:
+        rows = rerank_candidates(ph, rank(ph), limit=limit, pre_rewrite=False)
+        lists.append((ph, [(it["id"], float(sc)) for it, sc in rows if it["id"] not in skip]))
+    fused = rrf_fuse(lists, limit=limit * 2)
+    out: list[tuple[dict[str, Any], float, dict[str, Any]]] = []
+    for key, sc, legs in fused:
+        it = ITEM_BY_ID.get(key)
+        if it is None or it.get("archive_only"):
+            continue
+        out.append((it, sc, legs))
+        if len(out) >= limit:
+            break
+    return out
+
+
+def _face_meta_head(it: dict[str, Any], legs: dict[str, Any]) -> str:
+    """这一面是从哪份文件的哪一条拼来的，摆给用户看。"""
+    src = ""
+    for s in (it.get("source") or []):
+        if isinstance(s, dict) and s.get("title"):
+            src = str(s["title"])[:28]
+            break
+    bits = ["原文摘录" if it.get("auto") else "整理条目", it.get("dept") or "归口未写"]
+    if src:
+        bits.append(src)
+    for name, pos in list((legs or {}).items())[:2]:
+        bits.append(f"按「{name[:12]}」排第 {pos}")
+    return " · ".join(bits)
+
+
+@steped("assemble_decide")
+def llm_face_decide(text: str, face: dict[str, Any],
+                    pool: list[tuple[dict[str, Any], float, dict[str, Any]]]) -> dict[str, Any]:
+    """这一面到底有没有条目真讲到了——模型只有否决权，正文一律用逐字原文。"""
+    if not pool:
+        return {"gate": "empty_pool"}
+    menu = "\n".join(
+        _pool_row(it, _item_full_text(it, 240), with_kind=False)
+        for it, _sc, _legs in pool
+    )
+    prompt = pp.assemble("assemble_decide", {"q": text, "face": face.get("face", ""), "menu": menu})
+    try:
+        data = json.loads(ds_chat(
+            [{"role": "system", "content": prompt},
+             {"role": "user", "content": "只输出 JSON。"}],
+            max_tokens=420, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"gate": "error", "error": _llm_err_text(e)}
+    if not isinstance(data, dict):
+        return {"gate": "error", "error": "模型返回的不是 JSON"}
+    verdict = str(data.get("verdict") or "").strip().lower()
+    why = str(data.get("why") or "")[:160]
+    if verdict != "accept":
+        return {"gate": verdict or "no_evidence", "why": why}
+    cid = str(data.get("id") or "")
+    hit = next(((it, sc, legs) for it, sc, legs in pool if it["id"] == cid), None)
+    if hit is None:
+        return {"gate": "off_pool", "why": f"点了池外条目 {cid[:24]}"}
+    it, _sc, legs = hit
+    quote = str(data.get("quote") or "").strip()
+    hay = _mn(_item_full_text(it, 4000) + " " + " ".join(
+        str(one.get("quote") or "") for one in _ev_items((it.get("evidence") or {}).get("answer"))))
+    if len(_mn(quote)) < ASSEMBLE_QUOTE_MIN or _mn(quote) not in hay:
+        return {"gate": "quote_missing", "why": "抄的原文在条目里逐字找不到"}
+    one = _best_quote((it.get("evidence") or {}).get("answer"), quote) or {}
+    src = one.get("src", "")
+    part = {
+        "focus": "assembly",
+        "label": face.get("face") or "另一面",
+        "text": quote,
+        "steps": [],
+        "quotes": [{"quote": one.get("quote") or quote, "src": src, **src_label(src)}] if one or quote else [],
+        "found": True,
+        "from": it["id"],
+        "from_title": _short_title(it.get("title") or ""),
+        "meta": _face_meta_head(it, legs),
+    }
+    return {"gate": "accept", "part": part, "why": why}
+
+
+def assemble_faces(text: str, parts: list[dict[str, Any]],
+                   exclude_ids: set[str] | None = None,
+                   status: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """缺的那几面：换官方说法重检一遍，逐面让模型否决，只把逐字原文拼进来。"""
+    if not (_assemble_on("fill") or _assemble_on("rescue")):
+        return []
+    plan = llm_faces_plan(text, parts or [], status)
+    if plan["gate"] != "ok":
+        if status is not None:
+            status.setdefault("assembly", {})["plan"] = plan["gate"]
+        return []
+    used = {str(p.get("from")) for p in (parts or []) if p.get("from")} | set(exclude_ids or ())
+    out: list[dict[str, Any]] = []
+    trace: dict[str, Any] = {}
+    for face in plan["faces"]:
+        pool = face_pool(face["phrases"], exclude_ids=used)
+        d = llm_face_decide(text, face, pool)
+        trace[face["face"]] = d.get("gate")
+        if d["gate"] != "accept":
+            continue
+        part = d["part"]
+        if _body_overlap(_part_body(part), (parts or []) + out):
+            trace[face["face"]] = "duplicated"
+            continue
+        out.append(part)
+        used.add(part["from"])
+    if status is not None:
+        status.setdefault("assembly", {}).update(trace)
+    return out
+
+
+def _assembled_answer(text: str, asm: list[dict[str, Any]], base: dict[str, Any],
+                      score: int) -> dict[str, Any]:
+    """拼装答案：条目摆第一面那条，置信封顶，并说清这是拼出来的。"""
+    quotes: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for p in asm:
+        for q in p.get("quotes") or []:
+            if q.get("quote") and q["quote"] not in seen:
+                seen.add(q["quote"])
+                quotes.append(q)
+    base.update({
+        "matched": True,
+        "confidence": round(min(ASSEMBLE_CONF_CAP, max(score, 55) / 100), 2),
+        "band": "mid",
+        "item": public(ITEM_BY_ID.get(asm[0]["from"]) or {}),
+        "answers": asm,
+        "quotes": quotes,
+        "focus": ["assembly"],
+        "normalized": "、".join(p["label"] for p in asm),
+        "suggestion": None,
+        "next_actions": ["这几面是从不同文件里拼起来的，办之前按最新通知再确认一次"],
+        "note": "这一问检索没能对上整件事的条目，下面是逐字摘自其他官方条目的相关面：" +
+                "、".join(f"「{p['label']}」来自《{p['from_title']}》" for p in asm),
+    })
+    return base
 
 
 def _unmatched_name(q: str) -> str:
@@ -3741,6 +4613,7 @@ def proper_menu_for(ranked: list[tuple[dict[str, Any], int]]) -> list[tuple[str,
     return [(t, gloss.get(t, "")) for t in ordered[:PROPER_MAP_MAX]]
 
 
+@steped("proper_map")
 def llm_proper_map(text: str, said: str,
                    menu: list[tuple[str, str]] | None = None) -> dict[str, Any]:
     """把词表外的叫法对到词表里已有的名字上（ps → adobe）。
@@ -4606,10 +5479,23 @@ _GENERIC_TERMS = {
 }
 
 
+_ANAPHORA_RE = re.compile(r"^(?:那|那么|这个|那个|它|然后|还有|另外|再|如果)|还要|然后呢|你说的")
+
+
 def _is_followup(text: str) -> bool:
-    """像「那要带什么」「多久」「然后呢」这种接着上一问说的短句。"""
+    """这句是不是接着上一问说的。
+
+    只认两种：句子自己带指代（「那」「它」「还有」开头），或者整句就是光秃秃的泛问
+    （「多久」「多少钱」「怎么办」）。老版本只要句里有「怎么」就判续问，
+    「饿了怎么办」「校园卡丢了怎么补办」这种自带主体的句子会被拼上上一条事项，
+    答成上一件事（2026-11-06 用户实测）。
+    """
     t = norm(text)
-    return len(t) <= 24 and bool(_FOLLOW_RE.search(t))
+    if not t:
+        return False
+    if _ANAPHORA_RE.search(t):
+        return True
+    return t in _GENERIC_TERMS or (len(t) <= 4 and bool(_FOLLOW_RE.search(t)))
 
 
 def _mentions_other_item(text: str, ctx_id: str) -> bool:
@@ -4636,29 +5522,66 @@ def _mentions_other_item(text: str, ctx_id: str) -> bool:
     return False
 
 
-def _contextual_text(text: str, context_item: str | None) -> tuple[str, str | None]:
-    """续问时把上一条事项带到句子里；句子里已经点了别的事项就不带。"""
-    ctx = ITEM_BY_ID.get(context_item or "")
-    if not ctx or not _is_followup(text):
-        return text, None
-    if _mentions_other_item(text, ctx["id"]):
-        return text, None
-    return f"{ctx['title']}，{text}", ctx["id"]
+def _llm_on(router_llm: bool | None) -> bool:
+    """模型裁决开不开：界面开关传了以开关为准，没传按环境变量 ROUTER_LLM（默认开）。"""
+    if router_llm is None:
+        return str(os.getenv("ROUTER_LLM", "1")).strip().lower() not in ("0", "false", "off", "no")
+    return bool(router_llm)
+
+
+def _context_needed(text: str, ctx: dict | None, prev_q: str,
+                    status: dict[str, Any], llm_on: bool = True) -> bool:
+    """这句要不要接上一条才答得清楚。
+
+    主判交给模型（llm_needs_context），接口不通才退回手写词表：词表判续问只有两半，
+    两半都错过——句里带「怎么」就判续问，把「滑雪」「校园卡丢了怎么补办」这种自带主体的
+    句子拼上上一条；词表没写的「几天能办好」判独立，答不上。
+    模型判完不再叠 `_mentions_other_item`：那道闸是给词表兜底的，它按 rank 前 8 名
+    里「名字撞进句子」的条目否决，而那些条目是「周末」「办好“」这类碎词命中的无关摘录
+    （11-07 实测：模型已判「几天能办好」「周末呢」要接上一条，两道闸把它们全否了，
+    「周末呢」因此被套上博物馆预约表 0.86 错答）。「句子里点了别的事算不需要」
+    这条判法已经写进 ctx_need 的规则，模型自己会判（D 类实测判得对）。
+    关模型（规则模式）时不发这次调用，退回词表。
+    """
+    if not ctx:
+        return _is_followup(text)
+    need = llm_needs_context(text, ctx.get("title", ""), prev_q, status) if llm_on else None
+    if need is not None:
+        return need
+    return _is_followup(text) and not _mentions_other_item(text, ctx["id"])
+
+
+def _contextual_text(text: str, ctx: dict | None, need: bool,
+                     standalone: str = "") -> tuple[str, str | None, str]:
+    """返回（检索串, 上一条 id, 判分串）。
+
+    检索串可以带上一条（要把那一件事的条目捞进候选池），判分串不能带：
+    候选行里就写着那条标题，题面开头摆着它，模型只要看到字面重合就能给高分，
+    这一问变成自己证明自己答得上（2026-11-06「滑雪」被转接到服务大厅）。
+    压缩出独立问句时只用它——那本来就是一句完整的话，再拼标题是双份上文。
+    """
+    if not ctx or not need:
+        return text, None, ""
+    if standalone:
+        return standalone, ctx["id"], standalone
+    return (f"{ctx['title']}，{text}", ctx["id"],
+            f"{text}\n（上一句问的是「{ctx['title']}」，这一句接着它问）")
 
 
 def _answer_core(text: str, given: dict[str, str] | None = None,
                  router_llm: bool | None = None,
                  history: list[dict[str, str]] | None = None,
-                 pick_id: str = "") -> dict[str, Any]:
+                 pick_id: str = "", judge_text: str = "") -> dict[str, Any]:
+    # judge_text：判分与复核看的题面。续问时检索串拼了上一条事项的标题，判分串不能拼——
+    # 候选行里就写着那条标题，题面再开头摆一次，模型看到字面重合就能给高分，
+    # 等于自己证明自己答得上。不带时（绝大多数单轮）判分串就是题面，行为一字不变。
+    jt = judge_text or text
     # pick_id：用户在反问菜单里点了某一条。这一条是他挑的，直接打开它，
     # 不能再走一遍路由——同一个词回炉只会把同样的选项再摊一次。
     # 模型裁决默认开着：规则模式在方向词（迁入/迁出）、身份限定词（留学生/研究生）
     # 和具体条款这几类问题上会自信地答错，48 题实测里模型层改判 10 次、8 次改对。
     # 界面开关传 true/false 时以开关为准；要在命令行关掉，设 ROUTER_LLM=0。
-    if router_llm is None:
-        llm_on = str(os.getenv("ROUTER_LLM", "1")).strip().lower() not in ("0", "false", "off", "no")
-    else:
-        llm_on = router_llm
+    llm_on = _llm_on(router_llm)
     picked = pick_id if (pick_id and pick_id in ITEM_BY_ID) else ""
     num = NUM_ONLY.match(text or "")
     if num:
@@ -4873,9 +5796,9 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         model_route["gate"] = "no_key"
     elif place_forced:
         model_route["gate"] = "place_forced"
-    elif score >= 96:
+    elif _strong_hit(score):
         model_route["gate"] = "strong_hit"
-    if llm_on and not picked and menu_pick is None and score < 96 and not place_forced:
+    if llm_on and not picked and menu_pick is None and not _strong_hit(score) and not place_forced:
         rule_top_id = top["id"] if top else ""
         pool = rerank_candidates(text, ranked, status=model_route)
         model_route["pool"] = len(pool)
@@ -4907,7 +5830,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         if not pool:
             model_route["gate"] = "no_candidates"
         else:
-            rr, rewrites = llm_rerank(text, pool, history, status=model_route)
+            rr, rewrites = llm_rerank(jt, pool, history, status=model_route)
         if rr is not None:
             best = rr["item"]
             bsc = rr["score"]
@@ -4952,7 +5875,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             model_route["gate"] = "rerank_unavailable"
             # 别复用 picked：那是用户点选的条目 id。这里把它改成模型选的条目，
             # 下面的复核入口看到 picked 非空就整块跳过，等于模型自己选的题没人复核。
-            route_pick, rewrites = llm_route(text, ranked[:8], history, status=model_route)
+            route_pick, rewrites = llm_route(jt, ranked[:8], history, status=model_route)
             if route_pick is not None and not pool:
                 # 候选池空着（规则腿 0 分、向量补面也没捞到）时，ranked[:8] 全是 0 分的无关
                 # 条目——0 分并列，谁排第一是原表顺序的巧合。把这种池子端到模型面前让它「挑一条」，
@@ -4976,7 +5899,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             model_route["pool2"] = len(pool2)
             rr2 = None
             if pool2:
-                rr2, _ = llm_rerank(text, pool2, history, status=model_route)
+                rr2, _ = llm_rerank(jt, pool2, history, status=model_route)
             if rr2 is not None and rr2["item"] is not None and rr2["score"] >= RERANK_ACCEPT:
                 top, score = rr2["item"], max(score, rr2["score"])
                 second = 0
@@ -5022,11 +5945,13 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         rc_ids = {it["id"] for it, _ in rc_pool}
         model_route["pool"] = len(rc_pool)
         cur = top["id"]
-        if not rc_ids:
-            # 候选池空着，复核没有可比的条目，别多烧一次调用
+        if not rc_ids or (RECHECK_SKIP_ABOVE and score >= RECHECK_SKIP_ABOVE):
+            # 候选池空着没有可比条目，或判分已经高到不必再看全文——都不多烧这一次调用。
+            # 阈值比的是最终得分（规则分与模型分取大）；skipped 不进签字白名单，
+            # 所以 50~54 那档 near-miss 照样被闸住，跳过高分不会把门开松。
             model_route["recheck"] = {"gate": "skipped"}
         else:
-            rc = llm_recheck(text, top, rc_pool)
+            rc = llm_recheck(jt, top, rc_pool)
             best_id = rc.get("best") or ""
             if "error" in rc:
                 # 复核自己挂了不能把答得上顶掉：照现行答案给，把失败记在状态里
@@ -5034,7 +5959,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             elif rc.get("verdict") == "no" and (not best_id or rc.get("answers") != "yes"):
                 # 说「没收录」之前，先看第一次没送进候选池的那些条目里有没有真答得上的
                 cands = offpool_candidates(text, rc_ids, cur)
-                look = llm_second_look(text, cur, cands)
+                look = llm_second_look(jt, cur, cands)
                 hit_id = "" if look.get("error") else (look.get("best") or "")
                 rc_gate = "say_none"
                 model_route["recheck_second"] = {
@@ -5124,7 +6049,13 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "soft_match": soft_match,
         }
 
-    if score < MATCH_THRESHOLD or recheck_none or near_miss_unsigned:
+    # 两道输出闸：模型判死就不再替它作答、置信不到地板就转拒答。
+    # 落进拒答分支以后，组装层的 rescue 照样会在里面跑——这两道闸关掉的是「拿规则腿第一名硬答」，
+    # 不是「逐字摘自官方条目的拼答」，所以不会把 #56 的收益一起砍掉。
+    refused_by = _output_gate(model_route, score)
+    if refused_by:
+        model_route["refused_by"] = refused_by
+    if score < MATCH_THRESHOLD or recheck_none or near_miss_unsigned or refused_by:
         miss_hints = dept_hints(text)
         miss_contacts = related_contacts(text)
         # 归口线索 / 公开联系方式两栏都可能为空，为空时卡片上没有部门那一栏，
@@ -5153,7 +6084,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "找到官方通知后，以通知上写的为准",
             ],
             "suggestion": recheck_none or near_miss_note or "这一项我没对上官方原文，给不出办理流程。",
-            "confidence": 0.0 if (recheck_none or near_miss_unsigned) else round(score / 100, 2),
+            "confidence": 0.0 if (recheck_none or near_miss_unsigned or refused_by) else round(score / 100, 2),
             "band": "none",
             "focus": [],
             "quotes": [],
@@ -5167,6 +6098,12 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "found": False,
             }],
         }
+        # 检索四条腿都没把答案端到模型面前时，最后再试一次：让模型把这句话换成
+        # 学校文件里的说法重新检索，逐面否决（#56 的拒答兜底）。
+        if _assemble_on("rescue") and llm_on and api_key():
+            asm = assemble_faces(jt, [], set(), model_route)
+            if asm:
+                return _assembled_answer(text, asm, base, score)
         hits = original_hits(text, status=model_route)
         if hits:
             base["original_search"] = hits
@@ -5202,7 +6139,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 "router_llm": llm_on,
                 "rule_unsure": risky,
             })
-            return with_free_answer(base, text, llm_on, history, status=model_route)
+            return with_free_answer(base, jt, llm_on, history, status=model_route)
         if CAMPUS_HINT.search(text):
             near_opts = [
                 {"id": i["id"], "title": i["title"], "dept": i.get("dept", ""),
@@ -5220,7 +6157,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             "router_llm": llm_on,
             "rule_unsure": risky,
         })
-        return with_free_answer(base, text, llm_on, history, status=model_route)
+        return with_free_answer(base, jt, llm_on, history, status=model_route)
 
     # 同一族事项分数咬得很紧时，先答最像的那一条，把另一条放进「相关事项」；
     # 不拿「你是想问 A 还是 B」把回答整个拦住——点进来是要办事的。
@@ -5399,6 +6336,14 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 parts.append(add)
                 focus_keys = [p["focus"] for p in parts]
 
+    # 「学校医保」这类大词：条目挑对了也只讲到整件事的一面。把缺的几面换成官方说法
+    # 重检一遍，逐面让模型否决，只把逐字原文拼进来（#56；ASSEMBLE 关着时整块不跑）。
+    if _assemble_on("fill") and llm_on and api_key() and not blocked and any(p["found"] for p in parts):
+        asm = assemble_faces(jt, parts, {top["id"]}, model_route)
+        if asm:
+            parts = parts + asm
+            focus_keys = [p["focus"] for p in parts]
+
     # 已经有内容可看时，不再单开一面写「没有收录」，缺的部分交给 note 逐项说清
     if any(p["found"] for p in parts):
         parts = [p for p in parts if p["found"]]
@@ -5409,7 +6354,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     if missing:
         missing = [m for m in missing if not _facet_covered(m, parts)]
 
-    normalized = f"{top['title']} · " + "、".join(p["label"] for p in parts)
+    normalized = f"{_short_title(top['title'])} · " + "、".join(p["label"] for p in parts)
     # 每一面的引文先按和这一面正文的重合度排，答的是第 6 步就别把第 0 步的原文摆在最前
     for p in parts:
         if len(p.get("quotes") or []) > 1:
@@ -5487,6 +6432,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         "ambiguous": score < 100 and (score - second_clean) < AMBIGUOUS_GAP,
         "item": public(top),
         "answers": parts,
+        "headline": llm_headline(text, _headline_body(parts), llm_on, model_route),
         "focus": focus_keys,
         "hold": bool(blocked),
         "followups": followups,
@@ -5510,20 +6456,20 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     }
 
 
-def _answer_is_thin(resp: dict[str, Any]) -> bool:
-    """这一答明显没接住：没命中、还在反问、没有正文，或把握不到 0.7。"""
-    if not resp.get("matched"):
-        return True
-    if resp.get("disambiguate") and resp.get("clarify"):
-        return True
-    if not any(p.get("found") or p.get("text") for p in (resp.get("answers") or [])):
-        return True
-    return float(resp.get("confidence") or 0) < 0.7
+_TITLE_NUM_PREFIX = re.compile(r"^[一二三四五六七八九十]+、|^（[一二三四五六七八九十]+）|^\([0-9]+\)")
 
 
-def _answer_weight(resp: dict[str, Any]) -> tuple[int, int, float]:
-    body = sum(1 for p in (resp.get("answers") or []) if p.get("found") or p.get("text"))
-    return (1 if resp.get("matched") else 0, body, round(float(resp.get("confidence") or 0), 2))
+def _short_title(title: Any, limit: int = 24) -> str:
+    """把条目短名收拾得能放进「理解成」那一行。
+
+    汇编切片的标题里常带章节号、竖线分隔的下一段、整条网址，直接端出来
+    最显眼的那行就没法看了。这里只删不改写：截到第一段，去掉网址和章节号。
+    """
+    t = re.sub(r"https?://\S+|www\.\S+", "", str(title or ""))
+    t = t.split("｜")[0]
+    t = _TITLE_NUM_PREFIX.sub("", t.strip()).strip()
+    t = re.sub(r"\s+", " ", t).strip(" ，,。;；、")
+    return t[:limit] + "…" if len(t) > limit else t
 
 
 def answer_question(text: str, given: dict[str, str] | None = None,
@@ -5537,24 +6483,31 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     pick_item 是用户在反问菜单里点的那一条：直接打开它，不再重新路由。
     """
     orig = text
-    search, ctx_id = _contextual_text(text, context_item)
+    # 「这句要不要接上一条」先判一次，判完才知道检索串、压缩和判分串各拿什么。
+    # 历史只在真续问时才起作用，而且用完就丢：压成一句独立问句后，检索、重排、
+    # 自由生成三条腿都只看见这句话。判独立的句子一个字的历史都不喂——上一轮回答
+    # 的原文一旦进 prompt，改写和打分就跟着上一件事走（2026-11-06 实测：带一轮
+    # 购电历史，「饿了怎么办」一次拒答、一次答成供餐时间）。
+    note: dict[str, Any] = {}
+    ctx = ITEM_BY_ID.get(context_item or "")
+    asked = _history_questions(history)
+    need = False if pick_item else _context_needed(orig, ctx, asked[-1] if asked else "",
+                                                   note, _llm_on(router_llm))
+    standalone = llm_condense(orig, history, note) if (need and history) else ""
+    q = standalone or orig
+    search, ctx_id, judge = _contextual_text(q, ctx, need, standalone)
+    history = None
     if ctx_id:
         given = {**(context_slots or {}), **(given or {})}
-    resp = _answer_core(search, given, router_llm, history, pick_id=pick_item or "")
-    # 「几天能办好」「找谁问」这类续问不在 _FOLLOW_RE 词表里，第一遍会被当成独立问题，
-    # 多半答不上。屏幕上还摆着上一件事：带上它的标题再答一次，两版取更像的那一版。
-    # 句子里点了别的事项照样不套（沿用 _mentions_other_item 那道闸）；
-    # 没带 context_item 就进不来这里，206 题基线不带上下文，因此不会跟着漂。
-    if (not ctx_id and not pick_item and context_item in ITEM_BY_ID
-            and _answer_is_thin(resp) and not _mentions_other_item(orig, context_item)):
-        alt = _answer_core(f"{ITEM_BY_ID[context_item]['title']}，{orig}",
-                           {**(context_slots or {}), **(given or {})},
-                           router_llm, history)
-        if _answer_weight(alt) > _answer_weight(resp):
-            resp, ctx_id = alt, context_item
+    resp = _answer_core(search, given, router_llm, history, pick_id=pick_item or "",
+                        judge_text=judge)
     if ctx_id:
         resp["query"] = orig
         resp["context_item"] = ctx_id
+    if standalone:
+        resp["condensed_query"] = standalone
+    if note:
+        resp.setdefault("model_route", {}).update(note)
     return resp
 
 
@@ -5590,16 +6543,22 @@ def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
 
 
 @app.post("/api/ask")
-def ask(req: AskReq) -> dict[str, Any]:
+def ask(req: AskReq, request: Request) -> Any:
     maybe_reload()
     text = (req.text or "").strip()
     if len(text) < 2 and not NUM_ONLY.match(text):
         raise HTTPException(400, "请再说得具体一点")
-    return clean_response(answer_question(
-        text, req.slots, router_llm=req.router_llm,
+    kw = dict(
+        text=text, given=req.slots, router_llm=req.router_llm,
         context_item=req.context_item, context_slots=req.context_slots,
         history=req.messages or None, pick_item=req.pick_item,
-    ))
+    )
+    # /field 带这个头来看流：每一步模型调用跑完就发一帧，最后 done 就是下面那个 dict。
+    # 经典版 app.js 不带这个头，走的还是原来那一条，一个字节都不变。
+    if "text/event-stream" in (request.headers.get("accept") or ""):
+        return StreamingResponse(_ask_stream(**kw), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+    return clean_response(answer_question(**kw))
 
 
 @app.post("/api/intake")

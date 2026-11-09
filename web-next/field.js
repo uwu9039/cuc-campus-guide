@@ -158,6 +158,28 @@
       `<a class="plink" href="#" data-ask="${esc(match + "在哪")}" title="问：${esc(match)}在哪">${match}</a>`);
   }
 
+  // 原文里常直接写网址（正版软件平台、办事系统入口、报到页面），得点开。
+  // 先按 URL 把原文切开：网址段自己转义成链接，其余段照旧走 esc＋地点词，
+  // 这样不会出现 a 套 a。中文句号、顿号、全角括号不能算进网址。
+  const URL_RE = /https?:\/\/[^\s，。；、！？〈《》「」『』【】（）"'<>]+|www\.[^\s，。；、！？〈《》「」『』【】（）"'<>]+/g;
+  function richText(value) {
+    const raw = String(value == null ? "" : value);
+    if (!raw) return "";
+    const out = [];
+    let cut = 0;
+    let m;
+    URL_RE.lastIndex = 0;
+    while ((m = URL_RE.exec(raw))) {
+      if (m.index > cut) out.push(linkify(esc(raw.slice(cut, m.index))));
+      const url = m[0];
+      const href = /^www\./i.test(url) ? `https://${url}` : url;
+      out.push(`<a class="ulink" href="${esc(href)}" target="_blank" rel="noreferrer">${esc(url)}</a>`);
+      cut = m.index + url.length;
+    }
+    if (cut < raw.length) out.push(linkify(esc(raw.slice(cut))));
+    return out.join("");
+  }
+
   const stepNote = (step, index) => {
     if (typeof step === "string") return "";
     return step.where || (step.when && step.when !== `第 ${index + 1} 步` ? step.when : "");
@@ -398,7 +420,7 @@
       || "下面是我从原文里找到的线索。你可以换个更具体的说法再问，比如「校园卡补卡」或「开成绩单」。")}`;
     const gen = data.llm_answer ? `<div class="genbox">
       <div class="alab">模型生成 · 没有官方条目，这段回答由模型直接生成</div>
-      <p class="aval">${esc(data.llm_answer.text || "")}</p>
+      <p class="aval">${richText(data.llm_answer.text || "")}</p>
       <p class="qmore">${esc(data.llm_answer.disclaimer || "这段内容由模型生成，可能不准确")}${data.llm_answer.caveat ? ` ${esc(data.llm_answer.caveat)}` : ""}</p>
     </div>` : "";
     const clues = (data.original_search || []).map((h) => `<div class="hitrow">
@@ -486,8 +508,8 @@
     const item = data.item || {};
     const quotes = data.quotes || [];
     const body = (data.answers || []).map(partHtml).join("");
-    return `<div class="card">${cardHead(data, item.title || "")}
-      ${item.summary ? `<p class="aval">${esc(item.summary)}</p>` : ""}
+    return `<div class="card">${cardHead(data, data.headline || item.title || "")}
+      ${item.summary ? `<p class="aval">${richText(item.summary)}</p>` : ""}
       ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}${tableBlock(data)}
       ${sourceBlock(item)}
       <div class="cardfoot">
@@ -520,13 +542,13 @@
       value = `<ol class="asteps">${a.steps.map((step, index) => {
         const what = typeof step === "string" ? step : (step.what || "");
         const where = stepNote(step, index);
-        return `<li><span>${linkify(esc(what))}${where ? ` <span class="norm">${esc(where)}</span>` : ""}</span></li>`;
+        return `<li><span>${richText(what)}${where ? ` <span class="norm">${esc(where)}</span>` : ""}</span></li>`;
       }).join("")}</ol>`;
     } else if (Array.isArray(a.lines) && a.lines.length) {
-      value = `<ul class="alines">${a.lines.map((line) => `<li>${linkify(esc(line))}</li>`).join("")}</ul>`;
+      value = `<ul class="alines">${a.lines.map((line) => `<li>${richText(line)}</li>`).join("")}</ul>`;
     } else {
       const text = a.text == null ? "" : String(a.text);
-      value = `<p class="aval">${linkify(esc(text || "官方页面没有写这一项"))}</p>`;
+      value = `<p class="aval">${richText(text || "官方页面没有写这一项")}</p>`;
     }
     const first = quotes[0] ? quoteLine(quotes[0]) : (a.focus === "contact" && a.found
       ? `<div class="qmore">联系人取自这条事项的归属部门，官方页面里没有单列这一句。</div>` : "");
@@ -545,11 +567,11 @@
       : "";
     const text = opts.short && q.quote && q.quote.length > 120 ? q.quote.slice(0, 120) + "…" : q.quote;
     return `<div class="qline"><span class="qmeta">${esc(meta)}</span>
-      <div class="qtxt">${linkify(esc(text))}${whoHtml}</div></div>`;
+      <div class="qtxt">${richText(text)}${whoHtml}</div></div>`;
   }
 
   function noteBlock(data) {
-    if (data.note) return `<p class="plannote">${linkify(esc(data.note))}</p>`;
+    if (data.note) return `<p class="plannote">${richText(data.note)}</p>`;
     if (data.missing && data.missing.length) {
       return `<p class="plannote">官方页面没有写 ${esc(data.missing.join("、"))}，我不能替学校补。</p>`;
     }
@@ -620,6 +642,163 @@
     window.scrollTo({ top, behavior: "instant" });
   }
 
+  /* /api/ask 有两种回法：一次性 JSON（后端还没上 SSE 就是这样），和 event-stream
+     一步步把模型调用报出来。这里只负责读，不猜进度：一条都不报就退回一次性 JSON，
+     槽里那一个呼吸框原样留着，前端不编阶段。 */
+  async function askStream(body, onStep) {
+    let res;
+    try {
+      res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      throw new Error("连不上本地服务，请确认 app.py 已在当前端口运行");
+    }
+    const type = res.headers.get("content-type") || "";
+    if (!type.includes("event-stream")) {
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error((data && (data.error || data.detail || data.message)) || `请求失败（${res.status}）`);
+      }
+      return { json: data, streamed: false };
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let payload = null;
+    let failure = null;
+    for (;;) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      buffer += decoder.decode(chunk.value, { stream: true });
+      let cut = buffer.indexOf("\n\n");
+      while (cut >= 0) {
+        const frame = buffer.slice(0, cut);
+        buffer = buffer.slice(cut + 2);
+        const name = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+        const raw = (frame.match(/^data:\s*(.+)$/m) || [])[1];
+        if (name && raw) {
+          let data = null;
+          try {
+            data = JSON.parse(raw);
+          } catch (error) {
+            if (name !== "step") failure = new Error(`思考流第 ${name} 步的数据读不出来`);
+          }
+          if (data) {
+            if (name === "step") onStep(data);
+            if (name === "done") payload = data;
+            if (name === "err") failure = new Error(data.error || data.detail || data.message || "模型这一趟没走完");
+          }
+        }
+        cut = buffer.indexOf("\n\n");
+      }
+    }
+    if (failure) throw failure;
+    if (!payload) throw new Error("思考流断了：没等到 done 那一步");
+    return { json: payload, streamed: true };
+  }
+
+  // 后端报的字段名 → 界面上的说法。只有名字是前端给的，值一律原样来自后端。
+  const THINK_KEYS = {
+    gate: "门", pool: "候选", pool2: "候选2", score: "复核分", facets: "面",
+    rewrites: "改写", rescue: "救场", changed: "改判", confirmed: "复核",
+    asked: "裁决", why: "理由", faces: "拼面", plan: "拼装", error: "报错",
+  };
+
+  function thinkValue(value) {
+    // 后端字段可能是数组或嵌套字典（如 assembly:{faces:[…]}），不递归就会打成 [object Object]
+    if (Array.isArray(value)) return value.map(thinkValue).filter(Boolean).join("、");
+    if (value && typeof value === "object") {
+      return Object.keys(value)
+        .map((key) => `${THINK_KEYS[key] || key}=${thinkValue(value[key])}`)
+        .filter((text) => !text.endsWith("="))
+        .join(" · ");
+    }
+    return String(value);
+  }
+
+  function thinkLine(evt) {
+    const src = (evt && (evt.fields || evt.route)) || {};
+    const bits = [];
+    Object.keys(src).forEach((key) => {
+      const value = src[key];
+      const name = THINK_KEYS[key] || key;
+      if (value === true) { bits.push(name); return; }          // 布尔只报「有这回事」
+      if (value === null || value === undefined || value === false || value === "") return;
+      const text = thinkValue(value);
+      if (text) bits.push(`${name}=${text}`);
+    });
+    return bits.join(" · ");
+  }
+
+  function typeInto(node, text) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      node.textContent = text;
+      return null;
+    }
+    let shown = 0;
+    const timer = setInterval(() => {
+      shown += 3;                    // 每拍三个字：一框两行大约三拍打完
+      node.textContent = text.slice(0, shown);
+      if (shown >= text.length) clearInterval(timer);
+    }, 40);
+    return timer;
+  }
+
+  /* 思考流：后端每报一次模型调用就开一个框，下一框开始打字时上面那些折到三行。
+     答案到达时整串折成一行摘要，点开恢复全文。 */
+  function thinkFlow(slot) {
+    const timers = [];
+    const boxes = [];
+    let wrap = null;
+    let dots = null;
+    let seconds = 0;
+
+    function open() {
+      if (wrap) return;
+      // 第一条 step 到了才换掉等待时那一个框；三点不消失，改成常驻在最后一条
+      slot.innerHTML = '<div class="thinking" role="status" aria-label="正在等模型回话">'
+        + '<div class="thinksteps"><div class="thinkbox dots"><i></i><i></i><i></i></div></div></div>';
+      wrap = slot.querySelector(".thinksteps");
+      dots = slot.querySelector(".thinkbox.dots");
+    }
+
+    return {
+      step(evt) {
+        open();
+        // 上一行折到三行、竖线退回灰；新到的这条才是「正在想」的
+        boxes.forEach((box) => {
+          box.node.classList.add("folded");
+          box.node.classList.remove("now");
+        });
+        if (evt && typeof evt.t === "number") seconds += evt.t;
+        const node = document.createElement("div");
+        node.className = "thinkbox now";
+        const label = (evt && (evt.label || evt.id)) || "模型调用";
+        const text = thinkLine(evt);
+        node.innerHTML = `<h4 class="thinklab">${esc(label)}</h4><p class="thinktxt"></p>`;
+        // 插在三点前面：每来一步就多一行，三点顺延到最下面，一直表示「还在想」
+        wrap.insertBefore(node, dots);
+        boxes.push({ node, text });
+        const timer = typeInto(node.querySelector(".thinktxt"), text);
+        if (timer) timers.push(timer);
+      },
+      stop() {
+        timers.forEach((timer) => clearInterval(timer));
+        timers.length = 0;
+      },
+      collapsed() {
+        if (!boxes.length) return "";
+        this.stop();
+        // 摘要里每个框都给全文：折叠只是等待过程中的临时形态，三点也不再带上
+        const html = boxes.map((box) => `<div class="thinkbox"><h4 class="thinklab">${box.node.querySelector(".thinklab").innerHTML}</h4><p class="thinktxt">${esc(box.text)}</p></div>`).join("");
+        return `<div class="thinking" data-done="1"><button class="thinksum" type="button" aria-expanded="false">已思考 ${boxes.length} 步 · ${seconds.toFixed(1)}s</button><div class="thinksteps" hidden>${html}</div></div>`;
+      },
+    };
+  }
+
   async function ask(text, pick) {
     text = String(text || "").trim();
     if (text.length < 2) { toast("问得太短了，把要办的事说全一点"); return; }
@@ -627,12 +806,13 @@
     state.busy = true;
     el.send.disabled = true;
     const slot = addExchange(text);
-    // 加载动画也写进这个槽：答案（或错误卡）随后覆盖 slot.innerHTML，三点就随之消失。
-    // 顺序不能反——先请求再点亮，等于答完了才动。
-    slot.innerHTML = `<div class="thinking" role="status" aria-label="正在等模型回话"><i></i><i></i><i></i></div>`;
+    // 思考框也写进这个槽：答案（或错误卡）随后覆盖 slot.innerHTML，框就随之消失。
+    // 顺序不能反——先请求再点亮，等于答完了才亮。后端报出第一步之前，框里不放任何阶段文字。
+    slot.innerHTML = `<div class="thinking" role="status" aria-label="正在等模型回话"><div class="thinkbox dots"><i></i><i></i><i></i></div></div>`;
     jumpToStart(slot);
+    const flow = thinkFlow(slot);
     try {
-      const response = await api("/api/ask", {
+      const { json: response } = await askStream({
         text,
         slots: state.slots,
         router_llm: el.llm.checked,
@@ -641,10 +821,10 @@
         messages: state.history.slice(-12),
         // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
         pick_item: pick || null,
-      });
+      }, (evt) => flow.step(evt));
       state.last = response;
       state.count += 1;
-      slot.innerHTML = renderResult(response);
+      slot.innerHTML = flow.collapsed() + renderResult(response);
       afterResult(response);
       // 落位要排在 afterResult 之后：这一问定位到条目时它会 setMode("work")，
       // .hero 整块 display:none，文档当场矮掉一大截。在那之前量到的位置不作数。
@@ -653,7 +833,8 @@
       state.history.push({ role: "assistant", content: extractText(response) });
       if (state.history.length > 24) state.history = state.history.slice(-24);
     } catch (error) {
-      slot.innerHTML = `<div class="errcard"><h2>这次没答上来</h2><p class="aval">${esc(error.message)}</p></div>`;
+      flow.stop();
+      slot.innerHTML = `${flow.collapsed()}<div class="errcard"><h2>这次没答上来</h2><p class="aval">${esc(error.message)}</p></div>`;
       jumpToStart(slot);
     } finally {
       state.busy = false;
@@ -811,7 +992,7 @@
     const list = uniq.length
       ? `<div class="quotelist">${uniq.map((q) => `<div class="qline">
           <span class="qmeta">${esc(q.kind || "原文")}${q.date ? " / " + esc(q.date) : ""}</span>
-          <div class="qtxt">${linkify(esc(q.quote))}<span class="who">${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">${esc(q.label || q.src || "")}</a>` : esc(q.label || q.src || "")}</span></div>
+          <div class="qtxt">${richText(q.quote)}<span class="who">${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noreferrer">${esc(q.label || q.src || "")}</a>` : esc(q.label || q.src || "")}</span></div>
         </div>`).join("")}</div>`
       : `<p class="insempty">这次回答没有引用到原文段落。下面是条目登记的官方来源，可直接打开核对。</p>`;
     const src = (item.source || []).map((s) => `<div class="qline">
@@ -1166,6 +1347,14 @@
         const text = (host && host.dataset.orig) || (state.last && state.last.query) || el.q.value;
         el.q.value = text;
         ask(text);
+        return;
+      }
+      const sum = event.target.closest(".thinksum");
+      if (sum) {
+        const expanded = sum.getAttribute("aria-expanded") !== "true";
+        sum.setAttribute("aria-expanded", String(expanded));
+        const steps = sum.nextElementSibling;
+        if (steps) steps.hidden = !expanded;
         return;
       }
       const act = event.target.closest("[data-act]");

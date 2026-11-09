@@ -18,7 +18,7 @@ SRC = ROOT / "sources"
 OUT = ROOT / "_modelscope_bundle"
 
 ROOT_FILES = [
-    "app.py", "vector_index.py", "requirements.txt",
+    "app.py", "prompt_parts.py", "vector_index.py", "requirements.txt",
     "items.json.gz", "table-rows.json.gz", "doc-report.json.gz", "file-registry.json.gz",
     "sources-archive.tar.gz",
     "presets.json", "topic-menus.json", "contacts.json",

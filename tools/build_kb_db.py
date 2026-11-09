@@ -336,7 +336,23 @@ def verify() -> int:
     if n_doc != n_doc_src:
         bad.append(f"doc 行数 {n_doc} != 产物 {n_doc_src}")
     if gone:
-        bad.append(f"登记为正文但盘上没有的文件 {len(gone)} 份，例如 {gone[:3]}")
+        # 只有「有条目引用」的正文缺失才算对不上；没人引用的缺件不影响逐字核对
+        # （云端精简包只保证被引用的正文，比如两份没进归档的附件文本）。
+        ref = set()
+        for it in items:
+            for ev in (it.get("evidence") or {}).values():
+                rows = ev.get("sources") if isinstance(ev, dict) and "sources" in ev else [ev]
+                for r in rows or []:
+                    s = str((r or {}).get("src") or "").strip()
+                    if s:
+                        ref.add(s)
+        gone_bad = [f for f in gone if Path(f).stem in ref]
+        gone_note = [f for f in gone if Path(f).stem not in ref]
+        if gone_bad:
+            bad.append(f"登记为正文但盘上没有的文件 {len(gone_bad)} 份（有条目引用），例如 {gone_bad[:3]}")
+        if gone_note:
+            print(f"  注：{len(gone_note)} 份正文不在包里、也没有条目引用"
+                  f"（{gone_note[:2]}），不影响核对")
     if miss or over:
         bad.append(f"位图缺口 {miss} 份 / 重复认领 {over} 字")
     if not any(v > 0 for v in probes.values()):

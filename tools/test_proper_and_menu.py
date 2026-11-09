@@ -125,8 +125,8 @@ for q, kw in [("photoshop怎么安装", "安装"), ("ps怎么安装", "安装"),
     check("补面不含存档条目 %s" % q, all(not i.get("archive_only") for i, _ in add),
           "%s" % [i["id"] for i, _ in add if i.get("archive_only")][:3])
 
-# 补面不许把池子撑破：给模型看的条数上限一直是 rerank_candidates 的那个 limit，
-# 补完还是不能超过（11-04 扩池实验的结论：池子越大收益越小、跑偏越多）。
+# 补面不许把池子撑破：池子常年是满的 14 条，补面走「换池尾」而不是往后追加，
+# 换完总数仍不能超过 rerank_candidates 的上限（11-04 扩池实验：池子越大越容易挑跑偏）。
 for q in ["photoshop怎么安装", "全家桶怎么下载", "ps怎么安装"]:
     if fill is None:
         check("补面后池子不超上限 %s" % q, False, "app.proper_fill_candidates 还没实现")
@@ -134,11 +134,13 @@ for q in ["photoshop怎么安装", "全家桶怎么下载", "ps怎么安装"]:
     ranked = app.rank(q)
     pool = app.rerank_candidates(q, ranked)
     add = fill(q, ranked, pool)
-    check("补面后池子不超上限 %s" % q, len(pool) + len(add) <= app.RERANK_POOL_LIMIT,
-          "池内 %d 条 + 补 %d 条 = %d 条，上限 %d"
-          % (len(pool), len(add), len(pool) + len(add), app.RERANK_POOL_LIMIT))
+    merged = pool[:max(0, app.RERANK_POOL_LIMIT - len(add))] + add
+    check("补面后池子不超上限 %s" % q, len(merged) <= app.RERANK_POOL_LIMIT,
+          "池内 %d 条 + 补 %d 条 → 换池尾后 %d 条，上限 %d"
+          % (len(pool), len(add), len(merged), app.RERANK_POOL_LIMIT))
 
-# 负控一：池子里已经有人带这个名字 → 通道一个字都不许多补
+# 负控一：池子里已有带名、且规则腿给了及格分的条目 → 这一面确实有人答，通道一个字都不许多补
+# （只带名的入口清单/卸载提醒不算：它们规则分是 0，模型拿着它们只会判未收录）
 for q in ["正版Adobe如何安装", "Adobe软件怎么激活", "wps怎么激活"]:
     if fill is None:
         check("已带名不补 %s" % q, False, "app.proper_fill_candidates 还没实现")

@@ -228,14 +228,29 @@ def null_chat(messages, max_tokens=600, json_mode=False, thinking=False):
     return json.dumps({"best": None, "score": 0, "why": "桩"})
 
 
-OLD = app.llm_facet_fill, app.ds_chat, app.api_key
+# 判「补面」这件事必须走正常的答题路。旧桩只把 ds_chat 全设成 best=None：
+# 复核/判分一看到「都没答上」，DECLINE_REFUSES 就把题判死，根本进不到 facet_fill——
+# 这条断言于是永远红（2026-11-09 查实，产品本身没问题）。判分与复核改成正常桩。
+def ok_rerank(text, pool, *a, **k):
+    it = pool[0][0] if pool else None
+    return ({"item": it, "score": 90, "scores": {it["id"]: 90} if it else {},
+             "why": "桩", "facets": []}, [])
+
+
+def ok_recheck(text, chosen, pool):
+    return {"verdict": "yes", "answers": "yes", "best": chosen["id"], "why": "桩"}
+
+
+OLD = app.llm_facet_fill, app.ds_chat, app.api_key, app.llm_rerank, app.llm_recheck
 app.llm_facet_fill, app.ds_chat, app.api_key = spy_fill, null_chat, (lambda: "test-key")
+app.llm_rerank, app.llm_recheck = ok_rerank, ok_recheck
 try:
     one = app.answer_question("校园里丢了贵重物品怎么报案？", {}, True)
     n_one = len(SIGNALS)
     two = app.answer_question("校医院的心理咨询怎么预约？收费吗？", {}, True)
 finally:
-    app.llm_facet_fill, app.ds_chat, app.api_key = OLD
+    (app.llm_facet_fill, app.ds_chat, app.api_key,
+     app.llm_rerank, app.llm_recheck) = OLD
 check("②单问句的假「费用」标签不触发模型", SIGNALS[:n_one] != [["费用"]],
       "单问句触发 %d 次 信号 %s ｜它的缺问 %s" % (n_one, SIGNALS[:n_one], (one or {}).get("missing")))
 check("②真有两问且字面没缺口时标签顶上", len(SIGNALS) > n_one and bool(SIGNALS[-1]),
@@ -282,10 +297,13 @@ nm, km = (none.get("model_route") or {}), (kept.get("model_route") or {})
 check("零分候选里挑中也不出答", not none.get("matched"),
       "matched=%s 条目=%s gate=%s conf=%s" % (none.get("matched"),
       (none.get("item") or {}).get("id"), nm.get("gate"), none.get("confidence")))
-check("有分候选里仍接模型的挑", bool(kept.get("matched"))
-      and (kept.get("item") or {}).get("id") == "xyk-buka",
-      "matched=%s 条目=%s gate=%s" % (kept.get("matched"),
-      (kept.get("item") or {}).get("id"), km.get("gate")))
+# 判分/复核不可用时，fallback 只把分抬到 MATCH_THRESHOLD+1=56，低于 MIN_ANSWER_CONF 0.7，
+# 出口闸按「宁可拒答」处理。这条断言的旧口径写在这个地板之前（期望照常作答），
+# 2026-11-09 按现行口径改：不拿一条翻译挑的条目硬答。
+check("模型腿不可用时不拿 fallback 硬答", not kept.get("matched")
+      and km.get("refused_by") == "conf_floor",
+      "matched=%s 条目=%s refused_by=%s gate=%s" % (kept.get("matched"),
+      (kept.get("item") or {}).get("id"), km.get("refused_by"), km.get("gate")))
 
 print("failed", failed)
 sys.exit(1 if failed else 0)

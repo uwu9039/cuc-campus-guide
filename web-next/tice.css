@@ -51,7 +51,7 @@
 .tice-lede {
   margin: 0;
   max-width: 64ch;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: var(--muted);
 }
@@ -181,7 +181,7 @@
 
 .tice-card-title {
   margin: 0;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: .01em;
 }
@@ -270,7 +270,7 @@
 
 .tice-bmi-value {
   font-family: var(--display);
-  font-size: 32px;
+  font-size: 18px;
   line-height: 1;
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
@@ -333,7 +333,7 @@
 
 .tice-stats dd {
   margin: 0;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
@@ -457,7 +457,7 @@
 }
 
 .tr-kicker {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--ink);
 }
@@ -508,7 +508,7 @@
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--accent-ink);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -523,7 +523,7 @@
 
 .tr-split b {
   font-family: var(--display);
-  font-size: 32px;
+  font-size: 24px;
   line-height: 1;
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
@@ -539,7 +539,7 @@
   font-size: 13px;
 }
 
-.tr-overview b { font-size: 15px; }
+.tr-overview b { font-size: 16px; }
 .tr-overview span { color: var(--muted); }
 
 .tr-detail-head {
@@ -550,7 +550,7 @@
   padding-top: 8px;
 }
 
-.tr-detail-head b { font-size: 15px; }
+.tr-detail-head b { font-size: 16px; }
 .tr-detail-head span { color: var(--muted); font-size: 12px; }
 
 .tr-list { display: grid; gap: 12px; }
@@ -611,7 +611,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tr-row-head b { font-size: 15px; flex: 1 1 auto; }
+.tr-row-head b { font-size: 16px; flex: 1 1 auto; }
 
 .tr-measured {
   display: flex;
@@ -624,7 +624,7 @@
 
 .tr-measured b {
   color: var(--ink);
-  font-size: 15px;
+  font-size: 16px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -642,7 +642,7 @@
 
 .tr-stats dd {
   margin: 4px 0 0;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
@@ -776,7 +776,7 @@
   gap: 16px;
 }
 
-#archive-panel h2 { margin: 0; font-size: 15px; }
+#archive-panel h2 { margin: 0; font-size: 16px; }
 
 .tice-form-row { display: grid; gap: 8px; }
 
@@ -843,7 +843,7 @@
   padding: 16px 24px;
   cursor: pointer;
   list-style: none;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--ink);
   border-radius: var(--radius-panel);
@@ -913,3 +913,11 @@
 /* hidden 属性必须压过作者样式里的 display：给 #archive-panel 写了 display:grid 之后，
    浏览器默认的 [hidden]{display:none} 就失效了，空面板会变成屏幕中间一条白条。 */
 .tice-page [hidden] { display: none !important; }
+
+
+
+
+/* 第一格（单项分/单项得分）大一号，权重与加权贡献回到 18 */
+.tice-stats div:first-child dd,
+.tr-stats div:first-child dd { font-size: 24px; }
+

@@ -331,7 +331,7 @@
 
     box.appendChild(el('p', 'tr-foot is-strong', '自动暂存与历史记录仅保存在本机'));
     box.appendChild(el('p', 'tr-foot', '正式成绩以学校体测系统为准'));
-    box.appendChild(el('p', 'tr-foot', '学生个人制作 · 仅供查询参考'));
+
 
     box.hidden = false;
 
@@ -937,6 +937,7 @@
     .then(start)
     .catch(function (e) { fail('评分标准没读到：' + e.message + '。请确认 tice-standard.json 与页面同目录。'); });
 }());
+
 
 
 

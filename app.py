@@ -4653,6 +4653,7 @@ def proper_map_extra(ranked: list[tuple[dict[str, Any], int]], name: str,
 
 
 PROPER_FILL_ADD = 8     # 池子里一条都没点名时，最多补几条进去
+PROPER_FILL_SWAP = 4    # 池子里有带名但都不及格时，最多换掉池尾几条（与改写腿同一个量级）
 
 
 def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
@@ -4666,7 +4667,10 @@ def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
     模型立刻给 70 分并答对）。只补候选，打分、75/60/10 门槛与复核一行不动。
     """
     qp = question_proper(q)
-    if not qp or any(names_product(it, qp) for it, _sc in pool):
+    # 「池里有带名条目」不等于「这一面有人答」：入口清单、卸载提醒这类条目名字对得上、
+    # 规则分却是 0，模型拿着它们只会判未收录（photoshop 怎么安装 2026-11-09 实测 3/3 拒答）。
+    # 只有带名、而且规则腿真给了及格分的条目，才算这一面已经有人答，不必再补。
+    if not qp or any(names_product(it, qp) and sc >= MATCH_THRESHOLD for it, sc in pool):
         return []
     named: set[str] = set()
     for t, ids in proper_index()["postings"].items():
@@ -4675,9 +4679,9 @@ def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
     if not named:
         return []
     have = {it["id"] for it, _sc in pool}
-    # 补完不许把池子撑破：条数上限一直是 rerank_candidates 那个数，
-    # 扩池实验测过——池子越大，模型挑跑偏的越多。
-    limit = min(limit, RERANK_POOL_LIMIT - len(pool))
+    # 池子常年是满的 14 条：补面不是往后追加，是替换池尾（调用方按这个数换）。
+    # 尾巴本来就摆着 0 分的无关条目，换掉不违背扩池实验的结论。
+    limit = min(limit, PROPER_FILL_SWAP)
     if limit <= 0:
         return []
     # 名字本身不参与「像不像在问这件事」的比较：带名的条目当然都带名，
@@ -4686,18 +4690,28 @@ def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
     for w in sorted(qp, key=len, reverse=True):
         hole = hole.replace(w, "\x00")
     qb = {g for seg in hole.split("\x00") for g in bigrams(seg)}
+    # 问句里点的是哪个动作：装/下/激活…。带名条目里一堆目录页和泛化入口，
+    # 光按二字组重合排会把「（四）如何安装？……12」这种目录行排进来，
+    # 模型挑中它就答成「安装后点击登录」。动作词进标题、正文像步骤的，往前排。
+    act = next((a for a in ("安装", "下载", "激活", "登录", "卸载", "重装") if a in hole), "")
     order = {it["id"]: k for k, (it, _sc) in enumerate(ranked)}
     cand: list[tuple[int, int, dict[str, Any]]] = []
     for iid in named:
         it = ITEM_BY_ID.get(iid)
         if it is None or iid in have or it.get("archive_only"):
             continue
-        # 同批带名条目在规则腿里全是 0 分，名次分不出高下；按「跟这句问的像不像」排，
-        # 让讲安装的那几条先出现在「怎么安装」的池子里，同分仍按规则原序。
-        hay = norm((it.get("title") or "") + " " + str(it.get("answer") or "")[:120])
-        cand.append((-len(qb & bigrams(hay)), order.get(iid, len(ranked)), it))
+        title = norm(it.get("title") or "")
+        body = norm(str(it.get("answer") or "")[:200])
+        hay = title + " " + body
+        cover = len(qb & bigrams(hay))
+        exact = 2 if act and any(f"{w}{act}" in title for w in ("如何", "怎么", "怎样")) else 0
+        proc = min(2, sum(1 for w in ("方法", "步骤", "点击", "下载", "打开", "输入") if w in hay))
+        # 目录页：正文基本是页码和省略号，答不了一件事
+        toc = 1 if (body.count("…") >= 3 or (body and sum(
+            1 for ch in body if ch.isdigit() or ch == ".") / len(body) > 0.3)) else 0
+        cand.append((-(cover + exact + proc - 3 * toc), order.get(iid, len(ranked)), it))
     cand.sort()
-    return [(it, 0) for _cover, _rank, it in cand[:limit]]
+    return [(it, 0) for _q, _rank, it in cand[:limit]]
 
 
 NUM_ONLY = re.compile(r"^\s*(\d{1,3})\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$")
@@ -5822,7 +5836,8 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         # 上面那条映射只管词表不认识的名字，这一路管认识的——补的仍是候选，门槛不动。
         fill = proper_fill_candidates(text, ranked, pool)
         if fill:
-            pool = pool + fill
+            # 池子尾巴换掉，不往后追加：总数仍是 14，验的还是同一份池子大小
+            pool = pool[:max(0, RERANK_POOL_LIMIT - len(fill))] + fill
             model_route["pool"] = len(pool)
             model_route["proper_fill"] = [it["id"] for it, _sc in fill]
         rewrites: list[str] = []

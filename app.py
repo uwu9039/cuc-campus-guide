@@ -6100,6 +6100,13 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                        if miss_contacts else
                        "打开公开联系方式，挑一个对得上的部门打电话问")
         alt_miss = [i for i, _ in alt_rows[:3] if i["id"] != recheck_declined]
+        # 「换个更具体的说法」的例子不写死：先用模型自己给的校园说法（rewrites），
+        # 它才是真看过这句问话、真联想过的；模型没给（规则模式/接口挂）才退回候选事项标题。
+        ex = [w.strip() for w in (model_route.get("rewrites") or [])
+              if w.strip() and norm(w) != norm(text)]
+        if not ex:
+            ex = [str(i.get("title") or "").strip() for i in alt_miss if str(i.get("title") or "").strip()]
+        more_hint = "换个更具体的说法" + ("，比如" + "、".join(f"「{x}」" for x in ex[:3]) if ex else "")
         base = {
             "matched": False,
             "query": text,
@@ -6115,7 +6122,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
                 for i in alt_miss
             ],
             "next_actions": [
-                "换个更具体的说法，比如「校园卡补卡」「开成绩单」",
+                more_hint,
                 dept_action,
                 "找到官方通知后，以通知上写的为准",
             ],

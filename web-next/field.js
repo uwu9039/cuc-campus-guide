@@ -417,7 +417,7 @@
   function missCard(data) {
     // 与经典版 notFoundCard 同源：开场句 + 模型生成（若有）+ 原文线索 + 候选事项 + 归口线索 + 公开联系方式 + 下一步
     const lead = `${data.topic ? `你问的是 ${esc(data.topic)}，` : ""}${esc(data.search_note
-      || "下面是我从原文里找到的线索。你可以换个更具体的说法再问，比如「校园卡补卡」或「开成绩单」。")}`;
+      || "下面是我从原文里找到的线索。你可以换个更具体的说法再问。")}`;
     const gen = data.llm_answer ? `<div class="genbox">
       <div class="alab">模型生成 · 没有官方条目，这段回答由模型直接生成</div>
       <p class="aval">${richText(data.llm_answer.text || "")}</p>

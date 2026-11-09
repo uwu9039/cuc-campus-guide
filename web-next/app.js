@@ -556,7 +556,7 @@
 
     return `<div class="notice">
       <h3>没找到对应的事项</h3>
-      <p>${d.topic ? `你问的是 ${esc(d.topic)}，` : ""}${esc(d.search_note || "下面是我从原文里找到的线索。你可以换个更具体的说法再问，比如「校园卡补卡」或「开成绩单」。")}</p>
+      <p>${d.topic ? `你问的是 ${esc(d.topic)}，` : ""}${esc(d.search_note || "下面是我从原文里找到的线索。你可以换个更具体的说法再问。")}</p>
       ${gen}
       ${hitRows ? `<div class="hintlist">${hitRows}</div>` : ""}
       ${dis ? `<p style="margin-top:14px">${esc(d.clarify || "你要办的是下面哪一类？")}</p><div class="opts">${dis}</div>` : ""}

@@ -3035,6 +3035,9 @@ def llm_needs_context(text: str, ctx_title: str, prev_q: str = "",
 
 
 _REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么")
+# 上下文护栏总开关：0 关掉「补全前缀校验」与「无主题重叠不接」两道兜底，只跑结构改动。
+# 用于 A/B 判「兜底到底还有没有用」，默认开。
+CTX_GUARDS = str(os.getenv("CTX_GUARDS", "1")).strip().lower() not in ("0", "false", "off", "no")
 # 判「沾不沾」时不算数的二字组：问句框架词，几乎每条答案里都出现
 _TOPIC_STOP = {"怎么", "什么", "哪里", "可以", "请问", "学校", "多少", "几点", "如何",
                "是否", "有没", "没有", "现在", "这个", "那个", "一个", "就是"}
@@ -3108,7 +3111,7 @@ def llm_condense(text: str, history: list[dict[str, str]] | None,
     # 或以呢/吗收尾）——那种把上一条的主题补进开头是正常的。
     # 「饿了」这种没有指代词的新话题被拼成「宿舍购电饿了怎么办理」时，前缀就是旧话题盖上来：
     # 后面的说法、重排、复核都沿着旧话题走，复核还会判「答上了」。
-    if not out.startswith(text) and not _looks_elliptic(text):
+    if CTX_GUARDS and not out.startswith(text) and not _looks_elliptic(text):
         if status is not None:
             status["condense_dropped"] = out[:40]
         return None
@@ -6610,7 +6613,7 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     # 兜底：模型判「要接」，但这句既不是纯数量/时间省略、又跟上一件事一个实词都不沾
     # （「饿了」对上「宿舍购电」、「那宿舍怎么调」对上「转专业」），就不接。
     # 只靠复核拦不住——复核看到「接着它问」的旁注，会自己把新话题解释成还在问旧话题。
-    if need and ctx and not _pure_ellipsis(orig) and not _shares_topic(orig, ctx):
+    if CTX_GUARDS and need and ctx and not _pure_ellipsis(orig) and not _shares_topic(orig, ctx):
         need = False
         note["ctx_detached"] = "no_topic_overlap"
     standalone = llm_condense(orig, history, note) if (need and history) else ""

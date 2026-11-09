@@ -3035,6 +3035,9 @@ def llm_needs_context(text: str, ctx_title: str, prev_q: str = "",
 
 
 _REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么")
+# 判「沾不沾」时不算数的二字组：问句框架词，几乎每条答案里都出现
+_TOPIC_STOP = {"怎么", "什么", "哪里", "可以", "请问", "学校", "多少", "几点", "如何",
+               "是否", "有没", "没有", "现在", "这个", "那个", "一个", "就是"}
 
 
 def _looks_elliptic(t: str) -> bool:
@@ -3045,6 +3048,35 @@ def _looks_elliptic(t: str) -> bool:
     """
     s = str(t or "").strip()
     return s.startswith(_REF_HEAD) or s.endswith(("呢", "吗", "么"))
+
+
+def _pure_ellipsis(t: str) -> bool:
+    """只问数量/时间/费用的纯省略句：「几天能办好」「要交多少钱」「周末呢」。
+
+    这类句子本来就靠上一条才对得上号，不能拿「跟上一件事不沾词」去否它。
+    「那…」不算——「那宿舍怎么调」点了新主体，得按新问题走。
+    """
+    s = str(t or "").strip()
+    return s.startswith(("要", "多少", "几", "多久")) or s.endswith(("呢", "吗", "么"))
+
+
+def _shares_topic(text: str, item: dict[str, Any]) -> bool:
+    """这句和上一条事项有没有沾一个实词（标题 / 正文前 200 字 / 步骤里出现同一个二字组）。
+
+    只挡「饿了 → 宿舍购电」这种彻底跑题的接续，不做语义判断；框架词不算数。
+    """
+    grams = {g for g in bigrams(norm(str(text or "")))
+             if g not in _TOPIC_STOP and re.search(r"[\w一-鿿]", g)}
+    if not grams:
+        return False
+    hay = norm(str(item.get("title") or "")) + " " + norm(str(item.get("answer") or "")[:200])
+    for s in item.get("steps") or []:
+        if isinstance(s, dict):
+            hay += " " + norm(str(s.get("what") or ""))
+    if len(hay.strip()) < 12:
+        # 上一条本身没多少字（测试桩、空壳条目）：判不了，别拿它当理由断开
+        return True
+    return bool(grams & bigrams(hay))
 
 
 @steped("condense", pick=lambda out: {"condensed_query": out} if out else {})
@@ -4675,6 +4707,7 @@ def proper_map_extra(ranked: list[tuple[dict[str, Any], int]], name: str,
 
 PROPER_FILL_ADD = 8     # 池子里一条都没点名时，最多补几条进去
 PROPER_FILL_SWAP = 4    # 池子里有带名但都不及格时，最多换掉池尾几条（与改写腿同一个量级）
+POOL_ALT_SWAP = 4       # 双路检索时，用户原话自己捞到的候选最多换掉池尾几条
 
 
 def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
@@ -5590,23 +5623,28 @@ def _contextual_text(text: str, ctx: dict | None, need: bool,
                      standalone: str = "") -> tuple[str, str | None, str]:
     """返回（检索串, 上一条 id, 判分串）。
 
-    检索串可以带上一条（要把那一件事的条目捞进候选池），判分串不能带：
-    候选行里就写着那条标题，题面开头摆着它，模型只要看到字面重合就能给高分，
-    这一问变成自己证明自己答得上（2026-11-06「滑雪」被转接到服务大厅）。
-    压缩出独立问句时只用它——那本来就是一句完整的话，再拼标题是双份上文。
+    检索串可以带上一条（要把那一件事的条目捞进候选池），判分串不能带补全句：
+    补全句是我们的猜测，猜错时复核会拿着被污染的题面判「答上了」。
+    判分串 = 用户原话 + 一句中性背景（上一轮在问什么），让模型自己判「这句是不是在说那件事」。
     """
     if not ctx or not need:
         return text, None, ""
-    if standalone:
-        return standalone, ctx["id"], standalone
-    return (f"{ctx['title']}，{text}", ctx["id"],
-            f"{text}\n（上一句问的是「{ctx['title']}」，这一句接着它问）")
+    search = standalone or f"{ctx['title']}，{text}"
+    # 指代式追问（「那要带什么材料」）离开上文不成句，用补全后的完整问句判；
+    # 其余一律用「用户原话 + 一句中性背景」，不用补全句——补全句是我们的猜测，
+    # 猜错时复核会拿着被污染的题面判「答上了」。
+    if _looks_elliptic(text) and standalone:
+        judge = standalone
+    else:
+        judge = f"{text}\n（上一轮问的是「{ctx['title']}」）"
+    return search, ctx["id"], judge
 
 
 def _answer_core(text: str, given: dict[str, str] | None = None,
                  router_llm: bool | None = None,
                  history: list[dict[str, str]] | None = None,
-                 pick_id: str = "", judge_text: str = "") -> dict[str, Any]:
+                 pick_id: str = "", judge_text: str = "",
+                 alt_text: str = "") -> dict[str, Any]:
     # judge_text：判分与复核看的题面。续问时检索串拼了上一条事项的标题，判分串不能拼——
     # 候选行里就写着那条标题，题面再开头摆一次，模型看到字面重合就能给高分，
     # 等于自己证明自己答得上。不带时（绝大多数单轮）判分串就是题面，行为一字不变。
@@ -5836,6 +5874,17 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     if llm_on and not picked and menu_pick is None and not _strong_hit(score) and not place_forced:
         rule_top_id = top["id"] if top else ""
         pool = rerank_candidates(text, ranked, status=model_route)
+        # 双路检索：上下文改写句只负责把上一件事的条目捞进来，用户原话另外走一遍，
+        # 把「原话自己能捞到的条目」也端到模型面前。这样「该不该接」不再是正确性的前提，
+        # 只影响召回；判分与复核看的是原话（judge_text），猜错上下文也能被拦下。
+        if alt_text and norm(alt_text) != norm(text):
+            alt_pool = rerank_candidates(alt_text, rank(alt_text), status=model_route)
+            have = {it["id"] for it, _ in pool}
+            extra = [(it, sc) for it, sc in alt_pool if it["id"] not in have]
+            if extra:
+                swap = min(POOL_ALT_SWAP, len(extra))
+                pool = pool[:max(0, RERANK_POOL_LIMIT - swap)] + extra[:swap]
+                model_route["pool_alt"] = [it["id"] for it, _ in extra[:swap]]
         model_route["pool"] = len(pool)
         # 用户点了个词表里没有的名字（ps 这类简称），候选里没人写它：先让模型把这叫法
         # 对到库里已有的名字上，再把写了那个名字的条目按规则原序端进池子。
@@ -6558,14 +6607,26 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     asked = _history_questions(history)
     need = False if pick_item else _context_needed(orig, ctx, asked[-1] if asked else "",
                                                    note, _llm_on(router_llm))
+    # 兜底：模型判「要接」，但这句既不是纯数量/时间省略、又跟上一件事一个实词都不沾
+    # （「饿了」对上「宿舍购电」、「那宿舍怎么调」对上「转专业」），就不接。
+    # 只靠复核拦不住——复核看到「接着它问」的旁注，会自己把新话题解释成还在问旧话题。
+    if need and ctx and not _pure_ellipsis(orig) and not _shares_topic(orig, ctx):
+        need = False
+        note["ctx_detached"] = "no_topic_overlap"
     standalone = llm_condense(orig, history, note) if (need and history) else ""
-    q = standalone or orig
-    search, ctx_id, judge = _contextual_text(q, ctx, need, standalone)
+    search, ctx_id, judge = _contextual_text(orig, ctx, need, standalone)
     history = None
     if ctx_id:
         given = {**(context_slots or {}), **(given or {})}
     resp = _answer_core(search, given, router_llm, history, pick_id=pick_item or "",
-                        judge_text=judge)
+                        judge_text=judge, alt_text=(orig if ctx_id else ""))
+    if ctx_id and not resp.get("matched"):
+        # 复核判了「答不上」：去掉上下文，用原话再走一遍。真正的追问多半会在这里
+        # 被单独答上（上下文只影响召回）；新话题则两路都空，老实拒答。
+        retry = _answer_core(orig, given, router_llm, None, pick_id=pick_item or "")
+        if retry.get("matched"):
+            retry.setdefault("model_route", {})["ctx_fallback"] = "original"
+            resp, ctx_id = retry, None
     if ctx_id:
         resp["query"] = orig
         resp["context_item"] = ctx_id

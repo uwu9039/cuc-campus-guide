@@ -3034,6 +3034,19 @@ def llm_needs_context(text: str, ctx_title: str, prev_q: str = "",
     return need
 
 
+_REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么")
+
+
+def _looks_elliptic(t: str) -> bool:
+    """这句是不是「指代式追问」：缺主语/对象，靠上一条才说得通。
+
+    「那要带什么材料」「几天能办好」「周末呢」是；「饿了」「下雨了」这种自带新话题的不是。
+    补全把上一条主题补进开头时，只有这一种才放行。
+    """
+    s = str(t or "").strip()
+    return s.startswith(_REF_HEAD) or s.endswith(("呢", "吗", "么"))
+
+
 @steped("condense", pick=lambda out: {"condensed_query": out} if out else {})
 def llm_condense(text: str, history: list[dict[str, str]] | None,
                  status: dict[str, Any] | None = None) -> str | None:
@@ -3057,6 +3070,14 @@ def llm_condense(text: str, history: list[dict[str, str]] | None,
     out = str(data.get("query") or "").strip()
     if not out or len(out) > CONDENSE_MAX or out in asked or out == text:
         if status is not None and out:
+            status["condense_dropped"] = out[:40]
+        return None
+    # 补全句必须从用户原话开头，除非原话本身是「指代式追问」（那/这/它/还/要/几天…，
+    # 或以呢/吗收尾）——那种把上一条的主题补进开头是正常的。
+    # 「饿了」这种没有指代词的新话题被拼成「宿舍购电饿了怎么办理」时，前缀就是旧话题盖上来：
+    # 后面的说法、重排、复核都沿着旧话题走，复核还会判「答上了」。
+    if not out.startswith(text) and not _looks_elliptic(text):
+        if status is not None:
             status["condense_dropped"] = out[:40]
         return None
     return out

@@ -3034,10 +3034,50 @@ def llm_needs_context(text: str, ctx_title: str, prev_q: str = "",
     return need
 
 
+def llm_needs_context2(text: str, ctx_title: str, prev_q: str,
+                       own_rows: list[tuple[dict[str, Any], int]],
+                       ctx_rows: list[tuple[dict[str, Any], int]],
+                       status: dict[str, Any] | None = None) -> bool | None:
+    """先检索、再判：把两组真实候选摆给模型，让它看「这句话自己能不能对上事」。
+
+    旧判法是让模型凭一句话猜「省没省主语」。遇上「饿了」「我要联系谁」这种句子，
+    它会按「省略了主体」判要接，接上的却是完全无关的那件事——猜的成分太大。
+    这里给它看两组的头名：A 组只拿这句话检索，B 组拼上上一件事再检索。
+    """
+    if not ctx_title or not api_key():
+        return None
+
+    def menu(rows: list[tuple[dict[str, Any], int]]) -> str:
+        out = [f"- {(it.get('title') or '')[:38]}（规则分 {sc}）" for it, sc in rows[:4]]
+        return "\n".join(out) or "（一条都没检索到）"
+
+    prompt = pp.assemble("ctx_need2", {"title": ctx_title, "prev_q": prev_q, "q": text,
+                                       "own_menu": menu(own_rows), "ctx_menu": menu(ctx_rows)})
+    try:
+        data = json.loads(ds_chat([{"role": "system", "content": prompt}],
+                                  max_tokens=70, json_mode=True)) or {}
+    except Exception as e:  # noqa: BLE001
+        if status is not None:
+            status["ctx_need_error"] = _llm_err_text(e)
+        return None
+    if not isinstance(data, dict):
+        return None
+    need = data.get("need")
+    if not isinstance(need, bool):
+        return None
+    if status is not None:
+        status["ctx_need"] = "yes" if need else "no"
+        status["ctx_need_why"] = str(data.get("why") or "")[:40]
+        status["ctx_need_mode"] = "candidates"
+    return need
+
+
 _REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么")
 # 上下文护栏总开关：0 关掉「补全前缀校验」与「无主题重叠不接」两道兜底，只跑结构改动。
 # 用于 A/B 判「兜底到底还有没有用」，默认开。
 CTX_GUARDS = str(os.getenv("CTX_GUARDS", "1")).strip().lower() not in ("0", "false", "off", "no")
+# 判「要不要上文」时做的两次探针检索（A 组/B 组）。测试用它把探针和答题检索分开。
+CTX_PROBE = [False]
 # 判「沾不沾」时不算数的二字组：问句框架词，几乎每条答案里都出现
 _TOPIC_STOP = {"怎么", "什么", "哪里", "可以", "请问", "学校", "多少", "几点", "如何",
                "是否", "有没", "没有", "现在", "这个", "那个", "一个", "就是"}
@@ -5601,22 +5641,24 @@ def _llm_on(router_llm: bool | None) -> bool:
 
 
 def _context_needed(text: str, ctx: dict | None, prev_q: str,
-                    status: dict[str, Any], llm_on: bool = True) -> bool:
+                    status: dict[str, Any], llm_on: bool = True,
+                    own_rows: list[tuple[dict[str, Any], int]] | None = None,
+                    ctx_rows: list[tuple[dict[str, Any], int]] | None = None) -> bool:
     """这句要不要接上一条才答得清楚。
 
-    主判交给模型（llm_needs_context），接口不通才退回手写词表：词表判续问只有两半，
-    两半都错过——句里带「怎么」就判续问，把「滑雪」「校园卡丢了怎么补办」这种自带主体的
-    句子拼上上一条；词表没写的「几天能办好」判独立，答不上。
-    模型判完不再叠 `_mentions_other_item`：那道闸是给词表兜底的，它按 rank 前 8 名
-    里「名字撞进句子」的条目否决，而那些条目是「周末」「办好“」这类碎词命中的无关摘录
-    （11-07 实测：模型已判「几天能办好」「周末呢」要接上一条，两道闸把它们全否了，
-    「周末呢」因此被套上博物馆预约表 0.86 错答）。「句子里点了别的事算不需要」
-    这条判法已经写进 ctx_need 的规则，模型自己会判（D 类实测判得对）。
-    关模型（规则模式）时不发这次调用，退回词表。
+    先走看得见候选的判法（llm_needs_context2）：A 组只用这句话检索、B 组拼上上一件事检索，
+    模型看两组头名判「这句自己能不能对上事」。没有候选（规则模式/调用失败）才退回
+    看不见候选的旧判法，再不行退回手写词表。
     """
     if not ctx:
         return _is_followup(text)
-    need = llm_needs_context(text, ctx.get("title", ""), prev_q, status) if llm_on else None
+    need = None
+    if llm_on:
+        if own_rows is not None and ctx_rows is not None:
+            need = llm_needs_context2(text, ctx.get("title", ""), prev_q,
+                                      own_rows, ctx_rows, status)
+        if need is None:
+            need = llm_needs_context(text, ctx.get("title", ""), prev_q, status)
     if need is not None:
         return need
     return _is_followup(text) and not _mentions_other_item(text, ctx["id"])
@@ -6491,6 +6533,16 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     # 还在反问、或问的是另一个园区时，别把地图定到校内那个点
     show_map = None if blocked or (map_hit and known.get("campus") not in (None, "", "校内")) else map_hit
     related = _related_items(text, top)
+    # 「可能想问」：规则腿排出来的第 2、3 名。用户多半就是在这几条之间挑，
+    # 直接给成按钮，省得再打一遍字（只给两条，多了变菜单）。
+    next_best: list[dict[str, Any]] = []
+    for it, sc in distinct_rows(ranked[:8]):
+        if it["id"] == top["id"] or sc < 38:
+            continue
+        next_best.append({"id": it["id"], "title": it["title"],
+                          "label": _card_label(it), "dept": it.get("dept", "")})
+        if len(next_best) >= 2:
+            break
     # 子条目提上来之后，原来那条宽泛父条目别丢：通用流程还在那条里，放进相关事项
     if promoted_from is not None and promoted_from["id"] not in {r.get("id") for r in related}:
         related = [{"id": promoted_from["id"], "title": promoted_from["title"],
@@ -6557,6 +6609,7 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
         "quotes": quotes,
         "missing": missing,
         "unasked": unasked,
+        "next_best": next_best,
         "note": "；".join(
             b.strip().rstrip("。；;，,") for b in (
                 scope_note(top, text),
@@ -6608,8 +6661,22 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     note: dict[str, Any] = {}
     ctx = ITEM_BY_ID.get(context_item or "")
     asked = _history_questions(history)
-    need = False if pick_item else _context_needed(orig, ctx, asked[-1] if asked else "",
-                                                   note, _llm_on(router_llm))
+    # 「这句要不要接上一条」先判一次：带上下文时先把两组候选检索出来（只用规则腿，
+    # 几十毫秒），让模型看着「这句话自己能对上什么」判，而不是凭一句话猜省没省主语。
+    need = False
+    if not pick_item:
+        own_rows = ctx_rows = None
+        if ctx and _llm_on(router_llm):
+            # 这两次只是给「要不要上文」的判定取证据，不是答题检索：
+            # CTX_PROBE 立起来，测试里能把它们和真正的答题检索分开。
+            CTX_PROBE[0] = True
+            try:
+                own_rows = rank(orig)[:4]
+                ctx_rows = rank(f"{ctx['title']}，{orig}")[:4]
+            finally:
+                CTX_PROBE[0] = False
+        need = _context_needed(orig, ctx, asked[-1] if asked else "", note,
+                               _llm_on(router_llm), own_rows=own_rows, ctx_rows=ctx_rows)
     # 兜底：模型判「要接」，但这句既不是纯数量/时间省略、又跟上一件事一个实词都不沾
     # （「饿了」对上「宿舍购电」、「那宿舍怎么调」对上「转专业」），就不接。
     # 只靠复核拦不住——复核看到「接着它问」的旁注，会自己把新话题解释成还在问旧话题。

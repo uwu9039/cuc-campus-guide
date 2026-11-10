@@ -61,17 +61,27 @@ NEED_NO = {"上一条事项": '{"need": false, "why": "自己说清楚了"}'}
 stub(NEED_NO)
 ranks: list[str] = []
 real_rank = app.rank
-app.rank = lambda t, *a, **kw: (ranks.append(t), real_rank(t, *a, **kw))[1]
+app.rank = lambda t, *a, **kw: (
+    ranks.append(t) if not app.CTX_PROBE[0] else None,
+    real_rank(t, *a, **kw))[1]
+
+
+def answer_ranks() -> list[str]:
+    """答题路径的检索串（探针检索在 app.CTX_PROBE 立着时不入账）。"""
+    return list(ranks)
+
+
 try:
     res = app.answer_question("滑雪", router_llm=True, context_item=FAKE_ID,
                               history=[{"role": "user", "content": "综合服务大厅在哪"},
                                        {"role": "assistant", "content": "在信息传播学院一层。"}])
     check("判不需要时没发续问判定", any("上一条事项" in c["system"] for c in calls), "")
     check("判不需要时检索串里没有上一条标题",
-          all(FAKE_TITLE not in t for t in ranks), f"检索串 {ranks[:3]}")
+          all(FAKE_TITLE not in t for t in answer_ranks()), f"检索串 {ranks[:3]}")
     check("判不需要时没有 context_item", res.get("context_item") in (None, ""),
           f"ctx={res.get('context_item')}")
-    check("判不需要时只答一遍（重试块已删）", len(ranks) <= 2, f"rank 调用 {len(ranks)} 次")
+    check("判不需要时只答一遍（重试块已删）", len(answer_ranks()) <= 2,
+          f"答题 rank 调用 {len(answer_ranks())} 次")
 
     # ---- 2 判需要：续问照样接住上一条
     ranks.clear()
@@ -129,11 +139,11 @@ try:
     ranks.clear()
     app.answer_question("多久", router_llm=True, context_item=FAKE_ID)
     check("判定失败时词表判「多久」为续问，照样接上一条",
-          any(FAKE_TITLE in t for t in ranks), f"检索串 {ranks[:3]}")
+          any(FAKE_TITLE in t for t in answer_ranks()), f"检索串 {ranks[:3]}")
     ranks.clear()
     app.answer_question("校园卡丢了怎么补办", router_llm=True, context_item=FAKE_ID)
     check("判定失败时自带主体的句子不接上一条",
-          all(FAKE_TITLE not in t for t in ranks), f"检索串 {ranks[:3]}")
+          all(FAKE_TITLE not in t for t in answer_ranks()), f"检索串 {ranks[:3]}")
 finally:
     app.rank = real_rank
     app.ITEM_BY_ID.pop(FAKE_ID, None)

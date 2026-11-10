@@ -510,7 +510,7 @@
     const body = (data.answers || []).map(partHtml).join("");
     return `<div class="card">${cardHead(data, data.headline || item.title || "")}
       ${item.summary ? `<p class="aval">${richText(item.summary)}</p>` : ""}
-      ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}${tableBlock(data)}
+      ${body}${noteBlock(data)}${attachBlock(item)}${relatedBlock(data.related)}${nextBestBlock(data.next_best)}${tableBlock(data)}
       ${sourceBlock(item)}
       <div class="cardfoot">
         <button class="plainbtn" type="button" data-act="quotes">核对原文 <span>${quotes.length}</span></button>
@@ -589,6 +589,15 @@
     if (!Array.isArray(list) || !list.length) return "";
     return `<div class="sec"><h3>相关事项（点一下直接问）</h3><div class="opts">${list.slice(0, 8).map((b) =>
       `<button class="opt" type="button" data-ask="${esc(b.title || b.hint)}"${pickAttr(b)}>${esc(docName(b.label || b.title))}
+        ${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`;
+  }
+
+  // 「可能想问」：规则腿排出来的第 2、3 名，直接做成按钮。用户往往就是在这几条之间挑，
+  // 与其让他重新组织语言，不如点一下。
+  function nextBestBlock(list) {
+    if (!Array.isArray(list) || !list.length) return "";
+    return `<div class="sec"><h3>可能想问</h3><div class="opts">${list.slice(0, 3).map((b) =>
+      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(docName(b.label || b.title))}
         ${b.dept ? `<span class="odept">${esc(b.dept)}</span>` : ""}</button>`).join("")}</div></div>`;
   }
 

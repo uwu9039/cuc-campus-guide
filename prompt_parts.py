@@ -177,6 +177,21 @@ FRAGMENTS: dict[str, str] = {
         "- 只回答需不需要，不要回答问题，不要解释理由以外的内容。\n"
     ),
     "ctx_need.json": '只输出 JSON：{"need": true|false, "why": "不超过 15 个字"}',
+    # task=ctx_need2（2026-11-10）：先检索、再判。模型看到的是两组真实候选，
+    # 而不是凭一句话猜「省没省略主体」——猜的那套在「饿了」「我要联系谁」上被证明不可靠。
+    "ctx_need2.role": (
+        "学生一件一件问校园的事。下面给两组检索结果：A 组只用最新这句话检索，"
+        "B 组把上一件事的标题拼上再检索。判断最新这句是在接着上一件事问，还是新的一件事。\n"
+    ),
+    "ctx_need2.rules": (
+        "判法（只看下面列出的条目，不要自己联想）：\n"
+        "- A 组头名如果确实对得上这句话、而且跟上一件事不是一回事，判不需要。\n"
+        "- A 组全是无关条目、B 组才把上一件事对上，判需要。\n"
+        "- 两组头名讲的是同一件事时，以 A 组为准，判不需要。\n"
+        "- 「那/这/要/几天/多少」这类省略句，A 组通常检索不到东西，按 B 组判。\n"
+        "- 只回答需不需要，不回答问题，不解释理由以外的内容。\n"
+    ),
+    "ctx_need2.json": '只输出 JSON：{"need": true|false, "why": "不超过 15 个字"}',
 }
 
 # ---------------------------------------------------------------- 动态片段
@@ -196,6 +211,11 @@ DYNAMIC: dict[str, Callable[[dict[str, Any]], str]] = {
     "ctx_need.pair": lambda st: (f"上一条事项：{st['title']}\n"
                                  f"上一条问的是：{st['prev_q'] or '（没记）'}\n"
                                  f"最新这句：{st['q']}\n\n"),
+    "ctx_need2.prev": lambda st: (f"上一件事：{st['title']}\n"
+                                  f"上一问：{st['prev_q'] or '（没记）'}\n"
+                                  f"最新这句：{st['q']}\n\n"),
+    "ctx_need2.a": lambda st: f"A 组（只用最新这句检索）：\n{st['own_menu']}\n\n",
+    "ctx_need2.b": lambda st: f"B 组（拼上上一件事检索）：\n{st['ctx_menu']}\n\n",
 }
 
 
@@ -226,6 +246,9 @@ def layout(task: str, state: dict[str, Any]) -> list[str]:
         return ["phrase.role", "@phrase.query", "phrase.rules", "phrase.json"]
     if task == "ctx_need":
         return ["ctx_need.role", "@ctx_need.pair", "ctx_need.rules", "ctx_need.json"]
+    if task == "ctx_need2":
+        return ["ctx_need2.role", "@ctx_need2.prev", "@ctx_need2.a", "@ctx_need2.b",
+                "ctx_need2.rules", "ctx_need2.json"]
     raise KeyError(f"未知 task：{task}")
 
 

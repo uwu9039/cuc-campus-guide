@@ -450,6 +450,14 @@
     return `<div class="sec related"><h3>相关事项（点一下直接问）</h3><div class="opts">${opts}</div></div>`;
   }
 
+  /* 可能想问：规则腿的第 2、3 名 */
+  function nextBestBlock(list) {
+    if (!Array.isArray(list) || !list.length) return "";
+    const opts = list.slice(0, 3).map((b) =>
+      `<button class="opt" type="button" data-ask="${esc(b.title)}">${esc(docName(b.label || b.title))}<span class="odept">${esc(b.dept || "")}</span></button>`).join("");
+    return `<div class="sec related"><h3>可能想问</h3><div class="opts">${opts}</div></div>`;
+  }
+
   /* 普通答案 */
   function answerCard(d, ex) {
     const item = d.item || {};
@@ -466,7 +474,7 @@
         <span class="norm" title="${esc(d.normalized || "")}">理解成 ${esc(d.normalized || "")}</span>
         <span class="conf" title="系统和这句话的匹配程度">${pct(d.confidence)}</span>
       </div>
-      <div class="cardbody">${body}${noteBits.length ? `<p class="plannote">${noteBits.join("<br>")}</p>` : ""}${attachBlock(item)}${relatedBlock(d.related)}</div>
+      <div class="cardbody">${body}${noteBits.length ? `<p class="plannote">${noteBits.join("<br>")}</p>` : ""}${attachBlock(item)}${relatedBlock(d.related)}${nextBestBlock(d.next_best)}</div>
       <div class="cardfoot">
         <button class="cf key" type="button" data-act="ev">核对原文<span class="n">${quotes.length}</span></button>
         <button class="cf" type="button" data-act="mat">清单与流程</button>

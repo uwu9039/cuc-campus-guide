@@ -54,10 +54,10 @@
           <textarea id="q" rows="1" placeholder="一次问一件事，答得更准"></textarea>
           <div class="boxfoot">
             <button class="plainbtn" type="button" id="clearbtn">重新问</button>
-            <label class="llmsw" id="llmwrap" title="系统拿不准时让模型在候选事项里挑一条。生成的内容可能不准确，请自行核对。">
-              <input type="checkbox" id="llmsw" checked>
+            <label class="llmsw" id="synthwrap" title="把问题拆成前提、跨文档取证后综合回答，适合「会不会影响」这类关系题。更慢，生成内容请核对。">
+              <input type="checkbox" id="synthsw">
               <span class="track" aria-hidden="true"><i></i></span>
-              模型裁决<span class="risk" id="llmrisk"></span>
+              综合层<span class="risk" id="synthrisk"></span>
             </label>
             <span class="footnote">材料以官方原文为准</span>
             <button class="send" type="submit" id="send" aria-label="发送问题">问</button>

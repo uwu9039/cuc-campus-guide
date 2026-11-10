@@ -6754,6 +6754,211 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     return resp
 
 
+_RELATIONAL_RE = re.compile(r"影响|关系|会不会|有没有.*(关系|影响)|冲突|区别|能不能.*(保研|推免|毕业|评优)|对.{1,8}(有|有没有).{0,4}(影响|关系)")
+
+
+def _looks_relational(text: str) -> bool:
+    """关系题才值得开综合层：单问一个事项的，综合层只会把简单问题答复杂。"""
+    return bool(_RELATIONAL_RE.search(text or ""))
+
+
+_SYNTH_PREMISE_PROMPT = (
+    "用户问的是校园制度之间的关系（会不会影响、有没有关系）。"
+    "把回答它必须同时核实的**前提**列出来，2～3 条，每条一句、能单独拿去检索。\n"
+    "例：「体育课免修对保研有影响吗」→ 推免资格条件里有没有对体育课免修的限制；"
+    "体育课免修的成绩怎么记；推免综合成绩怎么算。\n"
+    '只输出 JSON：{"premises": ["…", "…"]}'
+)
+
+_SYNTH_PROMPT = (
+    "你是校园办事问答的研究员。只准使用下面给出的证据，逐句在句末标 [n]，"
+    "结论句和边界句也要标。由多条证据推出来、证据本身没直说的，标 [n]（推断）。"
+    "不得引入证据以外的数字、条款、事实或学院做法。\n"
+    "结构：一句结论；然后 2～3 层（如 资格／成绩／边界），每层 1～2 句；"
+    "证据里没写的就说「证据里没有写」，不要猜。\n"
+    "只输出 JSON：{{\"conclusion\": \"…\", \"layers\": [{{\"name\": \"资格\", \"text\": \"…\"}}], "
+    "\"boundary\": \"…\"}}\n\n证据：\n{menu}\n\n问题：{q}"
+)
+
+_PAGE_RE = re.compile(r"-\s*(\d{1,3})\s*-")
+
+
+def _synth_premises(text: str, status: dict[str, Any]) -> list[str]:
+    """把关系题拆成必须同时核实的前提（2～3 条）。"""
+    try:
+        raw = ds_chat([{"role": "system", "content": _SYNTH_PREMISE_PROMPT},
+                       {"role": "user", "content": text}], max_tokens=180, json_mode=True)
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        status["error"] = _llm_err_text(e)
+        return []
+    out = [str(x).strip() for x in (data.get("premises") or []) if str(x).strip()]
+    return out[:3]
+
+
+def _synth_candidates(premises: list[str], cap: int = 40) -> list[dict[str, Any]]:
+    """逐前提把候选引文摊开（规则＋BM25＋名目三路），不做取舍，交给模型挑。
+
+    只靠规则前几名会漏掉「连接前提」——「体育课免修」排出来的是办理流程，
+    真正连接的是《课程考核及成绩管理办法》里「免修的体育课程：按 60 分计入平均分和 GPA」
+    那句，它在另一份文件、BM25 第 10 名开外。
+    """
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    opaque = re.compile(r"^[0-9a-f]{6,}$|^[a-z]+-[0-9a-f]{6,}$")
+    for p in premises:
+        qb = {g for g in bigrams(norm(p)) if g not in _TOPIC_STOP}
+        rows: dict[str, dict[str, Any]] = {}
+        for it, sc in rank(p)[:8]:
+            if sc >= 40:
+                rows.setdefault(it["id"], it)
+        for it, _sc in bm25_hits(p, k=30):
+            rows.setdefault(it["id"], it)
+        for it, _sc in meta_hits(p, k=10):
+            rows.setdefault(it["id"], it)
+        local: list[dict[str, Any]] = []
+        for it in rows.values():
+            for _k, v in (it.get("evidence") or {}).items():
+                for one in _ev_items(v):
+                    q = str((one or {}).get("quote") or "").strip()
+                    if len(_mn(q)) < 12:
+                        continue
+                    meta = src_label(str((one or {}).get("src") or ""))
+                    lab = str(meta.get("label") or "")
+                    if opaque.match(lab.strip()):
+                        continue
+                    if len(qb & bigrams(norm(q))) < 1:
+                        continue
+                    key = norm(q)[:80]
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    m = _PAGE_RE.search(q)
+                    local.append({"doc": lab or "官方原文",
+                                  "url": meta.get("url") or "",
+                                  "page": int(m.group(1)) if m else None,
+                                  "quote": q, "premise": p,
+                                  "cover": len(qb & bigrams(norm(q)))})
+                    if len(local) >= 14:
+                        break
+                if len(local) >= 14:
+                    break
+            if len(local) >= 14:
+                break
+        # 每条前提都留名额：否则第一条前提就能把候选占满，
+        # 后面「推免综合成绩怎么算」一条候选都轮不到。按前提词重合度排序。
+        local.sort(key=lambda c: -int(c.get("cover") or 0))
+        out.extend(local[:14])
+        if len(out) >= cap:
+            return out[:cap]
+    return out
+
+
+_SYNTH_PICK_PROMPT = (
+    "下面有几条要核实的前提，和一组候选引文。给每条前提挑出**真正能支撑它**的引文编号，"
+    "每条 1～3 个；一条都没有就留空数组。只按字面证据挑，不要脑补。\n"
+    '只输出 JSON：{{"picks": {{"0": [1, 5], "1": [3]}}}}，键是前提序号（从 0 起）。'
+)
+
+
+def _synth_pick(premises: list[str], cands: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """让模型看着候选挑证据；挑不出来就退回前 8 条。"""
+    menu = "\n".join(f"[{i}] {c['doc']}：{c['quote'].replace(chr(10), ' ')[:160]}"
+                     for i, c in enumerate(cands, 1))
+    ask = "\n".join(f"{i}. {p}" for i, p in enumerate(premises))
+    try:
+        raw = ds_chat([{"role": "system", "content": _SYNTH_PICK_PROMPT},
+                       {"role": "user", "content": f"前提：\n{ask}\n\n候选：\n{menu}"}],
+                      max_tokens=400, json_mode=True)
+        data = json.loads(raw) or {}
+    except Exception:  # noqa: BLE001
+        data = {}
+    picks = data.get("picks") if isinstance(data, dict) else None
+    out: list[dict[str, Any]] = []
+    seen: set[int] = set()
+    if isinstance(picks, dict):
+        for i in range(len(premises)):
+            for x in (picks.get(str(i)) or [])[:3]:
+                try:
+                    idx = int(x) - 1
+                except (TypeError, ValueError):
+                    continue
+                if 0 <= idx < len(cands) and idx not in seen:
+                    seen.add(idx)
+                    out.append(cands[idx])
+    # 模型挑漏时兜底：每条前提至少留 2 条（按前提词重合度取），
+    # 否则「连接前提」那条（按 60 分计入平均分/GPA）容易被整条漏掉，结论就推不出来。
+    for i, p in enumerate(premises):
+        have = [c for c in out if c.get("premise") == p]
+        if len(have) >= 2:
+            continue
+        for idx, c in enumerate(cands):
+            if len(have) >= 2 or len(out) >= 12:
+                break
+            if c.get("premise") != p or idx in seen:
+                continue
+            seen.add(idx)
+            out.append(c)
+            have.append(c)
+    return out[:12] or cands[:8]
+
+
+def _synth_cite_check(text: str, total: int) -> list[str]:
+    """轻校验：引用编号必须在范围里，整句不能一句引用都不挂。"""
+    warn: list[str] = []
+    for n in re.findall(r"\[(\d+)\]", text or ""):
+        if not (1 <= int(n) <= total):
+            warn.append(f"引用了不存在的证据 [{n}]")
+    for sent in re.split(r"[。；;！!？?\n]", text or ""):
+        s = sent.strip()
+        if len(s) < 8 or s in ("资格", "成绩", "边界"):
+            continue
+        if "[" not in s and "证据里没有写" not in s and "（推断）" not in s:
+            warn.append(f"这句没挂引用：{s[:24]}")
+    return warn[:4]
+
+
+def synthesize_answer(text: str) -> dict[str, Any] | None:
+    """综合层：拆前提 → 跨文档取证 → 约束推理 → 轻校验。失败返回 None 由调用方回退。"""
+    status: dict[str, Any] = {}
+    premises = _synth_premises(text, status)
+    if not premises:
+        return None
+    cands = _synth_candidates(premises)
+    if not cands:
+        return None
+    evidence = _synth_pick(premises, cands)
+    if not evidence:
+        return None
+    menu = "\n".join(f"[{i}] {e['doc']}：{e['quote'].replace(chr(10), ' ')}"
+                     for i, e in enumerate(evidence, 1))
+    try:
+        raw = ds_chat([{"role": "system", "content": _SYNTH_PROMPT.format(menu=menu, q=text)},
+                       {"role": "user", "content": "按结构输出 JSON。"}],
+                      max_tokens=900, json_mode=True)
+        data = json.loads(raw) or {}
+    except Exception as e:  # noqa: BLE001
+        status["error"] = _llm_err_text(e)
+        return None
+    if not isinstance(data, dict) or not str(data.get("conclusion") or "").strip():
+        return None
+    layers = [{"name": str(x.get("name") or "").strip()[:8],
+               "text": str(x.get("text") or "").strip()}
+              for x in (data.get("layers") or []) if isinstance(x, dict)
+              and str(x.get("text") or "").strip()][:3]
+    boundary = str(data.get("boundary") or "").strip()
+    warn = _synth_cite_check(" ".join([str(data.get("conclusion") or "")] +
+                                      [x["text"] for x in layers] + [boundary]), len(evidence))
+    return {
+        "premises": premises,
+        "conclusion": str(data.get("conclusion") or "").strip(),
+        "layers": layers,
+        "boundary": boundary,
+        "evidence": evidence,
+        "warnings": warn,
+    }
+
+
 class AskReq(BaseModel):
     text: str
     slots: dict[str, str] = {}
@@ -6762,6 +6967,7 @@ class AskReq(BaseModel):
     context_slots: dict[str, str] = {}
     messages: list[dict[str, str]] = []
     pick_item: str | None = None     # 反问菜单里点开的条目 id
+    synth: bool = False              # 综合层：拆前提 → 跨文档取证 → 约束推理
 
 
 def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
@@ -6791,6 +6997,24 @@ def ask(req: AskReq, request: Request) -> Any:
     text = (req.text or "").strip()
     if len(text) < 2 and not NUM_ONLY.match(text):
         raise HTTPException(400, "请再说得具体一点")
+    # 综合层：拆前提 → 跨文档取证 → 约束推理。失败（没 Key/拆不出前提/生成不合格）
+    # 就退回普通单条目链路，并把这个事实写进 model_route，别让用户以为走了综合层。
+    if req.synth and _looks_relational(text):
+        synth = synthesize_answer(text)
+        if synth:
+            return clean_response({
+                "matched": True,
+                "query": text,
+                "synth": synth,
+                "confidence": 0.78,
+                "band": "mid",
+                "item": None,
+                "answers": [],
+                "quotes": [],
+                "focus": [],
+                "model_route": {"gate": "synth", "premises": synth["premises"],
+                                "evidence": len(synth["evidence"])},
+            })
     kw = dict(
         text=text, given=req.slots, router_llm=req.router_llm,
         context_item=req.context_item, context_slots=req.context_slots,

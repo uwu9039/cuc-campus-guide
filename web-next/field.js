@@ -217,9 +217,9 @@
     q: $("#q"),
     send: $("#send"),
     presets: $("#presets"),
-    llm: $("#llmsw"),
-    llmwrap: $("#llmwrap"),
-    llmrisk: $("#llmrisk"),
+    synth: $("#synthsw"),
+    synthwrap: $("#synthwrap"),
+    synthrisk: $("#synthrisk"),
     clear: $("#clearbtn"),
     inspector: $("#inspector"),
     title: $("#institle"),
@@ -319,6 +319,7 @@
      计划 → 未命中 → 多义澄清 → 先确认/追问 → 普通答案。
      ============================================================ */
   function renderResult(data) {
+    if (data.synth) return synthCard(data);
     if (data.plan) return planCard(data);
     if (!data.matched) return missCard(data);
     if (Array.isArray(data.disambiguate) && data.disambiguate.length && data.clarify) return clarifyCard(data);
@@ -501,6 +502,30 @@
       ${knownHtml}${questions}
       ${relatedBlock(data.related)}
       ${base ? `<div class="sec"><h3>先给你能确定的部分</h3>${base}</div>` : ""}
+    </div>`;
+  }
+
+  /* 综合层：结论 + 分层 + 逐字证据。生成内容单独一块，不和逐条答案混。 */
+  function synthCard(data) {
+    const s = data.synth || {};
+    const ev = (s.evidence || []).map((e, i) => `
+      <li><span class="qmeta">[${i + 1}] ${esc(e.doc)}${e.page ? ` · p.${e.page}` : ""}</span>
+        ${e.url ? `<a class="lnk" href="${esc(e.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}
+        <div class="qtxt">${esc(e.quote)}</div></li>`).join("");
+    const layers = (s.layers || []).map((l) => `
+      <div class="aone"><div class="alab">${esc(l.name)}</div><p class="aval">${richText(l.text)}</p></div>`).join("");
+    const warn = (s.warnings || []).length
+      ? `<p class="plannote">校验提醒：${esc(s.warnings.join("；"))}</p>` : "";
+    return `<div class="card">
+      <div class="cardhead"><span class="tag">综合回答</span>
+        <span class="norm" title="${esc((s.premises || []).join("；"))}">按 ${(s.premises || []).length} 条前提取证</span>
+        <span class="conf" title="综合层的估计，不是逐条可验证的把握">${pct(data.confidence)}</span></div>
+      <p class="aval"><b>${richText(s.conclusion || "")}</b></p>
+      ${layers}
+      ${s.boundary ? `<p class="plannote">${richText(s.boundary)}</p>` : ""}
+      ${warn}
+      <div class="sec"><h3>参考证据（逐字，共 ${(s.evidence || []).length} 条）</h3><ol class="asteps">${ev}</ol></div>
+      <div class="cardfoot"><span class="stampnote">综合层 · 结论由证据推出，请核对</span></div>
     </div>`;
   }
 
@@ -821,16 +846,32 @@
     jumpToStart(slot);
     const flow = thinkFlow(slot);
     try {
-      const { json: response } = await askStream({
-        text,
-        slots: state.slots,
-        router_llm: el.llm.checked,
-        context_item: state.item ? state.item.id : null,
-        context_slots: (state.last && state.last.known) || {},
-        messages: state.history.slice(-12),
-        // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
-        pick_item: pick || null,
-      }, (evt) => flow.step(evt));
+      let response;
+      if (el.synth.checked) {
+        // 综合层不走 SSE：它是一次性的多步检索+推理，没有逐帧步骤可看。
+        response = await api("/api/ask", {
+          text,
+          slots: state.slots,
+          synth: true,
+          context_item: state.item ? state.item.id : null,
+          context_slots: (state.last && state.last.known) || {},
+          messages: state.history.slice(-12),
+          pick_item: pick || null,
+        });
+        if (!response.synth) {
+          toast("综合层没跑起来，已按普通方式回答");
+        }
+      } else {
+        response = (await askStream({
+          text,
+          slots: state.slots,
+          context_item: state.item ? state.item.id : null,
+          context_slots: (state.last && state.last.known) || {},
+          messages: state.history.slice(-12),
+          // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
+          pick_item: pick || null,
+        }, (evt) => flow.step(evt))).json;
+      }
       state.last = response;
       state.count += 1;
       slot.innerHTML = flow.collapsed() + renderResult(response);
@@ -1520,13 +1561,13 @@
       el.statline.textContent = `${num(health.items)} 事项 / ${num(health.verified)} 已核验 / ${num(health.sources)} 份原文`;
       el.statline.title = `事项库更新于 ${health.data_updated || "未知"}；原文库 ${num(health.vector_chunks)} 段`;
       if (!health.key_configured) {
-        el.llm.disabled = true;
-        el.llm.checked = false;
-        el.llmwrap.classList.add("is-off");
-        el.llmwrap.title = "未配置模型密钥，模型裁决不可用";
-        el.llmrisk.textContent = "不可用";
+        el.synth.disabled = true;
+        el.synth.checked = false;
+        el.synthwrap.classList.add("is-off");
+        el.synthwrap.title = "未配置模型密钥，综合层不可用";
+        el.synthrisk.textContent = "不可用";
       } else {
-        el.llmrisk.textContent = "含模型生成";
+        el.synthrisk.textContent = "生成内容请核对";
       }
     } catch (error) {
       el.statline.textContent = "本地服务未连接";

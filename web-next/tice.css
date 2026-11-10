@@ -891,24 +891,7 @@
 
 
 
-/* ---------- 顶栏：滚动收起 / 日夜开关钉右缘 ---------- */
-/* 日夜开关不跟版心：固定到视口右侧，移动端/PC 都在最右边，只调位置不改尺寸。
-   顶栏收起时 .topbar.is-up 会把整条 visibility:hidden，这个按钮要单独放行。 */
-.tice-page .themesw {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 8;
-}
 
-.tice-page .topacts { padding-right: 56px; }
-
-.tice-page .topbar.is-up .themesw { visibility: visible; }
-
-@media (max-width: 620px) {
-  .tice-page .themesw { top: 12px; right: 12px; }
-  .tice-page .topacts { padding-right: 52px; }
-}
 
 /* hidden 属性必须压过作者样式里的 display：给 #archive-panel 写了 display:grid 之后，
    浏览器默认的 [hidden]{display:none} 就失效了，空面板会变成屏幕中间一条白条。 */
@@ -920,4 +903,5 @@
 /* 第一格（单项分/单项得分）大一号，权重与加权贡献回到 18 */
 .tice-stats div:first-child dd,
 .tr-stats div:first-child dd { font-size: 24px; }
+
 

@@ -3094,13 +3094,19 @@ def _looks_elliptic(t: str) -> bool:
 
 
 def _pure_ellipsis(t: str) -> bool:
-    """只问数量/时间/费用的纯省略句：「几天能办好」「要交多少钱」「周末呢」。
+    """只问数量/时间/费用/联系人的纯省略句：「几天能办好」「要交多少钱」「周末呢」「我要联系谁」。
 
     这类句子本来就靠上一条才对得上号，不能拿「跟上一件事不沾词」去否它。
     「那…」不算——「那宿舍怎么调」点了新主体，得按新问题走。
     """
     s = str(t or "").strip()
-    return s.startswith(("要", "多少", "几", "多久")) or s.endswith(("呢", "吗", "么"))
+    if s.startswith(("要", "多少", "几", "多久")) or s.endswith(("呢", "吗", "么")):
+        return True
+    # 「我要联系谁」「找谁」「电话多少」：整句只在问联系人，抠掉这截就没别的话题了
+    if CONTACT_ASK.search(s):
+        rest = CONTACT_ASK.sub("", s).strip("，。？！!? 　")
+        return len(norm(rest)) <= 3
+    return False
 
 
 def _shares_topic(text: str, item: dict[str, Any]) -> bool:
@@ -4811,6 +4817,42 @@ def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
     return [(it, 0) for _q, _rank, it in cand[:limit]]
 
 
+CONTACT_ASK = re.compile(r"联系谁|找谁|问谁|哪个部门|哪个科室|找哪个|该找|电话|联系方式")
+
+
+def contact_fill_candidates(text: str, pool: list[tuple[dict[str, Any], int]],
+                            limit: int = 2) -> list[tuple[dict[str, Any], int]]:
+    """问「联系谁 / 找谁 / 电话」时，把库里那批「…问题找谁」的条目端进池子。
+
+    「学校资助 → 我要联系谁」实测：池子是助学贷款的条目，而库里明明有一条
+    「勤工助学、奖学金、助学金、困难补助问题找谁」写着学工部资助中心的电话，
+    只因关键词对不上 B 组检索串（它写的是「助学贷款」，不是「助学金」）排到 30 名外。
+    这类条目是专门回答这一问的，按话题词重合补进池尾。
+    """
+    if not CONTACT_ASK.search(text):
+        return []
+    # 先把「联系谁/找谁/电话」这截挖掉，剩下的才是话题词；只剩「我要」这种的不补
+    base = CONTACT_ASK.sub(" ", norm(text))
+    qb = {g for g in bigrams(base) if g not in _TOPIC_STOP}
+    if len(qb) < 1:
+        return []
+    have = {it["id"] for it, _ in pool}
+    rows: list[tuple[int, int, dict[str, Any]]] = []
+    for it in ITEMS:
+        iid = it["id"]
+        if iid in have or it.get("archive_only"):
+            continue
+        title = norm(str(it.get("title") or ""))
+        if not re.search(r"找谁|联系|咨询|电话|联系方式", title):
+            continue
+        cover = len(qb & bigrams(title))
+        if cover < 1:
+            continue
+        rows.append((-cover, 0 if not it.get("auto") else 1, it))
+    rows.sort(key=lambda x: (x[0], x[1]))
+    return [(it, 0) for _c, _a, it in rows[:limit]]
+
+
 NUM_ONLY = re.compile(r"^\s*(\d{1,3})\s*(?:号楼|号|楼|教)?\s*[。.、,，!！?？]*\s*$")
 
 
@@ -5955,6 +5997,11 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             pool = pool[:max(0, RERANK_POOL_LIMIT - len(fill))] + fill
             model_route["pool"] = len(pool)
             model_route["proper_fill"] = [it["id"] for it, _sc in fill]
+        cfill = contact_fill_candidates(text, pool)
+        if cfill:
+            pool = pool[:max(0, RERANK_POOL_LIMIT - len(cfill))] + cfill
+            model_route["pool"] = len(pool)
+            model_route["contact_fill"] = [it["id"] for it, _sc in cfill]
         rewrites: list[str] = []
         rr = None
         if not pool:

@@ -9047,9 +9047,28 @@ def _synth_payload(text: str, synth: dict[str, Any],
     }
 
 
+def _synth_quality_ok(synth: dict[str, Any] | None) -> bool:
+    """综合层的结果够不够格直接端出去：证据 ≥2 条、结论非空、且至少一条前提不是 missing。
+
+    从 v9 路由分支移植（`_route_answer.try_synth` 里用的就是它）。移植理由：
+    综合层失败时现在只会「没跑起来就回退」，但**跑起来了、证据却很薄**的情况不会回退——
+    实测会出现「结论一句 + 一条 missing 层」这种比普通链路还差的答案。
+    """
+    if not synth:
+        return False
+    if len(synth.get("evidence") or []) < 2:
+        return False
+    if not str(synth.get("conclusion") or "").strip():
+        return False
+    good = [x for x in (synth.get("layers") or [])
+            if str(x.get("verdict") or "") in ("direct", "not_listed", "inferable")]
+    return bool(good)
+
+
 def _synth_stream(text: str, item: dict[str, Any] | None = None,
                   history: list[dict[str, str]] | None = None,
-                  ctx_source: str = "") -> Iterator[str]:
+                  ctx_source: str = "",
+                  fallback: dict[str, Any] | None = None) -> Iterator[str]:
     """综合层也边走边发：拆前提→取证→挑证据→推理→校对，每步一帧，done 是最终 dict。"""
     q: queue.Queue[Any] = queue.Queue()
 
@@ -9057,8 +9076,25 @@ def _synth_stream(text: str, item: dict[str, Any] | None = None,
         try:
             out = synthesize_answer(text, sink=lambda frame: q.put(("step", frame)),
                                     item=item, history=history)
-            if not out:
-                q.put(("err", {"error": "综合层没跑起来，已按普通方式回答"}))
+            if not _synth_quality_ok(out):
+                # 跑起来了但证据没几条 / 全是 missing → 回退普通链路，不把弱答案端出去。
+                q.put(("step", {"id": "synth_fallback", "label": "综合层证据不足，回退普通链路",
+                                "t": 0.0,
+                                "fields": {"evidence": len((out or {}).get("evidence") or []),
+                                           "conclusion": bool(str((out or {}).get("conclusion") or ""))}}))
+                if fallback is None:
+                    q.put(("err", {"error": "综合层没跑起来，已按普通方式回答"}))
+                    return
+                token = _STEP_SINK.set(_StepSink(q))
+                try:
+                    ans = answer_question(**fallback)
+                finally:
+                    _STEP_SINK.reset(token)
+                try:
+                    ans.setdefault("model_route", {})["synth_fallback"] = "quality"
+                except Exception:  # noqa: BLE001
+                    pass
+                q.put(("done", clean_response(ans)))
                 return
             q.put(("done", clean_response(_synth_payload(text, out, item, ctx_source))))
         except Exception as e:  # noqa: BLE001
@@ -9091,6 +9127,7 @@ def ask(req: AskReq, request: Request) -> Any:
         history=req.messages or None, pick_item=req.pick_item,
     )
     # 这一行受 req.synth 短路：/desk、/classic 都发 synth:false，不必付 1 秒的 rank 开销
+    synth_fallback = ""
     ranked = rank(text) if req.synth else []
     if req.synth and ranked and ranked[0][1] < 97:
         # v1.0.1：首轮也要有锚点。原来只认 `req.context_item`（上一轮响应回传的条目），
@@ -9121,18 +9158,27 @@ def ask(req: AskReq, request: Request) -> Any:
         if "text/event-stream" in (request.headers.get("accept") or ""):
             return StreamingResponse(
                 _synth_stream(text, item=ctx_item, history=req.messages or None,
-                              ctx_source=ctx_source),
+                              ctx_source=ctx_source, fallback=kw),
                 media_type="text/event-stream",
                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
         synth = synthesize_answer(text, item=ctx_item, history=req.messages or None)
-        if synth:
+        if _synth_quality_ok(synth):
             return clean_response(_synth_payload(text, synth, ctx_item, ctx_source=ctx_source))
+        # 移植 v9 的质量闸：综合层跑起来了但证据太薄 → 落到下面的普通链路，
+        # 并在响应里留 synth_fallback="quality"，便于排查「为什么这题没走综合层」。
+        synth_fallback = "quality"
     # /field 带这个头来看流：每一步模型调用跑完就发一帧，最后 done 就是下面那个 dict。
     # 经典版 app.js 不带这个头，走的还是原来那一条，一个字节都不变。
     if "text/event-stream" in (request.headers.get("accept") or ""):
         return StreamingResponse(_ask_stream(**kw), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-    return clean_response(answer_question(**kw))
+    ans = clean_response(answer_question(**kw))
+    if synth_fallback:
+        try:
+            ans.setdefault("model_route", {})["synth_fallback"] = synth_fallback
+        except Exception:  # noqa: BLE001
+            pass
+    return ans
 
 
 @app.post("/api/intake")

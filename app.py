@@ -144,6 +144,8 @@ def maybe_reload() -> None:
     _PROPER = None          # 专名维度是从条目正文抽的，条目换了就得重读
     _PROPER_MENU = None     # 给模型认名字的那份菜单也跟着条目重取
     _SURFACES.clear()
+    _ITEM_LITERALS.clear()  # 归一化缓存挂在旧对象上，条目表换了必须清掉
+    _QUERY_FORMS[0] = None
 
 
 _TABLE_REC: list[dict[str, Any]] | None = None
@@ -815,6 +817,52 @@ def _same_phrase(a: str, b: str) -> bool:
     return best / min(len(a), len(b)) >= 0.6
 
 
+# 性能（v1.0.0 收尾）：`score_item` 是唯一的热点——一次 `rank()` 要把 3.9 万条逐条打分，
+# 而它里面的三样东西**要么只跟问句有关、要么只跟条目有关**，却每条都重算一遍：
+#   · `_ASK_FILLER.sub("", q)`、`bigrams(q)`、`trigrams(q)`：同一个问句算 5 万次；
+#   · `norm(title/core_title/别名/关键词)`：同一串字面量算 5 万次。
+# 下面两个缓存只做「同一件事别做第二遍」，打分规则一个字不动，
+# 所以 `rank()` 的名次与分数**逐字节不变**（`_perf_tmp/snapshot.py` 前后对比为证）。
+_ITEM_LITERALS: dict[int, tuple[dict[str, Any], list[str], list[str]]] = {}
+
+
+def _item_literals(item: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """条目参与打分的字面量（标题／去文号标题／别名、关键词）的归一化结果，按条目缓存。
+
+    键用 `id(item)` 并同时存住对象本身：`maybe_reload()` 换掉条目表后对象变了、
+    id 也就变了，缓存自然失效（reload 里还会主动 clear 一次，防止旧对象被长期持有）。
+    """
+    hit = _ITEM_LITERALS.get(id(item))
+    if hit is not None and hit[0] is item:
+        return hit[1], hit[2]
+    t = item["title"]
+    keys = [norm(t), norm(core_title(t)),
+            *[norm(a) for a in item.get("aliases") or []]]
+    kws = [norm(k) for k in item.get("keywords") or []]
+    _ITEM_LITERALS[id(item)] = (item, keys, kws)
+    return keys, kws
+
+
+# 问句级派生形式的缓存：只记住「最近一条问句」，因为调用一定是按问句成批的
+# （rank / fused_candidates 都是「一条问句 × 全库条目」的循环）。
+# 整个结果存成**一个元组**再赋给单个槽位：多线程下读到的永远是自洽的一份，
+# 不会读到「问句是 A、二字组是 B」的半新半旧组合。
+_QUERY_FORMS: list[Any] = [None]
+_NUM_ASK = re.compile(r"多少分|几分|记多少|多少成绩|按多少")
+_NEG_ASK = re.compile(r"有没有|有吗|有.*吗|是否存在")
+
+
+def _query_forms(q: str) -> tuple[str, frozenset[str], frozenset[str], bool, bool]:
+    """`q` 的（去语气词形式、二字组、三字组、是否问分数、是否问有没有）——一次算好，整趟复用。"""
+    mem = _QUERY_FORMS[0]
+    if mem is None or mem[0] != q:
+        mem = (q, _ASK_FILLER.sub("", q), frozenset(bigrams(q)),
+               frozenset(trigrams(q)), bool(_NUM_ASK.search(q)),
+               bool(_NEG_ASK.search(q)))
+        _QUERY_FORMS[0] = mem
+    return mem[1], mem[2], mem[3], mem[4], mem[5]
+
+
 def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) -> int:
     if not q:
         return 0
@@ -835,11 +883,10 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
             return 0
     blocked = blocked or set()
     best = 0
-    qp = _ASK_FILLER.sub("", q)
+    qp, qb, qt, asks_num, neg_ask = _query_forms(q)
     is_text = bool(item.get("clause") or item.get("para"))
-    keys = [item["title"], core_title(item["title"]), *item.get("aliases", [])]
-    for raw in keys:
-        a = norm(raw)
+    keys, kws = _item_literals(item)
+    for a in keys:
         if not a or a in blocked or a in GENERIC_KEYWORDS:
             continue
         if a == q:
@@ -875,8 +922,7 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
 
     # 关键词层：命中越多越可信（「校园卡+挂失+解挂」应当压过泛泛的「校园卡」）
     matched: list[str] = []
-    for raw in item.get("keywords", []):
-        k = norm(raw)
+    for k in kws:
         if not k or k in blocked or k in GENERIC_KEYWORDS or k not in q:
             continue
         # 「补考」「有补考」「所有补考」是同一个词的不同切法，不能算三次命中
@@ -892,7 +938,7 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
     # 「补考记多少分」这种问法只重合「补考」一个词，但意图非常明确：
     # 命中考试方式词 + 问分数 + 原文就是记分规定，可以答。
     score_intent = bool(
-        hits >= 1 and re.search(r"多少分|几分|记多少|多少成绩|按多少", q)
+        hits >= 1 and asks_num
         and any(k in {"补考", "重考", "重修", "缓考", "免修"} for k in matched)
         and re.search(r"六十分|60分|按\d+分|记为零分", item.get("answer") or ""))
     if score_intent:
@@ -916,7 +962,7 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
         # 「本科生有补考吗」：短事实里明确回答“没有”的，一个关键词也够。
         # 只认成句的否定词——裸「无」会把「无线网覆盖…」当成“宿舍没有电梯”。
         # 命中的只有「宿舍」这类场所范围词时也不够：它证明不了问的那个东西不存在。
-        if (hits >= 1 and short and re.search(r"有没有|有吗|有.*吗|是否存在", q)
+        if (hits >= 1 and short and neg_ask
                 and any(k not in GENERIC_PLACE for k in matched)
                 and re.search(r"没有|不存在|不提供|不开设|不允许|不支持|不设|暂无", item.get("answer") or "")):
             return min(best, 99)
@@ -924,10 +970,8 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
                 else min(best, 99) if (hits >= 2 and len(q) >= 5 and short) else 0)
 
     # 二元组相似度兜底（同义改写）
-    qb = bigrams(q)
     if qb:
-        for raw in [*keys, *item.get("keywords", [])]:
-            a = norm(raw)
+        for a in (*keys, *kws):
             if len(a) < 2 or a in blocked or a in GENERIC_KEYWORDS:
                 continue
             ab = bigrams(a)
@@ -947,11 +991,11 @@ def score_item(q: str, item: dict[str, Any], blocked: set[str] | None = None) ->
             if not content:
                 continue
             if len(content) < 2 and not any(
-                    not (set(t) & FRAME_CHARS) for t in trigrams(q) & trigrams(a)):
+                    not (set(t) & FRAME_CHARS) for t in qt & trigrams(a)):
                 continue
             # 两个泛化二字词拼出来的相似不算同义改写（「双学位申请」vs
             # 「学位证明书申请表」共享「学位」「申请」，但没有一个连续三字片段）。
-            if len(q) >= 3 and len(a) >= 3 and not (trigrams(q) & trigrams(a)):
+            if len(q) >= 3 and len(a) >= 3 and not (qt & trigrams(a)):
                 continue
             dice = 2 * shared / (len(qb) + len(ab))
             if dice >= 0.34:
@@ -971,8 +1015,8 @@ def blocked_keys(qn: str) -> dict[str, set[str]]:
     for it in ITEMS:
         if it.get("archive_only") or it.get("clause") or it.get("para"):
             continue
-        for raw in [it["title"], core_title(it["title"]), *it.get("aliases", []), *it.get("keywords", [])]:
-            k = norm(raw)
+        lit_keys, lit_kws = _item_literals(it)
+        for k in (*lit_keys, *lit_kws):
             if not k:
                 continue
             start = qn.find(k)
@@ -1151,15 +1195,19 @@ def rank(q: str) -> list[tuple[dict[str, Any], int]]:
             adjusted = rows
     # 同分时人工条目优先，避免同年份的制度卡片把服务条目挤下去；
     # 同为自动条目时，问记分的先给写得出分值的条款。
-    adjusted.sort(key=lambda x: (-x[1], bool(x[0].get("auto")), -_rule_affinity(qn, x[0])))
+    # 不为「记分」的题就省掉第三条键：`_rule_affinity` 全返回 0，排序结果一样。
+    if _asks_score_rule(qn):
+        adjusted.sort(key=lambda x: (-x[1], bool(x[0].get("auto")),
+                                     -_rule_affinity(qn, x[0])))
+    else:
+        adjusted.sort(key=lambda x: (-x[1], bool(x[0].get("auto"))))
     return adjusted
 
 
 def _literal_hit(qn: str, item: dict[str, Any]) -> int:
     """问句里字面出现的标题 / 别名长度；只给父子条目让位用，不参与打分。"""
     best = 0
-    for raw in [item["title"], core_title(item["title"]), *(item.get("aliases") or [])]:
-        a = norm(raw)
+    for a in _item_literals(item)[0]:
         if len(a) >= 2 and a in qn:
             best = max(best, len(a))
     return best
@@ -7009,8 +7057,30 @@ _SYNTH_PLAN_PROMPT = (
     "C) 每条前提给 **2～3 个措辞不同**的短句（官方词/同义说法各一版），"
     "因为条款里的写法常和问句不一样：「退课」在原文里可能写成「终止学习」「中途退课」，"
     "「退费」可能写成「不予退还」。多给几版，检索才不会只在一句措辞上赌运气。\n"
-    '只输出 JSON：{"pairs": [{"premise": "…", "queries": ["短句1", "短句2"]}], '
-    '"queries": ["补充短句"]}'
+    # —— 连接规则短句（plan connector）——
+    "3) 1～2 条**规则短句**，专门去查「把前提连起来的那条规则」，不复述用户说的那件事。\n"
+    "用户口吻的短句只查得到「提到挂科」的段落；能推出结论的常常是**没提挂科**的条款：\n"
+    "补考按 60 分计入平均分与绩点、综合成绩怎么合成、基本条件第几条、休学期间不享受什么、\n"
+    "同一学年只能拿一个。条款用的是制度词，不是用户词。\n"
+    "做法：先判这道题卡在哪一类规则（下表选一类，最多两类），再按那一类的制度词写短句。\n"
+    "短句保留题目主体词，但动词和名词换成条款里的写法：\n"
+    "· 成绩记载：`<主体> 补考 重修 成绩 记载 按 60 分 计入 平均分 学分绩点`\n"
+    "· 排序合成：`<主体> 综合成绩 构成 计算 学业表现 权重`\n"
+    "· 资格门槛：`<主体> 基本条件 不得申请 情形`\n"
+    "· 时限解除：`<主体> 期限 起算 届满 解除 程序`\n"
+    "· 待遇状态：`<主体> 期间 享受 不享受 停发 中止`\n"
+    "· 互斥叠加：`<主体> 同时 获得 同一学年 只能`\n"
+    "· 标准金额：`<主体> 标准 每生每学年 元 金额 发放`\n"
+    "· 办理兑付：`<主体> 地点 材料 工本费 当场 流程`\n"
+    "· 阈值后果：`<主体> 超过 比例 不及格 结业 撤销`\n"
+    "· 适用人群：`<主体> 适用于 本科生 研究生 范围`\n"
+    "· 覆盖接入：`<主体> 覆盖 范围 无线 认证 终端 上限`\n"
+    "D) 规则短句不许复述用户的话：用户说「挂科」，规则短句不能只写「挂科」，\n"
+    "要写「补考 重修 成绩 按 60 分 计入 平均分」，让条款自己的词去撞检索。\n"
+    "E) 规则短句只写 1～2 条，宁可少：它是补充腿，写多了会把主体短句挤掉。\n"
+    '只输出 JSON：{"pairs": [{"premise": "…", "query": "官方短句", '
+    '"queries": ["变体1", "变体2"]}], "queries": ["补充短句"], '
+    '"rule_queries": ["规则短句1", "规则短句2"]}'
 )
 
 _SYNTH_PROMPT = (
@@ -7028,6 +7098,8 @@ _SYNTH_PROMPT = (
     "可以写，句末标 [n]（推断），并把这两步都摆出来（据第 [n] 条…，据第 [m] 条…，因此…）。\n"
     "· missing：确实没有可用条款 → 写清缺哪一步（缺哪条规则、哪个口径），"
     "不要只写「证据里没有写」。\n"
+    "missing 的这条，正文末尾必须写清归口：建议向<具体部门>确认；"
+    "判断不出部门就写「学院学生工作办公室」。\n"
     "只有 missing 才用拒答口气，其余三种都是正常作答。\n"
     "结论的第一句直接回答问句：能答就先给能答的结论（「第 [n] 条共 N 项，未列 Y」"
     "「据第 [n] 条＋第 [m] 条，…（推断）」）；确实没有依据时第一句才写缺什么。"
@@ -7099,7 +7171,7 @@ def _synth_plan(text: str, status: dict[str, Any],
         msg = "（" + "；".join(ctx) + "）\n" + text
     try:
         raw = ds_chat([{"role": "system", "content": _SYNTH_PLAN_PROMPT},
-                       {"role": "user", "content": msg}], max_tokens=320, json_mode=True)
+                       {"role": "user", "content": msg}], max_tokens=420, json_mode=True)
         data = json.loads(raw) or {}
     except Exception as e:  # noqa: BLE001
         status["error"] = _llm_err_text(e)
@@ -7119,14 +7191,21 @@ def _synth_plan(text: str, status: dict[str, Any],
         # 保留原顺序、去重，别让同一个短句占两个检索名额。
         # v7：`query` 永远解析（v5.1 行为）；`queries` 变体只在 SECTIONS_REWRITE=1 时进检索。
         # 改写是有代价的（模型多输出、检索多跑两轮），先量增益再开。
+        # v8：`query` 缺失时回退 `queries[0]`。prompt 的样例以前只教模型写复数键，
+        # 而 REWRITE=0 只认单数键——每条前提的「措辞变体」被静默丢光，实际进检索的
+        # 只剩顶层「补充短句」。缺键不等于没写短句，不能当空处理。
         one = str(pair.get("query") or "").strip()
-        variants = [one] if one else []
-        if SECTIONS_REWRITE:
-            more = pair.get("queries")
-            if isinstance(more, str):
-                more = [more]
-            if isinstance(more, list):
-                variants += [str(x or "").strip() for x in more]
+        more = pair.get("queries")
+        if isinstance(more, str):
+            more = [more]
+        more = [str(x or "").strip() for x in more] if isinstance(more, list) else []
+        more = [q for q in more if q]
+        if one:
+            variants = [one] + (more if SECTIONS_REWRITE else [])
+        else:
+            # 没有单数键：REWRITE=0 时至少保住第一条变体（原语义里唯一会被用到的位置），
+            # REWRITE=1 时全部展开。
+            variants = more if SECTIONS_REWRITE else more[:1]
         for q in variants:
             if q and q not in queries:
                 queries.append(q)
@@ -7136,15 +7215,37 @@ def _synth_plan(text: str, status: dict[str, Any],
             queries.append(q)
     if not premises:
         premises = [str(x).strip() for x in (data.get("premises") or []) if str(x).strip()]
+    # v8 连接规则短句（plan connector）：专门去查「把前提连起来的那条规则」——补考按 60 分
+    # 怎么记、综合成绩怎么合成、处分期限多久。它和主体短句**混进同一条检索**，不另建池、
+    # 不 reserve 前插：实测另建池再前插更差（strict 77.3% vs 混入 86.4%，见
+    # `_review_items/plan_connector_proposal.md` §4.5）。只取 1～2 条，多了会把主体短句挤出 cap。
+    rules = data.get("rule_queries")
+    if isinstance(rules, str):
+        rules = [rules]
+    rules = [str(x or "").strip() for x in rules] if isinstance(rules, list) else []
+    rules = [q for q in rules if q][:2]
     # 资格条件兜底：问句点了某个动作，检索短句里却没有一条查它的资格条款，就补一条。
     # 「作弊被记过还能保研吗」曾只查到诚信记录与学生手册，漏掉推免办法第十一条
     # 「品行表现优良…无违纪受校级处分记录」，于是答成「证据里没有写」——假阴性。
+    elig: list[str] = []
     for pat, extra in _ELIG_QUERIES:
         if re.search(pat, text) and not any(
                 extra.split()[0] in q and ("资格" in q or "条件" in q or "要求" in q)
                 for q in queries):
-            queries.append(extra)
-    return premises[:3], queries[:5]
+            if extra not in elig:
+                elig.append(extra)
+    # v8：截断在兜底之后，且资格兜底**永远保留**——以前 append 完一起被 [:5] 砍，
+    # 短句一多最先掉的就是它（等于把假阴性修回来的地方又拆了）。规则短句同样不许被砍：
+    # 它们排在主体短句后面，一旦走 [:5] 就全没了。
+    head = [q for q in queries if q][:5]
+    tail: list[str] = []
+    for q in rules + elig:
+        if q and q not in head and q not in tail:
+            tail.append(q)
+    if len(head) + len(tail) > 9:
+        # 只有极端问句（4 条资格兜底）才走到这里：砍主体变体，兜底与规则不动
+        head = head[:max(0, 9 - len(tail))]
+    return premises[:3], head + tail
 
 
 _AUDIENCE_WORDS = ("博士", "硕士", "研究生", "教师", "教职工", "人事", "招聘", "留学生", "国际学生")
@@ -7478,7 +7579,7 @@ def _item_candidates(item: dict[str, Any] | None,
 
 
 def _synth_candidates(queries: list[str], premises: list[str],
-                      cap: int = 48, question: str = "",
+                      cap: int = 56, question: str = "",
                       item: dict[str, Any] | None = None,
                       warnings: list[str] | None = None) -> list[dict[str, Any]]:
     """逐条检索短句把候选引文摊开（规则＋BM25＋名目三路），不做取舍，交给模型挑。
@@ -8141,6 +8242,11 @@ def _money_conflict(question: str, layers: list[dict[str, Any]],
     amounts: dict[str, str] = {}
     srcs = [str(x.get("text") or "") for x in layers] + \
            [str(e.get("quote") or "") for e in (pool or [])]
+    # 问的是本专科口径时，先把「研究生国家奖学金 2 万/3 万」这类句子剔掉：
+    # 不过滤的话金额一多就触发下面的 len>2 早退，双口径提示永远发不出来
+    # （实测金标准里「两个口径并存」那一点 17 次跑分 0 命中）。
+    if not re.search(r"研究生|硕士|博士", question or ""):
+        srcs = [t for t in srcs if not re.search(r"研究生|硕士|博士", t)]
     for txt in srcs:
         if want not in txt:
             continue
@@ -8340,6 +8446,55 @@ def _premise_layers(data: dict[str, Any]) -> list[dict[str, Any]]:
             and str(x.get("text") or "").strip()][:3]
 
 
+# P3 边界声明：missing 的前提只写「证据里没有这条规定」等于把用户丢在原地，
+# 用户要的是下一步找谁。归口先按问句里的领域定（入党/住宿这两个最常被问、也最明确），
+# 再顺着 dept_hints 和锚定条目兜底，最后才落到学生工作办公室。
+_BOUNDARY_RE = re.compile(r"建议|咨询|确认|以.{0,8}为准")
+_DEPT_RULES = (
+    (re.compile(r"入党|党员|党组织|党支部"), "学院党委／党支部"),
+    (re.compile(r"宿舍|公寓|住宿"), "学生公寓服务中心"),
+)
+
+
+def _synth_missing_dept(text: str, item: dict[str, Any] | None = None) -> str:
+    """missing 的归口：问句领域 → dept_hints → 锚定条目 dept → 兜底。"""
+    for pat, name in _DEPT_RULES:
+        if pat.search(text or ""):
+            return name
+    try:
+        deps = dept_hints(text or "")
+    except Exception:  # noqa: BLE001
+        deps = []
+    if deps:
+        name = str((deps[0] or {}).get("name") or "").strip()
+        if name:
+            return name
+    dept = str((item or {}).get("dept") or "").strip()
+    if dept:
+        return dept
+    return "学院学生工作办公室"
+
+
+def _synth_missing_tail(layers: list[dict[str, Any]], text: str,
+                        item: dict[str, Any] | None = None) -> None:
+    """给每条 missing 层末尾补一句归口声明（原地改 text）。
+
+    只动 missing：direct/not_listed/inferable 都是答上了的，加这句会变成「没答上」。
+    正文里已经有边界说法（建议／咨询／确认／以…为准）的层不重复加。单字「问」不算——
+    「这一问」「该问题」太常见，会把真正该补的层误判成已经写了归口。
+    """
+    if not any(x.get("verdict") == "missing" for x in layers):
+        return
+    who = _synth_missing_dept(text, item)
+    for one in layers:
+        if one.get("verdict") != "missing":
+            continue
+        body = str(one.get("text") or "")
+        if _BOUNDARY_RE.search(body):
+            continue
+        one["text"] = body + f"（此项库内无专门规定，建议向{who}确认）"
+
+
 def synthesize_answer(text: str, sink: "Callable[[dict[str, Any]], None] | None" = None,
                       *, item: dict[str, Any] | None = None,
                       history: list[dict[str, str]] | None = None) -> dict[str, Any] | None:
@@ -8532,10 +8687,15 @@ def synthesize_answer(text: str, sink: "Callable[[dict[str, Any]], None] | None"
     #  · 截断的节：`_closed_enum` 只看拿到的那一段，断言「共 N 项」是假的；
     #  · 章/节级的节：一章里含好几条，实测第三章被数成「共 9 项」（把六、七、八条的
     #    项加在一起），这种「共 N 项」没有任何意义，只会让模型写出「本章共9项，未列X」。
+    #    注意：没有节号的证据（no 为空）必须照常标注——`"" in "章节编篇"` 在 Python 里恒为
+    #    True，旧写法 `str(...)[-1:] in "章节编篇"` 会把**所有**无节号的证据一并跳过，
+    #    enum 永远挂不上，后面的 `_strip_unsupported()` 就把「第 [n] 条共 5 项，未列挂科」
+    #    这种正确结论当成没有依据而删掉，答案退化成「证据未给出」。所以先判非空。
     for e in evidence:
         if e.get("truncated"):
             continue
-        if str((e.get("sec") or {}).get("no") or "")[-1:] in "章节编篇":
+        no = str((e.get("sec") or {}).get("no") or "")
+        if no and no[-1] in "章节编篇":
             continue
         info = _closed_enum(str(e.get("quote") or ""))
         if info:
@@ -8659,6 +8819,10 @@ def synthesize_answer(text: str, sink: "Callable[[dict[str, Any]], None] | None"
         warn.extend(_synth_cite_check(body, len(evidence), evidence))
     if boundary:
         warn.extend(_synth_cite_check(boundary, len(evidence), evidence))
+    # P3 边界声明：missing 的前提末尾补「建议向谁确认」。
+    # 必须放在两层 _synth_cite_check 之后——新句子按设计不带 [n]，
+    # 插在引用校验之前会被记成「这句没挂引用」。
+    _synth_missing_tail(layers, text, item)
     if dropped:
         warn.append(f"结论里 {'、'.join(dict.fromkeys(dropped))} 缺证据，已删")
     # 口径冲突：同一件事在两个文件里给了不同金额（国家奖学金 8000 / 10000），
@@ -8939,8 +9103,21 @@ def ask(req: AskReq, request: Request) -> Any:
         if ctx_item is None:
             top, sc = ranked[0]
             if sc >= 85 and not (top.get("auto") or top.get("clause") or top.get("para")):
-                ctx_item = top
-                ctx_source = "rank"
+                # 光看分数不够：同分时 rank 的先后由字典序/规则亲和度决定，不是相关度。
+                # 实测「挂科了还能保研吗」前三名同分 86（学业留级 / 推免资格条件 / 重修），
+                # 只判 sc>=85 会锚到「学业留级」，下一问被它带跑，还会把它 steps 当必须证据注入。
+                # 所以再要一个凭据，至少占一个才锚：
+                #  · 名次差 lead ≥10：首名明显领先（擦边同分的不锚）；
+                #  · 问句与标题/别名的二字组重合 ≥2（去掉「怎么/可以」这类语气文书噪声）：
+                #    问的确实是这条，同分也能锚。
+                lead = sc - (ranked[1][1] if len(ranked) > 1 else 0)
+                qb = bigrams(norm(text))
+                tb = bigrams(norm(str(top.get("title") or "") + " "
+                                  + " ".join(top.get("aliases") or [])))
+                shared = (qb & tb) - NOISE_BIGRAMS
+                if lead >= 10 or len(shared) >= 2:
+                    ctx_item = top
+                    ctx_source = "rank"
         if "text/event-stream" in (request.headers.get("accept") or ""):
             return StreamingResponse(
                 _synth_stream(text, item=ctx_item, history=req.messages or None,

@@ -45,19 +45,23 @@ def main() -> None:
         for line in src.open(encoding="utf-8"):
             r = json.loads(line)
             blob = (r.get("conclusion") or "") + "\n" + "\n".join(
-                x.get("text") or "" for x in (r.get("layers") or []))
+                x.get("text") or "" for x in (r.get("layers") or [])) + "\n" + (r.get("boundary") or "")
             answers[r["q"]] = blob
     out_rows = []
     for case in golden:
         q = case["q"]
         if q not in answers:
             s = app.synthesize_answer(q)
+            # 答案卡上显示的是 conclusion + layers + boundary（synthCard 三块都渲染），
+            # 所以判分用同一段文本；只读前两块会把「口径/归口」那类句子判成没答。
             answers[q] = ((s["conclusion"] + "\n" + "\n".join(
-                x["text"] for x in s["layers"])) if s else "")
+                x["text"] for x in s["layers"]) + "\n" + (s.get("boundary") or "")) if s else "")
         ans = answers[q]
         rows = []
         for pt in case["points"]:
-            kw_hit = all(k in ans for k in pt.get("kw") or [])
+            # kw 里用 `|` 表「或」写法（如「不作调整|不再变动」），必须按或匹配；
+            # 以前直接 `k in ans`，22/44 条要点恒 False，严格覆盖率被压低了一半。
+            kw_hit = all(any(x in ans for x in k.split("|")) for k in pt.get("kw") or [])
             jd = judge_point(pt["p"], ans)
             rows.append({"p": pt["p"], "kw": kw_hit, "judge": jd["hit"],
                          "why": jd["why"], "src": pt.get("src", "")})

@@ -184,6 +184,7 @@
     bind();
     renderEmpty();
     loadMeta();
+    maybeOldVersionHint();
     const params = new URLSearchParams(location.search);
     const q = (params.get("q") || "").trim();
     const ct = params.get("ct");
@@ -364,6 +365,8 @@
         text,
         slots: state.slots,
         router_llm: el.llm.checked,
+        // 旧界面没有综合层渲染（renderAnswer 只认 answers/pick），收到 synth 会画成空卡
+        synth: false,
         context_item: state.item ? state.item.id : null,
         context_slots: (state.last && state.last.known) || {},
         messages: state.history.slice(-12),
@@ -1260,6 +1263,41 @@
       src.length ? `来源\n${src.join("\n")}` : "",
       "由校园办事向导整理，事实以官方原文为准。",
     ].filter(Boolean).join("\n\n"), "答案已复制");
+  }
+
+  /* ---------- 对话框彩蛋：更古老的版本 ----------
+     小概率触发，用与 /field 同一套打字节奏（130ms/字）把话打出来，
+     打完立刻退回原来的 placeholder。概率见 OLD_VERSION_CHANCE（1%）。 */
+  const OLD_VERSION_LINE = "或许还有更古老的版本？";
+  const OLD_VERSION_CHANCE = 0.01;
+  const OLD_VERSION_TYPE_MS = 130;
+  const OLD_VERSION_HOLD_MS = 400;
+  const OLD_VERSION_DELAY_MS = 700;
+
+  function maybeOldVersionHint() {
+    const box = $("#q");
+    if (!box) return;
+    if (Math.random() >= OLD_VERSION_CHANCE) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const original = box.getAttribute("placeholder") || "";
+    let at = 0;
+    let timer = 0;
+    const restore = () => {
+      clearTimeout(timer);
+      box.setAttribute("placeholder", original);
+    };
+    const tick = () => {
+      at += 1;
+      box.setAttribute("placeholder", OLD_VERSION_LINE.slice(0, at));
+      if (at < OLD_VERSION_LINE.length) {
+        timer = setTimeout(tick, OLD_VERSION_TYPE_MS);
+        return;
+      }
+      timer = setTimeout(restore, OLD_VERSION_HOLD_MS);
+    };
+    // 用户一动键盘就收：彩蛋不能挡着人打字
+    box.addEventListener("input", restore, { once: true });
+    timer = setTimeout(tick, OLD_VERSION_DELAY_MS);
   }
 
   boot();

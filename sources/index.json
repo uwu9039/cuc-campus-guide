@@ -1,146 +1,696 @@
 {
-  "20230221-c8498a202280": {
-    "url": "https://its.cuc.edu.cn/2023/0221/c8498a202280/page.htm",
-    "title": "校园网认证服务",
-    "chars": 1521,
-    "sha256": "0b3e5220019d1f0c",
-    "fetched_at": "2026-10-20T20:37:50+08:00"
-  },
-  "20231016-c8508a212715": {
-    "url": "https://its.cuc.edu.cn/2023/1016/c8508a212715/page.htm",
-    "title": "修改统一身份认证账号密码",
-    "chars": 892,
-    "sha256": "88dcf4f2a357b634",
-    "fetched_at": "2026-10-20T20:37:50+08:00"
-  },
-  "its-xwVPN": {
-    "url": "https://its.cuc.edu.cn/xwVPN/list.htm",
-    "title": "校外VPN",
-    "chars": 1410,
-    "sha256": "56d6079e1661a6ab",
-    "fetched_at": "2026-10-20T20:37:51+08:00"
-  },
-  "its-xykbk": {
-    "url": "https://its.cuc.edu.cn/xykbk/list.htm",
-    "title": "校园卡补卡",
-    "chars": 157,
-    "sha256": "2b2ed1c1e23e7cb7",
-    "fetched_at": "2026-10-20T20:37:52+08:00"
-  },
-  "20201124-c13068a175987": {
-    "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a175987/page.htm",
-    "title": "全国大学生英语四、六级考试（CET）",
-    "chars": 916,
-    "sha256": "d6976354ad8b614f",
-    "fetched_at": "2026-10-20T20:37:53+08:00"
-  },
-  "20201124-c13068a176003": {
-    "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a176003/page.htm",
-    "title": "课程置换及学分认定",
-    "chars": 547,
-    "sha256": "60a6a66608147859",
-    "fetched_at": "2026-10-20T20:37:55+08:00"
-  },
-  "20201127-c13068a176243": {
-    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176243/page.htm",
-    "title": "补（退）选课办理流程",
-    "chars": 934,
-    "sha256": "d999eed2c2c872fe",
-    "fetched_at": "2026-10-20T20:37:56+08:00"
-  },
-  "20201127-c13068a176245": {
-    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176245/page.htm",
-    "title": "体育课免修",
-    "chars": 953,
-    "sha256": "94529ff0a81b3a65",
-    "fetched_at": "2026-10-20T20:37:58+08:00"
-  },
-  "20201127-c13068a176247": {
-    "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176247/page.htm",
-    "title": "自修办理流程",
-    "chars": 661,
-    "sha256": "8fdcb1212470cc8e",
-    "fetched_at": "2026-10-20T20:38:01+08:00"
-  },
-  "20201222-c13068a177272": {
-    "url": "https://jwc.cuc.edu.cn/2020/1222/c13068a177272/page.htm",
-    "title": "在读证明办理流程",
-    "chars": 794,
-    "sha256": "1bfb3b5365d16ef4",
-    "fetched_at": "2026-10-20T20:38:01+08:00"
-  },
-  "20210128-c13068a178013": {
-    "url": "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm",
-    "title": "成绩单办理",
-    "chars": 870,
-    "sha256": "ded4606eab95b689",
-    "fetched_at": "2026-10-20T20:38:01+08:00"
-  },
-  "20260316-c13070a267671": {
-    "url": "https://jwc.cuc.edu.cn/2026/0316/c13070a267671/page.htm",
-    "title": "成绩复议申请单",
-    "chars": 603,
-    "sha256": "b35bbcd5364942fe",
-    "fetched_at": "2026-10-20T20:38:02+08:00"
-  },
-  "tizhi-2024-pdf": {
-    "url": "https://jwc.cuc.edu.cn/_upload/article/files/fb/c6/1d57935144caba115fc4833b765c/f053049e-6d05-4ad8-9498-ac07595f4609.pdf",
-    "title": "中国传媒大学《国家学生体质健康标准》实施办法（2024年修订）· 本科生院〔2024〕115号 PDF",
-    "chars": 2019,
-    "sha256": "be5be300306c00d6",
-    "fetched_at": "2026-10-20T20:48:02+08:00"
-  },
-  "xueji-2025": {
-    "url": "https://jwc.cuc.edu.cn/2025/1118/c13082a263811/page.htm",
-    "title": "中国传媒大学本科生学籍管理规定（中传教字〔2025〕195号）",
-    "chars": 7940,
-    "sha256": "e979a1178d616bd4",
-    "fetched_at": "2026-10-21T23:19:15+08:00",
-    "kind": "pdf"
-  },
-  "zhuanzhuanye-2025": {
-    "url": "（本地文件，未入库）",
-    "title": "中国传媒大学本科生转专业管理办法（2025 年修订）· 本科生院〔2025〕110 号 · 本地 PDF",
-    "chars": 2858,
-    "sha256": "eea78884b941e10a",
-    "fetched_at": "2026-10-21T23:13:13+08:00",
-    "kind": "pdf",
-    "local_path": "（本地路径已隐藏）"
-  },
-  "本科生学籍管理规定-中传教字2025-195号": {
-    "url": "（本地文件，未入库）",
-    "title": "本科生学籍管理规定-中传教字2025-195号",
-    "chars": 7940,
-    "pages": 18,
-    "sha256": "e979a1178d616bd4",
-    "fetched_at": "2026-10-21T23:15:21+08:00",
-    "kind": "pdf",
-    "local_path": "（本地路径已隐藏）"
-  },
-  "本科生转专业管理办法-2025修订": {
-    "url": "（本地文件，未入库）",
-    "title": "本科生转专业管理办法-2025修订",
-    "chars": 2858,
-    "pages": 7,
-    "sha256": "eea78884b941e10a",
-    "fetched_at": "2026-10-21T23:15:22+08:00",
-    "kind": "pdf",
-    "local_path": "（本地路径已隐藏）"
-  },
-  "xuanke-2025": {
-    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258430/page.htm",
-    "title": "中国传媒大学本科生选课管理办法（本科生院〔2025〕65 号）",
-    "chars": 1945,
-    "sha256": "4b4b86432be59f83",
-    "fetched_at": "2026-10-21T23:19:15+08:00",
-    "kind": "pdf"
-  },
-  "tiyu-2025": {
-    "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258431/page.htm",
-    "title": "关于《中国传媒大学本科生体育课程管理规定》的补充规定（本科生院〔2025〕68 号）",
-    "chars": 643,
-    "sha256": "7d4f66a37954e7d6",
-    "fetched_at": "2026-10-21T23:19:15+08:00",
-    "kind": "pdf"
-  }
+ "20230221-c8498a202280": {
+  "url": "https://its.cuc.edu.cn/2023/0221/c8498a202280/page.htm",
+  "title": "校园网认证服务",
+  "chars": 1521,
+  "sha256": "0b3e5220019d1f0c",
+  "fetched_at": "2026-10-20T20:37:50+08:00"
+ },
+ "20231016-c8508a212715": {
+  "url": "https://its.cuc.edu.cn/2023/1016/c8508a212715/page.htm",
+  "title": "修改统一身份认证账号密码",
+  "chars": 892,
+  "sha256": "88dcf4f2a357b634",
+  "fetched_at": "2026-10-20T20:37:50+08:00"
+ },
+ "its-xwVPN": {
+  "url": "https://its.cuc.edu.cn/xwVPN/list.htm",
+  "title": "校外VPN",
+  "chars": 1410,
+  "sha256": "56d6079e1661a6ab",
+  "fetched_at": "2026-10-20T20:37:51+08:00"
+ },
+ "its-xykbk": {
+  "url": "https://its.cuc.edu.cn/xykbk/list.htm",
+  "title": "校园卡补卡",
+  "chars": 157,
+  "sha256": "2b2ed1c1e23e7cb7",
+  "fetched_at": "2026-10-20T20:37:52+08:00"
+ },
+ "20201124-c13068a175987": {
+  "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a175987/page.htm",
+  "title": "全国大学生英语四、六级考试（CET）",
+  "chars": 916,
+  "sha256": "d6976354ad8b614f",
+  "fetched_at": "2026-10-20T20:37:53+08:00"
+ },
+ "20201124-c13068a176003": {
+  "url": "https://jwc.cuc.edu.cn/2020/1124/c13068a176003/page.htm",
+  "title": "课程置换及学分认定",
+  "chars": 547,
+  "sha256": "60a6a66608147859",
+  "fetched_at": "2026-10-20T20:37:55+08:00"
+ },
+ "20201127-c13068a176243": {
+  "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176243/page.htm",
+  "title": "补（退）选课办理流程",
+  "chars": 934,
+  "sha256": "d999eed2c2c872fe",
+  "fetched_at": "2026-10-20T20:37:56+08:00"
+ },
+ "20201127-c13068a176245": {
+  "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176245/page.htm",
+  "title": "体育课免修",
+  "chars": 953,
+  "sha256": "94529ff0a81b3a65",
+  "fetched_at": "2026-10-20T20:37:58+08:00"
+ },
+ "20201127-c13068a176247": {
+  "url": "https://jwc.cuc.edu.cn/2020/1127/c13068a176247/page.htm",
+  "title": "自修办理流程",
+  "chars": 661,
+  "sha256": "8fdcb1212470cc8e",
+  "fetched_at": "2026-10-20T20:38:01+08:00"
+ },
+ "20201222-c13068a177272": {
+  "url": "https://jwc.cuc.edu.cn/2020/1222/c13068a177272/page.htm",
+  "title": "在读证明办理流程",
+  "chars": 794,
+  "sha256": "1bfb3b5365d16ef4",
+  "fetched_at": "2026-10-20T20:38:01+08:00"
+ },
+ "20210128-c13068a178013": {
+  "url": "https://jwc.cuc.edu.cn/2021/0128/c13068a178013/page.htm",
+  "title": "成绩单办理",
+  "chars": 870,
+  "sha256": "ded4606eab95b689",
+  "fetched_at": "2026-10-20T20:38:01+08:00"
+ },
+ "20260316-c13070a267671": {
+  "url": "https://jwc.cuc.edu.cn/2026/0316/c13070a267671/page.htm",
+  "title": "成绩复议申请单",
+  "chars": 603,
+  "sha256": "b35bbcd5364942fe",
+  "fetched_at": "2026-10-20T20:38:02+08:00"
+ },
+ "tizhi-2024-pdf": {
+  "url": "https://jwc.cuc.edu.cn/_upload/article/files/fb/c6/1d57935144caba115fc4833b765c/f053049e-6d05-4ad8-9498-ac07595f4609.pdf",
+  "title": "中国传媒大学《国家学生体质健康标准》实施办法（2024年修订）· 本科生院〔2024〕115号 PDF",
+  "chars": 2019,
+  "sha256": "be5be300306c00d6",
+  "fetched_at": "2026-10-20T20:48:02+08:00"
+ },
+ "xueji-2025": {
+  "url": "https://jwc.cuc.edu.cn/2025/1118/c13082a263811/page.htm",
+  "title": "中国传媒大学本科生学籍管理规定（中传教字〔2025〕195号）",
+  "chars": 7940,
+  "sha256": "e979a1178d616bd4",
+  "fetched_at": "2026-10-21T23:19:15+08:00",
+  "kind": "pdf"
+ },
+ "zhuanzhuanye-2025": {
+  "url": "（本地文件，未入库）",
+  "title": "中国传媒大学本科生转专业管理办法（2025 年修订）· 本科生院〔2025〕110 号 · 本地 PDF",
+  "chars": 2858,
+  "sha256": "eea78884b941e10a",
+  "fetched_at": "2026-10-21T23:13:13+08:00",
+  "kind": "pdf",
+  "local_path": "（本地路径已隐藏）"
+ },
+ "本科生学籍管理规定-中传教字2025-195号": {
+  "url": "（本地文件，未入库）",
+  "title": "本科生学籍管理规定-中传教字2025-195号",
+  "chars": 7940,
+  "pages": 18,
+  "sha256": "e979a1178d616bd4",
+  "fetched_at": "2026-10-21T23:15:21+08:00",
+  "kind": "pdf",
+  "local_path": "（本地路径已隐藏）"
+ },
+ "本科生转专业管理办法-2025修订": {
+  "url": "（本地文件，未入库）",
+  "title": "本科生转专业管理办法-2025修订",
+  "chars": 2858,
+  "pages": 7,
+  "sha256": "eea78884b941e10a",
+  "fetched_at": "2026-10-21T23:15:22+08:00",
+  "kind": "pdf",
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xuanke-2025": {
+  "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258430/page.htm",
+  "title": "中国传媒大学本科生选课管理办法（本科生院〔2025〕65 号）",
+  "chars": 1945,
+  "sha256": "4b4b86432be59f83",
+  "fetched_at": "2026-10-21T23:19:15+08:00",
+  "kind": "pdf"
+ },
+ "tiyu-2025": {
+  "url": "https://jwc.cuc.edu.cn/2025/0715/c6487a258431/page.htm",
+  "title": "关于《中国传媒大学本科生体育课程管理规定》的补充规定（本科生院〔2025〕68 号）",
+  "chars": 643,
+  "sha256": "7d4f66a37954e7d6",
+  "fetched_at": "2026-10-21T23:19:15+08:00",
+  "kind": "pdf"
+ },
+ "xt-tuimian-2027-xize": {
+  "url": "（本地文件，未入库）",
+  "title": "信息与通信工程学院 2027 年推荐优秀应届本科毕业生免试攻读研究生工作实施细则",
+  "chars": 4257,
+  "sha256": "580c28e526b1054c",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 8,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj1-jingsai": {
+  "url": "（本地文件，未入库）",
+  "title": "附件1 信息与通信工程学院学科竞赛奖项保研加分办法",
+  "chars": 4246,
+  "sha256": "0cd01f55245d61e1",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 3,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj2-keyan": {
+  "url": "（本地文件，未入库）",
+  "title": "附件2 信息与通信工程学院科学研究成果保研加分办法",
+  "chars": 3979,
+  "sha256": "bdb05e37f64917e8",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 2,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj3-quanmianfazhan": {
+  "url": "（本地文件，未入库）",
+  "title": "附件3 全面发展赋分指标体系及转换公式",
+  "chars": 732,
+  "sha256": "0da52368d5c2531c",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 2,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj4-foumianqingdan": {
+  "url": "（本地文件，未入库）",
+  "title": "附件4 思想品德考核负面清单",
+  "chars": 850,
+  "sha256": "d5bb96c12a1ba7fd",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj5-shenqingbiao": {
+  "url": "（本地文件，未入库）",
+  "title": "附件5 免试攻读研究生申请表（学生填）",
+  "chars": 849,
+  "sha256": "0d17d3ff3636b888",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "pdf",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj6-chengguomulu": {
+  "url": "（本地文件，未入库）",
+  "title": "附件6 学科竞赛奖项与科学研究成果目录（学生填，xlsx）",
+  "chars": 853,
+  "sha256": "c4c4ec955d3caff3",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "xlsx",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj1-table": {
+  "url": "（本地文件，未入库）",
+  "title": "附件1 学科竞赛加分标准（表1 国家级 / 表2 省部级 / 表3 分配比例）· PDF 表格逐字转录",
+  "chars": 2225,
+  "sha256": "3c0dc4b5e9df0069",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "table",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj2-table": {
+  "url": "（本地文件，未入库）",
+  "title": "附件2 科研成果加分方案（表4 论文专利软著 / 表5 A、B 类会议）· PDF 表格逐字转录",
+  "chars": 1637,
+  "sha256": "55fa03a5dc94bef9",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "table",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "xt-tuimian-2027-fj4-table": {
+  "url": "（本地文件，未入库）",
+  "title": "附件4 思想品德考核负面清单（7 条一票否决）· PDF 表格逐字转录",
+  "chars": 512,
+  "sha256": "add1b3d50e3525d8",
+  "fetched_at": "2026-11-11T18:35:00+08:00",
+  "kind": "table",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "cz-czjg-platform": {
+  "url": "https://cz.cuc.edu.cn/help/20240412.pdf",
+  "title": "学生创作成果管理与服务平台操作手册（学生）",
+  "chars": 1085,
+  "sha256": "b80872a84ccaa75a",
+  "fetched_at": "2026-11-11T18:51:00+08:00",
+  "kind": "pdf",
+  "pages": 7,
+  "local_path": "（本地路径已隐藏）"
+ },
+ "76fa0b1c": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=76fa0b1c1b754fdcbd6d1ae822cc2dc1",
+  "title": "2025 年全国硕士研究生招生考试初试 1133 中国传媒大学考点考生须知",
+  "chars": 4416,
+  "sha256": "ac22cad549812b3e",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 11,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "e8f791b8": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=e8f791b83dca4571a777d1c6672907de",
+  "title": "中国传媒大学 2025 年接收推荐免试攻读硕士学位研究生（含直博生）办法",
+  "chars": 4388,
+  "sha256": "995c0a3926cddae0",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 9,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "f420b4ad": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=f420b4ad605b4231ab76f72984b1d911",
+  "title": "中国传媒大学 2025 年预推免网络远程复试考生须知",
+  "chars": 3068,
+  "sha256": "4abb74bb1808e2cc",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 7,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "2329e36d": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=2329e36de8f94c72a6357c31f0bbfbce",
+  "title": "中国传媒大学关于 2025 年接收推免研究生（含直博生）正式报名的提醒",
+  "chars": 1544,
+  "sha256": "ed098632783081aa",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 3,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "c0cf083f": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=c0cf083fade647d6831394527dd89bcd",
+  "title": "中传政字〔2020〕70 号 中国传媒大学修缮工程及货物管理系列办法",
+  "chars": 37626,
+  "sha256": "bb6a26e0876af2e7",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 82,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "2d9a8928": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=2d9a892843624a3984e5bd9043c20e7d",
+  "title": "中传资产字〔2012〕66 号 中国传媒大学招标采购管理暂行办法",
+  "chars": 5552,
+  "sha256": "381ca7ba5b871aac",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 7,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "b3e34e4b": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=b3e34e4bd46343479b46f0b53664439e",
+  "title": "中传人字〔2017〕97 号 中国传媒大学实行社会化及委托评审系列评审工作实施办法（试行）",
+  "chars": 1370,
+  "sha256": "1ace5a6e17b6a62e",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 4,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "5cd4d846": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=5cd4d846be8f4ea08c3fc33917594582",
+  "title": "中传人字〔2018〕9 号 中国传媒大学教职工考勤管理办法",
+  "chars": 7106,
+  "sha256": "622c1c3bcd9c0574",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 18,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "73c59a13": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=73c59a13f07e45da9f0a22aeca593950",
+  "title": "中传人字〔2021〕301 号 中国传媒大学青年教授聘任实施办法",
+  "chars": 4517,
+  "sha256": "7b647fc11f459090",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 10,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "a427fd21": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=a427fd213aaf4f51b5cf20df93ede82b",
+  "title": "中传人字〔2022〕63 号 中国传媒大学职称评审工作管理办法",
+  "chars": 49144,
+  "sha256": "d867769491f71626",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 102,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "200d1b7e": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=200d1b7e264b44f081c3a467a70695e1",
+  "title": "中传人字〔2023〕139 号 中国传媒大学专业技术岗位聘用基本条件",
+  "chars": 9509,
+  "sha256": "8b43082f48e6d6ce",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 20,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "2ad61009": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=2ad61009fcdc432b960825fc044e1c5f",
+  "title": "中传党团字〔2024〕81 号 中国传媒大学学生社团建设管理办法",
+  "chars": 9329,
+  "sha256": "fd2f01328a9fdc28",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 9,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "c253bde9": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=c253bde987eb4cf5bd1333e4273055eb",
+  "title": "中传实验字〔2025〕122 号 中国传媒大学实验室安全分级分类管理办法",
+  "chars": 7421,
+  "sha256": "c553b61ac3205fc9",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 16,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "f87eef55": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=f87eef5582634f269d4428a928577531",
+  "title": "中传政字〔2016〕113 号 中国传媒大学预防与处理学术不端行为细则",
+  "chars": 5255,
+  "sha256": "044283b36b4a8f53",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 12,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "aa31caae": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=aa31caae9c3f495880f0aa54bc6a4b86",
+  "title": "中传政字〔2023〕43 号 中国传媒大学合同管理办法",
+  "chars": 9675,
+  "sha256": "2469ed2db9e47f7d",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 22,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "8b85bfbf": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=8b85bfbf50c5493e9d04ff8c36fde157",
+  "title": "中传教字〔2013〕37 号 中国传媒大学教学成果奖评审及奖励办法（修订）",
+  "chars": 2213,
+  "sha256": "fe455a87225e567f",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 3,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "733c88dd": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=733c88dda93649cf8611b9fdee533da7",
+  "title": "中传教字〔2014〕118 号 中国传媒大学本科生课程调课管理办法",
+  "chars": 1495,
+  "sha256": "4b2938dc02302ea6",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 3,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "03f41409": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=03f41409b6f240b0bee63e03558f39c4",
+  "title": "中传教字〔2018〕30 号 中国传媒大学本科生创新创业学分认定管理办法（试行）",
+  "chars": 2316,
+  "sha256": "9fcf391ae04713c7",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 6,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "001e708d": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=001e708d8db647bb83d2de7af5fe2c92",
+  "title": "中传教字〔2021〕259 号 中国传媒大学 2022 版本科专业培养方案修订指导意见",
+  "chars": 3009,
+  "sha256": "73ecf1e96a1f3786",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 8,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "d171e33a": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=d171e33a33ee42dda1720ec1c78fb91c",
+  "title": "中传教字〔2025〕196 号 中国传媒大学国际本科生学籍管理实施细则",
+  "chars": 2790,
+  "sha256": "6f951774f5e35f2d",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 6,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "2616e109": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=2616e1094bed4085a7a87233330edaed",
+  "title": "中传研字〔2025〕6 号 中国传媒大学攻读专业学位博士研究生培养工作规定",
+  "chars": 8064,
+  "sha256": "2305f792a7bb138d",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 18,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "fdf478ae": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=fdf478aec8b94ba89caa588ba3e1d1e5",
+  "title": "中传研字〔2026〕225 号 中国传媒大学攻读专业学位博士研究生培养工作规定（2026 修订）",
+  "chars": 5474,
+  "sha256": "e3e4bb3110407ecd",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 12,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "8869d8fd": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=8869d8fd58e04784b160979a45508c68",
+  "title": "中传科研字〔2023〕245 号 中国传媒大学科研机构管理规定（修订）",
+  "chars": 10946,
+  "sha256": "ccca1f330e3cfaa5",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 24,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "acc06e20": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=acc06e2084c64641b786d42f513ad523",
+  "title": "中传资产字〔2024〕231 号 中国传媒大学采购管理办法（2024 年修订）",
+  "chars": 8695,
+  "sha256": "c4ec735cb7a5939f",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 20,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "0634c05d": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=0634c05dc17044a9b6b2b49ebdb553a8",
+  "title": "中国传媒大学“大学生创新创业训练计划”结项证明模板",
+  "chars": 413,
+  "sha256": "789ace1d8d07b1a6",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "fe22e365": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=fe22e365494d4078878f2135d582638e",
+  "title": "中国传媒大学实验室开放预约业务说明",
+  "chars": 1488,
+  "sha256": "bbead39721bc69e3",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 2,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "48b31888": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=48b31888a62947098485dd9e52850d6d",
+  "title": "信息化服务常见问题（2026-11-03 制）",
+  "chars": 21809,
+  "sha256": "a0defae8c1ef05a5",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 28,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "cea1bbbc": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=cea1bbbcd6644f238f79f24e5808168a",
+  "title": "公文办文材料：校内单位印发或提交学校的各类文稿的规范性提示",
+  "chars": 302,
+  "sha256": "1af78516ede9ba64",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 2,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "6577fdba": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=6577fdbae7af44a9a278789cdb1ed165",
+  "title": "关于举办中国传媒大学 2023 年优秀大学生夏令营的通知",
+  "chars": 3732,
+  "sha256": "097f8e2870749fc9",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 9,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "14416a6e": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=14416a6e232c414985ceb57cbb747720",
+  "title": "关于举办中国传媒大学 2024 年优秀大学生夏令营的通知",
+  "chars": 3806,
+  "sha256": "1aed73f3385d992c",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 9,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "246e64d2": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=246e64d231a74fa0a3f0ff0658b95814",
+  "title": "国有资产管理处及各科室机构职能",
+  "chars": 3619,
+  "sha256": "f9fd3c0a0543ae0e",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 4,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "892fc156": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=892fc1566fc04eb086abaa7052f06d33",
+  "title": "学士学位授权与授予管理办法",
+  "chars": 3521,
+  "sha256": "7bff652d9d81c9cd",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 7,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "09cf6ca8": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=09cf6ca891ef4756bec99a8fea9adb3c",
+  "title": "中国传媒大学本科生校内考试试卷复查（成绩复议）申请单",
+  "chars": 1275,
+  "sha256": "abdfe1f4aff93184",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 2,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "595da6b2": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=595da6b23fea4befbe496af78591d705",
+  "title": "教育服务中心部门概况（含科室职责与教学空间办公室联系方式）",
+  "chars": 2354,
+  "sha256": "474169e68b64aa19",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 5,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "037b9107": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=037b9107dcb24ffab61dc4e19cde9cbb",
+  "title": "本科生院常用表格汇编",
+  "chars": 806,
+  "sha256": "1ac083c9ca6cab7b",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "d52d15f7": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=d52d15f74afc4e4b85b897b9d634d494",
+  "title": "校外 VPN 使用说明",
+  "chars": 507,
+  "sha256": "04be6b741d11ec0a",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 1,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "7a7af32f": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=7a7af32ff13f477dab5c92232b7dd7e6",
+  "title": "畅课（U3i）用户使用手册 · 学生",
+  "chars": 16723,
+  "sha256": "847f1016367d826b",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 61,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "bc52e01f": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=bc52e01f513b4ea98c0ca76c55455092",
+  "title": "签报、办文办理流程",
+  "chars": 2907,
+  "sha256": "10f45440a9ffd46c",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 17,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ },
+ "c7d5304a": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=c7d5304ae278417d8cdb98a5e01bca26",
+  "title": "中国传媒大学通识教育核心课程手册 2025",
+  "chars": 128162,
+  "sha256": "5367b018e3b042a4",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 262,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "pypdf"
+ },
+ "20814f89": {
+  "url": "https://aihub.cuc.edu.cn/doc/view/fileview?fileId=20814f89bb60480d977d358c202c97ce",
+  "title": "学生重考、缓考报名操作流程",
+  "chars": 582,
+  "sha256": "8c939218f0b3cc67",
+  "fetched_at": "2026-11-11T21:00:00+08:00",
+  "kind": "pdf",
+  "pages": 5,
+  "local_path": "（本地路径已隐藏）",
+  "text_from": "上游抽取（可能截断）"
+ }
 }

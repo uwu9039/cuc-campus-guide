@@ -1,0 +1,13 @@
+{
+ "total_items": 39274,
+ "verified": 39239,
+ "source_thin": 32,
+ "partial": 3,
+ "facts": 42452,
+ "data_version": "0.2",
+ "data_updated": "2026-11-11",
+ "fixture_items": 84,
+ "sources": 739,
+ "vector_sources": 2153,
+ "vector_chunks": 24971
+}

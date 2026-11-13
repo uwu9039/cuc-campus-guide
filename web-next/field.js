@@ -510,6 +510,7 @@
     const s = data.synth || {};
     const ev = (s.evidence || []).map((e, i) => `
       <li><span class="qmeta">[${i + 1}] ${esc(e.doc)}${e.page ? ` · p.${e.page}` : ""}</span>
+        ${e.kind === "experience" ? `<span class="qtag">经验</span>` : ""}
         ${e.url ? `<a class="lnk" href="${esc(e.url)}" target="_blank" rel="noreferrer">打开原文 ↗</a>` : ""}
         <div class="qtxt">${esc(e.quote)}</div></li>`).join("");
     const layers = (s.layers || []).map((l) => `
@@ -524,7 +525,10 @@
       ${layers}
       ${s.boundary ? `<p class="plannote">${richText(s.boundary)}</p>` : ""}
       ${warn}
-      <div class="sec"><h3>参考证据（逐字，共 ${(s.evidence || []).length} 条）</h3><ol class="asteps">${ev}</ol></div>
+      <details class="evbox">
+        <summary>参考证据（逐字，共 ${(s.evidence || []).length} 条）<i class="caret" aria-hidden="true"></i></summary>
+        <div class="evwrap"><div class="evinner"><ol class="eevid">${ev}</ol></div></div>
+      </details>
       <div class="cardfoot"><span class="stampnote">综合层 · 结论由证据推出，请核对</span></div>
     </div>`;
   }
@@ -638,6 +642,14 @@
 
   function extractText(d) {
     if (d.llm_answer && d.llm_answer.text) return d.llm_answer.text.slice(0, 500);
+    // 综合层没有 answers，只有 conclusion + layers：不认它，历史里就只剩用户问句，
+    // 下一轮追问等于没上文（v1.0.0 的「问两句就失忆」就是这么来的）。
+    if (d.synth) {
+      const bits = [d.synth.conclusion || ""];
+      for (const L of (d.synth.layers || [])) if (L && L.text) bits.push(L.text);
+      const txt = bits.filter(Boolean).join("\n").slice(0, 500);
+      if (txt) return txt;
+    }
     const bits = [];
     for (const part of d.answers || []) {
       if (part.text) bits.push(part.text);
@@ -739,6 +751,8 @@
     gate: "门", pool: "候选", pool2: "候选2", score: "复核分", facets: "面",
     rewrites: "改写", rescue: "救场", changed: "改判", confirmed: "复核",
     asked: "裁决", why: "理由", faces: "拼面", plan: "拼装", error: "报错",
+    premises: "前提", queries: "检索", evidence: "证据", docs: "出处",
+    layers: "层", warnings: "提醒",
   };
 
   function thinkValue(value) {
@@ -846,31 +860,20 @@
     jumpToStart(slot);
     const flow = thinkFlow(slot);
     try {
-      let response;
-      if (el.synth.checked) {
-        // 综合层不走 SSE：它是一次性的多步检索+推理，没有逐帧步骤可看。
-        response = await api("/api/ask", {
-          text,
-          slots: state.slots,
-          synth: true,
-          context_item: state.item ? state.item.id : null,
-          context_slots: (state.last && state.last.known) || {},
-          messages: state.history.slice(-12),
-          pick_item: pick || null,
-        });
-        if (!response.synth) {
-          toast("综合层没跑起来，已按普通方式回答");
-        }
-      } else {
-        response = (await askStream({
-          text,
-          slots: state.slots,
-          context_item: state.item ? state.item.id : null,
-          context_slots: (state.last && state.last.known) || {},
-          messages: state.history.slice(-12),
-          // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
-          pick_item: pick || null,
-        }, (evt) => flow.step(evt))).json;
+      // 综合层也走同一条 SSE：拆前提→取证→挑证据→推理→校对，每步一帧，
+      // 用同一套思考框渲染；不开综合层时只是 body 里少一个 synth 字段。
+      const response = (await askStream({
+        text,
+        slots: state.slots,
+        synth: el.synth.checked,
+        context_item: state.item ? state.item.id : null,
+        context_slots: (state.last && state.last.known) || {},
+        messages: state.history.slice(-12),
+        // 点选项时必须带上条目 id：只按标题重新问，同一句词会再摊出同一份菜单
+        pick_item: pick || null,
+      }, (evt) => flow.step(evt))).json;
+      if (el.synth.checked && !response.synth) {
+        toast("语言组织没跑起来，已按普通方式回答");
       }
       state.last = response;
       state.count += 1;
@@ -902,7 +905,8 @@
     // 这一问没答上、或正在反问，不等于用户换了话题：上一件事留着，
     // 下一句「几天能办好」才有得接续。一没答上就清空，就是「问两句就失忆」的根因。
     if (state.item) {
-      el.topline.textContent = `当前事项 · ${docName(state.item.title) || ""}`;
+      const tag = response && response.synth ? "（综合回答）" : "";
+      el.topline.textContent = `当前事项 · ${docName(state.item.title) || ""}${tag}`;
     } else {
       el.topline.textContent = "还没定位到具体事项";
       state.deliver = null;
@@ -1314,8 +1318,7 @@
       <p class="pansub">这里不读取任何个人数据。校园卡的余额、流水和畅课的课程、课表都在学校官方系统里，要点开下面的页面、由本人登录查询，向导页不代查、不嵌入官方页面，也不保存任何东西。</p>
       <a class="pdlink" href="${CARD_URL}" target="_blank" rel="noreferrer"><b>校园卡</b><span>余额、有效期、流水</span><i>打开官方页面 ↗</i></a>
       <a class="pdlink" href="${COURSES_URL}" target="_blank" rel="noreferrer"><b>畅课</b><span>课程、待办、学期、课表</span><i>打开官方页面 ↗</i></a>
-      ${inWeChat ? `<p class="pdwarn">微信里点开可能提示打不开，请在菜单里选「在浏览器打开」，或复制链接到浏览器地址栏。</p>` : ""}
-      <p class="mapnote">两个入口是学校官方的 pcard.cuc.edu.cn 与 courses.cuc.edu.cn，地址沿用经典版组件里记录的页面，没有另写一份。</p>`;
+      ${inWeChat ? `<p class="pdwarn">微信里点开可能提示打不开，请在菜单里选「在浏览器打开」，或复制链接到浏览器地址栏。</p>` : ""}`;
   }
 
   /* ---------- 场域动效：背景随滚动上下变化，减弱动效时全停 ---------- */
@@ -1358,16 +1361,140 @@
   /* ---------- 事件 ---------- */
   /* 日夜开关：只翻 <html> 的 data-theme，别的东西一律不动。
      不写 storage 也不写 cookie——刷新就回到日间，默认状态随时能拿回去。
-     状态挂在 aria-pressed 上：样式表靠它挑皮肤，读屏也能报出现在是白天还是夜里。 */
+     状态挂在 aria-pressed 上：样式表靠它挑皮肤，读屏也能报出现在是白天还是夜里。
+     切换那一下是「从开关圆心扩散到全屏」的圆形揭幕，0.8s： */
+  const SWAP_MS = 800;
+
+  function applyTheme(dark) {
+    document.documentElement.dataset.theme = dark ? "cobalt-dark" : "cobalt-field";
+    const btn = $("#themesw");
+    if (!btn) return;
+    btn.setAttribute("aria-pressed", String(dark));
+    btn.setAttribute("aria-label", dark ? "切回日间模式" : "切到夜间模式");
+  }
+
+  // 颜色只认 CSS token：临时挂一下目标主题，量出 --bg / --surface / --line 再退回去
+  function themeColors(dark) {
+    const root = document.documentElement;
+    const prev = root.dataset.theme;
+    root.dataset.theme = dark ? "cobalt-dark" : "cobalt-field";
+    const cs = getComputedStyle(root);
+    const bg = cs.getPropertyValue("--bg").trim();
+    const surface = cs.getPropertyValue("--surface").trim();
+    const line = cs.getPropertyValue("--line").trim();
+    root.dataset.theme = prev;
+    return { bg, surface, line };
+  }
+
+  /* 实心圆盖过去的退路：圆是普通 div，靠 transform: scale() 放大 —— transform 跑在
+     合成器线程上，一整段动画只是重绘一次图层，不像 clip-path 那样每帧重算整页裁剪。
+     手机上用的就是这条（见 initThemeSwitch 里的窄屏判断）。 */
+  function wipeTheme(dark, x, y, radius) {
+    const d = Math.ceil(radius * 2);
+    const node = document.createElement("div");
+    node.className = "theme-wipe";
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
+    node.style.setProperty("--wipe-d", `${d}px`);
+    // 三层极轻渐变：--bg → --surface → --line。
+    // 只用 bg→surface 的话两者只差 8/255（≈4%），铺在 1700px 的圆上肉眼分不出，
+    // 看着就是一块纯色；再加一站 --line 才看得出「有一层方向」。
+    const { bg, surface, line } = themeColors(dark);
+    node.style.background = `linear-gradient(135deg, ${bg} 0%, ${surface} 55%, ${line} 100%)`;
+    document.body.appendChild(node);
+    requestAnimationFrame(() => node.classList.add("go"));
+    // 差 90ms 换色：那一刻圆已经盖满，换肤发生在看不见的地方，露出来的只有结果
+    setTimeout(() => applyTheme(dark), SWAP_MS - 90);
+    node.addEventListener("transitionend", () => node.remove(), { once: true });
+    setTimeout(() => node.remove(), SWAP_MS + 400);   // 兜底：transitionend 没来也不留残影
+  }
+
   function initThemeSwitch() {
     const btn = $("#themesw");
     if (!btn) return;
+    // 切换期间挂一个 body class，把背景那些一直在跑的循环动画停掉（见 field.css）。
+    // 之前手机上中段卡顿，就是因为这些动画在 VT 播放时还在后台合成、跟圆的裁剪抢帧。
+    const swapOn = () => document.body.classList.add("is-theme-swapping");
+    const swapOff = () => document.body.classList.remove("is-theme-swapping");
     btn.addEventListener("click", () => {
       const dark = document.documentElement.dataset.theme !== "cobalt-dark";
-      document.documentElement.dataset.theme = dark ? "cobalt-dark" : "cobalt-field";
-      btn.setAttribute("aria-pressed", String(dark));
-      btn.setAttribute("aria-label", dark ? "切回日间模式" : "切到夜间模式");
+      // 减少动效：直接换，不给位移与渐变
+      if (reduced.matches) { applyTheme(dark); return; }
+      const box = btn.getBoundingClientRect();
+      const x = box.left + box.width / 2;
+      const y = box.top + box.height / 2;
+      // 半径取到「离圆心最远的那个角」，保证圆一定能盖满全屏
+      const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      if (!document.startViewTransition) { wipeTheme(dark, x, y, radius); return; }
+      swapOn();
+      setTimeout(swapOff, SWAP_MS + 400);   // 兜底：不管 VT 有没有走完，动画结束后一定解冻
+      // View Transitions：新画面默认整页交叉淡入，CSS 里已经关掉；这里只给新画面一个圆形挖开
+      const vt = document.startViewTransition(() => applyTheme(dark));
+      vt.finished.finally(swapOff);
+      vt.ready.then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          {
+            duration: SWAP_MS,
+            easing: "cubic-bezier(.4, 0, .2, 1)",
+            pseudoElement: "::view-transition-new(root)",
+          },
+        );
+      }).catch(() => { swapOff(); });
     });
+  }
+
+  /* 占位提示：三句话轮流逐字打出来（打 → 停 → 退 → 换句）。
+     节奏按 2026-11-12 的定稿：130ms/字，整句停 2s，退字 100ms/字，退完停 260ms 再换下一句。
+     另外每换一句有 5% 的概率插播一次页脚那句「广院通——由记忆队制作」：
+     插播不占正常顺序里的位置，播完接着往下走，不会把三句话挤掉。
+     原生 placeholder 没动，只在 CSS 里涂透明；这里只管看得见的那一行。 */
+  const TYPER_LINES = ["问点什么", "校园办事", "原文可查"];
+  const TYPER_CREDIT = "广院通——由记忆队制作";
+  const TYPER_CREDIT_CHANCE = 0.05;
+  const TYPER_TYPE = 130;     // 每打一个字
+  const TYPER_HOLD = 2000;    // 整句打完停多久
+  const TYPER_ERASE = 100;    // 每退一个字
+  const TYPER_GAP = 260;      // 退完到下一句
+
+  function initTyper() {
+    const text = $(".typer-text");
+    if (!text) return;
+    if (reduced.matches) { text.textContent = TYPER_LINES[0]; return; }
+    let line = 0;
+    let word = TYPER_LINES[0];
+    let at = 0;
+    let dir = 1;
+    let timer = 0;
+    const tick = () => {
+      if (dir === 1) {
+        at += 1;
+        text.textContent = word.slice(0, at);
+        if (at >= word.length) { dir = -1; timer = setTimeout(tick, TYPER_HOLD); return; }
+        timer = setTimeout(tick, TYPER_TYPE);
+        return;
+      }
+      at -= 1;
+      text.textContent = word.slice(0, Math.max(0, at));
+      if (at <= 0) {
+        dir = 1;
+        if (Math.random() < TYPER_CREDIT_CHANCE) {
+          word = TYPER_CREDIT;                       // 插播：正常顺序不动
+        } else {
+          line = (line + 1) % TYPER_LINES.length;
+          word = TYPER_LINES[line];
+        }
+        timer = setTimeout(tick, TYPER_GAP);
+        return;
+      }
+      timer = setTimeout(tick, TYPER_ERASE);
+    };
+    // 页面切到后台就停手：这个循环每秒要改四次 DOM，没必要在看不见的地方跑
+    document.addEventListener("visibilitychange", () => {
+      clearTimeout(timer);
+      if (!document.hidden) timer = setTimeout(tick, 260);
+    });
+    timer = setTimeout(tick, 420);
   }
 
   function bind() {
@@ -1564,7 +1691,7 @@
         el.synth.disabled = true;
         el.synth.checked = false;
         el.synthwrap.classList.add("is-off");
-        el.synthwrap.title = "未配置模型密钥，综合层不可用";
+        el.synthwrap.title = "未配置模型密钥，语言组织不可用";
         el.synthrisk.textContent = "不可用";
       } else {
         el.synthrisk.textContent = "生成内容请核对";
@@ -1580,6 +1707,7 @@
   }
 
   installReel();
+  initTyper();
   bind();
   renderIns();
   updateStamp();

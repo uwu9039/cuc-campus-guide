@@ -12,9 +12,14 @@
 <body class="field" data-mode="hero">
 <a class="skip-link" href="#q">跳到提问</a>
 
-<!-- 场域背景：三颗同色实心圆在一个组里靠得足够近就融成一片，不靠滤镜 -->
+<!-- 场域背景：三颗同色实心圆 + 一层同位置的勾边。
+     底色与勾边分成两层是刻意的：勾边整圈压在底色上面，大圆和小圆的边在交叠处都完整可见，
+     读起来是同一平面上两个相交的圆，而不是一张圆贴在另一张上。 -->
 <div class="field-layer" aria-hidden="true">
-  <div class="ambient"><i></i><b></b><span></span></div>
+  <div class="ambient">
+    <div class="fills"><i></i><b></b><span></span></div>
+    <div class="rings"><i></i><b></b><span></span></div>
+  </div>
   <div class="fx"><i style="--h:26%;--d:0s"></i><i style="--h:48%;--d:-.14s"></i><i style="--h:34%;--d:-.28s"></i><i style="--h:62%;--d:-.42s"></i><i style="--h:40%;--d:-.56s"></i><i style="--h:72%;--d:-.7s"></i><i style="--h:52%;--d:-.84s"></i><i style="--h:86%;--d:-.98s"></i><i style="--h:44%;--d:-1.12s"></i><i style="--h:66%;--d:-1.26s"></i><i style="--h:30%;--d:-1.4s"></i><i style="--h:58%;--d:-1.54s"></i><i style="--h:38%;--d:-1.68s"></i><i style="--h:74%;--d:-1.82s"></i></div>
 </div>
 
@@ -51,13 +56,16 @@
         <div class="presets" id="presets" aria-label="常用问法"></div>
         <div class="box">
           <label class="sr" for="q">你要办什么</label>
-          <textarea id="q" rows="1" placeholder="一次问一件事，答得更准"></textarea>
+          <div class="qwrap">
+            <textarea id="q" rows="1" placeholder="一次问一件事，答得更准"></textarea>
+            <span class="typer" id="typer" aria-hidden="true"><span class="typer-text"></span></span>
+          </div>
           <div class="boxfoot">
-            <button class="plainbtn" type="button" id="clearbtn">重新问</button>
-            <label class="llmsw" id="synthwrap" title="把问题拆成前提、跨文档取证后综合回答，适合「会不会影响」这类关系题。更慢，生成内容请核对。">
-              <input type="checkbox" id="synthsw">
+            <button class="plainbtn" type="button" id="clearbtn">主界面</button>
+            <label class="llmsw" id="synthwrap" title="默认开启：把问题拆成前提、跨文档取证后综合回答，答案更全。更慢，生成内容请核对。">
+              <input type="checkbox" id="synthsw" checked>
               <span class="track" aria-hidden="true"><i></i></span>
-              综合层<span class="risk" id="synthrisk"></span>
+              语言组织<span class="risk" id="synthrisk"></span>
             </label>
             <span class="footnote">材料以官方原文为准</span>
             <button class="send" type="submit" id="send" aria-label="发送问题">问</button>
@@ -87,9 +95,7 @@
   </div>
 </main>
 
-<footer class="page-footer">
-  <span>广院通——由记忆队制作</span>
-</footer>
+<footer class="page-footer"><img class="footer-mark" src="assets/guangyuantong-mark.svg" alt="广院通 · 记忆队" decoding="async"></footer>
 
 <div class="scrim" id="scrim" hidden></div>
 <section class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pantitle" hidden>
@@ -104,5 +110,7 @@
 
 <script src="vendor/leaflet/leaflet.js" defer></script>
 <script src="field.js" defer></script>
+<!-- 右下角品牌角标（与顶栏日夜开关同高） -->
+
 </body>
 </html>

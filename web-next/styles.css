@@ -64,6 +64,9 @@ a:hover{border-bottom-color:var(--accent)}
   position:relative;z-index:6;flex:none;
 }
 .brand{display:flex;align-items:baseline;gap:9px;white-space:nowrap}
+/* 顶栏品牌位换成「广院通」图形（原来那行「校园办事向导」是文字）；图自己居中，不跟基线走。
+   brightness(.65) 把统一的 #8a8a8a 压深一档，顶栏这块才不会比原来的黑字淡。 */
+.brand-logo{height:21px;width:auto;display:block;align-self:center;filter:brightness(.65)}
 .brand b{font-size:15px;font-weight:600;letter-spacing:-.01em}
 .brand span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-3)}
 .statline{
@@ -675,3 +678,4 @@ a.cf{border-bottom:0}
 @media print{
   .pd-bar,.pd-panel,.pd-dialog{display:none!important}
 }
+

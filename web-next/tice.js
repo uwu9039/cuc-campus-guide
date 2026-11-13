@@ -10,19 +10,6 @@
   // 填完不自动出结果：必须点「生成结果」。任何改动都会把结果收回，避免旧结果挂在屏幕上。
   var resultShown = false;
 
-  var PLACEHOLDER = {
-    heightCm: '请输入有效数字，例如 175',
-    weightKg: '请输入有效数字，例如 65.5',
-    vitalCapacity: '请输入有效数字，例如 4200',
-    sprint50m: '例如 7.5',
-    sitAndReach: '例如 12.5 或 -3',
-    standingLongJump: '例如 215',
-    pullUps: '请输入整数次数，例如 8',
-    sitUps: '请输入整数次数，例如 35',
-    run1000m: '请输入有效用时，例如 4:20',
-    run800m: '请输入有效用时，例如 4:20'
-  };
-
   var HINT = {
     empty_string: '这一项还没填内容',
     invalid_type: '请输入有效数字',
@@ -64,7 +51,7 @@
     input.type = 'text';
     input.inputMode = opt.integer ? 'numeric' : 'decimal';
     input.autocomplete = 'off';
-    input.placeholder = PLACEHOLDER[opt.id] || '';
+    // 不再放示例数字占位（2026-11-12 删）：空框就空着，只靠单位后缀与下面那行提示说明
     input.value = state.values[opt.id] || '';
     input.setAttribute('aria-describedby', 'h-' + opt.id);
     wrap.appendChild(input);
@@ -633,13 +620,83 @@
     }, { passive: true });
   }
 
+  // 日夜切换：与 /field 同一套「从开关圆心扩散到全屏」的圆形揭幕（0.8s）。
+  // 主题只翻 <html data-theme>，样式在 field.css 里；这里只管过渡怎么放。
   function bindTheme() {
     var btn = byId('themesw');
+    var SWAP_MS = 800;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function apply(dark) {
+      document.documentElement.dataset.theme = dark ? 'cobalt-dark' : 'cobalt-field';
+      btn.setAttribute('aria-pressed', String(dark));
+      btn.setAttribute('aria-label', dark ? '切回日间模式' : '切到夜间模式');
+    }
+
+    // 目标主题的三个底色：颜色只认 CSS token，临时挂一下量出来再退回去
+    function targetColors(dark) {
+      var root = document.documentElement;
+      var prev = root.dataset.theme;
+      root.dataset.theme = dark ? 'cobalt-dark' : 'cobalt-field';
+      var cs = window.getComputedStyle(root);
+      var bg = cs.getPropertyValue('--bg').trim();
+      var surface = cs.getPropertyValue('--surface').trim();
+      var line = cs.getPropertyValue('--line').trim();
+      root.dataset.theme = prev;
+      return { bg: bg, surface: surface, line: line };
+    }
+
+    // 手机 / 没 View Transitions 时的退路：实心圆用 transform 放大盖满，盖满那一刻换肤。
+    // transform 走合成器，不会像 clip-path 那样每帧重绘整页 —— 手机上不卡的关键。
+    function wipe(dark, x, y, radius) {
+      var node = document.createElement('div');
+      node.className = 'theme-wipe';
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+      node.style.setProperty('--wipe-d', Math.ceil(radius * 2) + 'px');
+      // bg→surface 只差 8/255，看着等于纯色；补一站 --line 才有可见的方向感
+      var c = targetColors(dark);
+      node.style.background = 'linear-gradient(135deg, ' + c.bg + ' 0%, ' + c.surface + ' 55%, ' + c.line + ' 100%)';
+      document.body.appendChild(node);
+      window.requestAnimationFrame(function () { node.classList.add('go'); });
+      window.setTimeout(function () { apply(dark); }, SWAP_MS - 90);
+      node.addEventListener('transitionend', function () { node.remove(); }, { once: true });
+      window.setTimeout(function () { node.remove(); }, SWAP_MS + 400);
+    }
+
+    // 与 /field 同一套：一律先用 View Transitions（内容从开关圆心长出来的那种），
+    // 播放期间挂 body class 冻住背景循环动画，避免和圆的裁剪抢帧。
     btn.addEventListener('click', function () {
-      var dark = document.documentElement.dataset.theme === 'cobalt-dark';
-      document.documentElement.dataset.theme = dark ? 'cobalt-field' : 'cobalt-dark';
-      btn.setAttribute('aria-pressed', String(!dark));
-      btn.setAttribute('aria-label', dark ? '切到夜间模式' : '切到日间模式');
+      var dark = document.documentElement.dataset.theme !== 'cobalt-dark';
+      if (reduced.matches) { apply(dark); return; }
+      var box = btn.getBoundingClientRect();
+      var x = box.left + box.width / 2;
+      var y = box.top + box.height / 2;
+      // 半径取到离圆心最远的那个角，圆一定能盖满全屏
+      var dx = Math.max(x, window.innerWidth - x);
+      var dy = Math.max(y, window.innerHeight - y);
+      var radius = Math.sqrt(dx * dx + dy * dy);
+      if (!document.startViewTransition) { wipe(dark, x, y, radius); return; }
+      document.body.classList.add('is-theme-swapping');
+      var off = function () { document.body.classList.remove('is-theme-swapping'); };
+      window.setTimeout(off, SWAP_MS + 400);   // 兜底：VT 没走完也一定解冻
+      var vt = document.startViewTransition(function () { apply(dark); });
+      vt.finished.then(off, off);
+      vt.ready.then(function () {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              'circle(0px at ' + x + 'px ' + y + 'px)',
+              'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)',
+            ],
+          },
+          {
+            duration: SWAP_MS,
+            easing: 'cubic-bezier(.4, 0, .2, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          }
+        );
+      }).catch(off);
     });
   }
 
@@ -713,7 +770,8 @@
       college: inputs.college.value.trim(),
       major: inputs.major.value.trim()
     });
-    var r = s.archives.upsert(payload, { requireYear: true });
+    // 学年可留空（2026-11-12 改）：存档不拿学年当必填键，列表里空着就显示「未填学年」。
+    var r = s.archives.upsert(payload, { requireYear: false });
     if (!r.ok) {
       var err = byId('archive-err');
       if (err) { err.textContent = r.copy; err.hidden = false; }
@@ -734,7 +792,7 @@
     panel.appendChild(title);
 
     var inputs = {};
-    [['academicYear', '学年', '如 2026-2027 学年'],
+    [['academicYear', '学年', '如 2026-2027 学年，可留空'],
      ['name', '姓名', '可留空'],
      ['college', '学院', '可留空'],
      ['major', '专业', '可留空']].forEach(function (f) {

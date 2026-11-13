@@ -167,11 +167,27 @@ a { color: inherit; }
 /* ---------- 场域层：金属球 + 均衡条 ---------- */
 .field-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .ambient { position: absolute; inset: 0; opacity: var(--ambient-hero); }
-.ambient i, .ambient b, .ambient span { position: absolute; display: block; background: var(--accent); border-radius: 50%; }
+/* 大圆和小圆在同一层：底色一层（.fills）、勾边一层（.rings），两层的几何由下面同一组
+   规则给出，所以永远重合；只有绘制不同——底色实心，勾边只有 1.5px 的边。
+   勾边整层压在底色之上，于是大圆、小圆的边在交叠处都完整可见：
+   看着是同一平面上两个相交的圆，而不是一张圆贴（盖）在另一张上。
+   边色取 --muted（整组还乘 --ambient-hero），白天是柔的灰蓝线，夜里自动变微亮的线。 */
+.ambient i, .ambient b, .ambient span {
+  position: absolute; display: block; border-radius: 50%;
+}
+.ambient .fills i, .ambient .fills b, .ambient .fills span,
+.ambient .fills i::before, .ambient .fills b::after { background: var(--accent); }
+.ambient .rings i, .ambient .rings b, .ambient .rings span,
+.ambient .rings i::before, .ambient .rings b::after {
+  background: none;
+  box-shadow: inset 0 0 0 1.5px var(--muted);
+}
 .ambient i { left: -4%; top: 4%; width: clamp(240px, 33vw, 520px); aspect-ratio: 1; animation: field-drift-a 19s ease-in-out infinite alternate; translate: 0 calc(var(--scroll-shift) * -.45); rotate: calc(var(--scroll-progress) * 7deg); }
-.ambient i::before { content: ""; position: absolute; left: 58%; top: 62%; width: 46%; height: 46%; background: var(--accent); border-radius: 50%; }
+/* 小圆相对大圆再挪开一档：圆心距离 62.2，仍小于「大圆 50 + 小圆 23」= 73，
+   还相交（交叠只剩一道窄月牙），但两块地方分得很开，不是鼓包。 */
+.ambient i::before { content: ""; position: absolute; left: 69%; top: 73%; width: 46%; height: 46%; border-radius: 50%; }
 .ambient b { right: -7%; top: 26%; width: clamp(200px, 25vw, 400px); aspect-ratio: 1; animation: field-drift-b 15s ease-in-out infinite alternate-reverse; translate: 0 calc(var(--scroll-shift) * .95); rotate: calc(var(--scroll-progress) * -9deg); }
-.ambient b::after { content: ""; position: absolute; left: -34%; top: 52%; width: 58%; height: 58%; background: var(--accent); border-radius: 50%; }
+.ambient b::after { content: ""; position: absolute; left: -39%; top: 57%; width: 58%; height: 58%; border-radius: 50%; }
 .ambient span { left: 27%; bottom: -8%; width: clamp(150px, 17vw, 280px); aspect-ratio: 1; animation: field-drift-a 23s ease-in-out infinite alternate-reverse; translate: 0 calc(var(--scroll-shift) * 1.2); }
 .fx {
   position: absolute; left: 0; right: 0; bottom: 0; height: min(28vh, 280px);
@@ -328,6 +344,47 @@ a { color: inherit; }
     -14px 0 0 9px var(--sw-halo-c);
 }
 
+/* ---------- 日夜切换的揭幕：从开关圆心扩散到全屏，0.8s ----------
+   桌面用 View Transitions：浏览器把切换前后的画面各拍一张快照，再用 clip-path 的圆
+   把新画面从圆心挖开。两个快照层的默认交叉淡入必须关掉，否则「圆」会糊成一次全屏渐变。
+   （手机上这条会卡：整页快照 + 每帧重算裁剪对移动端太重，所以 field.js/tice.js 在
+   ≤720px 时改用下面的实心圆，见 .theme-wipe。） */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 1; }
+
+/* 手机 / 老浏览器：一层实心圆，用 transform: scale() 从 0 放大盖满全屏。
+   transform 走合成器线程，整段动画只涉及一个图层，不会每帧重绘整页 —— 这是不卡的关键。
+   圆盖满的那一刻在底下换主题，露出来就是新皮肤。颜色由 JS 从目标主题的 --bg 里取。 */
+.theme-wipe {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--wipe-d, 200vmax);
+  height: var(--wipe-d, 200vmax);
+  margin: calc(-0.5 * var(--wipe-d, 200vmax)) 0 0 calc(-0.5 * var(--wipe-d, 200vmax));
+  border-radius: 50%;
+  background: var(--bg);
+  transform: scale(0);
+  transform-origin: 50% 50%;
+  transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+  z-index: 9999;
+  pointer-events: none;
+  will-change: transform;
+}
+.theme-wipe.go { transform: scale(1); }
+
+/* 主题切换的那 0.8s 里，把背景里一直在循环的动画停住。
+   View Transitions 播放时页面并没有停：这些漂移/均衡条动画还在后台合成，
+   会和圆的裁剪抢帧——手机上「前半段正常、中间卡一下」就是这么来的。
+   0.8s 的静止落在这层极淡的背景上，眼睛看不出来。 */
+body.is-theme-swapping .ambient i,
+body.is-theme-swapping .ambient b,
+body.is-theme-swapping .ambient span,
+body.is-theme-swapping .fx i {
+  animation-play-state: paused !important;
+}
+
 /* ---------- 页面骨架 ---------- */
 .stage {
   position: relative; z-index: 2;
@@ -383,8 +440,30 @@ body[data-mode="work"] .inspector {
   display: block; width: 100%; min-height: 64px; max-height: 22vh; padding: 14px 16px;
   border: 1px solid var(--line); border-radius: calc(var(--radius-panel) * .55);
   background: var(--bg); resize: vertical; outline: none; font-size: 17px;
+  line-height: 24px;
 }
 .composer textarea:focus { border-color: var(--accent); }
+
+/* 占位提示的打字机：原生 placeholder 只藏字不藏属性（无障碍与表单语义照旧），
+   看得见的那一行由 #typer 逐字打出来。
+   位置：以 textarea 首行内容盒上沿（15px）为基准，再下移 1/3 字高，行高与 textarea 一致。
+   不再自绘光标（2026-11-12 删）：只输出文字，光标交给输入框自己的原生光标。 */
+.qwrap { position: relative; }
+.composer textarea::placeholder { color: transparent; }
+.typer {
+  /* 基准是 textarea 内容盒上沿 15px；再下移 1/3 字高（17px × 0.33 ≈ 5.6px），
+     这是 2026-11-12 定下的视觉位置，别再改回 15px。 */
+  position: absolute; left: 17px; top: calc(15px + .33em); right: 17px;
+  display: block;
+  pointer-events: none; white-space: pre; overflow: hidden;
+  color: var(--muted); font-size: 17px; line-height: 24px;
+  /* 比正文的次要色再淡一档：它是提示，不该和填入的字抢注意力 */
+  opacity: .7;
+  transition: opacity .18s ease;
+}
+/* 一有字就退场：用 :placeholder-shown 判空，程序里改 value 也能立刻生效 */
+#q:not(:placeholder-shown) + .typer { opacity: 0; }
+/* 动画光标已删（2026-11-12）：打字提示只保留文字本身，不再自己画一根竖线 */
 .boxfoot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
 .plainbtn { padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: var(--bg); color: var(--ink); font-size: 13px; }
 .footnote { color: var(--muted); font-size: 12px; }
@@ -697,4 +776,38 @@ body[data-panel-open] { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+
+
+/* 综合层 · 参考证据：独立列表，不复用 .asteps（那是 28px 序号格 + 正文两栏网格，
+   序号格会把 qmeta 挤成一字一行，看起来像竖排）。 */
+.eevid { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 10px; }
+.eevid li { padding: 8px 0; border-top: 1px solid var(--hair, rgba(0,0,0,.08)); }
+.eevid li:first-child { border-top: 0; padding-top: 0; }
+.eevid .qmeta { display: inline-block; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .04em; margin-right: 8px; }
+.eevid .lnk { font-size: 11px; color: var(--accent); text-decoration: none; }
+.eevid .lnk:hover { text-decoration: underline; }
+.eevid .qtxt { margin-top: 4px; color: var(--ink-2, var(--muted)); font-size: 13px; line-height: 1.7; }
+.qtag { display: inline-block; margin-right: 6px; padding: 0 5px; border-radius: 4px;
+  background: rgba(0,0,0,.06); color: var(--muted); font-size: 10px; font-weight: 700; }
+
+/* 参考证据默认收起：展开/收起用 grid-template-rows 0fr↔1fr 过渡，浏览器原生 <details> 负责开合 */
+.evbox { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hair, rgba(0,0,0,.08)); }
+.evbox > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  color: var(--ink, #222); font-weight: 800; font-size: 13px; user-select: none; }
+.evbox > summary::-webkit-details-marker { display: none; }
+.evbox .caret { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-1px); transition: transform .22s ease; }
+.evbox[open] .caret { transform: rotate(-135deg) translateY(-1px); }
+.evwrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .28s ease; }
+.evbox[open] .evwrap { grid-template-rows: 1fr; }
+.evwrap > .evinner { overflow: hidden; min-height: 0; }
+.evbox[open] .evinner { padding-top: 10px; }
+
+/* 页脚上的品牌角标：替代原来那行「广院通——由记忆队制作」 */
+.page-footer .footer-mark {
+  height: 22.5px;   /* 18px × 1.25 */
+  width: auto;
+  display: block;
+  opacity: .95;
 }

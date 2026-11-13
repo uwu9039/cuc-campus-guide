@@ -13,6 +13,13 @@
   sources/vector/chunks.jsonl
   sources/vector/manifest.json
   sources/vector/vector-report.md
+
+节级 chunk（③，2026-11-12 接入）
+  - 每份 `_review_items/sections/<slug>.json` 的每一节另做一段 `kind="section"`，
+    与 doc chunk 并存；doc chunk 的字段与切法一个字不动。
+  - 全量重建太贵，日常用增量：
+        python tools/build_vector.py --sections-only   # 只重算节 chunk，doc 行原样搬运
+        python tools/build_vector.py --no-sections     # 退回纯 doc 库
 """
 from __future__ import annotations
 
@@ -210,6 +217,200 @@ def doc_priority(path: Path, meta: dict) -> tuple[int, int]:
     return score, -len(str(path))
 
 
+# ---------------------------------------------------------------- ③ 节级 chunk
+#
+# 与 doc chunk 并存的第二路：每份 _review_items/sections/<slug>.json 的每一节
+# 单独成 chunk，kind="section"。doc chunk 的字段与切法一个字不动。
+#
+# 口径：text = heading + "\n" + 原文 lines[a..b]（与 sections 文件同一把尺子），截到 TARGET。
+#
+# 跳过规则（2026-11-12 实测修正）：任务书原写「节文本 < 80 字符 → 跳过」，用来剔除标题页/空节。
+# 但按字数卡会把**单句条款**一起丢掉——「每名学生每期只能申请修读一个微专业」是 21 个字，
+# 却正好是用户要的那句答案；20 条章级问句里有 13 条的期望节因此连 chunk 都不存在，
+# 节级检索永远不可能命中它们。改成看「正文里除了标题还剩多少内容」：
+# 剩不到 SEC_MIN_EXTRA 个字，才算标题页/空节。
+
+SEC_DIR = ROOT / "_review_items" / "sections"
+SEC_MIN_CHARS = 12      # 绝对下限：连一句话都不到的不值得单独成段
+SEC_MIN_EXTRA = 16      # 去掉标题后至少还剩这么多字，才算「这一节有正文」
+SEC_KIND = "section"
+
+# sources/ 下正文可能落的目录（与 tools/vector_add.py find_text 同序）
+TEXT_DIRS = ("", "pdf", "huibian", "wendao-text", "wechat", "crawl", "cdp", "local",
+             "attachments/text", "ilib-text", "ilib-list-text", "wendao-extra",
+             "chsi", "moe", "national", "extra")
+
+
+def find_text(slug: str) -> Path | None:
+    for d in TEXT_DIRS:
+        p = (SRC / d / f"{slug}.txt") if d else (SRC / f"{slug}.txt")
+        if p.exists():
+            return p
+    return None
+
+
+def doc_url(slug: str, indexes: dict) -> str:
+    for d in ("", *TEXT_DIRS):
+        meta = indexes.get(d) or {}
+        one = meta.get(slug)
+        if isinstance(one, dict) and one.get("url"):
+            return str(one["url"])
+    return ""
+
+
+def section_records(indexes: dict) -> list[dict]:
+    """把 _review_items/sections/*.json 摊成 kind="section" 的 chunk（不含向量）。"""
+    out: list[dict] = []
+    if not SEC_DIR.is_dir():
+        return out
+    for p in sorted(SEC_DIR.glob("*.json")):
+        if p.name.startswith("_"):
+            continue
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if not isinstance(d, dict):
+            continue
+        slug = str(d.get("key") or p.stem)
+        tp = find_text(slug)
+        if tp is None:
+            continue
+        try:
+            lines = tp.read_text(encoding="utf-8", errors="ignore").split("\n")
+        except OSError:
+            continue
+        doc_title = str(d.get("title") or slug)
+        url = doc_url(slug, indexes)
+        doc_items = [str(x) for x in (d.get("items") or [])]
+        used: set[str] = set()
+        for sec in d.get("sections") or []:
+            if not isinstance(sec, dict):
+                continue
+            lr = sec.get("lines") or [0, 0]
+            try:
+                a, b = int(lr[0]), int(lr[1])
+            except (TypeError, ValueError, IndexError):
+                continue
+            if not (1 <= a <= b <= len(lines)):
+                continue
+            heading = str(sec.get("heading") or "").strip()
+            body = "\n".join(lines[a - 1:b])
+            body_core = vi.normalize(body)
+            if len(body_core) < SEC_MIN_CHARS:
+                continue
+            # 正文里除了标题还剩多少：只剩标题的节（标题页/空节）不成段，单句条款要留下
+            head_core = vi.normalize(heading)
+            extra = body_core.replace(head_core, "", 1) if head_core and head_core in body_core else body_core
+            if len(extra) < SEC_MIN_EXTRA:
+                continue
+            text = (heading + "\n" + body).strip()[:TARGET]
+            no = str(sec.get("no") or "")
+            cid = f"{slug}#s{no}"
+            k = 2
+            while cid in used:
+                cid = f"{slug}#s{no}-{k}"
+                k += 1
+            used.add(cid)
+            items = [str(x) for x in (sec.get("items") or [])] or doc_items[:3]
+            out.append({
+                "id": cid,
+                "doc": slug,
+                "source": slug,
+                "title": f"{doc_title} · {heading}",
+                "kind": SEC_KIND,
+                "url": url,
+                "page": None,
+                "lines": [a, b],
+                "section": {"no": no, "heading": heading},
+                "item_ids": items,
+                "text": text,
+            })
+    return out
+
+
+def write_atomic(path: Path, data: bytes) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_bytes(data)
+    tmp.replace(path)
+
+
+def main_sections_only() -> None:
+    """只重算节 chunk，doc chunk 原样搬运（③ 的分批补法）。
+
+    doc chunk 的行序与向量逐字节保留，所以 /api/search 与向量腿在 doc 侧的口径不变；
+    新增的只有 kind="section" 的行。首次运行前把老头两份产物备份成 .bak。
+    """
+    chunks_p = VDIR / "chunks.jsonl"
+    vec_p = VDIR / "vectors.npy"
+    idf_p = VDIR / "idf.npy"
+    if not (chunks_p.exists() and vec_p.exists() and idf_p.exists()):
+        raise SystemExit("✗ 向量库还不存在，先跑一次全量 build_vector.py")
+
+    indexes = {d: load_json(f) for d, f in DIR_INDEX.items()}
+    indexes[""] = load_json("index.json")
+    indexes["pdf"] = {}
+
+    old = [json.loads(x) for x in chunks_p.open(encoding="utf-8") if x.strip()]
+    vectors = np.load(vec_p)
+    if len(old) != len(vectors):
+        raise SystemExit(f"✗ chunks({len(old)}) 与 vectors({len(vectors)}) 行数对不上，先全量重建")
+    idf = np.load(idf_p)
+
+    keep = [i for i, c in enumerate(old) if str(c.get("kind") or "") != SEC_KIND]
+    kept = [old[i] for i in keep]
+    kept_vecs = vectors[keep] if len(keep) else vectors[:0]
+
+    sec = section_records(indexes)
+    new_vecs = np.zeros((len(sec), vi.DIM), dtype=np.float32)
+    for i, c in enumerate(sec):
+        new_vecs[i] = vi.vectorize(c["title"] + "。" + c["text"], idf)
+    if len(sec):
+        norms = np.linalg.norm(new_vecs, axis=1)
+        if not np.isfinite(new_vecs).all() or float(norms.min()) < 0.5:
+            raise SystemExit(f"✗ 节向量异常：min norm={float(norms.min()):.3f}")
+
+    mat = np.vstack([kept_vecs, new_vecs]) if len(sec) else kept_vecs
+    all_chunks = kept + sec
+
+    # 回滚备份：只做一次，别把上一版的 .bak 覆盖掉
+    for p in (vec_p, chunks_p):
+        bak = p.with_suffix(p.suffix + ".bak")
+        if not bak.exists():
+            bak.write_bytes(p.read_bytes())
+
+    write_atomic(vec_p, _np_bytes(mat))
+    with chunks_p.open("w", encoding="utf-8") as f:
+        for c in all_chunks:
+            f.write(json.dumps(c, ensure_ascii=False) + "\n")
+
+    mf_p = VDIR / "manifest.json"
+    mf = json.loads(mf_p.read_text(encoding="utf-8"))
+    mf.update({
+        "version": "2",
+        "built": date.today().isoformat(),
+        "chunks": len(all_chunks),
+        "section_chunks": len(sec),
+        "sections_indexed": len({c["doc"] for c in sec}),
+        "avg_chunk_chars": round(sum(len(c["text"]) for c in all_chunks) / max(1, len(all_chunks)), 1),
+        "sha256_vectors": hashlib.sha256(mat.tobytes()).hexdigest()[:16],
+        "last_sections_only": {"doc_chunks": len(kept), "section_chunks": len(sec),
+                               "docs": len({c["doc"] for c in sec})},
+    })
+    mf_p.write_text(json.dumps(mf, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"✓ 节 chunk {len(sec)} 段 / {mf['sections_indexed']} 份文档；doc chunk {len(kept)} 段原样保留")
+    print(f"  库 {len(vectors)} → {len(mat)} 行；chunks.jsonl "
+          f"{chunks_p.stat().st_size / 1048576:.1f} MB；vectors.npy {mat.nbytes / 1048576:.1f} MB")
+
+
+def _np_bytes(arr) -> bytes:
+    import io
+
+    buf = io.BytesIO()
+    np.save(buf, arr)
+    return buf.getvalue()
+
+
 def main() -> None:
     corpus = load_json("corpus-index.json")
     indexes = {d: load_json(f) for d, f in DIR_INDEX.items()}
@@ -306,6 +507,10 @@ def main() -> None:
                 "text": piece["text"],
             })
 
+    # ③ 节级 chunk：与 doc chunk 并存，kind 区分。`--no-sections` 可退回纯 doc 库。
+    sec_chunks: list[dict] = [] if "--no-sections" in sys.argv else section_records(indexes)
+    chunks.extend(sec_chunks)
+
     if not chunks:
         raise SystemExit("✗ 没有可入库的文本")
 
@@ -338,7 +543,7 @@ def main() -> None:
     docs_by_kind = Counter(d["kind"] for d in docs)
     sha = hashlib.sha256(vecs.tobytes()).hexdigest()[:16]
     manifest = {
-        "version": "1",
+        "version": "2",
         "built": date.today().isoformat(),
         "dim": vi.DIM,
         "ngrams": "char 1-3",
@@ -348,6 +553,8 @@ def main() -> None:
         "corpus_total": len(corpus),
         "corpus_indexed": sum(1 for d in docs if d["doc"] in corpus),
         "chunks": len(chunks),
+        "section_chunks": len(sec_chunks),
+        "sections_indexed": len({c["doc"] for c in sec_chunks}),
         "avg_chunk_chars": round(sum(len(c["text"]) for c in chunks) / len(chunks), 1),
         "raw_docs": raw["total"],
         "raw_covered": raw["covered"],
@@ -398,6 +605,11 @@ def audit_raw() -> dict:
     }
     for p in sorted((SRC / "pdf").glob("wzy-2026-*.pdf")):
         pdf_map[p.name] = [f"sources/pdf/{p.stem}.txt"]
+    # 信通学院 2027 推免材料（实施细则 + 附件1-5 原件与抽取文本同名配对）
+    for p in sorted((SRC / "pdf").glob("xt-tuimian-2027-*.pdf")):
+        pdf_map[p.name] = [f"sources/pdf/{p.stem}.txt"]
+    # 学生创作成果管理与服务平台操作手册（图片版 PDF，正文为 sources/ 根目录的逐页转录）
+    pdf_map["cz-czjg-platform.pdf"] = ["sources/cz-czjg-platform.txt"]
     for p in sorted((SRC / "pdf").glob("*.pdf")):
         txts = [t for t in pdf_map.get(p.name, []) if (ROOT / t).exists()]
         ok = bool(txts)
@@ -454,4 +666,7 @@ def write_report(manifest, docs, chunks, dropped, excluded, short, junk, raw, ki
 
 
 if __name__ == "__main__":
-    main()
+    if "--sections-only" in sys.argv:
+        main_sections_only()
+    else:
+        main()

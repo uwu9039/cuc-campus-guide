@@ -60,3 +60,17 @@ curl https://www.modelscope.cn/studios/<用户名>/<空间名>/api/health
 - 三个界面（`/field`、`/desk`、`/classic`）都在包里，共用同一个后端与同一份数据。打开站点根路径会自动跳到 `/field`（302，带 `?q=` 也照跳）。手机端与微信内嵌浏览器可直接用 `/field`。
 - 个人数据（校园卡余额、课表）在公开站点上只给两个官方网址入口，页面本身不读取、不接收、不转发任何个人数据；实时查询要学生本人在官方系统登录完成。
 - 创空间仓库和 GitHub 是两套仓库，互不影响；改完数据要重新跑一次 `build_modelscope.py` 再推。
+
+## 出包前提（v1.0.1 起）
+
+	ools/build_modelscope.py 现在会把**章节索引**（sections_index.py + _review_items/sections/，531 份 JSON）
+一起打进包。缺这份目录时脚本会直接 SystemExit，**不再静默降级**——因为不带它，云端 ② 会静默关闭
+（sections_index.stats() 返回 {}），页面上看不出任何异常。
+
+所以出包必须在**带 _review_items/sections/ 的工作机**上跑：
+
+`ash
+python tools/build_modelscope.py --out _modelscope_bundle_full
+`
+
+.gitignore 忽略了 _review_items/，裸 clone 上跑不了出包——这是有意的。

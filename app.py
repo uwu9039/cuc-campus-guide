@@ -474,21 +474,27 @@ def campus_data() -> dict[str, Any]:
     return _CAMPUS
 
 
-PLACE_ASK = re.compile(r"在哪|在哪里|在哪儿|在哪个楼|怎么走|怎么去|位置|路线|导航")
+PLACE_ASK = re.compile(r"在哪|在哪里|在哪儿|在哪个楼|在几楼|几层|怎么走|怎么去|位置|路线|导航")
 _PLACE_SUFFIX = re.compile(r"(在哪里|在哪儿|在哪|在哪个楼|的位置|位置|怎么走|怎么去|路线|导航|呢|啊|呀)+$")
 
 # 只说转专业、没点目标学院时先反问；提到这些词说明是在打听，不是顺口带到
 _TRANSFER_ASK = re.compile(
     r"转专业|转入|转到|转去|转进|换专业|接收计划|接收条件"
 )
-_TRANSFER_CONSULT = re.compile(
-    r"咨询|问|想|要|怎么|怎样|如何|条件|要求|流程|政策|规定|时间|难|情况|事宜|哪些|哪个|吗|呢|？|\?"
+# 「我要办转专业」的意图话术。反问只该发生在**想办**的时候，
+# 不是在打听「转专业之后会怎样」的时候。
+_TRANSFER_INTENT = re.compile(
+    r"(我想|我要|我打算|我准备|我计划|想转|要转|打算转|准备转|计划转|申请转)"
 )
-# 问的是转专业的某个具体面（时间/条件/考试…），不该反问学院
-_TRANSFER_FACET = re.compile(
-    r"时间|什么时候|何时|截止|几月|流程|步骤|材料|条件|要求|考试|面试|名额|比例|"
-    r"资格|成绩|绩点|学费|费用|政策|规定|办法|细则|文件|方案|难|双学位|辅修|保研|推免|交换|出国|"
-    r"跨学院|跨专业|志愿|课程|学分|再申请|申请|研究生|硕士|博士|导师"
+# 只要问句里带了这些，就是在打听某个面（后果/时限/流程/在哪/谁管），一律先给答案。
+# 反例（实测）：转专业后宿舍还能住吗、转专业了图书馆借的书要还吗、转专业之后辅导员是谁、
+# 转专业多久能批下来、转专业接收计划在哪看 —— 这 10 条全被旧规则反问「你要转去哪个学院」。
+_TRANSFER_INFOQ = re.compile(
+    r"怎么|怎样|如何|多久|多长时间|什么时候|何时|几月|几点|在哪|哪里|哪儿|哪个|哪些|谁|"
+    r"吗|呢|？|\?|能不能|可不可以|要不要|用不用|来得及|会不会|影响|"
+    r"流程|步骤|时间|截止|材料|条件|要求|名额|比例|资格|成绩|绩点|学费|费用|"
+    r"政策|规定|办法|细则|方案|双学位|辅修|保研|推免|交换|出国|跨学院|跨专业|志愿|"
+    r"课程|学分|宿舍|借|还|加分|综测|导师|研究生|硕士|博士|再申请|申请|失败|难|多少|情况"
 )
 
 # 只问地址的短句：直接给那一处的位置，不再端出整张对照表
@@ -1011,9 +1017,77 @@ def _rule_affinity(qn: str, item: dict[str, Any]) -> int:
     return 2 if re.search(r"六十分|60分|按\d+分", item.get("title") or "") else 1
 
 
+_SI: Any = None
+
+
+def _sections_module() -> Any:
+    """sections_index 的懒加载：模块不在也不许拖垮服务（返回 None 即不建这一层）。"""
+    global _SI
+    if _SI is None:
+        try:
+            import sections_index as _m
+        except Exception:  # noqa: BLE001
+            _m = False
+        _SI = _m
+    return _SI or None
+
+
+def _section_boost(qn: str, item: dict[str, Any], sc: int) -> int:
+    """② 章节索引加分：条目确实落在某节、且问句点了那一节时，沿分数往上加。
+
+    门槛用的是任务书 §1.2 给的第一条路（两条里选一条，不许混着用）：
+
+        「加法只对已经 >= MATCH_THRESHOLD * 0.6 的条目生效」
+
+    即只拦两种条目，其余一律照加，不设上限：
+
+    1. `sc <= 0`：条目本身一个字都没对上，节名不能凭空造出一个答案；
+    2. `sc < MATCH_THRESHOLD * 0.6`（33 分）：差太远的条目，节名不该替它过关。
+
+    33 分以上**允许越过 `MATCH_THRESHOLD`**：这是「用户明说了第X章/第X节/第X条」
+    那条最强的信号该有的效力。加分档位（0 / 5 / 12 / 15）由 `sections_index.boost`
+    决定，这里只做门槛判定，不重复计分。
+    """
+    if sc <= 0 or sc < MATCH_THRESHOLD * 0.6:
+        return sc
+    si = _sections_module()
+    if si is None:
+        return sc
+    b = si.boost(qn, item)
+    return sc + b if b else sc
+
+
+def _attach_sections(evidence: list[dict[str, Any]]) -> None:
+    """给已进证据的引文挂上「它在哪一节」：`e["sec"] = {slug, no, heading, lines}`。
+
+    M1 的第一半：证据菜单要显示「《文档》·第七条」，模型才知道自己引的是哪一条。
+    只加元数据，不改引文、不改顺序、不改答案——`sec` 只是让模型看得见出处。
+
+    三条限制：
+      · 条目落不进节（库里 3.9 万条只落了 2.2 万条）就不挂，菜单退回只有文档名；
+      · **跨多节的不挂**：一条引文横跨两节时挂哪一节都是猜，宁可空着；
+      · 已经带 `sec` 的不覆盖（节检索腿的候选自带节号，那个比反查准）。
+    """
+    si = _sections_module()
+    if si is None:
+        return
+    for e in evidence:
+        if e.get("sec"):
+            continue
+        iid = str(e.get("item_id") or "")
+        if not iid:
+            continue
+        secs = si.section_of(iid)
+        if len(secs) == 1:
+            e["sec"] = secs[0]
+
+
 def rank(q: str) -> list[tuple[dict[str, Any], int]]:
     qn = norm(q)
     blocked = blocked_keys(qn)
+    # 章节索引（②）：SECTIONS_BOOST=0 时 si 为 None，下面的分数与接入前一致。
+    si = _sections_module()
+    si = si if (si is not None and si.enabled()) else None
     # archive_only：存档条目（如转专业接收计划附件）只入库、不参与问答路由
     scored = [(it, score_item(qn, it, blocked.get(it["id"])))
               for it in ITEMS if not it.get("archive_only")]
@@ -1059,6 +1133,22 @@ def rank(q: str) -> list[tuple[dict[str, Any], int]]:
         elif it.get("auto") and it.get("kind") != "qa" and hand_best >= sc - 12:
             sc = max(0, sc - 12)
         adjusted.append((it, sc))
+    # ② 章节加分放在**所有既有规则之后**：hand_best / core_best / auto 降权 / 原文条目
+    # 让位都按原始分算，一个条目加了章节点数不会反过来改变别人的惩罚档位
+    # （踩过：在打分循环里加分抬高 hand_best，让别的条目少掉一档 12 分，最终分跳 24 分）。
+    # 门槛与 sections_index._prep 摊表一起写在下面这个循环里：3.9 万条逐条函数调用
+    # 要 68 ms，整趟 rank() 只该为这一层多花几毫秒。
+    if si is not None:
+        bm = si.bonus_map(qn)
+        if bm:
+            floor = MATCH_THRESHOLD * 0.6
+            rows = []
+            for it, sc in adjusted:
+                g = bm.get(it["id"])
+                if g and sc > 0 and sc >= floor:
+                    sc += g
+                rows.append((it, sc))
+            adjusted = rows
     # 同分时人工条目优先，避免同年份的制度卡片把服务条目挤下去；
     # 同为自动条目时，问记分的先给写得出分值的条款。
     adjusted.sort(key=lambda x: (-x[1], bool(x[0].get("auto")), -_rule_affinity(qn, x[0])))
@@ -2834,7 +2924,7 @@ def _clean_rewrites(raw: Any, text: str) -> list[str]:
         if len(n) < 2 or len(n) > 24:
             continue
         out.append(q)
-        if len(out) >= 6:
+        if len(out) >= 8:
             break
     return out
 
@@ -3072,7 +3162,7 @@ def llm_needs_context2(text: str, ctx_title: str, prev_q: str,
     return need
 
 
-_REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么")
+_REF_HEAD = ("那", "这", "它", "该", "还", "也", "要", "多少", "几", "多久", "什么", "怎么", "哪个")
 # 上下文护栏总开关：0 关掉「补全前缀校验」与「无主题重叠不接」两道兜底，只跑结构改动。
 # 用于 A/B 判「兜底到底还有没有用」，默认开。
 CTX_GUARDS = str(os.getenv("CTX_GUARDS", "1")).strip().lower() not in ("0", "false", "off", "no")
@@ -3083,14 +3173,31 @@ _TOPIC_STOP = {"怎么", "什么", "哪里", "可以", "请问", "学校", "多�
                "是否", "有没", "没有", "现在", "这个", "那个", "一个", "就是"}
 
 
+_BUTLER_TAIL = ("要求", "材料", "清单", "流程", "条件", "时间", "地点", "费用", "电话", "进度", "名额", "标准", "手续")
+_BUTLER_BODY = ("食堂", "宿舍", "校园卡", "图书馆", "成绩单", "在读证明", "转专业", "推免", "保研",
+                "奖学金", "助学金", "体测", "体育课", "选课", "退课", "微专业", "辅修", "医保",
+                "校园网", "邮箱", "毕业", "学位", "军训", "入党", "处分", "住宿", "购电")
+
+
 def _looks_elliptic(t: str) -> bool:
     """这句是不是「指代式追问」：缺主语/对象，靠上一条才说得通。
 
     「那要带什么材料」「几天能办好」「周末呢」是；「饿了」「下雨了」这种自带新话题的不是。
     补全把上一条主题补进开头时，只有这一种才放行。
+
+    v1.0.1 加第三类「话题短语」：长度 ≤8、以通用语义词结尾（要求/材料/流程…）、
+    且不含具体主体词。实测「家庭经济困难认定怎么申请」→「申请要求」时，
+    补全句「家庭经济困难认定申请要求是什么」被这里判成非省略式，直接丢进 condense_dropped，
+    追问就断了。判据要严：「饿了怎么办」不含语义词尾且长度也不对，照样不算。
     """
     s = str(t or "").strip()
-    return s.startswith(_REF_HEAD) or s.endswith(("呢", "吗", "么"))
+    if s.startswith(_REF_HEAD) or s.endswith(("呢", "吗", "么", "啥")):
+        return True
+    core = norm(s)
+    if 2 <= len(core) <= 8 and core.endswith(_BUTLER_TAIL) \
+            and not any(w in s for w in _BUTLER_BODY):
+        return True
+    return False
 
 
 def _pure_ellipsis(t: str) -> bool:
@@ -3100,7 +3207,7 @@ def _pure_ellipsis(t: str) -> bool:
     「那…」不算——「那宿舍怎么调」点了新主体，得按新问题走。
     """
     s = str(t or "").strip()
-    if s.startswith(("要", "多少", "几", "多久")) or s.endswith(("呢", "吗", "么")):
+    if s.startswith(("要", "多少", "几", "多久", "哪个", "哪")) or s.endswith(("呢", "吗", "么", "啥")):
         return True
     # 「我要联系谁」「找谁」「电话多少」：整句只在问联系人，抠掉这截就没别的话题了
     if CONTACT_ASK.search(s):
@@ -3197,7 +3304,7 @@ def llm_pick_line(text: str, item: dict[str, Any], lines: list[Any],
 
 # 敏感词 = 被路由审计证明「会引起错误跳转或反问」的词（tools/derive_sensitive.py 生成）
 # 策略型提问：问"怎么选/值不值/规划"，官方文件里没有答案，需要转成具体办理事项
-STRATEGY = re.compile(r"策略|怎么选|如何选择|值不值|值得吗|规划|建议|前景|好不好|哪个好|要不要|该不该|值不值得|还是.*好")
+STRATEGY = re.compile(r"策略|怎么选|如何选择|值不值|值得吗|值得去|值当|规划|建议|前景|好不好|难不难|划算|哪个好|要不要|该不该|值不值得|还是.*好")
 CAMPUS_HINT = re.compile(r"学籍|选课|成绩|考试|证明|校园卡|宿舍|网络|图书馆|医疗|报销|奖|助|贷|"
                          r"转专业|休学|复学|毕业|学位|留学|档案|户口|场馆|报修|体测")
 
@@ -3609,13 +3716,28 @@ def transfer_plan(text: str) -> dict[str, Any] | None:
             "parts": parts, "file": plan.get("file", ""), "note": PLAN_NOTE}
 
 
+# ③ 节级向量（2026-11-12）：默认「关」。关的时候节 chunk 不进候选池，向量腿与
+# 接入前的口径完全一致（索引里那些 kind="section" 的行只是多出来，不影响 doc 命中）。
+# 打开后：节命中会把该节的 item_ids 以 +8 分加入候选池（同一 item 取最大分，不重复加）。
+SECTIONS_VEC = str(os.getenv("SECTIONS_VEC", "0")).strip().lower() not in ("0", "false", "off", "no")
+SECTION_HIT_BONUS = 8.0
+
+
 def original_hits(text: str, k: int = 3, min_score: float = 0.28,
-                  status: dict[str, Any] | None = None) -> list[dict[str, Any]]:
-    """规则没命中时，去原文向量库找几段；只给原文线索，不生成事实。"""
+                  status: dict[str, Any] | None = None,
+                  sections: bool | None = None) -> list[dict[str, Any]]:
+    """规则没命中时，去原文向量库找几段；只给原文线索，不生成事实。
+
+    `sections` 决定要不要收 kind="section" 的节 chunk（③）。默认跟随 SECTIONS_VEC：
+    关着时必须把节 chunk 排除在**取前 k 名之前**——等取完再过滤，节行会把 doc 行挤
+    出 k 个名额，向量腿的口径就变了。
+    """
+    keep_sections = SECTIONS_VEC if sections is None else sections
     try:
         import vector_index
 
-        hits = vector_index.search(text, k=k, min_score=min_score)
+        hits = vector_index.search(text, k=k, min_score=min_score,
+                                   exclude=None if keep_sections else "section")
         if not hits and vector_index.load() is None and status is not None:
             status["vector_error"] = "原文向量库没建（sources/vector 缺失）"
         return hits
@@ -3796,21 +3918,31 @@ def meta_hits(text: str, k: int = 20) -> list[tuple[dict[str, Any], float]]:
 
 def vector_item_hits(text: str, k: int = 30,
                      status: dict[str, Any] | None = None) -> list[tuple[dict[str, Any], float]]:
-    """向量腿：原文 chunk 命中后换算回条目，取法与现行候选池一致。"""
+    """向量腿：原文 chunk 命中后换算回条目，取法与现行候选池一致。
+
+    ③（`SECTIONS_VEC=1`）时，kind="section" 的命中给它的 item_ids 加
+    `SECTION_HIT_BONUS`——「这一节有讲」比「这份文件里有这几个字」更贴题。
+    同一个条目既被节命中又被 doc 命中时只留一次，取**最大**分（任务书 §2.2 的去重要求）。
+    关着时节 chunk 在 `original_hits` 里就已经被排除了，这条分支不会进。
+    """
     hits = original_hits(text, k=12, min_score=0.15, status=status)
     src_items = _src_item_index()
-    out: list[tuple[dict[str, Any], float]] = []
-    seen: set[str] = set()
+    best: dict[str, float] = {}
+    order: list[str] = []
     for h in hits:
         slug = str(h.get("source") or h.get("doc") or "").split("~")[0]
+        base = float(h.get("score") or 0.0)
+        if SECTIONS_VEC and str(h.get("kind") or "") == "section":
+            base += SECTION_HIT_BONUS
         for iid in dict.fromkeys(list(h.get("item_ids") or []) + src_items.get(slug, [])):
-            if iid in seen or iid not in ITEM_BY_ID:
+            if iid not in ITEM_BY_ID:
                 continue
-            seen.add(iid)
-            out.append((ITEM_BY_ID[iid], float(h.get("score") or 0.0)))
-            if len(out) >= k:
-                return out
-    return out
+            if iid not in best:
+                order.append(iid)
+                best[iid] = base
+            elif base > best[iid]:
+                best[iid] = base
+    return [(ITEM_BY_ID[iid], best[iid]) for iid in order[:k]]
 
 
 def rrf_fuse(lists: list[tuple[str, list[tuple[str, float]]]], limit: int = 32,
@@ -3839,7 +3971,9 @@ def fused_candidates(text: str, top_ranked: list[tuple[dict[str, Any], int]],
     只出现在一条腿里的条目分数永远比不过两条腿都命中的 14 条摘录，
     而「学校医保」要捞的正是只在 BM25 或向量里出现的那条学生口径条目。
     """
-    rule = [(it["id"], float(sc)) for it, sc in top_ranked[:40]]
+    # 规则腿只收真命中（>0）：rank() 在没人命中时会把 0 分条目按文件顺序排在前面，
+    # 校园卡这类排在库前部的条目就会挤进每一题的候选池（实测「保研条件」池里 11 条有 7 条 0 分）。
+    rule = [(it["id"], float(sc)) for it, sc in top_ranked[:40] if sc > 0]
     mt = [(it["id"], sc) for it, sc in meta_hits(text, k=20)]
     bm = [(it["id"], sc) for it, sc in bm25_hits(text, k=40)]
     vec = [(it["id"], sc) for it, sc in vector_item_hits(text, k=30, status=status)]
@@ -4817,7 +4951,8 @@ def proper_fill_candidates(q: str, ranked: list[tuple[dict[str, Any], int]],
     return [(it, 0) for _q, _rank, it in cand[:limit]]
 
 
-CONTACT_ASK = re.compile(r"联系谁|找谁|问谁|哪个部门|哪个科室|找哪个|该找|电话|联系方式")
+CONTACT_ASK = re.compile(r"联系谁|找谁|问谁|哪个部门|哪个科室|找哪个|该找|电话|联系方式|"
+                         r"找哪位|哪位老师|哪个老师|咨询谁|打哪")
 
 
 def contact_fill_candidates(text: str, pool: list[tuple[dict[str, Any], int]],
@@ -5578,9 +5713,17 @@ def _transfer_clarify(text: str, tp: dict[str, Any] | None,
     """只说「转专业」没点学院：先反问转去哪个学院，16 个有接收计划的学院直接点。"""
     if tp or not _TRANSFER_ASK.search(text):
         return None
-    if _TRANSFER_FACET.search(text):
+    # 问的是「转专业后某样东西还作不作数」（继承/累计/影响），不是要办转专业：
+    # 「我现在是班长，转专业后综测分会继承吗」曾经被反问「你要转去哪个学院」，
+    # 那是把关系题当成了办事请求。
+    if _RELATIONAL_RE.search(text):
         return None
-    if not (len(text.strip()) <= 14 or _TRANSFER_CONSULT.search(text)):
+    # 反问只发生在两种情形：① 光说了「转专业」四个字，没别的信息；
+    # ② 明确说想办（我要转/我想转/准备转），又没问任何一个面。
+    # 其余一律先给答案——旧规则「长度≤14 或 带问号」把打听后果的问句也吞了。
+    bare = len(text.strip()) <= 6 and not _TRANSFER_INFOQ.search(text)
+    intent = bool(_TRANSFER_INTENT.search(text)) and not _TRANSFER_INFOQ.search(text)
+    if not (bare or intent):
         return None
     named_colleges, named_majors = _find_entities(text)
     if named_colleges or named_majors:
@@ -5715,6 +5858,12 @@ def _contextual_text(text: str, ctx: dict | None, need: bool,
     判分串 = 用户原话 + 一句中性背景（上一轮在问什么），让模型自己判「这句是不是在说那件事」。
     """
     if not ctx or not need:
+        # v1.0.1：没有锚点时也要接住「省略式追问」——实测「家庭经济困难认定怎么申请」之后
+        # 问「申请要求」，`rank("申请要求")` 全库 0 分，因为原话在库里没有任何主体词。
+        # 补全句是猜的，所以只放行一种：原话本身就缺主语/对象（`_looks_elliptic`，含 T5 的
+        # 话题短语）。裸名词之外的一律退回原话，A4/A5 的反例才保得住。
+        if standalone and _looks_elliptic(text):
+            return standalone, None, ""
         return text, None, ""
     search = standalone or f"{ctx['title']}，{text}"
     # 指代式追问（「那要带什么材料」）离开上文不成句，用补全后的完整问句判；
@@ -5725,6 +5874,55 @@ def _contextual_text(text: str, ctx: dict | None, need: bool,
     else:
         judge = f"{text}\n（上一轮问的是「{ctx['title']}」）"
     return search, ctx["id"], judge
+
+
+_CONTACT_TITLE_RE = re.compile(r"找谁|联系|咨询")
+
+
+def _contact_part(item: dict[str, Any] | None, text: str) -> dict[str, Any] | None:
+    """给办理类答案补一条「找谁办」。
+
+    联系方式常常不在本条里：资助条目只写「学校学生资助管理部门」，
+    电话在另一条「勤工助学、奖学金、助学金、困难补助问题找谁」里（65783544）。
+    办理类问题不把这条补上，用户拿到的是一份没头没尾的流程。
+    """
+    if not item:
+        return None
+    c = item.get("contact")
+    if isinstance(c, dict) and c.get("value"):
+        return {"focus": "contact", "label": "找谁办",
+                "text": f"{c.get('name') or '联系'}：{c['value']}", "found": True, "quotes": []}
+    # 事项标题里去掉通用词，剩下的才是「话题词」；「找谁」条目必须沾上一个话题词，
+    # 答案里还得真像联系方式（电话/邮箱/咨询），否则宁可不给。
+    _GENERIC = {"学生", "认定", "家庭", "办理", "申请", "管理", "规定", "办法", "工作",
+                "相关", "进行", "需要", "可以", "事项", "服务", "流程", "材料"}
+    subj = {g for g in bigrams(norm(item.get("title") or "")) if g not in _TOPIC_STOP and g not in _GENERIC}
+    if not subj:
+        return None
+    for it in ITEMS:
+        title = str(it.get("title") or "")
+        if not _CONTACT_TITLE_RE.search(title):
+            continue
+        if not (subj & bigrams(norm(title))):
+            continue
+        ans = str(it.get("answer") or "").strip()
+        if not ans or len(ans) > 240:
+            continue
+        if not re.search(r"电话|邮箱|@|联系|咨询|地址|窗口|中心", ans):
+            continue
+        one: dict[str, Any] = {}
+        for _k, v in (it.get("evidence") or {}).items():
+            for ev in _ev_items(v):
+                if str((ev or {}).get("quote") or "").strip():
+                    one = ev
+                    break
+            if one:
+                break
+        quotes = ([{"quote": one.get("quote", ""), "src": one.get("src", ""),
+                    **src_label(one.get("src", ""))}] if one else [])
+        return {"focus": "contact", "label": "找谁办",
+                "text": ans, "found": True, "quotes": quotes}
+    return None
 
 
 def _answer_core(text: str, given: dict[str, str] | None = None,
@@ -6470,6 +6668,16 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
             # 保留 missing：问「多少钱」而简章没写费用时，
             # 不能拿流程顶上来还不吭声，要明说这一面没有收录。
 
+    # 办理类问题补「找谁办」：联系方式经常不在本条里，而在「…问题找谁」那条。
+    # 已有联系面但只有部门名、没有电话的，也补一条带号码的。
+    contact_parts = [p for p in parts if p.get("focus") == "contact"]
+    has_phone = any(re.search(r"\d{7,}", str(p.get("text") or "")) for p in contact_parts)
+    if (not has_phone and re.search(r"办理|申请|怎么|如何|流程|联系|找谁", text)):
+        cp = _contact_part(top, text)
+        if cp:
+            parts.append(cp)
+            focus_keys = [p["focus"] for p in parts]
+
     # 是非型问句（能不能/可以吗/同时）命中条目里的易错条款时，把那条直接答出来
     if re.search(r"能不能|可以吗|能同时|是否|行不行|会不会", text):
         for idx_pf, pf in enumerate(top.get("pitfalls") or []):
@@ -6583,13 +6791,29 @@ def _answer_core(text: str, given: dict[str, str] | None = None,
     # 「可能想问」：规则腿排出来的第 2、3 名。用户多半就是在这几条之间挑，
     # 直接给成按钮，省得再打一遍字（只给两条，多了变菜单）。
     next_best: list[dict[str, Any]] = []
-    for it, sc in distinct_rows(ranked[:8]):
-        if it["id"] == top["id"] or sc < 38:
-            continue
-        next_best.append({"id": it["id"], "title": it["title"],
-                          "label": _card_label(it), "dept": it.get("dept", "")})
-        if len(next_best) >= 2:
-            break
+
+    def _nb_ok(it: dict[str, Any]) -> bool:
+        """摘录片段不当按钮：标题像半句话（长、带句号、带「或/并/第」开头）的不要。"""
+        title = str(it.get("title") or "").strip()
+        if not title or len(title) > 28 or "。" in title:
+            return False
+        if title.startswith(("或", "并", "且", "第", "（", "(", "如", "若", "则")):
+            return False
+        return True
+
+    # 先挑不带 auto 的整理条目，再退到标题像人话的摘录；两个 0 分的片段不配当「可能想问」
+    for need_manual in (True, False):
+        for it, sc in distinct_rows(ranked[:12]):
+            if len(next_best) >= 2:
+                break
+            if it["id"] == top["id"] or sc < 38 or not _nb_ok(it):
+                continue
+            if need_manual and it.get("auto"):
+                continue
+            if any(b["id"] == it["id"] for b in next_best):
+                continue
+            next_best.append({"id": it["id"], "title": it["title"],
+                              "label": _card_label(it), "dept": it.get("dept", "")})
     # 子条目提上来之后，原来那条宽泛父条目别丢：通用流程还在那条里，放进相关事项
     if promoted_from is not None and promoted_from["id"] not in {r.get("id") for r in related}:
         related = [{"id": promoted_from["id"], "title": promoted_from["title"],
@@ -6754,7 +6978,11 @@ def answer_question(text: str, given: dict[str, str] | None = None,
     return resp
 
 
-_RELATIONAL_RE = re.compile(r"影响|关系|会不会|有没有.*(关系|影响)|冲突|区别|能不能.*(保研|推免|毕业|评优)|对.{1,8}(有|有没有).{0,4}(影响|关系)")
+_RELATIONAL_RE = re.compile(
+    r"影响|关系|会不会|有没有.*(关系|影响)|冲突|区别|"
+    r"继承|累计|保留|清零|重新认定|重新评|算不算|还算|算数|作数|承认|"
+    r"还能不能|能同时|还能用|可用|能用|带走|计入|难不难|划算|"
+    r"能不能.*(保研|推免|毕业|评优)|对.{1,8}(有|有没有).{0,4}(影响|关系)")
 
 
 def _looks_relational(text: str) -> bool:
@@ -6762,61 +6990,519 @@ def _looks_relational(text: str) -> bool:
     return bool(_RELATIONAL_RE.search(text or ""))
 
 
-_SYNTH_PREMISE_PROMPT = (
-    "用户问的是校园制度之间的关系（会不会影响、有没有关系）。"
-    "把回答它必须同时核实的**前提**列出来，2～3 条，每条一句、能单独拿去检索。\n"
-    "例：「体育课免修对保研有影响吗」→ 推免资格条件里有没有对体育课免修的限制；"
-    "体育课免修的成绩怎么记；推免综合成绩怎么算。\n"
-    '只输出 JSON：{"premises": ["…", "…"]}'
+_SYNTH_PLAN_PROMPT = (
+    "用户问校园的事。拆两样东西：\n"
+    "1) 回答它必须同时核实的**前提**，2～3 条，每条一句；\n"
+    "2) 每条前提配一条**检索短句**（3～12 字），用官方词——"
+    "综测→综合测评、班长/班委→学生干部/班委会干部、保研→推免、加分→社会活动加分。\n"
+    "短句必须覆盖三样：问的主体、问的后果/资格、以及**把两者连起来的记分或认定规则**"
+    "（成绩怎么记、怎么计入、排名怎么算）。\n"
+    "用户可能只说状态或口语（饿/困/累/没网），没说校园词。**不要因此返回空数组**："
+    "先翻成校园里对应的事——饿→食堂在哪/几点开/怎么买饭，困→宿舍与作息，"
+    "没网→校园网办理，累→校医院/休息处。\n"
+    "两条硬规矩：\n"
+    "A) 问句里出现的每一个动作（保研/推免、转专业、毕业、评奖评优、奖学金），"
+    "都要有一条短句专门查它的**资格条件**（「推免 基本条件」「转专业 申请条件」"
+    "「毕业 学分要求」），不能只查成绩或流程。\n"
+    "B) 短句里的主体词必须和问句一致：问「体育课免修」就不要换成「体测」，"
+    "问「体测」就不要换成「体育课免修」——相邻概念不是同一件事。\n"
+    "C) 每条前提给 **2～3 个措辞不同**的短句（官方词/同义说法各一版），"
+    "因为条款里的写法常和问句不一样：「退课」在原文里可能写成「终止学习」「中途退课」，"
+    "「退费」可能写成「不予退还」。多给几版，检索才不会只在一句措辞上赌运气。\n"
+    '只输出 JSON：{"pairs": [{"premise": "…", "queries": ["短句1", "短句2"]}], '
+    '"queries": ["补充短句"]}'
 )
 
 _SYNTH_PROMPT = (
     "你是校园办事问答的研究员。只准使用下面给出的证据，逐句在句末标 [n]，"
-    "结论句和边界句也要标。由多条证据推出来、证据本身没直说的，标 [n]（推断）。"
-    "不得引入证据以外的数字、条款、事实或学院做法。\n"
-    "结构：一句结论；然后 2～3 层（如 资格／成绩／边界），每层 1～2 句；"
-    "证据里没写的就说「证据里没有写」，不要猜。\n"
-    "只输出 JSON：{{\"conclusion\": \"…\", \"layers\": [{{\"name\": \"资格\", \"text\": \"…\"}}], "
-    "\"boundary\": \"…\"}}\n\n证据：\n{menu}\n\n问题：{q}"
+    "结论句和边界句也要标。不得引入证据以外的数字、条款、事实或学院做法。\n"
+    "问句里的每一条前提都要单独裁决，verdict 只能取这四种：\n"
+    "· direct：证据里有句子直接写了这件事 → 照写，标 [n]。\n"
+    "· not_listed：证据里有【穷尽枚举】标注的条款（「具备以下条件：一、二、三…」），"
+    "而问句点名的那个东西不在其中 → 直接答「第 [n] 条共 N 项，未列 Y」。"
+    "这是可答的否定结论，不是拒答；必须点出是哪一条、共几项。"
+    "判到这里就别再退成 missing：条款没列 Y，本身就是问句要的答案，"
+    "不要因为它没解释「Y 如何影响」就改判 missing。"
+    "标着【枚举不完整】的条款不许这样断言——那种条款只说明没抄全，不说明没规定。\n"
+    "· inferable：两条条文合起来能推出结论（第 [n] 条 ＋ 第 [m] 条 → 结论），"
+    "可以写，句末标 [n]（推断），并把这两步都摆出来（据第 [n] 条…，据第 [m] 条…，因此…）。\n"
+    "· missing：确实没有可用条款 → 写清缺哪一步（缺哪条规则、哪个口径），"
+    "不要只写「证据里没有写」。\n"
+    "只有 missing 才用拒答口气，其余三种都是正常作答。\n"
+    "结论的第一句直接回答问句：能答就先给能答的结论（「第 [n] 条共 N 项，未列 Y」"
+    "「据第 [n] 条＋第 [m] 条，…（推断）」）；确实没有依据时第一句才写缺什么。"
+    "不要一律用「证据未给出…」开头。**结论整段不超过 70 字**：细节、金额、期限放到 premises。\n"
+    "问到「能不能同时 / 会不会冲突」：条款里没有禁止性规定，就写「证据里没有禁止…的条款」，"
+    "再把各自的限制条款说清（例如「限报一个」只约束它自己那一类，不约束另一类），"
+    "不要因为找不到写着「可以」的条文就拒答。\n"
+    "每条开头写清讲的是哪个主体（体育课免修 / 体测 / 免测），不要把相邻概念当成同一件事。\n"
+    "回答要**全**：证据里与这个问题相关的条款尽量都说出来——资格、金额、门槛、期限、例外、"
+    "谁办、到哪办、要带什么，逐条标 [n]。不要只挑最顺的一条说，也不要因为问题只问了其中一面，"
+    "就把同一件事的其他硬性规定省掉。\n"
+    "证据里标注【仅适用：研究生／教师】的，引用时必须写明适用对象，例如「研究生延期期间学校不提供住宿；"
+    "本科生延期期间的住宿，证据里没有写」——不能直接当成本科生的规定。"
+    "**问句没说明身份时按本科生答**：本科生的条款放主体，研究生条款只在补充里带一句，"
+    "不要把研究生的规定当成默认答案（问「论文查重没过能拿学位吗」，先答本科毕业论文的 20%／30% 口径）。\n"
+    "与问题无关的其他事项不要写，也不要用「与…无关 / 是两件事」这类比较句收尾。\n"
+    "premises 写 4～6 条：一条前提对应证据里的一组相关条款（资格／金额／期限／例外／谁办），"
+    "不要为了凑数把一句话拆成两条，也不要把同一件事的几条硬性规定压成一条。\n"
+    "只输出 JSON：{{\"conclusion\": \"…（一句话，先给结论；有否定结论就直说）\", "
+    "\"premises\": [{{\"name\": \"资格\", \"verdict\": \"not_listed\", \"text\": \"…[3]\"}}], "
+    "\"boundary\": \"…（只写本问的边界，没有就留空）\"}}\n\n证据：\n{menu}\n\n问题：{q}"
 )
+
+# M1 的补充规则：只有证据里真的挂了节/条号时才拼进 system prompt。
+# 不常驻是怕老题（证据没有 sec）被「第X条」的框带偏——它手上没有条号可对照，
+# 多给它一套「只有该节能直接回答」的规矩，只会让它把没标注的引文全判成不可用。
+_SECTION_RULES = (
+    "证据出处已标到节/条。问句点名了某一条时，只有该节的引文能直接回答；"
+    "其他章节的条款只能作补充并写明出处，不得替代。"
+    "但那一节只写了「可以申请/应当遵守」这类原则、没写流程、材料、时限时，"
+    "结论要把流程与材料写出来并标出处（第 [n] 条），不要只写「按第X条办理」——"
+    "用户问的是怎么办，指了条号等于没答。"
+    "该节是穷尽枚举且问的项不在其中时，判 not_listed，答“第X条共N项，未列Y”，不要判 missing。"
+    "引用编号仍用 [n]，不要把条号当引用编号。"
+)
+# 下面三套规则**各自有前提**，只在菜单里真的给了对应标记时才拼：
+# v5 §D 把「点名/本章结构」收进 SECTIONS_EVIDENCE_CHAP_ONLY 后，默认路径既不显示
+# 【本章结构】也很少出现【点名节】。还照旧把这两套规矩塞给模型，就是在描述不存在的东西
+# （v3 把规则写成一整段时就踩过：模型去找「本章结构」，没找到就自己编了一章的结构）。
+_ANCHOR_RULES = "标【点名节】的是问句点名的节，以它为准，别的节只能补充。"
+_CHAPTER_RULES = (
+    "点名某一章时，该章下每一条都是该章的内容（如第三章含第六、七、八条），必须逐条看完；"
+    "不要因为章标题是「规则」就断定章里没有「不得申请」这类情形，也不许用别的章的同名条款替代。"
+    "本章结构列出该章各条。问「什么情况下不能申请」时，只把标题/内容为「不得申请/不予受理」的条"
+    "算禁止情形；「申请条件」条说明谁可以申请，「需遵守的规则」条是转入限制，不要混进禁止清单。"
+    "本章结构里与问句无关的条，不要为了凑数写进答案。"
+)
+_TRUNC_RULES = "标【节选】的节不得断言「没有规定」，只能说「已检索部分未见」。"
+
 
 _PAGE_RE = re.compile(r"-\s*(\d{1,3})\s*-")
 
 
-def _synth_premises(text: str, status: dict[str, Any]) -> list[str]:
-    """把关系题拆成必须同时核实的前提（2～3 条）。"""
+def _synth_plan(text: str, status: dict[str, Any],
+                ctx_title: str = "", prev_q: str = "") -> tuple[list[str], list[str]]:
+    """拆两样：前提（要同时核实的点）＋每条前提配的检索短句（官方词）。
+
+    前提本身太长，直接拿去 BM25 会被虚词稀释；短句才是检索用的。
+    v1.0.1：`ctx_title` 是本题对象（上一轮锚定的条目名），`prev_q` 是上一轮用户问句——
+    两者只作为「这句在问什么」的提示拼在用户消息前面，不塞上一轮答案原文。
+    """
+    msg = text
+    if ctx_title or prev_q:
+        ctx = []
+        if ctx_title:
+            ctx.append(f"本题对象：{ctx_title}")
+        if prev_q:
+            ctx.append(f"上一轮问的是：{prev_q}")
+        msg = "（" + "；".join(ctx) + "）\n" + text
     try:
-        raw = ds_chat([{"role": "system", "content": _SYNTH_PREMISE_PROMPT},
-                       {"role": "user", "content": text}], max_tokens=180, json_mode=True)
+        raw = ds_chat([{"role": "system", "content": _SYNTH_PLAN_PROMPT},
+                       {"role": "user", "content": msg}], max_tokens=320, json_mode=True)
         data = json.loads(raw) or {}
     except Exception as e:  # noqa: BLE001
         status["error"] = _llm_err_text(e)
-        return []
-    out = [str(x).strip() for x in (data.get("premises") or []) if str(x).strip()]
-    return out[:3]
+        return [], []
+    if not isinstance(data, dict):
+        return [], []
+    pairs = data.get("pairs") or []
+    premises: list[str] = []
+    queries: list[str] = []
+    for pair in pairs:
+        if not isinstance(pair, dict):
+            continue
+        p = str(pair.get("premise") or "").strip()
+        if p:
+            premises.append(p)
+        # v6：一条前提可以带多个措辞变体（"queries"），老格式的单条 "query" 仍然认。
+        # 保留原顺序、去重，别让同一个短句占两个检索名额。
+        # v7：`query` 永远解析（v5.1 行为）；`queries` 变体只在 SECTIONS_REWRITE=1 时进检索。
+        # 改写是有代价的（模型多输出、检索多跑两轮），先量增益再开。
+        one = str(pair.get("query") or "").strip()
+        variants = [one] if one else []
+        if SECTIONS_REWRITE:
+            more = pair.get("queries")
+            if isinstance(more, str):
+                more = [more]
+            if isinstance(more, list):
+                variants += [str(x or "").strip() for x in more]
+        for q in variants:
+            if q and q not in queries:
+                queries.append(q)
+    for q in (data.get("queries") or []):
+        q = str(q).strip()
+        if q and q not in queries:
+            queries.append(q)
+    if not premises:
+        premises = [str(x).strip() for x in (data.get("premises") or []) if str(x).strip()]
+    # 资格条件兜底：问句点了某个动作，检索短句里却没有一条查它的资格条款，就补一条。
+    # 「作弊被记过还能保研吗」曾只查到诚信记录与学生手册，漏掉推免办法第十一条
+    # 「品行表现优良…无违纪受校级处分记录」，于是答成「证据里没有写」——假阴性。
+    for pat, extra in _ELIG_QUERIES:
+        if re.search(pat, text) and not any(
+                extra.split()[0] in q and ("资格" in q or "条件" in q or "要求" in q)
+                for q in queries):
+            queries.append(extra)
+    return premises[:3], queries[:5]
 
 
-def _synth_candidates(premises: list[str], cap: int = 40) -> list[dict[str, Any]]:
-    """逐前提把候选引文摊开（规则＋BM25＋名目三路），不做取舍，交给模型挑。
+_AUDIENCE_WORDS = ("博士", "硕士", "研究生", "教师", "教职工", "人事", "招聘", "留学生", "国际学生")
+_EXPERIENCE_WORDS = ("师哥师姐", "经验", "问答", "我为师生办实事", "公众号")
 
-    只靠规则前几名会漏掉「连接前提」——「体育课免修」排出来的是办理流程，
-    真正连接的是《课程考核及成绩管理办法》里「免修的体育课程：按 60 分计入平均分和 GPA」
-    那句，它在另一份文件、BM25 第 10 名开外。
+_ELIG_QUERIES = [
+    (r"保研|推免", "推免 基本条件 违纪 处分"),
+    (r"转专业", "转专业 申请条件"),
+    (r"毕业", "毕业 学分要求"),
+    (r"奖学金|助学金|评奖|评优", "评奖评优 资格条件"),
+]
+_ACTION_TERMS = [
+    (r"保研|推免", "推免"),
+    (r"转专业", "转专业"),
+    (r"毕业", "毕业"),
+    (r"奖学金", "奖学金"),
+    (r"助学金", "助学金"),
+]
+
+# —— 资格条款锚点：按「事」去取条款，而不是按「被问的那个词」去取 ——
+# BM25 用问句里的词去查，「四六级没过能保研吗」查回的都是提到四六级的句子，
+# 而《推免办法》第十一条（五条基本条件）里一个字都没有「四六级」——词语检索天生查不到
+# 「没提那件事」的条款，可它恰恰就是答案。所以每一步还按事名单独取一次条款。
+# 每项：(问句里的触发词, 条款里该出现的事名, 条款所在文件的标题词, 退回用的检索短句)
+_ELIG_ANCHORS = [
+    (r"保研|推免|免试攻读|支教保研",
+     r"(?=.*(推免|免试攻读))(?=.*(基本条件|资格条件|有资格申请))",
+     r"推免|免试攻读", "推免 资格条件"),
+    (r"转专业|转学",
+     r"(?=.*转专业)(?=.*(基本条件|申请条件|不得申请|情形之一))",
+     r"转专业", "转专业 申请条件"),
+    (r"毕业|结业|延期毕业",
+     r"(?=.*毕业)(?=.*(毕业资格|毕业条件|准予毕业|学分))",
+     r"毕业|学籍管理", "毕业 学分要求 条件"),
+    (r"学位证|学位授予|学位",
+     r"(?=.*学位)(?=.*(授予|不授予|条件))",
+     r"学位", "学位授予 条件"),
+    (r"奖学金|评奖评优|评优|三好",
+     r"(?=.*奖学金)(?=.*(申请条件|基本条件|具体条件|资格))",
+     r"奖学金", "奖学金 申请条件"),
+    (r"助学金|助学贷款|困难认定|绿色通道",
+     r"(?=.*(助学金|助学贷款))(?=.*(申请条件|基本条件|条件))",
+     r"助学金|助学贷款", "助学金 申请条件"),
+    (r"免修|免测",
+     r"(?=.*(免修|免测))(?=.*(条件|情形|申请))",
+     r"免修|免测|体质健康|体育", "免修 免测 申请条件"),
+    (r"处分|记过|作弊|申诉",
+     r"(?=.*处分)(?=.*(情形|期限|解除|从重))",
+     r"处分", "处分 规定 条件"),
+]
+
+# —— 穷尽枚举：条款是不是「就这几项」——
+# 「四六级没过能保研吗」的答案是「第十一条共五项，未列四六级」。要这么答，模型必须
+# ① 看见整条枚举、② 知道这条枚举是穷尽的。引文被截断（以「（五）在校」收尾）
+# 或带「等」的，只能算不完整枚举，那种条款不足以支撑否定结论。
+_ENUM_ITEM = re.compile(r"[（(]\s*(?:[一二三四五六七八九十]{1,2}|\d{1,2})\s*[）)]|[①②③④⑤⑥⑦⑧⑨⑩]")
+_CLOSED_INTRO = re.compile(
+    r"(具备以下|符合以下|下列|以下基本条件|以下条件|具备下列|符合下列|之一者|以下之一"
+    r"|须同时|应同时|均须|必须同时|条件者|情形之一)")
+_OPEN_HINT = re.compile(
+    r"(包括但不限于|诸如|例如|参照执行|以及其他|等情形|等事项|等要求|等条件|等[。；;]$)")
+_TAIL_OK = re.compile(r"[。；;]$")
+
+
+def _closed_enum(quote: str) -> dict[str, Any] | None:
+    """切出条款里的枚举项。closed=True 才允许据此断言「未列」。
+
+    「完整枚举」三个条件：≥3 项、有引出语（具备以下/下列…之一）、引文到最后一项仍是
+    完整句子（不是被截断）。带「等/包括但不限于」的按不完整处理。
+    """
+    best: dict[str, Any] | None = None
+    marks = list(_ENUM_ITEM.finditer(quote or ""))
+    if len(marks) < 3:
+        return None
+    items: list[str] = []
+    for i, m in enumerate(marks):
+        s = m.start()
+        e = marks[i + 1].start() if i + 1 < len(marks) else len(quote)
+        # 「…且须同时满足本条（一）（二）项的规定」里的（一）（二）是**复指**，不是枚举项：
+        # 实测第八条因此被数成「共 4 项」（三项规则＋一个「项的规定」），模型就跟着写
+        # 「第八条共 4 项」。判据：编号后面紧跟「项的/项之/项所/项款/项。」这类指代。
+        if re.match(r"\s*项\s*(的|之|所|款|中|$|[。；，,、])", quote[m.end():e]):
+            continue
+        one = re.sub(r"^[（(]?\s*(?:[一二三四五六七八九十]{1,2}|\d{1,2})\s*[）)]?\s*", "",
+                     quote[s:e]).strip(" 　；;。")
+        if one:
+            items.append(one[:18])
+    head = quote[:marks[0].start()]
+    closed = (len(items) >= 3 and bool(_CLOSED_INTRO.search(head))
+              and not _OPEN_HINT.search(head) and not _OPEN_HINT.search(quote.strip()[-30:])
+              and bool(_TAIL_OK.search(quote.strip())))
+    info = {"count": len(items), "closed": closed,
+            "scope": head.strip()[-24:], "items": items[:8]}
+    if best is None or (info["closed"], info["count"]) > (best["closed"], best["count"]):
+        best = info
+    return best
+
+
+def _enum_note(ev: dict[str, Any]) -> str:
+    """菜单里挂在引文后面的那句提示，决定模型能不能说「未列」。"""
+    info = ev.get("enum") or {}
+    if not info:
+        return ""
+    if info.get("closed"):
+        return (f"【穷尽枚举·共 {info['count']} 项：" + "；".join(info["items"]) + "】")
+    return (f"【枚举不完整·共 {info['count']} 项（引文可能被截断或带「等」），"
+            f"不得据此断言未列】")
+
+
+def _audience_scope(label: str, question: str) -> str:
+    """这条证据限定了哪群人。'' = 通用；否则返回「研究生」「教师」这类词。
+
+    以前这里是「整条丢掉」，代价太大：『延期毕业还能住宿舍吗』的答案写在
+    《研究生提前毕业与延期毕业》里（延期期间不提供住宿），整条砍掉，用户只能看到
+    「库里没有规定」。现在改成**标出来**：信息保住，同时不会被当成本科生规则。
+    """
+    q = (question or "").replace("保研", "推免")
+    if re.search(r"推免|保研|免试攻读|研究生支教团", q) and \
+            re.search(r"推免|免试攻读|推荐优秀应届|支教团", label):
+        return ""
+    for w in _AUDIENCE_WORDS:
+        if w in label and w not in question:
+            return w
+    return ""
+
+
+def _evidence_allowed(label: str, question: str) -> bool:
+    """硬过滤：只给「必须同人群」的地方用（比如按事取资格条款）。
+
+    综合层取证改用 `_audience_scope` 标注适用人群，不再整条丢弃——
+    丢掉的往往是唯一写了答案的那一条。
+    """
+    return not _audience_scope(label, question)
+
+
+_SUBJECT_NOUNS = (
+    "转专业", "换专业", "宿舍", "调宿", "住宿", "退宿", "医保", "公费医疗", "奖学金",
+    "国家奖学金", "国家励志奖学金", "励志奖学金", "学业奖学金", "助学金", "助学贷款",
+    "困难认定", "勤工助学", "图书馆", "借阅", "校园卡", "挂失", "补卡", "校园网",
+    "论文", "查重", "学位", "毕业论文", "答辩", "体测", "免测", "免修", "体育课",
+    "处分", "记过", "申诉", "入党", "党员", "学费", "住宿费", "学分", "补考", "重修",
+    "缓考", "休学", "复学", "退学", "毕业", "延期毕业", "推免", "保研", "综测",
+    "综合测评", "选课", "考试", "成绩单", "档案", "户口", "军训",
+)
+
+
+def _subject_terms(question: str) -> list[str]:
+    """问句里出现的「事名」。
+
+    把事名单独检索一次，解决「短句被主语占满、另一件事的条目排不进来」：
+    『转专业以后宿舍要换吗』按「转专业」检索，一条调宿条款都进不了池；
+    单独用「宿舍／调宿」检索，住宿协议那条（安排后原则上不再变动）就出来了。
+    """
+    q = question or ""
+    got = [n for n in _SUBJECT_NOUNS if n in q]
+    # 「国家奖学金」命中时「奖学金」也在，去掉被包含的短词，省一次检索
+    return [n for n in got if not any(n != o and n in o for o in got)][:6]
+
+
+def _title_hits(noun: str, k: int = 3) -> list[dict[str, Any]]:
+    """标题里就写着这件事的条目（按标题长短挑最具体的几个）。
+
+    FTS 里搜不到结构化条目：《本科生毕业论文（设计、创作）流程与要求》这条，
+    用「论文」「查重」「毕业论文」去 bm25 都排不进来（前 12 名全是 pt-* 碎片），
+    问「查重没过能拿学位吗」就永远拿不到本科的 20%／30% 口径。
+    直接扫标题最稳，39k 条一次 30ms。
+    """
+    cands = [it for it in ITEMS
+             if not it.get("archive_only") and noun in str(it.get("title") or "")]
+    cands.sort(key=lambda it: (len(str(it.get("title") or "")),
+                               0 if it.get("dept") else 1))
+    return cands[:k]
+
+
+def _field_text(item: dict[str, Any], key: str) -> str:
+    """把 evidence 的字段路径（如 steps.5 / answer / fee）还原成条目里的原文。"""
+    cur: Any = item
+    for part in str(key or "").split("."):
+        if isinstance(cur, list):
+            try:
+                cur = cur[int(part)]
+            except (ValueError, IndexError):
+                return ""
+        elif isinstance(cur, dict):
+            cur = cur.get(part)
+        else:
+            return ""
+    if isinstance(cur, dict):
+        cur = cur.get("what") or cur.get("name") or ""
+    return str(cur or "").strip()
+
+
+def _expand_quote(item: dict[str, Any], key: str, quote: str) -> str:
+    """引文被截断时，用条目字段原文补全。
+
+    实测：本科毕业论文流程那条的引文只存了「论文查重超过20%」八个字，而
+    「查重超过30%（法学专业超过35%）为不及格」「评定成绩不及格者作结业处理」
+    都在同一个字段里——引文太短又被长度过滤掉，问「查重没过能拿学位吗」
+    就永远拿不到这两句。
+    """
+    field = _field_text(item, key)
+    q_n = re.sub(r"\s+", "", quote or "")
+    f_n = re.sub(r"\s+", "", field)
+    if len(f_n) > len(q_n) + 8 and q_n[:10] and q_n[:10] in f_n:
+        return field[:320]
+    return quote
+
+
+def _entity_rows(question: str,
+                 skip: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """按事名补检：每个事名，取本名就讲这件事的前 3 个条目，每条目留 2 条官方引文。
+
+    关键是「按条目取」而不是「按引文重合取」：住宿协议那条原文是
+    「安排后原则上不再变动……须向甲方提出申请，根据实际情况办理调宿」，
+    里面根本没有「宿舍」二字，只按字面重合排序，它永远排在
+    「校园网已覆盖除学生宿舍外的大部分区域」这种句子后面。
     """
     out: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    opaque = re.compile(r"^[0-9a-f]{6,}$|^[a-z]+-[0-9a-f]{6,}$")
-    for p in premises:
-        qb = {g for g in bigrams(norm(p)) if g not in _TOPIC_STOP}
+    seen = set(skip)
+    for n in _subject_terms(question):
+        items = 0
         rows: dict[str, dict[str, Any]] = {}
-        for it, sc in rank(p)[:8]:
+        for it, _s in bm25_hits(n, k=10):
+            rows.setdefault(it["id"], it)
+        for it, _s in meta_hits(n, k=6):
+            rows.setdefault(it["id"], it)
+        # 标题里就写着这件事的条目先来：「换宿舍 / 调宿」排在「校园网覆盖宿舍」前面，
+        # 否则前 3 个名额被泛泛提到宿舍的条目占掉，真正的条款又进不来。
+        # 再并上「标题扫描」的结果：FTS 里搜不到的结构化条目（本科毕业论文流程）靠它兜住。
+        by_title = {it["id"]: it for it in _title_hits(n, k=3)}
+        merged: dict[str, dict[str, Any]] = dict(by_title)
+        merged.update(rows)
+        ordered = sorted(merged.values(),
+                         key=lambda x: 0 if n in str(x.get("title") or "") else 1)
+        for it in ordered:
+            if items >= 6:
+                break
+            title = str(it.get("title") or "")
+            if n not in title and not it.get("dept"):
+                continue
+            quotes: list[tuple[int, str, str, dict[str, str]]] = []
+            for _k, v in (it.get("evidence") or {}).items():
+                for one in _ev_items(v):
+                    quote = _expand_quote(it, _k, str((one or {}).get("quote") or "").strip())
+                    if len(_mn(quote)) < 12:
+                        continue
+                    meta = src_label(str((one or {}).get("src") or ""))
+                    lab = str(meta.get("label") or "")
+                    if not lab or re.match(r"^[0-9a-f]{6,}$", lab.strip()):
+                        continue
+                    quotes.append((len(_mn(quote)), quote, lab, meta))
+            if not quotes:
+                continue
+            quotes.sort(key=lambda x: -x[0])
+            added = 0
+            for _ln, quote, lab, meta in quotes:
+                key = norm(quote)[:80]
+                if key in seen:
+                    continue
+                seen.add(key)
+                m = _PAGE_RE.search(quote)
+                out.append({"doc": lab, "url": meta.get("url") or "",
+                            "page": int(m.group(1)) if m else None,
+                            "quote": quote, "cover": 3, "query": n,
+                            "kind": "experience" if any(
+                                w in lab for w in _EXPERIENCE_WORDS) else "official",
+                            "scope": _audience_scope(lab, question),
+                            "subject": n,
+                            "title_hit": n in title,
+                            "item_id": it["id"]})
+                added += 1
+                if added >= 2:
+                    break
+            if added:
+                items += 1
+    return out
+
+
+def _item_candidates(item: dict[str, Any] | None,
+                     warnings: list[str] | None = None) -> list[dict[str, Any]]:
+    """把「本题对象」这条目的原文/材料/步骤变成候选证据。
+
+    v1.0.1：综合层原来只吃问句，命中的条目（比如家庭经济困难认定）根本没进证据池——
+    92 分被 `<97` 判进综合层后，条目的 materials/steps 全丢了，答案只能说「未写具体申请材料清单」。
+    这里把它们按 cands 的形状塞进去，并打 `from_item=True` 让 `_synth_pick` 无条件前插。
+
+    `verbatim=False` 的（materials/steps 这种「条目整理」而非逐字原文）必须同时在 warnings
+    里说一句，免得生成器把它们当原文照抄。
+    """
+    if not item:
+        return []
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def put(quote: str, lab: str, url: str, verbatim: bool) -> None:
+        q = quote.strip()
+        if not q:
+            return
+        key = norm(q)[:80]
+        if key in seen:
+            return
+        seen.add(key)
+        out.append({"doc": lab or str(item.get("title") or "官方原文"),
+                    "url": url or "", "page": None, "quote": q,
+                    "kind": "official", "scope": "", "query": "",
+                    "cover": 9, "item_id": item.get("id"),
+                    "from_item": True, "must": True, "verbatim": verbatim})
+
+    ev = item.get("evidence") or {}
+    for _k, v in ev.items():
+        for one in _ev_items(v):
+            q = str((one or {}).get("quote") or "")
+            meta = src_label(str((one or {}).get("src") or ""))
+            put(q, str(meta.get("label") or ""), str(meta.get("url") or ""), True)
+    non_verbatim = 0
+    for m in (item.get("materials") or []):
+        name = m.get("name") if isinstance(m, dict) else m
+        name = str(name or "").strip()
+        if name:
+            put(f"材料：{name}", str(item.get("title") or ""), "", False)
+            non_verbatim += 1
+    for s in (item.get("steps") or []):
+        what = s.get("what") if isinstance(s, dict) else s
+        what = str(what or "").strip()
+        if what:
+            put(f"步骤：{what}", str(item.get("title") or ""), "", False)
+            non_verbatim += 1
+    if non_verbatim and warnings is not None:
+        warnings.append("以下内容来自条目整理，非逐字原文（材料/步骤）")
+    return out[:12]
+
+
+def _synth_candidates(queries: list[str], premises: list[str],
+                      cap: int = 48, question: str = "",
+                      item: dict[str, Any] | None = None,
+                      warnings: list[str] | None = None) -> list[dict[str, Any]]:
+    """逐条检索短句把候选引文摊开（规则＋BM25＋名目三路），不做取舍，交给模型挑。
+
+    单用整句检索会漏：长句里「班长」「转专业」占满权重，「综测/继承」被稀释，
+    三段条文（在原专业排名／排名换算公式／社会活动加分）一条都进不了池；
+    拆成「转专业 综合测评 排名」「班长 学生干部 社会活动加分」后全部前 12 名命中。
+
+    v1.0.1：`item` 是本题对象，它的原文/材料/步骤前插进候选（见 `_item_candidates`）。
+    """
+    out: list[dict[str, Any]] = []
+    pool: dict[str, dict[str, Any]] = {}
+    opaque = re.compile(r"^[0-9a-f]{6,}$|^[a-z]+-[0-9a-f]{6,}$")
+    terms: list[str] = list(dict.fromkeys(queries)) or list(premises)
+    for t in terms:
+        qb = {g for g in bigrams(norm(t)) if g not in _TOPIC_STOP}
+        rows: dict[str, dict[str, Any]] = {}
+        for it, sc in rank(t)[:8]:
             if sc >= 40:
                 rows.setdefault(it["id"], it)
-        for it, _sc in bm25_hits(p, k=30):
+        for it, _sc in bm25_hits(t, k=40):
             rows.setdefault(it["id"], it)
-        for it, _sc in meta_hits(p, k=10):
+        for it, _sc in meta_hits(t, k=10):
             rows.setdefault(it["id"], it)
-        local: list[dict[str, Any]] = []
         for it in rows.values():
             for _k, v in (it.get("evidence") or {}).items():
                 for one in _ev_items(v):
@@ -6827,44 +7513,484 @@ def _synth_candidates(premises: list[str], cap: int = 40) -> list[dict[str, Any]
                     lab = str(meta.get("label") or "")
                     if opaque.match(lab.strip()):
                         continue
-                    if len(qb & bigrams(norm(q))) < 1:
+                    # 人群不符不再整条丢，标上「仅适用：研究生」，让答案能带上并写明对象
+                    scope = _audience_scope(lab, question)
+                    cover = len(qb & bigrams(norm(q)))
+                    if cover < 1:
                         continue
                     key = norm(q)[:80]
-                    if key in seen:
+                    if key in pool:
+                        pool[key]["hits"].add(t)
+                        pool[key]["cover"] = max(pool[key]["cover"], cover)
                         continue
-                    seen.add(key)
                     m = _PAGE_RE.search(q)
-                    local.append({"doc": lab or "官方原文",
-                                  "url": meta.get("url") or "",
-                                  "page": int(m.group(1)) if m else None,
-                                  "quote": q, "premise": p,
-                                  "cover": len(qb & bigrams(norm(q)))})
-                    if len(local) >= 14:
-                        break
-                if len(local) >= 14:
-                    break
-            if len(local) >= 14:
+                    pool[key] = {"doc": lab or "官方原文",
+                                 "url": meta.get("url") or "",
+                                 "page": int(m.group(1)) if m else None,
+                                 "quote": q, "cover": cover, "query": t,
+                                 "kind": "experience" if any(w in lab for w in _EXPERIENCE_WORDS) else "official",
+                                 "scope": scope, "hits": {t},
+                                 "item_id": it["id"]}
+    cands = list(pool.values())
+    # 至少被两条短句捞到、或与某条短句重合 ≥2 个词，才算「相关」；
+    # 只被一条短句的单个二字组蹭到的，多半是「教师资格认定」这种同词不同事的文件。
+    strong = [c for c in cands if len(c["hits"]) >= 2 or int(c["cover"]) >= 2]
+    use = strong if len(strong) >= 6 else cands
+    use.sort(key=lambda c: (-len(c["hits"]), -int(c.get("tcover") or 0),
+                            -int(c["cover"])))
+    keep = use[:cap]
+    # 节检索腿（M2）：向量库里有 11,531 段节向量，命中的是「这一节的全文」——
+    # 直接摆在候选最前面，让 pick 模型先看见「整条是怎么写的」，再去看零散引文。
+    # 只放前部、不标 must：错节不该被强制当答案，看不看由模型判断（见 C6）。
+    #
+    # v5：复合题按**前提**取节。整句问句只取一次节，第一个子问题拿到节证据、
+    # 第二个没有——这是复合题答成 mixed 的来源之一。开关打开时按每条检索短句各取一节，
+    # 最多 4 条前提、总数 ≤4（整节原文很占菜单），`premise` 字段贯穿到证据与菜单。
+    terms = list(dict.fromkeys(queries or premises))
+    if SECTIONS_ADDITIVE:
+        # v5.1：节证据完全退出候选竞争——不调用 _section_candidates，keep 里一条节都没有。
+        # 它只在 synthesize_answer 里做「某条前提完全没证据」的保底（最多 1 条）。
+        # 理由见开关处的注释：v5 的 q5 回归就是整节原文在候选池里抢掉了短而准的条款。
+        pass
+    elif SECTIONS_REWRITE and terms:
+        # v7：改写变体 → 节证据。对前 3 条措辞不同的检索短句各取一次节，
+        # 按 (slug,no) 去重、最多 2 条。门是 REWRITE 而不是 FTS：
+        # 四臂里要能把「只加改写（B）」和「改写+FTS（C）」分开量。
+        sec_cands, seen = [], set()
+        for t in terms[:3]:
+            for c in _section_candidates(t, k=2):
+                key = ((c.get("sec") or {}).get("slug"), (c.get("sec") or {}).get("no"))
+                if key in seen:
+                    continue
+                seen.add(key)
+                sec_cands.append(c)
+            if len(sec_cands) >= 2:
                 break
-        # 每条前提都留名额：否则第一条前提就能把候选占满，
-        # 后面「推免综合成绩怎么算」一条候选都轮不到。按前提词重合度排序。
-        local.sort(key=lambda c: -int(c.get("cover") or 0))
-        out.extend(local[:14])
-        if len(out) >= cap:
-            return out[:cap]
+        if sec_cands:
+            keep = sec_cands + keep[:max(0, cap - len(sec_cands))]
+    elif SECTIONS_PER_PREMISE and terms:
+        sec_cands, seen = [], set()
+        for t in terms[:4]:
+            for c in _section_candidates(t, k=2):
+                key = ((c.get("sec") or {}).get("slug"), (c.get("sec") or {}).get("no"))
+                if key in seen:
+                    continue
+                seen.add(key)
+                c = dict(c)
+                c["premise"] = t
+                c["query"] = t
+                sec_cands.append(c)
+            if len(sec_cands) >= 4:
+                break
+        if sec_cands:
+            keep = sec_cands + keep[:max(0, cap - len(sec_cands))]
+    else:
+        sec_cands = _section_candidates(question or (queries[0] if queries else ""))
+        if sec_cands:
+            keep = sec_cands + keep[:max(0, cap - len(sec_cands))]
+    keep.extend(_anchor_clauses(question, pool, keep))
+    # 按事名补检：只补「和问句里那件事同名」的引文。
+    # 交错取（每件事各取几条）很重要：第一版按事名顺序取前 12 条，全是「转专业」的，
+    # 「宿舍」那 20 多条一条没进来，等于白补。
+    if question:
+        extra = _entity_rows(question, {norm(c.get("quote") or "")[:80]: c for c in keep})
+        extra.sort(key=lambda r: (r.get("kind") == "experience", not r.get("title_hit")))
+        keep.extend(extra[:20])
+    for c in keep:
+        c.pop("hits", None)
+        out.append(c)
+    # v1.0.1：本题对象的原文/材料/步骤前插进候选池——模型能在菜单里看到、可以主动挑；
+    # 同时 `_synth_pick` 会在返回前再把 `from_item` 无条件前插一次（它按 query 兜底，
+    # 而 item 候选的 query 是空串，永远对不上，只靠 must 会被 12 条上限挤掉）。
+    item_cands = _item_candidates(item, warnings)
+    if item_cands:
+        seen_keys = {norm(c.get("quote") or "")[:80] for c in item_cands}
+        out = item_cands + [c for c in out
+                            if norm(c.get("quote") or "")[:80] not in seen_keys]
     return out
+
+
+# M2 的总开关：`SECTIONS_EVIDENCE=0` 时整条节检索腿不执行。
+# M1（证据挂节号、菜单显示条号）不受它影响——那只是元数据，不改答案。
+SECTIONS_EVIDENCE = str(os.getenv("SECTIONS_EVIDENCE", "1")).strip().lower() not in (
+    "0", "false", "off", "no")
+# 备用闸门（默认关）：只对「问句明说第X章/条」的题开放节检索腿。
+# 任务书 §4.2 留的后手——万一服务型 FAQ 被节候选带浅了，把它打开就退回「只服务章级题」。
+# 10 条回归实测没有到「明显变差」的程度（见报告），所以默认仍是全量开放。
+SECTIONS_CHAP_ONLY = str(os.getenv("SECTIONS_EVIDENCE_CHAP_ONLY", "0")).strip().lower() in (
+    "1", "true", "on", "yes")
+# v5：按前提取节。复合题拆出来的每条子问题（检索短句）各取一节，而不是拿整句问句只取一次。
+# 默认关——任务书 §4 的口径是先量增益，量到「+≥3 条子问题覆盖」才翻默认。
+SECTIONS_PER_PREMISE = str(os.getenv("SECTIONS_PER_PREMISE", "0")).strip().lower() in (
+    "1", "true", "on", "yes")
+# v5.1：节证据「只做保底、不抢名额」。默认 0，与 v3 逐字节一致。
+# 打开时：_synth_candidates 完全不取节（退出候选竞争），只由 synthesize_answer 在
+# 「一条 sec_text 都没有」时，为「完全没有证据的那条前提」补 1 条——不替换任何已有短引文。
+# 动因：v5 实测 q5 回归——A 的证据里有 7f5ece56 第二十三条（中途退课、学费不退），
+# B/C 把这条挤掉了，答成「证据里没有退费规则」。整节原文进候选池就是抢名额。
+SECTIONS_ADDITIVE = str(os.getenv("SECTIONS_EVIDENCE_ADDITIVE", "0")).strip().lower() in (
+    "1", "true", "on", "yes")
+# v6：节级 FTS + 向量两路 RRF。v7 起默认 **0**（先做四臂消融，答案层不涨就不翻）。
+SECTIONS_FTS = str(os.getenv("SECTIONS_FTS", "0")).strip().lower() not in (
+    "0", "false", "off", "no")
+# v7：查询改写开关。0 = 只用每条前提的**单条**官方短句（v5.1 行为）；
+# 1 = 用 2～3 个措辞变体（「退课/终止学习」「退费/不予退还」各一版）。
+# 默认 0：改写会让模型多输出、检索多跑两轮，先把「有没有答案层增益」量出来再谈。
+SECTIONS_REWRITE = str(os.getenv("SECTIONS_REWRITE", "0")).strip().lower() in (
+    "1", "true", "on", "yes")
+
+
+def _sec_fused_hits(text: str, hits: list[dict[str, Any]],
+                    limit: int = 6) -> list[dict[str, Any]]:
+    """v6：向量腿 + 节级 FTS 用 `rrf_fuse` 合成一路，返回按 RRF 排好的 hit 列表。
+
+    为什么要 FTS：向量余弦对「同义/换词」不敏感——`微专业 退费 学分` 在节向量里
+    第二十三条连前 3 都进不去，而在节级 FTS 里它是**第 1 名**（bm25 -16.7）。
+    两路名次融合（RRF 只认名次、不认量纲）比单看余弦稳。
+
+    FTS 库不存在/导入失败/查询报错 → 原样返回向量 hits（绝不拖垮综合层）。
+    """
+    try:
+        from tools import section_fts
+    except Exception:  # noqa: BLE001
+        return hits
+    try:
+        fts = section_fts.search(text, k=6)
+    except Exception:  # noqa: BLE001
+        return hits
+    if not fts:
+        return hits
+    vmap: dict[str, dict[str, Any]] = {}
+    for h in hits:
+        # v7：key 带行号（`slug#no#L{start}`）——同一份文档的同一个 `no` 可能有好几节，
+        # 只按 `slug#no` 配对会把向量命中错配到别一节上。
+        lines = h.get("lines") or (h.get("section") or {}).get("lines") or []
+        st = int(lines[0]) if lines else 0
+        k = f"{h.get('doc') or ''}#{str((h.get('section') or {}).get('no') or '')}#L{st}"
+        vmap.setdefault(k, h)
+    vec = [(kk, float(h.get("score") or 0)) for kk, h in vmap.items()]
+    fused = rrf_fuse([("fts", fts), ("vec", vec)], limit=limit)
+    out: list[dict[str, Any]] = []
+    for key, _sc, _meta in fused:
+        h = vmap.get(key)
+        if h is not None:
+            out.append(h)
+            continue
+        g = None
+        try:
+            g = section_fts.get(key)
+        except Exception:  # noqa: BLE001
+            g = None
+        if not g:
+            continue
+        # FTS 独有命中：补一个与向量 hit 同形状的壳，下游只认 doc/section/lines/url
+        out.append({"doc": g["slug"], "section": {"no": g["no"], "heading": g["heading"]},
+                    "lines": g["lines"], "url": "", "page": None, "title": "",
+                    "score": 0.0})
+    return out
+
+
+def _section_candidates(text: str, k: int = 3) -> list[dict[str, Any]]:
+    """节检索腿：用现有节向量取 top 节，把**这一节全文**当候选交出去。
+
+    与另外三腿（规则 rank／BM25／名目）的区别：那三腿拿回来的是一句句被切碎的引文，
+    模型得自己拼「这一条到底列了几项」；节向量拿回来的是整节原文，模型直接看到全貌，
+    「第X条共N项、未列Y」这种答案才有材料。
+
+    五条边界：
+      · 开关关掉、向量库/节索引不在、检索报错，一律返回 []——这三层都不许拖垮综合层；
+      · 一节至少 20 字才当候选；超长且没有条号（`no="正文"` 那种整篇）直接丢；
+      · **问句点了条/章号时只留点名的节**（多取 6 个再筛）：v2 实测章级题里第二个候选
+        6/10 是非期望节（`—`／`卷首`／`制定依据`）、4/10 还进了 evidence，等于给模型
+        递错材料。筛完为空时退回未过滤的头名一条——宁可有噪声，也不让保底落空；
+      · 章级节挂 `outline`（本章各条的一行结构），菜单里排在正文前面；
+      · **不标 must、不进排序**：错节不该被强制当答案，看不看由模型判断。
+    `anchor` 标「问句里原样出现了这个条/章号」——菜单据此加【点名节】前缀。
+    """
+    if not SECTIONS_EVIDENCE or not text:
+        return []
+    try:
+        import sections_index
+        import vector_index
+    except Exception:  # noqa: BLE001
+        return []
+    if SECTIONS_CHAP_ONLY and not sections_index.CHAP_Q.search(text):
+        return []
+    # v5 §D：点名专用逻辑（按条号过滤、本章结构）退出主路径，只在 CHAP_ONLY=1 时启用。
+    # 自然问句默认走「按前提取节」，不该因为句子里碰巧出现「第三条」就被筛成一条。
+    wanted = ({m.group(0) for m in sections_index.CHAP_Q.finditer(text)}
+              if SECTIONS_CHAP_ONLY else set())
+    try:
+        hits = vector_index.search(text, k=6 if wanted else k, kind="section")
+    except Exception:  # noqa: BLE001
+        return []
+    # v6：两路融合（节级 FTS + 节向量）。FTS 不可用就原样走向量，行为与 v3 一致。
+    if SECTIONS_FTS:
+        hits = _sec_fused_hits(text, hits, limit=6)
+    rows: list[tuple[dict[str, Any], dict[str, Any], str]] = []
+    for h in hits:
+        sec = dict(h.get("section") or {})
+        slug = str(h.get("doc") or "")
+        # `sec` 与 `_attach_sections` 挂出来的形状保持一致（slug/no/heading/lines），
+        # 下游只认一个形状，不必区分「来自节向量」还是「来自条目反查」。
+        sec["slug"] = slug
+        lines = h.get("lines") or sec.get("lines") or []
+        txt = sections_index.section_text(slug, lines, 1000) if lines else ""
+        if len(txt) < 20:
+            continue
+        no = str(sec.get("no") or "")
+        # 「正文」这种节不是一节，是整篇：库里有些文件没切出小标题，整篇被当成一节
+        # （实测 1000+ 字、`no="正文"`）。它既占名额，又让菜单多出一大段文书抄本。
+        if len(txt) >= 600 and not sections_index.SEC_NO.match(no):
+            continue
+        rows.append((h, sec, txt))
+    if wanted:
+        picked = [r for r in rows
+                  if any(str(r[1].get("no") or "") == w
+                         or str(r[1].get("no") or "").startswith(w + "·") for w in wanted)]
+        if not picked and rows:
+            picked = rows[:1]
+    else:
+        picked = rows
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    seen_txt: set[str] = set()
+    for h, sec, txt in picked:
+        slug = str(sec.get("slug") or "")
+        no = str(sec.get("no") or "")
+        key = (slug, no)
+        if key in seen:
+            continue
+        seen.add(key)
+        # 同一部办法常在库里有多份（PDF 版 + 网页版），节文本一字不差：
+        # 两条一样的候选只占名额，不如让给下一个不同的节。
+        if txt[:80] in seen_txt:
+            continue
+        seen_txt.add(txt[:80])
+        # 出处名取文档名，不取 chunk 的「文档 · 节标题」——后者会让条号在菜单里出现两次
+        # （「《转专业管理办法》·第七条 · 第七条 存在以下情况…」）。
+        lab = str(src_label(slug).get("label") or "").strip()
+        if not lab or re.match(r"^[0-9a-f]{6,}$", lab):
+            lab = str(h.get("title") or slug).split(" · ")[0]
+        lines = h.get("lines") or sec.get("lines") or []
+        out.append({
+            "doc": lab,
+            "url": h.get("url") or "",
+            "page": h.get("page"),
+            "quote": txt,
+            "sec": sec,
+            "kind": "official",
+            "cover": 2,
+            "query": "（节检索）",
+            "sec_text": True,
+            "anchor": bool(no and no in text),
+            # 章/节级的节：把「本章有哪几条」摊成一行，模型不用从几百字里自己数。
+            # v5 §D：本章结构属「点名专用逻辑」，只在 CHAP_ONLY=1 时给。
+            "outline": (sections_index.section_outline(slug, lines)
+                        if SECTIONS_CHAP_ONLY and re.search(r"[章节编篇]$", no) else ""),
+            # 研究生/教师专用条款要在菜单里带【仅适用】，不能当成本科生的规定
+            "scope": _audience_scope(lab, text),
+            "truncated": "已截取" in txt,
+        })
+        if len(out) >= 2:
+            break
+    return out
+
+
+_CLAUSE_FRAME = re.compile(
+    r"(申请条件|基本条件|条件之一|以下条件|以下基本条件|具备下列|符合下列|须具备|应具备"
+    r"|资格条件|下列情形|有下列情形|不得申请|不予受理|申请资格)")
+
+
+def _clause_ok(quote: str, term: str = "") -> bool:
+    """这条引文够不够当「资格条款」用。
+
+    实测（2026-11-10 第二批 30 题）两次踩坑：
+    ① 锚点取《资助资金管理办法》时，items 里 evidence 的第一条是
+       「（二）热爱社会主义祖国，拥护中国共产党的领导；」——枚举被拆成单条，
+       于是 must 把一句碎条当资格条款硬塞进每一道奖学金题；
+    ② 放宽到「含条件/资格二字」后，抓回「转专业学生应在规定时间内完成学分认定」这种
+       只是碰巧带「规定」的流程句。
+    所以要求它真的像一条**条件条款**：有「申请条件/基本条件/下列情形之一」这类框，
+    够长，且不是「（一）xxx」这样的碎片。
+    """
+    q = (quote or "").strip()
+    if len(_mn(q)) < 30:
+        return False
+    if _ENUM_ITEM.match(q):
+        return False
+    return bool(_CLAUSE_FRAME.search(q))
+
+
+_CLAUSE_CACHE: dict[int, dict[str, Any] | None] = {}
+
+
+def _clause_for(idx: int, q_pat: str, c_pat: str, t_pat: str, ask: str,
+                question: str) -> dict[str, Any] | None:
+    """按「事」把条款找出来：先扫标题里带这件事的文件（准、快、0.03s），再退回检索。
+
+    为什么不用 rank()：实测「转专业 申请条件」「奖学金 申请条件」的前 8 名几乎全是
+    pt-* 碎片（条款被切成一「（二）热爱社会主义祖国…」一条），而且 rank() 一次 1.8s。
+    按标题扫全库反而更准：文件标题写着「XX 管理办法」的，才是条款所在的地方。
+    """
+    if idx in _CLAUSE_CACHE:
+        cached = _CLAUSE_CACHE[idx]
+        if cached and not _evidence_allowed(str(cached.get("doc") or ""), question):
+            return None
+        return cached
+    best: dict[str, Any] | None = None
+    best_score = -1.0
+    c_re = re.compile(c_pat)
+    for it in ITEMS:
+        title = str(it.get("title") or "")
+        if not re.search(t_pat, title):
+            continue
+        if not re.search(r"(办法|规定|条件|细则|实施|评审|评定|管理|标准)", title):
+            continue
+        for _k, v in (it.get("evidence") or {}).items():
+            for one in _ev_items(v):
+                quote = _expand_quote(it, _k, str((one or {}).get("quote") or "").strip())
+                if not _clause_ok(quote) or not c_re.search(quote):
+                    continue
+                meta = src_label(str((one or {}).get("src") or ""))
+                lab = str(meta.get("label") or "")
+                # 人群不对的条款（研究生的转专业/硕士英语免修）在打分前就剔掉：
+                # 先选后滤会把正确条款挤掉，最后一条都留不下。
+                if not _evidence_allowed(lab, question):
+                    continue
+                # 「推荐免试攻读硕士学位研究生」里的「硕士」说的是去向，不是问的人是谁：
+                # 这层人群判断必须把它剔掉，否则每一道保研题的资格条款都会被自己砍掉。
+                _aq = (quote.replace("推荐免试攻读硕士学位研究生", "")
+                       .replace("免试攻读硕士学位研究生", "")
+                       .replace("推荐优秀应届本科毕业生免试", ""))
+                if any(w in _aq for w in ("硕士", "博士", "研究生", "教师", "教职工")) \
+                        and not any(w in question for w in ("硕士", "博士", "研究生", "教师", "教职工")):
+                    continue
+                score = ((3 if (_closed_enum(quote) or {}).get("closed") else 0)
+                         + min(len(_mn(quote)), 300) / 150)
+                if score > best_score:
+                    best_score = score
+                    best = {"quote": quote, "doc": lab or "官方原文",
+                            "url": meta.get("url") or "",
+                            "page": (lambda m: int(m.group(1)) if m else None)(
+                                _PAGE_RE.search(quote)),
+                            "cover": 9, "query": ask, "kind": "official",
+                            "must": True, "item_id": it["id"]}
+    _CLAUSE_CACHE[idx] = best
+    if best and not _evidence_allowed(str(best.get("doc") or ""), question):
+        return None
+    return best
+
+
+def _anchor_clauses(question: str, pool: dict[str, dict[str, Any]],
+                    keep: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """按「事」把资格条款单独取一次，保底留在候选里并标 must。
+
+    实测（2026-11-10）：`_synth_candidates` 池子 139 条、cap 48，按「命中短句数」排序后，
+    《推免办法》第十一条只能被一条短句捞到，永远排在 48 名以外——
+    于是「挂科还能保研吗」「四六级没过能保研吗」都拿不到资格条款，只能答「证据里没有写」。
+    条款是「要核实什么」的骨架，不该和零散句子抢名额，所以单独留座。
+
+    已经在 cap 里的条款也要标 must：模型挑证据是按字面重合挑的，条款里没有问句那个词时
+    它天然不会挑，光「在候选池里」不够，得强制带进证据。
+    """
+    index = {norm(c.get("quote") or "")[:80]: c for c in keep}
+    add: list[dict[str, Any]] = []
+    q = question or ""
+    for idx, (q_pat, c_pat, t_pat, ask) in enumerate(_ELIG_ANCHORS):
+        if not re.search(q_pat, q):
+            continue
+        picked = _clause_for(idx, q_pat, c_pat, t_pat, ask, q)
+        if not picked:
+            continue
+        key = norm(picked["quote"])[:80]
+        if key in index:                      # 已在 cap 里：标 must 就够
+            index[key]["must"] = True
+            continue
+        if key in pool:                       # 池里有、被 cap 挤掉：捞回来
+            cand = pool[key]
+            cand.pop("hits", None)
+            cand["must"] = True
+            add.append(cand)
+            index[key] = cand
+            continue
+        add.append(dict(picked))              # 池里没有：直接构造
+        index[key] = picked
+    return add[:4]
 
 
 _SYNTH_PICK_PROMPT = (
     "下面有几条要核实的前提，和一组候选引文。给每条前提挑出**真正能支撑它**的引文编号，"
     "每条 1～3 个；一条都没有就留空数组。只按字面证据挑，不要脑补。\n"
+    "引文讲的必须是同一类事：问「体育课免修」就不要挑讲「体测/体质健康测试」的引文，"
+    "问「体测」也不挑「体育课免修」；相邻概念不是同一件事。\n"
+    "问到「X 能不能/是否要求 Y」时，X 的**资格条件条款**要挑上——哪怕这条里一个字都没提 Y："
+    "条款里没有列 Y，本身就是答案（带【穷尽枚举】标注的条款尤其要挑）。\n"
     '只输出 JSON：{{"picks": {{"0": [1, 5], "1": [3]}}}}，键是前提序号（从 0 起）。'
 )
 
 
-def _synth_pick(premises: list[str], cands: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """让模型看着候选挑证据；挑不出来就退回前 8 条。"""
-    menu = "\n".join(f"[{i}] {c['doc']}：{c['quote'].replace(chr(10), ' ')[:160]}"
-                     for i, c in enumerate(cands, 1))
+def _sec_doc_label(e: dict[str, Any]) -> str:
+    """证据出处的显示名：文档名 + 「·第七条」；问句点名的节加【点名节】，截断的加【节选】。
+
+    M1 的第二半：只改菜单上那一行的写法，`doc` 字段一个字不动——引用编号、出处链接、
+    `_strip_unsupported` 的主体判断都还认原来的 `doc`。`no` 为空或「—」时不加，
+    否则菜单会变成「《XX办法》·—」这种噪声。
+    """
+    lab = str(e.get("doc") or "官方原文")
+    no = str((e.get("sec") or {}).get("no") or "")
+    if no and no != "—":
+        lab = f"{lab}·{no}"
+    if e.get("truncated"):
+        lab = f"{lab}【节选】"
+    if e.get("anchor"):
+        lab = f"【点名节】{lab}"
+    # v5：按前提取来的节，标明它服务哪条前提。任务书写「[前提 2]」用序号，
+    # 但菜单里没有「第 2 条前提」的对照表，模型只能猜；写检索短句它能直接对上。
+    pre = str(e.get("premise") or "").strip()
+    if pre:
+        lab = f"[前提：{pre[:12]}] {lab}"
+    return lab
+
+
+def _sec_body(e: dict[str, Any], cut: int) -> str:
+    """菜单里的正文：节检索的候选保留 `\\n`（条界），其余仍压成一行并截断。
+
+    节候选的换行是**信息**——「第七条」和它的（一）（二）各占一行，穷举几项一眼能数；
+    压成一行就退回 v2 那团 316 字的面团，模型又开始自己猜。
+    章级节前面再插一行【本章结构】，这是 q1 漂移的根因修复。
+    """
+    body = str(e.get("quote") or "")
+    if not e.get("sec_text"):
+        body = body.replace(chr(10), " ")
+    body = body[:cut] + ("…" if len(body) > cut else "")
+    outline = str(e.get("outline") or "")
+    if outline:
+        return f"【本章结构】{outline}。\n{body}"
+    return body
+
+
+def _pick_menu(cands: list[dict[str, Any]]) -> str:
+    rows = []
+    for i, c in enumerate(cands, 1):
+        note = _enum_note(c)
+        # 节检索腿的候选就是「这一节全文」：照 150 字截，等于把后半截条款（常常正是
+        # 答案所在的那一项）藏起来，pick 模型只会说「候选里没写」。这类候选放宽到 600 字，
+        # 其余候选一律不改——菜单长度是 pick 的注意力预算，只有节候选值得多花。
+        cut = 600 if c.get("sec_text") else 150
+        rows.append(f"[{i}] {_sec_doc_label(c)}：{_sec_body(c, cut)}"
+                    + (f" {note}" if note else ""))
+    return "\n".join(rows)
+
+
+def _synth_pick(premises: list[str], cands: list[dict[str, Any]],
+                queries: list[str] | None = None) -> list[dict[str, Any]]:
+    """让模型看着候选挑证据；挑不出来就退回前 8 条。
+
+    菜单不再把引文硬截到 160 字：条款的后半截（第（四）（五）项）才是「未列」的对照面，
+    截掉就等于把答案截掉了。截断处补一个枚举摘要，让模型看得见「共几项、列了哪些」。
+    """
+    menu = _pick_menu(cands)
     ask = "\n".join(f"{i}. {p}" for i, p in enumerate(premises))
     try:
         raw = ds_chat([{"role": "system", "content": _SYNTH_PICK_PROMPT},
@@ -6886,77 +8012,804 @@ def _synth_pick(premises: list[str], cands: list[dict[str, Any]]) -> list[dict[s
                 if 0 <= idx < len(cands) and idx not in seen:
                     seen.add(idx)
                     out.append(cands[idx])
-    # 模型挑漏时兜底：每条前提至少留 2 条（按前提词重合度取），
-    # 否则「连接前提」那条（按 60 分计入平均分/GPA）容易被整条漏掉，结论就推不出来。
-    for i, p in enumerate(premises):
-        have = [c for c in out if c.get("premise") == p]
-        if len(have) >= 2:
+    # 模型挑漏时兜底：每个检索短句至少留 1 条，否则「推免资格条件」这种
+    # 单独一类证据会被整块漏掉，结论就退成「证据里没有写」。
+    # 每条前提也至少留 1 条：前提是「要核实什么」，它对应的候选按键词重合度排过，
+    # 头名往往就是连接前提（「免修按 60 分计入平均分和 GPA」这种）。
+    for p in premises:
+        if any(c.get("query") == p for c in out):
             continue
         for idx, c in enumerate(cands):
-            if len(have) >= 2 or len(out) >= 12:
+            if c.get("query") == p and idx not in seen:
+                seen.add(idx)
+                out.append(c)
                 break
-            if c.get("premise") != p or idx in seen:
+    if queries:
+        for q in queries:
+            if any(c.get("query") == q for c in out):
                 continue
+            for idx, c in enumerate(cands):
+                if c.get("query") == q and idx not in seen:
+                    seen.add(idx)
+                    out.append(c)
+                    break
+    if len(out) < 6:
+        for idx, c in enumerate(cands):
+            if len(out) >= 6:
+                break
+            if idx not in seen:
+                seen.add(idx)
+                out.append(c)
+    # 资格条款是骨架，不看模型脸色：模型漏挑（它按字面重合挑，条款里没有问句那个词时
+    # 天然不会挑）也强制带上，最多两条。少了它，合成器只能写「证据里没有写」。
+    for idx, c in enumerate(cands):
+        if len(out) >= 24:
+            break
+        if c.get("must") and idx not in seen:
             seen.add(idx)
             out.append(c)
-            have.append(c)
-    return out[:12] or cands[:8]
+    # v1.0.1：本题对象的候选**无条件前插**。上面两条兜底都按 `c["query"]` 找，
+    # item 候选的 query 是空串永远对不上；must 循环还有 24 条上限，前提一多照样被挤掉。
+    # 所以这里单独插一次，上限提到 24。
+    fb = [c for c in cands if c.get("from_item")]
+    if fb:
+        merged: list[dict[str, Any]] = []
+        got: set[str] = set()
+        for c in fb + out:
+            k = norm(c.get("quote") or "")[:80]
+            if k in got:
+                continue
+            got.add(k)
+            merged.append(c)
+        return merged[:24]
+    return out[:20] or cands[:8]
 
 
-def _synth_cite_check(text: str, total: int) -> list[str]:
-    """轻校验：引用编号必须在范围里，整句不能一句引用都不挂。"""
+def _strip_unsupported(conclusion: str, evidence: list[dict[str, Any]]) -> tuple[str, list[str]]:
+    """结论里点了某个动作（保研/转专业/毕业/奖学金），但证据里一句都没讲它，就剥掉这一句。
+
+    实测：作弊记过那题结论写「也不能保研」，同卡片分层里却写「证据里没有写……
+    对推免资格的影响」——结论比证据走得远，自相矛盾。宁可少说一句。
+    """
+    hay = " ".join(f"{e.get('quote', '')} {e.get('doc', '')}" for e in evidence).replace("保研", "推免")
+    keep: list[str] = []
+    dropped: list[str] = []
+    for clause in re.split(r"(?<=[；;。])", conclusion or ""):
+        cc = clause.replace("保研", "推免")
+        terms = [t for t in ("推免", "转专业", "毕业", "奖学金", "助学金") if t in cc]
+        if terms and not any(t in hay for t in terms):
+            dropped.extend(terms)
+            continue
+        keep.append(clause)
+    return "".join(keep).strip(), dropped
+
+
+_MONEY = re.compile(r"(\d{3,6})\s*元")
+_CONFLICT_SUBJECT = re.compile(r"(奖学金|助学金|补助|酬金|减免|学费|住宿费|赔偿|工本费|津贴|工资)")
+
+
+_PROC_Q = re.compile(r"怎么|怎样|如何|流程|步骤|要带|带什么|材料|多久|多长时间|在哪办|到哪办|怎么办")
+_STEP_FIELDS = ("steps", "materials")
+
+
+def _procedure_note(question: str) -> dict[str, Any] | None:
+    """问「怎么办」时，把条目的办理步骤整段补上（原文照录，不改写）。
+
+    推理层擅长跨条款下结论，不擅长搬步骤：「校园卡丢了怎么补办、多久能拿到」，
+    它答得出「要补办」，但「先挂失 → 艺术与传播大楼 1 层自助补卡机 → 20 元 → 当场出卡」
+    这条链在条目里摆着，它不会主动搬。这里直接把 steps 按顺序拼进去。
+    """
+    if not _PROC_Q.search(question or ""):
+        return None
+    qb = {g for g in bigrams(norm(question)) if g not in _TOPIC_STOP}
+    for n in _subject_terms(question):
+        for it in _title_hits(n, k=4):
+            steps = it.get("steps") or []
+            if len(steps) < 2:
+                continue
+            title = str(it.get("title") or "")
+            if len(qb & bigrams(norm(title + " " + str(it.get("answer") or "")))) < 2:
+                continue
+            parts = [_step_what(s) for s in steps if _step_what(s)]
+            if len(parts) < 2:
+                continue
+            extra = []
+            if it.get("fee"):
+                extra.append(f"费用：{it['fee']}")
+            if it.get("duration"):
+                extra.append(f"用时：{it['duration']}")
+            if it.get("location"):
+                extra.append(f"地点：{it['location']}")
+            body = "；".join(parts[:6]) + (("。" + "；".join(extra)) if extra else "")
+            return {"name": "办理步骤", "verdict": "direct",
+                    "text": f"{body}（据：{title[:20]}）"}
+    return None
+
+
+def _money_conflict(question: str, layers: list[dict[str, Any]],
+                    pool: list[dict[str, Any]] | None) -> str:
+    """同一件事出现两个不同金额时，给一句「口径不一致」提示。
+
+    实测：国家奖学金的金额，学校《本科生国家奖学金实施办法》写「每生每学年 8000 元」，
+    国家资助政策文件写「每生每年 10000 元」（2024 年提高后的口径）。只答一个数，
+    不管答哪个都是错。所以两个数都摆出来，并说明以当年通知为准。
+    """
+    subj = _CONFLICT_SUBJECT.search(question or "")
+    if not subj:
+        return ""
+    want = subj.group(1)
+    amounts: dict[str, str] = {}
+    srcs = [str(x.get("text") or "") for x in layers] + \
+           [str(e.get("quote") or "") for e in (pool or [])]
+    for txt in srcs:
+        if want not in txt:
+            continue
+        for m in _MONEY.finditer(txt):
+            val = m.group(1)
+            if int(val) < 100:
+                continue
+            amounts.setdefault(val, txt[:40])
+    if len(amounts) < 2:
+        return ""
+    got = sorted(amounts, key=lambda x: int(x))
+    if len(got) > 2:
+        return ""
+    a, b = got[0], got[1]
+    return (f"证据里{want}的金额有两个口径：{a} 元与 {b} 元（不同文件分别这样写），"
+            f"实际以学生工作部（处）当年通知为准。")
+
+
+_SCOPE_SENT = re.compile(
+    r"(本问只|本问仅|本问按|本问以|本条只|只裁决|只涉及|仅涉及|不涉及|未涉及|本问不|以上只|"
+    r"仅就本问|不在本问|不属于本问|超出本问|构成本问|仅作补充|不适用于)")
+_META_SENT = re.compile(
+    r"(证据|原文|条款|所给材料|材料|这些句子).{0,14}(没有|无|未|缺|只|仅|均)"
+    r"|^(缺|缺少|缺的是|未规定|未给出|未明确|无法|不能确定|不作)")
+
+
+def _norm_q(s: str) -> str:
+    return re.sub(r"[\s，。；、：（）()《》「」“”\"'·,.;:]", "", s or "")
+
+
+def _is_quote(s: str, evidence: list[dict[str, Any]] | None) -> bool:
+    """这句是不是原文照抄 —— 照抄不必挂 [n]，它不是「自己的断言」。"""
+    core = _norm_q(s)
+    if len(core) < 8 or not evidence:
+        return False
+    for e in evidence:
+        hay = _norm_q(e.get("quote") or "")
+        if not hay:
+            continue
+        if core in hay:
+            return True
+        # 抄了开头和结尾、中间省略：两头都在同一条引文里，也算照抄
+        if len(core) >= 20 and core[:18] in hay and core[-12:] in hay:
+            return True
+    return False
+
+
+def _synth_cite_check(text: str, total: int,
+                      evidence: list[dict[str, Any]] | None = None) -> list[str]:
+    """轻校验：引用编号必须在范围里，整句不能一句引用都不挂。
+
+    四类句子不查：划定范围（「…不在本问范围内」）、说证据本身的元陈述
+    （「证据中无条款规定…」）、原文照抄（照抄不是自己的断言）、降级占位句。
+    引文常写在句号后面（「…自行购买。[1][2]」），先把挂在句末的编号挪回句号前再切句。
+    """
     warn: list[str] = []
     for n in re.findall(r"\[(\d+)\]", text or ""):
         if not (1 <= int(n) <= total):
             warn.append(f"引用了不存在的证据 [{n}]")
-    for sent in re.split(r"[。；;！!？?\n]", text or ""):
+    moved = re.sub(r"([。；;])((?:\s*\[\d+\])+)", r"\2\1", text or "")
+    for sent in re.split(r"[。；;！!？?\n]", moved):
         s = sent.strip()
         if len(s) < 8 or s in ("资格", "成绩", "边界"):
+            continue
+        if _SCOPE_SENT.search(s) or _META_SENT.search(s) or "能逐项对照的条款" in s:
+            continue
+        if _is_quote(s, evidence):
             continue
         if "[" not in s and "证据里没有写" not in s and "（推断）" not in s:
             warn.append(f"这句没挂引用：{s[:24]}")
     return warn[:4]
 
 
-def synthesize_answer(text: str) -> dict[str, Any] | None:
-    """综合层：拆前提 → 跨文档取证 → 约束推理 → 轻校验。失败返回 None 由调用方回退。"""
+# —— 前提级裁决：四态 ——
+# 62% 的复合题写成「证据里没有写」，不是模型不会推，是原先只给了它两个出口：
+# 「照抄直接句」或「拒答」。否定性证据（条款未列）和两步推断（A＋B→结论）都没有出口，
+# 只能落进拒答里。四种状态各自有硬条件，缺条件的裁决会被闸门降级。
+_VERDICT_ALIAS = {
+    "direct": "direct", "直接": "direct", "已列": "direct", "有": "direct",
+    "not_listed": "not_listed", "未列": "not_listed", "未要求": "not_listed",
+    "inferable": "inferable", "推断": "inferable", "可推断": "inferable",
+    "missing": "missing", "缺": "missing", "无": "missing", "证据里没有写": "missing",
+}
+_NEG_CLAIM = re.compile(
+    r"(未列|未列入|没有列入|未包含|未要求|未把.{0,10}列入|不在.{0,8}(所列|列明|之列)"
+    r"|均未列|一项都没有列)")
+# 「证据里没有写能直接回答的条款」是元陈述（说的是我们手上的证据），不是对学校的断言，
+# 这类句子不该被闸门降级——模型写「证据未规定」恰恰是诚实，砍掉它等于逼它乱猜。
+_META_STMT = re.compile(r"(证据里|证据中|证据未|原文里|原文中|所给证据|以上条款|这几条)")
+
+
+def _cites(clause: str, total: int) -> list[int]:
+    return [int(n) for n in re.findall(r"\[(\d+)\]", clause or "")
+            if 1 <= int(n) <= total]
+
+
+def _as_verdict(raw: Any) -> str:
+    v = str(raw or "").strip().lower().replace(" ", "_")
+    if v in _VERDICT_ALIAS:
+        return _VERDICT_ALIAS[v]
+    for k, want in _VERDICT_ALIAS.items():
+        if k in v:
+            return want
+    return ""
+
+
+def _gate_negatives(text: str, evidence: list[dict[str, Any]],
+                    fallback: str = "") -> tuple[str, list[str]]:
+    """闸门：说「未列 Y / 未要求 Y」的句子，引的那条必须是【穷尽枚举】条款。
+
+    放开否定结论是有代价的：模型很容易把「没检索到」写成「学校没规定」。
+    所以「未列 Y」这种断言必须挂在带穷尽枚举标注的条款上（第 [n] 条共 N 项，未列 Y）。
+    但「证据里没有写…条款」说的是**我们手上的证据**，不是对学校的断言——
+    那是诚实的元陈述，砍掉它只会逼模型去猜。所以元陈述放行，只拦「未列」。
+    """
+    warn: list[str] = []
+    total = len(evidence)
+    if not text:
+        return text, warn
+    keep: list[str] = []
+    for clause in re.split(r"(?<=[；;。])", text):
+        if not clause.strip() or not _NEG_CLAIM.search(clause) \
+                or _META_STMT.search(clause):
+            keep.append(clause)
+            continue
+        nums = _cites(clause, total)
+        ok = [n for n in nums if (evidence[n - 1].get("enum") or {}).get("closed")]
+        if ok:
+            keep.append(clause)
+            continue
+        if nums:
+            warn.append(f"[{nums[0]}] 不是穷尽枚举条款，「未列」结论已删")
+        else:
+            warn.append("有一句「未列」结论没挂条款，已删")
+        # 只删这一句，不塞占位句：塞了会把「第 [7] 条同样标注枚举不完整」这类
+        # 有信息量的后半句一起冲掉，最差时整段结论只剩一句占位语。
+    out = "".join(keep).strip()
+    if not out and fallback:
+        out = fallback
+    return out, warn
+
+
+def _ev_menu(evidence: list[dict[str, Any]]) -> str:
+    rows = []
+    for i, e in enumerate(evidence, 1):
+        scope = f"【仅适用：{e['scope']}】" if e.get("scope") else ""
+        kind = "（经验帖，非官方）" if e.get("kind") == "experience" else ""
+        note = _enum_note(e)
+        # 节证据：保留条界、全量（不截），并在正文前插一行本章结构；
+        # 其余证据维持「压成一行、不截断」的老样子。
+        body = str(e.get("quote") or "")
+        if not e.get("sec_text"):
+            body = body.replace(chr(10), " ")
+        outline = str(e.get("outline") or "")
+        pre = f"【本章结构】{outline}。\n" if outline else ""
+        rows.append(f"[{i}] {_sec_doc_label(e)}{kind}{scope}："
+                    + pre + body + (f" {note}" if note else ""))
+    return "\n".join(rows)
+
+
+def _looks_conservative(conclusion: str) -> bool:
+    """结论是不是在打太极。
+
+    第一版只认「证据里没有写」，实测模型换了几种说法就绕过去了：
+    「证据中没有条款直接规定挂科能否保研」「缺少这一口径」「无法判断」——
+    这些全是拒答，却触发不了自纠。所以按「说证据缺什么」这一族写法来认。
+    """
+    t = conclusion or ""
+    # 「证据里没有禁止…的条款」是**答出来了**（没查到禁止性规定），不是打太极，
+    # 别把它当保守去触发自纠——那样只会白花十秒。
+    if re.search(r"(没有|未|无)(禁止|排除|设.{0,2}禁止|见.{0,2}互斥)", t):
+        return False
+    if re.search(r"(缺|少|没有|未|无).{0,8}(规则|条款|口径|规定|说明|依据|明确)", t):
+        return True
+    return bool(re.search(r"证据(里|中)?(没有|无|未).{0,10}(写|规定|说明|明确|提到)"
+                          r"|无法(判断|确认|回答)|不能确定|未记录|不作(否定)?结论", t))
+
+
+def _premise_layers(data: dict[str, Any]) -> list[dict[str, Any]]:
+    """把 premise 级裁决变成前端用的分层；老格式（layers）照样认。"""
+    rows: list[dict[str, Any]] = []
+    for x in (data.get("premises") or []):
+        if not isinstance(x, dict):
+            continue
+        body = str(x.get("text") or "").strip()
+        if not body:
+            continue
+        rows.append({"name": str(x.get("name") or "").strip()[:8],
+                     "verdict": _as_verdict(x.get("verdict")),
+                     "text": body})
+    if rows:
+        return rows[:6]
+    return [{"name": str(x.get("name") or "").strip()[:8],
+             "verdict": "",
+             "text": str(x.get("text") or "").strip()}
+            for x in (data.get("layers") or []) if isinstance(x, dict)
+            and str(x.get("text") or "").strip()][:3]
+
+
+def synthesize_answer(text: str, sink: "Callable[[dict[str, Any]], None] | None" = None,
+                      *, item: dict[str, Any] | None = None,
+                      history: list[dict[str, str]] | None = None) -> dict[str, Any] | None:
+    """综合层：拆前提＋检索短句 → 逐条跨文档取证 → 约束推理 → 轻校验。
+
+    失败（没 Key / 拆不出前提 / 生成不合格）返回 None，由调用方回退普通链路。
+    sink 不为空时，每走完一步投一帧「思考」给前端（字段与普通链路同一套 id/label/t/fields）。
+
+    v1.0.1 起接上下文：`item` 是「本题对象」（上一轮锚定的条目），
+    `history` 只取上一轮**用户问句**一句（不塞上一轮答案原文，见下方注释）。
+    """
+    import time as _time
+
+    t_last = _time.perf_counter()
+
+    def emit(step_id: str, label: str, fields: dict[str, Any]) -> None:
+        nonlocal t_last
+        if sink is None:
+            return
+        now = _time.perf_counter()
+        try:
+            sink({"id": step_id, "label": label,
+                  "t": round(now - t_last, 2), "fields": fields})
+        finally:
+            t_last = now
+
+    # 上下文只用两样：本题对象的名字、上一轮用户问句。**不塞上一轮答案原文**——
+    # 2026-11-06 实测：带一轮「购电」答案原文问「饿了怎么办」，一次拒答、一次答成供餐时间。
+    ctx_title = str((item or {}).get("title") or "").strip()
+    prev_q = ""
+    for m in reversed(history or []):
+        if str(m.get("role") or "") == "user":
+            prev_q = str(m.get("content") or "").strip()
+            break
     status: dict[str, Any] = {}
-    premises = _synth_premises(text, status)
+    premises, queries = _synth_plan(text, status, ctx_title=ctx_title, prev_q=prev_q)
+    emit("synth_plan", "拆前提", {"premises": len(premises), "queries": queries,
+                                  "ctx": ctx_title, "prev_q": prev_q})
     if not premises:
         return None
-    cands = _synth_candidates(premises)
+    item_warns: list[str] = []
+    cands = _synth_candidates(queries or premises, premises, question=text,
+                              item=item, warnings=item_warns)
+    emit("synth_recall", "逐条取证", {"queries": len(queries), "pool": len(cands)})
     if not cands:
         return None
-    evidence = _synth_pick(premises, cands)
+    evidence = _synth_pick(premises, cands, queries)
     if not evidence:
         return None
-    menu = "\n".join(f"[{i}] {e['doc']}：{e['quote'].replace(chr(10), ' ')}"
-                     for i, e in enumerate(evidence, 1))
+    # M1：给挑出来的引文挂上「它在哪一节」。放在这里是因为后面两段兜底还会再追加，
+    # 那两段追加的条目也有可能落在节上（末尾再挂一次）。
+    _attach_sections(evidence)
+    # 前提覆盖自检：哪条前提在已选证据里一条都对不上（重合 <2 个词），
+    # 就直接拿这条前提去 BM25 补一条，别让模型对着缺证据的前提自由发挥。
+    # 「作弊被记过还能保研吗」就漏过推免办法第十一条（无违纪受校级处分记录），答成「证据里没有写」。
+    seen_q = {norm(e["quote"])[:80] for e in evidence}
+    for p in premises:
+        qb = {g for g in bigrams(norm(p)) if g not in _TOPIC_STOP}
+        if any(len(qb & bigrams(norm(e["quote"]))) >= 2 for e in evidence):
+            continue
+        for it, _sc in bm25_hits(p, k=30):
+            picked = False
+            for _k, v in (it.get("evidence") or {}).items():
+                for one in _ev_items(v):
+                    q = str((one or {}).get("quote") or "").strip()
+                    if len(qb & bigrams(norm(q))) < 2:
+                        continue
+                    key = norm(q)[:80]
+                    if key in seen_q:
+                        continue
+                    meta = src_label(str((one or {}).get("src") or ""))
+                    lab = str(meta.get("label") or "")
+                    scope = _audience_scope(lab, text)
+                    m = _PAGE_RE.search(q)
+                    evidence.append({"doc": lab or "官方原文",
+                                     "url": meta.get("url") or "",
+                                     "page": int(m.group(1)) if m else None,
+                                     "quote": q, "scope": scope,
+                                     "kind": "experience" if any(
+                                         w in lab for w in _EXPERIENCE_WORDS) else "official",
+                                     "cover": len(qb & bigrams(norm(q))),
+                                     "item_id": it["id"]})
+                    seen_q.add(key)
+                    picked = True
+                    break
+                if picked:
+                    break
+            if picked:
+                break
+    evidence = evidence[:20]
+    # 动作覆盖：问句点了「保研/转专业/毕业/奖学金」，证据里就必须有讲这件事的原文。
+    # 没有就用官方词补检一次（保研→推免），否则模型只能答「证据里没有写」——假阴性。
+    for pat, term in _ACTION_TERMS:
+        if not re.search(pat, text):
+            continue
+        if any(term in e["quote"] or term in e["doc"] for e in evidence):
+            continue
+        for it, _sc in bm25_hits(f"{term} 基本条件 资格", k=20):
+            added = False
+            for _k, v in (it.get("evidence") or {}).items():
+                for one in _ev_items(v):
+                    q = str((one or {}).get("quote") or "").strip()
+                    if term not in q or norm(q)[:80] in seen_q:
+                        continue
+                    meta = src_label(str((one or {}).get("src") or ""))
+                    lab = str(meta.get("label") or "")
+                    scope = _audience_scope(lab, text)
+                    m = _PAGE_RE.search(q)
+                    evidence.append({"doc": lab or "官方原文",
+                                     "url": meta.get("url") or "",
+                                     "page": int(m.group(1)) if m else None,
+                                     "quote": q, "scope": scope,
+                                     "kind": "experience" if any(
+                                         w in lab for w in _EXPERIENCE_WORDS) else "official",
+                                     "cover": 2, "item_id": it["id"]})
+                    seen_q.add(norm(q)[:80])
+                    added = True
+                    break
+                if added:
+                    break
+            if added:
+                break
+    # v5.1 §3：节证据只做保底——最多补 1 条，只在「一条 sec_text 都没有」时补，
+    # 只补「没有任何 query==t 证据」的那条前提；**evidence 已满 20 条就放弃**，
+    # 绝不替换已有短引文（v2 的 `[:19] + append` 会替换，v5.1 明确不许）。
+    # 放在两段兜底之后、`[:20]` 之前；因为前面判了 <20，append 后不会触发截断。
+    if SECTIONS_ADDITIVE and not any(e.get("sec_text") for e in evidence):
+        terms = list(dict.fromkeys(queries or premises))
+        need = [t for t in terms[:4]
+                if not any(str(e.get("query") or "") == t for e in evidence)]
+        if need and len(evidence) < 20:
+            extra = _section_candidates(need[0], k=2)
+            if extra:
+                one = dict(extra[0])
+                one["premise"] = need[0]
+                one["query"] = need[0]
+                evidence.append(one)
+    evidence = evidence[:20]
+    # M1：两段兜底也追加完了，再挂一次节号——只挂新追加、还没有 sec 的那几条。
+    _attach_sections(evidence)
+    # M2 保底：节检索腿命中的「这一节全文」必须是 synth 模型看得见的一条。
+    # 没有它，M2 就只是给 pick 加了几条候选，最终证据里可能一条节都没有，
+    # 「第X条共N项，未列Y」就无从写起。
+    # 这里留一个座位（`[:19] + 1`）而不是直接 append：`_synth_pick` 自己就返回 [:20]，
+    # 已经满 20 条时再 append，下一行 `[:20]` 会把它正好切掉——保底等于没保。
+    # v5.1：ADDITIVE 打开时这一条**不跑**——它会替换掉最后一条短引文，与「绝不替换」冲突。
+    if not SECTIONS_ADDITIVE and not any(e.get("sec_text") for e in evidence):
+        extra = _section_candidates(text, k=3)
+        if extra:
+            evidence = evidence[:19] + extra[:1]
+    # v5 §B：复合题每条前提至少一条节证据。只补「这条前提一条节证据都没有」的，
+    # 不重复补；补的时候同样留座——已经 20 条时先切到 19 再 append，
+    # 否则下一处 `[:20]` 会把它切掉（v2 踩过一次的坑）。
+    # 证据里已有该前提的普通引文但**没有节证据**时仍然补：复合题要的是「对应的那一节全文」，
+    # 不是再多一句碎片。
+    if SECTIONS_PER_PREMISE:
+        terms = list(dict.fromkeys(queries or premises))
+        have = {e.get("premise") for e in evidence if e.get("sec_text")}
+        # 同一节可能同时是两条前提的答案（例：「微专业能退吗/钱退不退」都在第二十三条）：
+        # `_synth_candidates` 已按 (slug,no) 去过重，候选里只有一条；这里再按节去重一次，
+        # 否则会给第二条前提再 append 一份**一模一样的整节原文**，白占菜单和证据位。
+        seen_sec = {((e.get("sec") or {}).get("slug"), (e.get("sec") or {}).get("no"))
+                    for e in evidence if e.get("sec_text")}
+        for t in terms[:4]:
+            if t in have:
+                continue
+            extra = _section_candidates(t, k=2)
+            if not extra:
+                continue
+            one = dict(extra[0])
+            key = ((one.get("sec") or {}).get("slug"), (one.get("sec") or {}).get("no"))
+            if key in seen_sec:
+                have.add(t)
+                continue
+            one["premise"] = t
+            one["query"] = t
+            if len(evidence) >= 20:
+                evidence = evidence[:19]
+            evidence.append(one)
+            seen_sec.add(key)
+            have.add(t)
+    # 问句没提身份时，把「仅适用：研究生／教师」的条款排到后面：菜单顺序就是注意力顺序，
+    # 研究生条款排前面，模型会拿它当默认答案——问「论文查重没过能拿学位吗」，
+    # 它先答研究生 15%/20%，本科「查重超 30% 不及格、成绩不及格作结业」反而没了。
+    if not re.search(r"研究生|硕士|博士|教师|教职工", text):
+        evidence.sort(key=lambda e: bool(e.get("scope")))
+    # 逐条标注枚举结构：合成器要能说出「第 n 条共 N 项、未列 Y」，就得先看见整条枚举，
+    # 并且知道这条枚举是穷尽的。（闸门按这个标注决定否定句能不能留）
+    # 两类不标：
+    #  · 截断的节：`_closed_enum` 只看拿到的那一段，断言「共 N 项」是假的；
+    #  · 章/节级的节：一章里含好几条，实测第三章被数成「共 9 项」（把六、七、八条的
+    #    项加在一起），这种「共 N 项」没有任何意义，只会让模型写出「本章共9项，未列X」。
+    for e in evidence:
+        if e.get("truncated"):
+            continue
+        if str((e.get("sec") or {}).get("no") or "")[-1:] in "章节编篇":
+            continue
+        info = _closed_enum(str(e.get("quote") or ""))
+        if info:
+            e["enum"] = info
+    emit("synth_pick", "挑证据", {"evidence": len(evidence),
+                                  "docs": len({e["doc"] for e in evidence})})
+    enums = [i for i, e in enumerate(evidence, 1)
+             if (e.get("enum") or {}).get("closed")]
+    musts = [i for i, e in enumerate(evidence, 1) if e.get("must")]
+    emit("synth_verdict", "判可答性", {"enums": len(enums), "rules": len(musts)})
+    base = _SYNTH_PROMPT.format(menu=_ev_menu(evidence), q=text)
+    # 规则按「菜单里真的出现了什么标记」分别拼——不再一股脑塞给模型。
+    #  · 有 sec：讲节/条引用（M1）；
+    #  · 有 anchor：才说【点名节】；
+    #  · 有 outline：才说【本章结构】（CHAP_ONLY=1 时才有）；
+    #  · 有 truncated：才说【节选】不许断言「没有规定」。
+    if any(e.get("sec") for e in evidence):
+        base = base + "\n\n" + _SECTION_RULES
+        if any(e.get("anchor") for e in evidence):
+            base = base + _ANCHOR_RULES
+        if any(e.get("outline") for e in evidence):
+            base = base + _CHAPTER_RULES
+        if any(e.get("truncated") for e in evidence):
+            base = base + _TRUNC_RULES
+
+    def gen(system: str, user: str) -> dict[str, Any]:
+        """一次生成；接口抖动时再试一次——综合层整条链路只有这一处不能白丢。
+
+        实测（2026-11-11 凌晨）：50 题里有 4 题在 6～7 秒内就失败返回，
+        不是推理慢，是那一次接口调用直接报错（ds_chat 内部已重试过一次 429/5xx）。
+        对用户来说这就是「综合层没跑起来」，白丢一次机会，所以这里再兜一次。
+        """
+        last: Exception | None = None
+        for attempt in range(2):
+            try:
+                return json.loads(ds_chat([{"role": "system", "content": system},
+                                           {"role": "user", "content": user}],
+                                          max_tokens=1400, json_mode=True)) or {}
+            except Exception as e:  # noqa: BLE001
+                last = e
+                if attempt == 0:
+                    time.sleep(1.0)
+        raise last  # type: ignore[misc]
+
     try:
-        raw = ds_chat([{"role": "system", "content": _SYNTH_PROMPT.format(menu=menu, q=text)},
-                       {"role": "user", "content": "按结构输出 JSON。"}],
-                      max_tokens=900, json_mode=True)
-        data = json.loads(raw) or {}
+        data = gen(base, "按结构输出 JSON。")
     except Exception as e:  # noqa: BLE001
         status["error"] = _llm_err_text(e)
         return None
+    # 自纠一轮：证据明明在场（有穷尽枚举条款，或 ≥4 条）却回「证据里没有写」，多半是没敢用。
+    # 补的不是「大胆点」，而是三把具体的尺子：逐项对照、两步链、缺哪一步。
+    first = str((data or {}).get("conclusion") or "") if isinstance(data, dict) else ""
+    if _looks_conservative(first) and (enums or len(evidence) >= 4):
+        hints: list[str] = []
+        if enums:
+            items = "、".join(f"第 [{n}] 条" for n in enums)
+            hints.append(f"证据里 {items} 是穷尽枚举。把问句点名的那个条件逐项对照："
+                         "不在 N 项里，就写「第 [n] 条共 N 项，未列 Y」——这是可答的否定结论。")
+        if musts:
+            hints.append("带资格条款的那几条是这类问题的骨架，先按它们定资格，再看其他细节。")
+        hints.append("若两条条文合起来能推出结论，写成「据第 [n] 条…，据第 [m] 条…，因此…」"
+                     "并标（推断）。")
+        hints.append("仍答不了就写清缺哪一步（缺哪条规则、哪个口径），不要只写「证据里没有写」。")
+        try:
+            retry = gen(base + "\n\n补充（上一轮过于保守）：" + "".join(hints),
+                        "按结构再输出一次 JSON。")
+            if isinstance(retry, dict) and str(retry.get("conclusion") or "").strip() \
+                    and not _looks_conservative(str(retry.get("conclusion"))):
+                data = retry
+        except Exception:  # noqa: BLE001
+            pass
     if not isinstance(data, dict) or not str(data.get("conclusion") or "").strip():
         return None
-    layers = [{"name": str(x.get("name") or "").strip()[:8],
-               "text": str(x.get("text") or "").strip()}
-              for x in (data.get("layers") or []) if isinstance(x, dict)
-              and str(x.get("text") or "").strip()][:3]
+    layers = _premise_layers(data)
+    emit("synth_write", "按证据推理", {"layers": len(layers)})
     boundary = str(data.get("boundary") or "").strip()
-    warn = _synth_cite_check(" ".join([str(data.get("conclusion") or "")] +
-                                      [x["text"] for x in layers] + [boundary]), len(evidence))
+    warn: list[str] = []
+    conclusion, dropped = _strip_unsupported(str(data.get("conclusion") or "").strip(), evidence)
+    # 闸门：否定结论必须挂在穷尽枚举条款上；删句后不许把结论删空
+    conclusion, neg_warn = _gate_negatives(
+        conclusion, evidence, fallback="证据里没有写能直接回答这一问的条款。")
+    warn.extend(neg_warn)
+    for one in layers:
+        ltxt, w = _gate_negatives(one["text"], evidence,
+                                  fallback="这一条证据里没有可对照的条款。")
+        one["text"] = ltxt or "这一条证据里没有可对照的条款。"
+        warn.extend(w)
+    if boundary:
+        boundary, w = _gate_negatives(boundary, evidence)
+        warn.extend(w)
+    if not conclusion:
+        conclusion = "证据里没有写能直接回答这一问的条款。"
+    # 头尾不一致：分层答出来了、结论还在打太极 → 以分层为准重写结论
+    conclusion = _fix_conclusion(conclusion, layers)
+    # 流程类题：问「怎么办理 / 要带什么 / 多久」时，把条目的办理步骤按顺序补成一条。
+    # 实测：扩题后新加的 4 道流程题只提升 1 个点——推理层擅长跨条款下结论，
+    # 但「先挂失、再到艺术与传播大楼 1 层补卡机、20 元、当场出卡」这种步骤它不会搬。
+    proc = _procedure_note(text)
+    if proc:
+        layers = (layers + [proc])[:10]
+    # 有一条前提答不出来时，末尾给一句「去哪问」：拒答也要有用。
+    # 「库内没有这条规定」本身不是服务，用户要的是下一步找谁。
+    if any(x.get("verdict") == "missing" for x in layers):
+        deps = dept_hints(text)
+        who = deps[0]["name"] if deps else ""
+        tail = f"证据里没有写的部分，建议向{who}确认。" if who else "证据里没有写的部分，建议咨询学校对口部门确认。"
+        if "建议向" not in boundary and "建议咨询" not in boundary:
+            boundary = (boundary + " " + tail).strip()
+    # 全面性兜底：证据里有、答案没提的硬事实（金额/期限/比例/例外）原文补上，逐条挂引用
+    have = conclusion + " " + " ".join(str(x.get("text") or "") for x in layers)
+    supp = _supplement(have, evidence, text, cands)
+    if supp:
+        layers = (layers + supp)[:10]
+    # 结论句是摘要，允许不逐句挂引用；只在分层与边界句上查「裸句」。
+    # 逐层查：一层的引用编号通常落在层末（「…[3]」），整层算一个引用单元，
+    # 层末带了引用就不再拆句；否则「原文要点」这种原文照录的长句会被拆成十几条裸句。
+    for one in layers:
+        body = str(one.get("text") or "")
+        if re.search(r"\[\d+\]\s*$|（候选池）\s*$", body):
+            continue
+        warn.extend(_synth_cite_check(body, len(evidence), evidence))
+    if boundary:
+        warn.extend(_synth_cite_check(boundary, len(evidence), evidence))
+    if dropped:
+        warn.append(f"结论里 {'、'.join(dict.fromkeys(dropped))} 缺证据，已删")
+    # 口径冲突：同一件事在两个文件里给了不同金额（国家奖学金 8000 / 10000），
+    # 只报一个数就是答错；把两个都摆出来，并说明以哪个为准。
+    conflict = _money_conflict(text, layers, cands)
+    if conflict and conflict not in conclusion and conflict not in boundary:
+        boundary = (boundary + " " + conflict).strip()
+    warn = list(dict.fromkeys(warn))[:6]
+    emit("synth_check", "校对", {"warnings": len(warn)})
     return {
         "premises": premises,
-        "conclusion": str(data.get("conclusion") or "").strip(),
+        "conclusion": conclusion,
         "layers": layers,
         "boundary": boundary,
         "evidence": evidence,
         "warnings": warn,
+        "verdicts": {v: sum(1 for x in layers if x.get("verdict") == v)
+                     for v in ("direct", "not_listed", "inferable", "missing")},
     }
+
+
+_FACT_TOKEN = re.compile(r"\d+(?:\.\d+)?\s*(?:%|元|万|小时|个月|年|天|个工作日|学分|分|册|倍)")
+FACETS = {
+    "money": re.compile(r"多少钱|钱|金额|奖励标准|资助标准|收费标准|几元|万|元|发多少|补助|酬金"),
+    "time": re.compile(r"多久|多长时间|什么时候|何时|几月|期限|时限|几号|有效期"),
+    "ratio": re.compile(r"比例|百分之|%|复制比|查重率|占多少|几分|多少分"),
+    "who": re.compile(r"谁管|找谁|哪个部门|交给谁|在哪办|到哪办|哪里办|哪个处|哪个院"),
+    "cond": re.compile(r"条件|要求|资格|能不能|可不可以|需不需要|必须"),
+}
+FACT_KIND = {
+    "money": re.compile(r"\d+(?:\.\d+)?\s*(?:元|万)"),
+    "time": re.compile(r"\d+\s*(?:个月|年|天|个工作日|小时|周)"),
+    "ratio": re.compile(r"\d+(?:\.\d+)?\s*%|\d+\s*分"),
+    "who": re.compile(r"处|院|中心|办公室|科|部"),
+    "cond": re.compile(r"条件|资格|要求|不得|须|必须|除外"),
+}
+
+
+def _asked_facets(question: str) -> set[str]:
+    return {k for k, pat in FACETS.items() if pat.search(question or "")}
+
+
+def _supplement(answer: str, evidence: list[dict[str, Any]],
+                question: str, pool: list[dict[str, Any]] | None = None
+                ) -> list[dict[str, Any]]:
+    """把「库里有、答案里没提」的硬事实补成几条补充层。
+
+    这是「全面性」的兜底：模型只写 3～5 条前提，证据里的金额、期限、比例、例外
+    常常被漏掉，而这些恰恰是用户最想要的。补的每一条都是**原文照录 + 引用编号**，
+    不改写、不推断，所以不会引入证据外内容。
+
+    两条来源：
+      · 已选证据（evidence）——编号沿用，直接用；
+      · 候选池里没被挑中的（pool）——只收「和问句同一件事」的：问句事名出现在引文或
+        出处标题里，且与问句二字组重合 ≥3。没有这一条，补充会变成乱塞。
+    """
+    qb = {g for g in bigrams(norm(question)) if g not in _TOPIC_STOP}
+    subs = _subject_terms(question)
+    ab = bigrams(norm(answer))
+    wants = _asked_facets(question)
+
+    def wanted(quote: str) -> bool:
+        """这条补丁是不是问句问到的那个面（金额/期限/比例/谁办/条件）。
+
+        问句问多少钱，就只补带金额的条款；问多久，只补带时限的。
+        问句没点面（「校园卡丢了还能进图书馆吗」）时不挑面：这时候缺的往往是流程
+        （先挂失、再去哪补卡），不是数字，只认硬事实会把流程类条款全漏掉。
+        """
+        if not wants:
+            return True
+        return any(FACT_KIND[f].search(quote) for f in wants)
+
+    picked: list[tuple[float, float, str, str]] = []   # (限定人群, score, quote, cite)
+    for i, e in enumerate(evidence or [], 1):
+        # 节检索腿的候选是「整节原文」，动辄上千米字：整段塞进「原文要点」会挤掉
+        # 真正逐条挂引用的小层，也会让结论被一段文书抄本淹掉。它已经作为证据挂在
+        # [i] 上、synth 逐字看过，不再复制进补充层（C5）。
+        if e.get("sec_text"):
+            continue
+        quote = str(e.get("quote") or "").strip()
+        if len(_mn(quote)) < 16 or not wanted(quote):
+            continue
+        eb = bigrams(norm(quote))
+        if len(qb & eb) < 1:
+            continue
+        if len(eb & ab) / max(1, len(eb)) >= 0.5:
+            continue
+        hard = 1.0 if _FACT_TOKEN.search(quote) else 0.0
+        picked.append(((1.0 if e.get("scope") else 0.0),
+                       hard + len(qb & eb) / 10.0, quote, f"[{i}]"))
+    seen = {norm(p).strip() for _o, _s, p, _c in picked}
+    for e in (pool or []):
+        if e.get("sec_text"):
+            continue
+        quote = str(e.get("quote") or "").strip()
+        if len(_mn(quote)) < 16 or norm(quote).strip() in seen or not wanted(quote):
+            continue
+        eb = bigrams(norm(quote))
+        doc = str(e.get("doc") or "")
+        same_subject = any((n in quote) or (n in doc) for n in subs)
+        if not same_subject or len(qb & eb) < 2:
+            continue
+        if len(eb & ab) / max(1, len(eb)) >= 0.5:
+            continue
+        hard = 1.0 if _FACT_TOKEN.search(quote) else 0.0
+        picked.append(((1.0 if e.get("scope") else 0.0),
+                       hard + len(qb & eb) / 10.0, quote, "（候选池）"))
+        seen.add(norm(quote).strip())
+    picked.sort(key=lambda x: (x[0], -x[1]))
+    out: list[dict[str, Any]] = []
+    used: set[str] = set()
+    scoped = 0
+    for limited, _score, quote, cite in picked:
+        if limited:
+            if scoped >= 1:
+                continue
+            scoped += 1
+        key = norm(quote)[:40]
+        if key in used:
+            continue
+        used.add(key)
+        out.append({"name": "原文要点", "verdict": "direct", "text": f"{quote}{cite}"})
+        if len(out) >= 8:
+            break
+    return out
+
+
+def _fix_conclusion(conclusion: str, layers: list[dict[str, Any]]) -> str:
+    """结论比分层更保守时，按分层里已经答出来的那几条重写结论。
+
+    实测（2026-11-10 深夜）：最典型的一类失败不是答不出，而是**头尾不一致**——
+    分层里明明写着「第 [1] 条共 5 项，未列挂科」「补考 60 分计入智育测评」，
+    结论却写「证据里没有直接规定……缺这一口径」。用户先看结论，等于什么都没答。
+    分层是挂了引用、按证据逐条裁过的，比一句概括可信；所以以分层为准重写。
+    """
+    if not _looks_conservative(conclusion):
+        return conclusion
+    good = [x for x in layers
+            if x.get("verdict") in ("direct", "not_listed", "inferable")
+            and str(x.get("text") or "").strip()]
+    if not good:
+        return conclusion
+    parts: list[str] = []
+    for one in good[:3]:
+        head = re.split(r"[。；;]", str(one["text"]))[0].strip()
+        if len(head) >= 8:
+            parts.append(head)
+    if not parts:
+        return conclusion
+    out = "；".join(parts)
+    return out if out.endswith("。") else out + "。"
 
 
 class AskReq(BaseModel):
@@ -6967,7 +8820,7 @@ class AskReq(BaseModel):
     context_slots: dict[str, str] = {}
     messages: list[dict[str, str]] = []
     pick_item: str | None = None     # 反问菜单里点开的条目 id
-    synth: bool = False              # 综合层：拆前提 → 跨文档取证 → 约束推理
+    synth: bool = True               # 综合层：拆前提 → 跨文档取证 → 约束推理（默认开）
 
 
 def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
@@ -6991,35 +8844,112 @@ def clean_response(resp: dict[str, Any]) -> dict[str, Any]:
     return resp
 
 
+def _synth_confidence(synth: dict[str, Any]) -> tuple[float, str]:
+    """把「证据几条 + 覆盖几条前提」算成一个可核对的数，别再写死 0.78。
+
+    A6 要求：置信度必须是可核对指标，不能是常数。这里取
+    0.35 起步 + 每条证据 0.05（封顶 0.25）+ 非 missing 前提占比 0.45。
+    """
+    ev = len(synth.get("evidence") or [])
+    layers = synth.get("layers") or []
+    total = len(layers) or 1
+    good = sum(1 for x in layers
+               if str(x.get("verdict") or "") in ("direct", "not_listed", "inferable"))
+    conf = 0.35 + min(0.25, 0.05 * ev) + 0.45 * (good / total)
+    return round(min(0.95, conf), 2), f"证据 {ev} 条 · 覆盖 {good}/{total} 前提"
+
+
+def _synth_payload(text: str, synth: dict[str, Any],
+                   item: dict[str, Any] | None = None,
+                   ctx_source: str = "") -> dict[str, Any]:
+    conf, note = _synth_confidence(synth)
+    return {
+        "matched": True,
+        "query": text,
+        "synth": synth,
+        "confidence": conf,
+        "confidence_note": note,
+        "band": "mid" if conf >= 0.6 else "low",
+        # v1.0.1：把「本题对象」回传，前端才锚得住，下一轮追问不换题（原来这里是 None）。
+        "item": public(item) if item else None,
+        "ctx_item_id": (item or {}).get("id"),
+        "answers": [],
+        "quotes": [],
+        "focus": [],
+        "model_route": {"gate": "synth", "premises": synth["premises"],
+                        "evidence": len(synth["evidence"]),
+                        "ctx_item_id": (item or {}).get("id"),
+                        "ctx_source": ctx_source or ("request" if item else "")},
+    }
+
+
+def _synth_stream(text: str, item: dict[str, Any] | None = None,
+                  history: list[dict[str, str]] | None = None,
+                  ctx_source: str = "") -> Iterator[str]:
+    """综合层也边走边发：拆前提→取证→挑证据→推理→校对，每步一帧，done 是最终 dict。"""
+    q: queue.Queue[Any] = queue.Queue()
+
+    def work() -> None:
+        try:
+            out = synthesize_answer(text, sink=lambda frame: q.put(("step", frame)),
+                                    item=item, history=history)
+            if not out:
+                q.put(("err", {"error": "综合层没跑起来，已按普通方式回答"}))
+                return
+            q.put(("done", clean_response(_synth_payload(text, out, item, ctx_source))))
+        except Exception as e:  # noqa: BLE001
+            q.put(("err", {"error": _short_err(e)}))
+        finally:
+            q.put(("end", None))
+
+    threading.Thread(target=work, daemon=True).start()
+    while True:
+        kind, payload = q.get()
+        if kind == "end":
+            return
+        yield _sse(kind, payload)
+
+
 @app.post("/api/ask")
 def ask(req: AskReq, request: Request) -> Any:
     maybe_reload()
     text = (req.text or "").strip()
     if len(text) < 2 and not NUM_ONLY.match(text):
         raise HTTPException(400, "请再说得具体一点")
-    # 综合层：拆前提 → 跨文档取证 → 约束推理。失败（没 Key/拆不出前提/生成不合格）
-    # 就退回普通单条目链路，并把这个事实写进 model_route，别让用户以为走了综合层。
-    if req.synth and _looks_relational(text):
-        synth = synthesize_answer(text)
-        if synth:
-            return clean_response({
-                "matched": True,
-                "query": text,
-                "synth": synth,
-                "confidence": 0.78,
-                "band": "mid",
-                "item": None,
-                "answers": [],
-                "quotes": [],
-                "focus": [],
-                "model_route": {"gate": "synth", "premises": synth["premises"],
-                                "evidence": len(synth["evidence"])},
-            })
+    # 综合层：开关开着就走新链路（拆前提＋检索短句 → 跨文档取证 → 约束推理）。
+    # 直命条目的问题（规则分 ≥97）不走：合成对「图书馆几点开」没有增益，只多花时间。
+    # 失败或没跑起来，回退普通链路；开关关掉时这段完全不执行。
+    # v1.0.1：`kw` 提到分支之前构造，综合层与普通链路共用一份；上下文（本题对象 + 上一轮问句）
+    # 也一起传进去——原来只传了 `text`，history/context_item/context_slots 一个都没进综合层。
     kw = dict(
         text=text, given=req.slots, router_llm=req.router_llm,
         context_item=req.context_item, context_slots=req.context_slots,
         history=req.messages or None, pick_item=req.pick_item,
     )
+    # 这一行受 req.synth 短路：/desk、/classic 都发 synth:false，不必付 1 秒的 rank 开销
+    ranked = rank(text) if req.synth else []
+    if req.synth and ranked and ranked[0][1] < 97:
+        # v1.0.1：首轮也要有锚点。原来只认 `req.context_item`（上一轮响应回传的条目），
+        # 而第一轮根本没有 context_item——92 分的「家庭经济困难认定怎么申请」进综合层后
+        # item 恒为 None，前端落不了位，第二问「申请要求」只能从零检索，就成了「问两句就失忆」。
+        # 这里用规则腿首名兜底，门槛取 85 而不是 MATCH_THRESHOLD(55)：
+        # 锚错比不锚更糟（下一问会被带跑），擦边题宁可不锚。
+        ctx_item = ITEM_BY_ID.get(req.context_item or "")
+        ctx_source = "request" if ctx_item else ""
+        if ctx_item is None:
+            top, sc = ranked[0]
+            if sc >= 85 and not (top.get("auto") or top.get("clause") or top.get("para")):
+                ctx_item = top
+                ctx_source = "rank"
+        if "text/event-stream" in (request.headers.get("accept") or ""):
+            return StreamingResponse(
+                _synth_stream(text, item=ctx_item, history=req.messages or None,
+                              ctx_source=ctx_source),
+                media_type="text/event-stream",
+                headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+        synth = synthesize_answer(text, item=ctx_item, history=req.messages or None)
+        if synth:
+            return clean_response(_synth_payload(text, synth, ctx_item, ctx_source=ctx_source))
     # /field 带这个头来看流：每一步模型调用跑完就发一帧，最后 done 就是下面那个 dict。
     # 经典版 app.js 不带这个头，走的还是原来那一条，一个字节都不变。
     if "text/event-stream" in (request.headers.get("accept") or ""):

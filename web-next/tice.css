@@ -160,8 +160,18 @@
   .tice-seg-thumb { transition: none; }
 }
 
-/* ---------- 卡片列表：一项一张 ---------- */
-.tice-cards { display: grid; gap: 16px; }
+/* ---------- 卡片列表：身体数据一条铺满，七个单项两两并排 ----------
+   行宽与身体数据栏同宽（.tice-cards 容器宽度不变，仍是 .tice-left 那一栏），
+   单项只横向收缩到一半：内边距、间距、字号一律不动，所以纵向的观感与原来一致。
+   窄屏同样保持两列（2026-11-12 改）：手机上也是「每行两个」，不再回退成一项一行。 */
+.tice-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 身体数据占满整行：位置仍是最前一条，宽度与改动前完全一样 */
+#card-bmi { grid-column: 1 / -1; }
 
 .tice-card {
   background: var(--surface);
@@ -905,3 +915,27 @@
 .tr-stats div:first-child dd { font-size: 24px; }
 
 
+
+/* ---------- 页脚（体测页） ----------
+   与 .tice-main 同一版心（1100px）；图片尺寸由 field.css 的 .page-footer .footer-mark 统一给。 */
+.tice-page .tice-main { padding-bottom: 48px; }
+.tice-footer { width: min(1100px, calc(100% - 44px)); }
+
+/* ---------- 手机上的半宽单项卡（≤620px） ----------
+   2 列布局在手机上让单卡只剩约 165px，原来那圈 24px 内边距 + 两端对齐的题头会很挤：
+   这里把内边距收一档，题头改成「标题在上、序号在下」的两行居中，输入框与三列统计一起居中。
+   字号与行高不动，只调横排与留白。放在文件末尾是为了盖住前面的基础规则（同优先级时后者胜）。 */
+@media (max-width: 620px) {
+  .tice-card { padding: 16px 14px; }
+  .tice-card-head {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+  }
+  .tice-card-title { text-align: center; }
+  .tice-card-idx { text-align: center; }
+  .tice-inputwrap input { text-align: center; padding: 14px 8px; }
+  .tice-suffix { padding-right: 10px; }
+  .tice-stats { gap: 6px; text-align: center; }
+}

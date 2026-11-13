@@ -27,6 +27,9 @@ SKIP_DIRS = {".venv", "__pycache__", "dist", ".git", "piptest", "node_modules",
              "video-promo",
              # 本机浏览器 profile（含 Login Data / History / Wallet）、回退副本与视频工程
              ".superpowers", "_backups", "video-remotion",
+             # 本机构建产物（.gitignore 已忽略）：ffmpeg/fontTools 依赖树、量测草稿、短片素材。
+             # 不排掉会一次传 500+ 个无关文件，还夹着本机绝对路径。
+             ".tools", ".out", ".film",
              # 上云包是运行时文件的副本，内容源已经在仓库里，不再重复传一份
              "_release_v09"}
 SKIP_FILES = {".env", "download.devtools", "urls.txt", "items.json", "items.json.bak",
@@ -41,7 +44,7 @@ SKIP_SUFFIX = {".zip", ".png", ".jpg", ".jpeg", ".gif", ".wav", ".mp4", ".log",
                ".mp3", ".m4a", ".mov", ".webm", ".rar", ".7z", ".tar", ".tgz", ".gz",
                # 派生检索库由 tools/build_kb_db.py 现建，181 MB，不随包发布
                ".sqlite", ".sqlite3", ".db"}
-SKIP_PREFIX = ("shot", "llm-", "aia", "items_before_")
+SKIP_PREFIX = ("shot", "shoot_", "llm-", "aia", "items_before_")
 # 语料正文统一进 sources-archive.tar.gz，不逐个上传（省请求、避免限流）
 BULK_DIRS = {"crawl", "cdp", "chsi", "moe", "national", "wechat", "pdf", "wendao-text",
              "ilib", "ilib-text", "ilib-list", "ilib-list-text"}

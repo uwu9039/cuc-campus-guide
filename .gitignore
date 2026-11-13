@@ -83,3 +83,7 @@ __pycache__/
 /_mc_tmp.json
 /_review*
 /_audit_*
+.film/
+.out/
+.tools/
+.tmp_*

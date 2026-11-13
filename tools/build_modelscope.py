@@ -18,13 +18,17 @@ SRC = ROOT / "sources"
 OUT = ROOT / "_modelscope_bundle"
 
 ROOT_FILES = [
-    "app.py", "prompt_parts.py", "vector_index.py", "requirements.txt",
+    "app.py", "prompt_parts.py", "vector_index.py", "sections_index.py", "requirements.txt",
     "items.json.gz", "table-rows.json.gz", "doc-report.json.gz", "file-registry.json.gz",
     "sources-archive.tar.gz",
     "presets.json", "topic-menus.json", "contacts.json",
     "departments.json", "transfer-plans.json", "campus-map.json",
     "major-aliases.json", "sensitive.json",
 ]
+
+# 章节索引：② 的运行时数据（sections_index 读 <ROOT>/_review_items/sections/*.json）。
+# 不带它，云端 ② 会静默关闭（stats 返回 {}），页面上看不出任何异常。
+SECTIONS_DIR = ROOT / "_review_items" / "sections"
 
 # 云端要能在裸包里跑完「解压语料 → 建向量 → 建检索库 → 自检」，这几个脚本必须随包
 TOOL_FILES = [
@@ -111,6 +115,15 @@ def main() -> None:
         if not src.exists():
             raise SystemExit(f"缺少 tools/{name}")
         put(src, out / "tools" / name)
+
+    # 章节索引（②）：整目录带，531 份 / 5.2 MB
+    if not SECTIONS_DIR.is_dir():
+        raise SystemExit("缺少 _review_items/sections/（章节索引），先跑标注")
+    secs = [p for p in sorted(SECTIONS_DIR.glob("*.json")) if not p.name.startswith("_")]
+    if not secs:
+        raise SystemExit("_review_items/sections/ 里没有章节索引 JSON")
+    for p in secs:
+        put(p, out / "_review_items" / "sections" / p.name)
 
     for src in sorted((ROOT / "web-next").rglob("*")):
         if not src.is_file() or src.name in WEB_SKIP:

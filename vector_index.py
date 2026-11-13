@@ -80,7 +80,11 @@ def load() -> dict[str, Any] | None:
     idf = np.load(VDIR / "idf.npy")
     chunks = [json.loads(line) for line in (VDIR / "chunks.jsonl").open(encoding="utf-8") if line.strip()]
     manifest = json.loads((VDIR / "manifest.json").read_text(encoding="utf-8"))
-    _CACHE = {"vectors": vectors, "idf": idf, "chunks": chunks, "manifest": manifest}
+    # kind 列单独存一份：筛 kind / 排除 kind 要在 argsort 之前做，
+    # 否则节 chunk 会先把前 k*6 个名额占满，doc 命中被挤出窗口（口径就变了）。
+    kinds = np.asarray([str(c.get("kind") or "") for c in chunks])
+    _CACHE = {"vectors": vectors, "idf": idf, "chunks": chunks,
+              "manifest": manifest, "kinds": kinds}
     _CACHE_MTIME = m
     return _CACHE
 
@@ -93,6 +97,7 @@ def stats() -> dict[str, Any]:
     return {
         "vector_sources": mf.get("sources", 0),
         "vector_chunks": mf.get("chunks", 0),
+        "vector_sections": mf.get("section_chunks", 0),
         "vector_built": mf.get("built", ""),
     }
 
@@ -131,7 +136,14 @@ def snippet(text: str, q: str, width: int = 240) -> str:
     return ("…" if start else "") + out + ("…" if end < len(t) else "")
 
 
-def search(q: str, k: int = 8, min_score: float = 0.0, per_doc: int = 2) -> list[dict[str, Any]]:
+def search(q: str, k: int = 8, min_score: float = 0.0, per_doc: int = 2,
+           kind: str | None = None, exclude: str | None = None) -> list[dict[str, Any]]:
+    """按向量近似找段落。`kind="section"` 只看节级 chunk（③ 的节级检索冒烟用它）；
+    `exclude="section"` 反过来把节 chunk 挡在**取前 k 名之前**（③ 关着时的旧口径）。
+
+    `per_doc` 按 (doc, kind) 分别计数：节 chunk 与同一份文档的 doc chunk 共用 `doc`
+    字段，若合并计数，节命中会把原文命中挤掉，/api/search 的口径就变了。
+    """
     idx = load()
     if not idx or not normalize(q):
         return []
@@ -143,24 +155,45 @@ def search(q: str, k: int = 8, min_score: float = 0.0, per_doc: int = 2) -> list
     scores = np.asarray(idx["vectors"] @ qv)
     if scores.size == 0:
         return []
-    top = np.argsort(-scores)[: min(len(scores), max(k * 6, 30))]
+    kinds = idx.get("kinds")
+    if (kind or exclude) and kinds is not None and len(kinds) == len(scores):
+        # 在排序**之前**按 kind 剪枝：余弦分非负，-1 一定落到窗口外
+        keep = np.ones(len(kinds), dtype=bool)
+        if kind:
+            keep &= kinds == kind
+        if exclude:
+            keep &= kinds != exclude
+        scores = np.where(keep, scores, np.float32(-1.0))
+    # 用 stable 排序：节 chunk 让数组从 13k 涨到 25k 后，默认快排在**并列分**上的
+    # 次序会漂（同分文档换个位置），向量腿的口径就跟着漂；stable 保持下标次序，
+    # 于是「排除节 chunk 时」与接入前逐条一致。
+    top = np.argsort(-scores, kind="stable")[: min(len(scores), max(k * 6, 30))]
     hits: list[dict[str, Any]] = []
-    seen: dict[str, int] = {}
+    seen: dict[tuple[str, str], int] = {}
     for i in top:
         score = float(scores[int(i)])
         if score < min_score:
             continue
         c = idx["chunks"][int(i)]
-        doc = c.get("doc", "")
-        if seen.get(doc, 0) >= per_doc:
+        ck = str(c.get("kind") or "")
+        if kind and ck != kind:
             continue
-        seen[doc] = seen.get(doc, 0) + 1
+        if exclude and ck == exclude:
+            continue
+        doc = c.get("doc", "")
+        key = (doc, ck)
+        if seen.get(key, 0) >= per_doc:
+            continue
+        seen[key] = seen.get(key, 0) + 1
         hits.append({
             "doc": doc,
+            "source": c.get("source", doc),
             "title": c.get("title", ""),
-            "kind": c.get("kind", ""),
+            "kind": ck,
             "url": c.get("url", ""),
             "page": c.get("page"),
+            "lines": c.get("lines"),
+            "section": c.get("section"),
             "item_ids": c.get("item_ids", []),
             "score": round(score, 4),
             "snippet": snippet(c.get("text", ""), q),
